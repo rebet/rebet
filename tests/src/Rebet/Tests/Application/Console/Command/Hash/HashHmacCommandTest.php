@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\Console\Command\Hash;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -8,9 +9,9 @@ use Rebet\Tools\Utility\Securities;
 
 class HashHmacCommandTest extends RebetConsoleTestCase
 {
-    const AVIRABLE_COMMANDS = [HashHmacCommand::class];
+    public const AVIRABLE_COMMANDS = [HashHmacCommand::class];
 
-    public static function dataExecutes() : array
+    public static function dataExecutes(): array
     {
         return [
             ['foobar'],

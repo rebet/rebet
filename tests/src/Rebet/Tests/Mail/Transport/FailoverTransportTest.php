@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Mail\Transport;
 
 use Psr\Log\NullLogger;
@@ -64,15 +65,15 @@ class FailoverTransportTest extends RebetTestCase
         $transport->send(new RawMessage('message'), $envelope);
     }
 
-    private function createFailingTransport() : AbstractTransport
+    private function createFailingTransport(): AbstractTransport
     {
         return new class extends AbstractTransport {
-            protected function doSend(SentMessage $message) : void
+            protected function doSend(SentMessage $message): void
             {
                 throw new TransportException('Simulated transport failure.');
             }
 
-            public function __toString() : string
+            public function __toString(): string
             {
                 return 'failing://test';
             }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Testable;
@@ -32,7 +33,7 @@ abstract class AbstractCapture extends \php_user_filter
      *
      * @return void
      */
-    public static function start() : void
+    public static function start(): void
     {
         self::$message    = '';
         self::$is_capture = true;
@@ -43,7 +44,7 @@ abstract class AbstractCapture extends \php_user_filter
      *
      * @return string
      */
-    public static function stop() : string
+    public static function stop(): string
     {
         self::$is_capture = false;
         $captured         = self::$message;
@@ -57,7 +58,7 @@ abstract class AbstractCapture extends \php_user_filter
      * @param  \Closure $process
      * @return string
      */
-    public static function via(\Closure $process) : string
+    public static function via(\Closure $process): string
     {
         static::start();
         $process();
@@ -73,7 +74,7 @@ abstract class AbstractCapture extends \php_user_filter
      * @param  bool     $closing
      * @return int
      */
-    public function filter($in, $out, &$consumed, bool $closing) : int
+    public function filter($in, $out, &$consumed, bool $closing): int
     {
         while ($bucket = stream_bucket_make_writeable($in)) {
             $consumed += $bucket->datalen;
@@ -107,7 +108,7 @@ abstract class AbstractCapture extends \php_user_filter
      * @param  resource $resource
      * @return void
      */
-    public static function init($resource) : void
+    public static function init($resource): void
     {
         stream_filter_register(static::class, static::class) or die("Failed to register filter");
         static::append($resource);

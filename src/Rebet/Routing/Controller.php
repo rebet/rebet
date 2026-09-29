@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing;
@@ -42,7 +43,7 @@ abstract class Controller
      * @param  Request $request
      * @return Request
      */
-    public function before(Request $request) : Request
+    public function before(Request $request): Request
     {
         return $request;
     }
@@ -55,7 +56,7 @@ abstract class Controller
      * @param  Response $response
      * @return Response
      */
-    public function after(Request $request, Response $response) : Response
+    public function after(Request $request, Response $response): Response
     {
         return $response;
     }
@@ -68,7 +69,7 @@ abstract class Controller
      * @param  Response $response
      * @return void
      */
-    public function terminate(Request $request, Response $response) : void
+    public function terminate(Request $request, Response $response): void
     {
         // Do nothing.
     }
@@ -82,7 +83,7 @@ abstract class Controller
      * @param  bool                     $accept_undefined (default: false)
      * @return ValidData
      */
-    protected function validate(string $crud, $rules, string $fallback_url, bool $accept_undefined = false) : ValidData
+    protected function validate(string $crud, $rules, string $fallback_url, bool $accept_undefined = false): ValidData
     {
         return $this->request->validate($crud, $rules, $fallback_url, $accept_undefined);
     }
@@ -94,7 +95,7 @@ abstract class Controller
      * @param  bool        $apply_change (default: true)
      * @return View
      */
-    protected function view(string|null $name = null, bool $apply_change = true) : View
+    protected function view(string|null $name = null, bool $apply_change = true): View
     {
         $selector = new ViewSelector($this->request, Auth::user());
         return $selector->view($name, $apply_change);

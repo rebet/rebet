@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests;
 
 use Rebet\Cache\Adapter\Symfony\ApcuAdapter;
@@ -20,42 +21,42 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
 {
     use CacheTestHelper;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $test_dir = $this->makeSubWorkingDir('/cache');
         Config::application([
             Cache::class => [
-                'stores=' => [
-                    'apcu' => [
+                'stores='       => [
+                    'apcu'        => [
                         'adapter' => [
                             '@factory' => ApcuAdapter::class,
                         ],
                     ],
-                    'array' => [
+                    'array'       => [
                         'adapter' => [
                             '@factory' => ArrayAdapter::class,
                         ],
                     ],
-                    'file' => [
+                    'file'        => [
                         'adapter' => [
                             '@factory'  => FilesystemAdapter::class,
-                            'directory' => $test_dir.'/file',
+                            'directory' => $test_dir . '/file',
                         ],
                     ],
-                    'memcached' => [
+                    'memcached'   => [
                         'adapter' => [
                             '@factory' => MemcachedAdapter::class,
                             'dsn'      => 'memcached://memcached:11211',
                         ],
                     ],
-                    'pdo-sqlite' => [
+                    'pdo-sqlite'  => [
                         'adapter' => [
                             '@factory' => PdoAdapter::class,
                             'db'       => 'sqlite',
                         ],
                     ],
-                    'pdo-mysql' => [
+                    'pdo-mysql'   => [
                         'adapter' => [
                             '@factory' => PdoAdapter::class,
                             'db'       => 'mysql',
@@ -67,13 +68,13 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
                             'db'       => 'mariadb',
                         ],
                     ],
-                    'pdo-pgsql' => [
+                    'pdo-pgsql'   => [
                         'adapter' => [
                             '@factory' => PdoAdapter::class,
                             'db'       => 'pgsql',
                         ],
                     ],
-                    'redis' => [
+                    'redis'       => [
                         'adapter' => [
                             '@factory' => RedisAdapter::class,
                             'dsn'      => 'redis://redis/0',

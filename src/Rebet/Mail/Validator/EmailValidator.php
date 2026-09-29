@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Mail\Validator;
@@ -58,7 +59,7 @@ class EmailValidator extends EguliasEmailValidator
      * @param  EmailValidation $validation
      * @return void
      */
-    public static function setValidation(EmailValidation $validation) : void
+    public static function setValidation(EmailValidation $validation): void
     {
         static::setConfig(['validation' => $validation]);
     }
@@ -75,7 +76,7 @@ class EmailValidator extends EguliasEmailValidator
      *
      * @return void
      */
-    public static function enable() : void
+    public static function enable(): void
     {
         $address           = new Address('for-init-static-field@rebet.local');
         $current_validator = Reflector::get($address, 'validator', null, true);
@@ -95,7 +96,7 @@ class EmailValidator extends EguliasEmailValidator
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         if (static::$original_validator !== null) {
             $class = Address::class;

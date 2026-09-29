@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Validation;
@@ -29,7 +30,7 @@ class Valid
      *   - ['CU', Valid::IF, 'other', [value1, value2, ...], 'then' => [...], 'else' => [...]]
      *   - ['CU', Valid::IF, 'other', ':field', (snip)]
      */
-    const IF = 'If:';
+    public const IF = 'If:';
 
     /**
      * Unless Condition.
@@ -42,7 +43,7 @@ class Valid
      *   - ['CU', Valid::UNLESS, 'other', [value1, value2, ...], 'then' => [...], 'else' => [...]]
      *   - ['CU', Valid::UNLESS, 'other', ':field', (snip)]
      */
-    const UNLESS = 'Unless:';
+    public const UNLESS = 'Unless:';
 
     /**
      * With Condition.
@@ -55,7 +56,7 @@ class Valid
      *   - ['CU', Valid::WITH, '[other1, other2, ...], 'then' => [...], 'else' => [...]]
      *   - ['CU', Valid::WITH, '[other1, other2, ...], at_least, 'then' => [...], 'else' => [...]]
      */
-    const WITH = 'With:';
+    public const WITH = 'With:';
 
     /**
      * Without Condition.
@@ -68,7 +69,7 @@ class Valid
      *   - ['CU', Valid::WITHOUT, '[other1, other2, ...], 'then' => [...], 'else' => [...]]
      *   - ['CU', Valid::WITHOUT, '[other1, other2, ...], at_least, 'then' => [...], 'else' => [...]]
      */
-    const WITHOUT = 'Without:';
+    public const WITHOUT = 'Without:';
 
     /**
      * If No Error Condition.
@@ -80,7 +81,7 @@ class Valid
      *   - ['CU', Valid::IF_NO_ERROR] (field: null)
      *   - ['CU', Valid::IF_NO_ERROR, ':field']
      */
-    const IF_NO_ERROR = 'IfNoError:';
+    public const IF_NO_ERROR = 'IfNoError:';
 
     /**
      * If An Error Condition.
@@ -92,7 +93,7 @@ class Valid
      *   - ['CU', Valid::IF_AN_ERROR] (field: null)
      *   - ['CU', Valid::IF_AN_ERROR, ':field']
      */
-    const IF_AN_ERROR = 'IfAnError:';
+    public const IF_AN_ERROR = 'IfAnError:';
 
     /**
      * Satisfy Validation/Condition.
@@ -109,7 +110,7 @@ class Valid
      *   - ['CU', Valid::SATISFY, function(Context $c) { ...Any test with    appendError()... } : bool]
      *   - ['CU', Valid::SATISFY, function(Context $c) { ...Any test without appendError()... } : bool, 'then' => [...], 'else' => [...]]
      */
-    const SATISFY = 'Satisfy:';
+    public const SATISFY = 'Satisfy:';
 
     /**
      * Required Validation.
@@ -123,7 +124,7 @@ class Valid
      *   Placeholder - :attribute
      *   Selector    - none
      */
-    const REQUIRED = 'Required:!';
+    public const REQUIRED = 'Required:!';
 
     /**
      * Required If Validation.
@@ -140,7 +141,7 @@ class Valid
      *   Placeholder - :attribute, :selector, :other, :value
      *   Selector    - count of value
      */
-    const REQUIRED_IF = 'RequiredIf:!';
+    public const REQUIRED_IF = 'RequiredIf:!';
 
     /**
      * Required Unless Validation.
@@ -158,7 +159,7 @@ class Valid
      *   Placeholder - :attribute, :selector, :other, :value
      *   Selector    - count of value
      */
-    const REQUIRED_UNLESS = 'RequiredUnless:!';
+    public const REQUIRED_UNLESS = 'RequiredUnless:!';
 
     /**
      * Required With Validation.
@@ -176,7 +177,7 @@ class Valid
      *   Placeholder - :attribute, :selector, :other, :at_least
      *   Selector    - one(when other count is one), some(when at_least < other count), all
      */
-    const REQUIRED_WITH = 'RequiredWith:!';
+    public const REQUIRED_WITH = 'RequiredWith:!';
 
     /**
      * Required Without Validation.
@@ -194,7 +195,7 @@ class Valid
      *   Placeholder - :attribute, :selector, :other, :at_least
      *   Selector    - one(when other count is one), some(when at_least < other count), all
      */
-    const REQUIRED_WITHOUT = 'RequiredWithout:!';
+    public const REQUIRED_WITHOUT = 'RequiredWithout:!';
 
     /**
      * Blank If Validation.
@@ -211,7 +212,7 @@ class Valid
      *   Placeholder - :attribute, :self, :selector, :other, :value
      *   Selector    - count of value
      */
-    const BLANK_IF = 'BlankIf:!';
+    public const BLANK_IF = 'BlankIf:!';
 
     /**
      * Empty Unless Validation.
@@ -228,7 +229,7 @@ class Valid
      *   Placeholder - :attribute, :self, :selector, :other, :value
      *   Selector    - count of value
      */
-    const BLANK_UNLESS = 'BlankUnless:!';
+    public const BLANK_UNLESS = 'BlankUnless:!';
 
     /**
      * Blank With Validation.
@@ -245,7 +246,7 @@ class Valid
      *   Placeholder - :attribute, :self, :selector, :other, :at_least
      *   Selector    - one(when other count is one), some(when at_least < other count), all
      */
-    const BLANK_WITH = 'BlankWith:!';
+    public const BLANK_WITH = 'BlankWith:!';
 
     /**
      * Blank Without Validation.
@@ -262,7 +263,7 @@ class Valid
      *   Placeholder - :attribute, :self, :selector, :other, :at_least
      *   Selector    - one(when other count is one), some(when at_least < other count), all
      */
-    const BLANK_WITHOUT = 'BlankWithout:!';
+    public const BLANK_WITHOUT = 'BlankWithout:!';
 
     /**
      * Same As Validation.
@@ -276,7 +277,7 @@ class Valid
      *   Placeholder - :attribute, :self, :value
      *   Selector    - none
      */
-    const SAME_AS = 'SameAs:';
+    public const SAME_AS = 'SameAs:';
 
     /**
      * Not Same As Validation.
@@ -290,7 +291,7 @@ class Valid
      *   Placeholder - :attribute, :self, :value
      *   Selector    - none
      */
-    const NOT_SAME_AS = 'NotSameAs:';
+    public const NOT_SAME_AS = 'NotSameAs:';
 
     /**
      * Regex Validation.
@@ -304,7 +305,7 @@ class Valid
      *   Placeholder - :attribute, :self, :selector, :pattern, :nth, :value
      *   Selector    - none or given selector
      */
-    const REGEX = 'Regex:';
+    public const REGEX = 'Regex:';
 
     /**
      * Not Regex Validation.
@@ -318,7 +319,7 @@ class Valid
      *   Placeholder - :attribute, :self, :selector, :pattern, :nth, :value
      *   Selector    - none or given selector
      */
-    const NOT_REGEX = 'NotRegex:';
+    public const NOT_REGEX = 'NotRegex:';
 
     /**
      * Max Length Validation.
@@ -331,7 +332,7 @@ class Valid
      *   Placeholder - :attribute, :self, :max, :nth, :value
      *   Selector    - none
      */
-    const MAX_LENGTH = 'MaxLength:';
+    public const MAX_LENGTH = 'MaxLength:';
 
     /**
      * Min Length Validation.
@@ -344,7 +345,7 @@ class Valid
      *   Placeholder - :attribute, :self, :min, :nth, :value
      *   Selector    - none
      */
-    const MIN_LENGTH = 'MinLength:';
+    public const MIN_LENGTH = 'MinLength:';
 
     /**
      * Length Validation.
@@ -357,7 +358,7 @@ class Valid
      *   Placeholder - :attribute, :self, :length, :nth, :value
      *   Selector    - none
      */
-    const LENGTH = 'Length:';
+    public const LENGTH = 'Length:';
 
     /**
      * Number Validation.
@@ -370,7 +371,7 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const NUMBER = 'Number:!';
+    public const NUMBER = 'Number:!';
 
     /**
      * Integer Validation.
@@ -384,7 +385,7 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const INTEGER = 'Integer:!';
+    public const INTEGER = 'Integer:!';
 
     /**
      * Float Validation.
@@ -398,7 +399,7 @@ class Valid
      *   Placeholder - :attribute, :self, :decimal, :nth, :value
      *   Selector    - none
      */
-    const FLOAT = 'Float:!';
+    public const FLOAT = 'Float:!';
 
     /**
      * Number Less Than Validation.
@@ -414,7 +415,7 @@ class Valid
      *   Placeholder - :attribute, :self, :number, :precision, :nth, :value
      *   Selector    - 'auto' or given precision
      */
-    const NUMBER_LESS_THAN = 'NumberLessThan:';
+    public const NUMBER_LESS_THAN = 'NumberLessThan:';
 
     /**
      * Number Less Than Or Equal Validation.
@@ -430,7 +431,7 @@ class Valid
      *   Placeholder - :attribute, :self, :number, :precision, :nth, :value
      *   Selector    - 'auto' or given precision
      */
-    const NUMBER_LESS_THAN_OR_EQUAL = 'NumberLessThanOrEqual:';
+    public const NUMBER_LESS_THAN_OR_EQUAL = 'NumberLessThanOrEqual:';
 
     /**
      * Number Equal Validation.
@@ -446,7 +447,7 @@ class Valid
      *   Placeholder - :attribute, :self, :number, :precision, :nth, :value
      *   Selector    - 'auto' or given precision
      */
-    const NUMBER_EQUAL = 'NumberEqual:';
+    public const NUMBER_EQUAL = 'NumberEqual:';
 
     /**
      * Number Greater Than Validation.
@@ -462,7 +463,7 @@ class Valid
      *   Placeholder - :attribute, :self, :number, :precision, :nth, :value
      *   Selector    - 'auto' or given precision
      */
-    const NUMBER_GREATER_THAN = 'NumberGreaterThan:';
+    public const NUMBER_GREATER_THAN = 'NumberGreaterThan:';
 
     /**
      * Number Greater Than Or Equal Validation.
@@ -478,7 +479,7 @@ class Valid
      *   Placeholder - :attribute, :self, :number, :precision, :nth, :value
      *   Selector    - 'auto' or given precision
      */
-    const NUMBER_GREATER_THAN_OR_EQUAL = 'NumberGreaterThanOrEqual:';
+    public const NUMBER_GREATER_THAN_OR_EQUAL = 'NumberGreaterThanOrEqual:';
 
     /**
      * Email Validation.
@@ -496,7 +497,7 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const EMAIL = 'Email:';
+    public const EMAIL = 'Email:';
 
     /**
      * Url Validation.
@@ -511,7 +512,7 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none or nonactive(when dns_check and dns is not active)
      */
-    const URL = 'Url:';
+    public const URL = 'Url:';
 
     /**
      * IPv4 Validation.
@@ -526,7 +527,7 @@ class Valid
      *   Placeholder - :attribute, :self, :delimiter, :nth, :value
      *   Selector    - none
      */
-    const IPV4 = 'Ipv4:';
+    public const IPV4 = 'Ipv4:';
 
     /**
      * Digit Validation.
@@ -539,7 +540,7 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const DIGIT = 'Digit:';
+    public const DIGIT = 'Digit:';
 
     /**
      * Alpha Validation.
@@ -552,7 +553,7 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const ALPHA = 'Alpha:';
+    public const ALPHA = 'Alpha:';
 
     /**
      * Alpha Digit Validation.
@@ -565,7 +566,7 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const ALPHA_DIGIT = 'AlphaDigit:';
+    public const ALPHA_DIGIT = 'AlphaDigit:';
 
     /**
      * Alpha Digit Mark Validation.
@@ -579,7 +580,7 @@ class Valid
      *   Placeholder - :attribute, :self, :mark, :nth, :value
      *   Selector    - none
      */
-    const ALPHA_DIGIT_MARK = 'AlphaDigitMark:';
+    public const ALPHA_DIGIT_MARK = 'AlphaDigitMark:';
 
     /**
      * Hiragana Validation.
@@ -594,7 +595,7 @@ class Valid
      *   Placeholder - :attribute, :self, :extra, :nth, :value
      *   Selector    - none
      */
-    const HIRAGANA = 'Hiragana:';
+    public const HIRAGANA = 'Hiragana:';
 
     /**
      * Kana Validation.
@@ -609,7 +610,7 @@ class Valid
      *   Placeholder - :attribute, :self, :extra, :nth, :value
      *   Selector    - none
      */
-    const KANA = 'Kana:';
+    public const KANA = 'Kana:';
 
     /**
      * Dependence Char Validation.
@@ -623,7 +624,7 @@ class Valid
      *   Placeholder - :attribute, :self, :encode, :dependences, :nth, :value
      *   Selector    - none
      */
-    const DEPENDENCE_CHAR = 'DependenceChar:';
+    public const DEPENDENCE_CHAR = 'DependenceChar:';
 
     /**
      * Ng Word Validation.
@@ -661,7 +662,7 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const NG_WORD = 'NgWord:';
+    public const NG_WORD = 'NgWord:';
 
     /**
      * Contains Validation.
@@ -675,7 +676,7 @@ class Valid
      *   Placeholder - :attribute, :self, :list, :nth, :value
      *   Selector    - none
      */
-    const CONTAINS = 'Contains:';
+    public const CONTAINS = 'Contains:';
 
     /**
      * Min Count Validation.
@@ -688,7 +689,7 @@ class Valid
      *   Placeholder - :attribute, :self, :item_count, :min
      *   Selector    - number of given min
      */
-    const MIN_COUNT = 'MinCount:';
+    public const MIN_COUNT = 'MinCount:';
 
     /**
      * Max Count Validation.
@@ -701,7 +702,7 @@ class Valid
      *   Placeholder - :attribute, :self, :item_count, :max
      *   Selector    - number of given max
      */
-    const MAX_COUNT = 'MaxCount:';
+    public const MAX_COUNT = 'MaxCount:';
 
     /**
      * Count Validation.
@@ -714,7 +715,7 @@ class Valid
      *   Placeholder - :attribute, :self, :item_count, :count
      *   Selector    - number of given count
      */
-    const COUNT = 'Count:';
+    public const COUNT = 'Count:';
 
     /**
      * Unique Validation.
@@ -728,7 +729,7 @@ class Valid
      *   Placeholder - :attribute, :self, :duplicate
      *   Selector    - count of duplicate
      */
-    const UNIQUE = 'Unique:';
+    public const UNIQUE = 'Unique:';
 
     /**
      * Datetime Validation.
@@ -744,7 +745,7 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const DATETIME = 'Datetime:!';
+    public const DATETIME = 'Datetime:!';
 
     /**
      * Future Than Validation.
@@ -763,7 +764,7 @@ class Valid
      *   Placeholder - :attribute, :self, :at_time, :nth, :value
      *   Selector    - none
      */
-    const FUTURE_THAN = 'FutureThan:';
+    public const FUTURE_THAN = 'FutureThan:';
 
     /**
      * Future Equal Or Equal Validation.
@@ -782,7 +783,7 @@ class Valid
      *   Placeholder - :attribute, :self, :at_time, :nth, :value
      *   Selector    - none
      */
-    const FUTURE_THAN_OR_EQUAL = 'FutureThanOrEqual:';
+    public const FUTURE_THAN_OR_EQUAL = 'FutureThanOrEqual:';
 
     /**
      * Past Than Validation.
@@ -801,7 +802,7 @@ class Valid
      *   Placeholder - :attribute, :self, :at_time, :nth, :value
      *   Selector    - none
      */
-    const PAST_THAN = 'PastThan:';
+    public const PAST_THAN = 'PastThan:';
 
     /**
      * Past Equal Or Equal Validation.
@@ -820,7 +821,7 @@ class Valid
      *   Placeholder - :attribute, :self, :at_time, :nth, :value
      *   Selector    - none
      */
-    const PAST_THAN_OR_EQUAL = 'PastThanOrEqual:';
+    public const PAST_THAN_OR_EQUAL = 'PastThanOrEqual:';
 
     /**
      * Max Age Validation.
@@ -840,7 +841,7 @@ class Valid
      *   Placeholder - :attribute, :self, :max, :at_time, :nth, :value
      *   Selector    - value of at_time
      */
-    const MAX_AGE = 'MaxAge:';
+    public const MAX_AGE = 'MaxAge:';
 
     /**
      * Min Age Validation.
@@ -860,7 +861,7 @@ class Valid
      *   Placeholder - :attribute, :self, :min, :at_time, :nth, :value
      *   Selector    - value of at_time
      */
-    const MIN_AGE = 'MinAge:';
+    public const MIN_AGE = 'MinAge:';
 
     /**
      * Sequential Number Validation.
@@ -875,7 +876,7 @@ class Valid
      *   Placeholder - :attribute, :self
      *   Selector    - none
      */
-    const SEQUENTIAL_NUMBER = 'SequentialNumber:';
+    public const SEQUENTIAL_NUMBER = 'SequentialNumber:';
 
     /**
      * Accepted Validation.
@@ -890,7 +891,7 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const ACCEPTED = "Accepted:!";
+    public const ACCEPTED = "Accepted:!";
 
     /**
      * Correlated Required Validation.
@@ -906,7 +907,7 @@ class Valid
      *   Placeholder - :attribute, :at_least
      *   Selector    - none
      */
-    const CORRELATED_REQUIRED = 'CorrelatedRequired:';
+    public const CORRELATED_REQUIRED = 'CorrelatedRequired:';
 
     /**
      * Correlated Unique Validation.
@@ -922,7 +923,7 @@ class Valid
      *   Placeholder - :attribute, :duplicate
      *   Selector    - none
      */
-    const CORRELATED_UNIQUE = 'CorrelatedUnique:';
+    public const CORRELATED_UNIQUE = 'CorrelatedUnique:';
 
     /**
      * File Size Validation.
@@ -939,7 +940,7 @@ class Valid
      *
      * @see Unit::STORAGE_PREFIX
      */
-    const FILE_SIZE = 'FileSize:';
+    public const FILE_SIZE = 'FileSize:';
 
     /**
      * File Name Match Validation.
@@ -952,7 +953,7 @@ class Valid
      *   Placeholder - :attribute, :pattern, :nth, :value, :file_name
      *   Selector    - none
      */
-    const FILE_NAME_MATCH = 'FileNameMatch:';
+    public const FILE_NAME_MATCH = 'FileNameMatch:';
 
     /**
      * File Suffix Match Validation.
@@ -965,7 +966,7 @@ class Valid
      *   Placeholder - :attribute, :pattern, :nth, :value, :file_name, :suffix
      *   Selector    - none
      */
-    const FILE_SUFFIX_MATCH = 'FileSuffixMatch:';
+    public const FILE_SUFFIX_MATCH = 'FileSuffixMatch:';
 
     /**
      * File Mime Type Match Validation.
@@ -978,7 +979,7 @@ class Valid
      *   Placeholder - :attribute, :pattern, :nth, :value, :file_name, :mime_type
      *   Selector    - none
      */
-    const FILE_MIME_TYPE_MATCH = 'FileMimeTypeMatch:';
+    public const FILE_MIME_TYPE_MATCH = 'FileMimeTypeMatch:';
 
     /**
      * File Type Images Validation.
@@ -991,7 +992,7 @@ class Valid
      *   Placeholder - :attribute, :nth, :value, :file_name, :mime_type
      *   Selector    - none
      */
-    const FILE_TYPE_IMAGES = 'FileTypeImages:';
+    public const FILE_TYPE_IMAGES = 'FileTypeImages:';
 
     /**
      * File Type Web Images Validation.
@@ -1004,7 +1005,7 @@ class Valid
      *   Placeholder - :attribute, :nth, :value, :file_name, :mime_type
      *   Selector    - none
      */
-    const FILE_TYPE_WEB_IMAGES = 'FileTypeWebImages:';
+    public const FILE_TYPE_WEB_IMAGES = 'FileTypeWebImages:';
 
     /**
      * File Type Csv Validation.
@@ -1017,7 +1018,7 @@ class Valid
      *   Placeholder - :attribute, :nth, :value, :file_name, :mime_type
      *   Selector    - none
      */
-    const FILE_TYPE_CSV = 'FileTypeCsv:';
+    public const FILE_TYPE_CSV = 'FileTypeCsv:';
 
     /**
      * File Type Zip Validation.
@@ -1030,7 +1031,7 @@ class Valid
      *   Placeholder - :attribute, :nth, :value, :file_name, :mime_type
      *   Selector    - none
      */
-    const FILE_TYPE_ZIP = 'FileTypeZip:';
+    public const FILE_TYPE_ZIP = 'FileTypeZip:';
 
     /**
      * File Image Max Width Validation.
@@ -1043,7 +1044,7 @@ class Valid
      *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :max
      *   Selector    - 'area' or 'no-area'
      */
-    const FILE_IMAGE_MAX_WIDTH = 'FileImageMaxWidth:';
+    public const FILE_IMAGE_MAX_WIDTH = 'FileImageMaxWidth:';
 
     /**
      * File Image Width Validation.
@@ -1056,7 +1057,7 @@ class Valid
      *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :size
      *   Selector    - 'area' or 'no-area'
      */
-    const FILE_IMAGE_WIDTH = 'FileImageWidth:';
+    public const FILE_IMAGE_WIDTH = 'FileImageWidth:';
 
     /**
      * File Image Min Width Validation.
@@ -1069,7 +1070,7 @@ class Valid
      *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :min
      *   Selector    - 'area' or 'no-area'
      */
-    const FILE_IMAGE_MIN_WIDTH = 'FileImageMinWidth:';
+    public const FILE_IMAGE_MIN_WIDTH = 'FileImageMinWidth:';
 
     /**
      * File Image Max Height Validation.
@@ -1082,7 +1083,7 @@ class Valid
      *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :max
      *   Selector    - 'area' or 'no-area'
      */
-    const FILE_IMAGE_MAX_HEIGHT = 'FileImageMaxHeight:';
+    public const FILE_IMAGE_MAX_HEIGHT = 'FileImageMaxHeight:';
 
     /**
      * File Image Height Validation.
@@ -1095,7 +1096,7 @@ class Valid
      *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :size
      *   Selector    - 'area' or 'no-area'
      */
-    const FILE_IMAGE_HEIGHT = 'FileImageHeight:';
+    public const FILE_IMAGE_HEIGHT = 'FileImageHeight:';
 
     /**
      * File Image Min Height Validation.
@@ -1108,7 +1109,7 @@ class Valid
      *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :min
      *   Selector    - 'area' or 'no-area'
      */
-    const FILE_IMAGE_MIN_HEIGHT = 'FileImageMinHeight:';
+    public const FILE_IMAGE_MIN_HEIGHT = 'FileImageMinHeight:';
 
     /**
      * File Image Aspect Ratio Validation.
@@ -1122,5 +1123,5 @@ class Valid
      *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :width_ratio, :height_ration, :precision
      *   Selector    - 'area' or 'no-area'
      */
-    const FILE_IMAGE_ASPECT_RATIO = 'FileImageAspectRatio:';
+    public const FILE_IMAGE_ASPECT_RATIO = 'FileImageAspectRatio:';
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Testable;
@@ -38,12 +39,12 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string $base_working_dir for testing
      * @return string new current directory absolute path
      */
-    public static function setUpWorkingDir(string $base_working_dir) : string
+    public static function setUpWorkingDir(string $base_working_dir): string
     {
         static::$original_working_dir = Path::normalize(getcwd());
-        static::$test_working_dir     = Path::normalize($base_working_dir.'/'.getmypid());
+        static::$test_working_dir     = Path::normalize($base_working_dir . '/' . getmypid());
         if (!file_exists(static::$test_working_dir)) {
-            mkdir(static::$test_working_dir, 0777, true);
+            mkdir(static::$test_working_dir, 0o777, true);
         }
         chdir(static::$test_working_dir);
         return static::$test_working_dir;
@@ -57,11 +58,11 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  bool   $clean   sub directory if already exists. (default: true)
      * @return string sub directory absolute path
      */
-    public static function makeSubWorkingDir(string $sub_dir, bool $clean = true) : string
+    public static function makeSubWorkingDir(string $sub_dir, bool $clean = true): string
     {
-        $sub_working_dir = Path::normalize(static::$test_working_dir.'/'.$sub_dir);
+        $sub_working_dir = Path::normalize(static::$test_working_dir . '/' . $sub_dir);
         if (!file_exists($sub_working_dir)) {
-            mkdir($sub_working_dir, 0777, true);
+            mkdir($sub_working_dir, 0o777, true);
         } else {
             if ($clean) {
                 Files::removeDir($sub_working_dir, false);
@@ -76,9 +77,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string $sub_dir
      * @return void
      */
-    public static function removeSubWorkingDir(string $sub_dir) : void
+    public static function removeSubWorkingDir(string $sub_dir): void
     {
-        Files::removeDir(Path::normalize(static::$test_working_dir.'/'.$sub_dir));
+        Files::removeDir(Path::normalize(static::$test_working_dir . '/' . $sub_dir));
     }
 
     /**
@@ -86,7 +87,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      *
      * @return string new current directory absolute path
      */
-    public static function tearDownWorkingDir() : string
+    public static function tearDownWorkingDir(): string
     {
         if (static::$original_working_dir) {
             chdir(static::$original_working_dir);
@@ -146,7 +147,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      *
      * @return bool
      */
-    public function isWindows() : bool
+    public function isWindows(): bool
     {
         return PHP_OS === 'WIN32' || PHP_OS === 'WINNT' || PHP_OS === 'Windows' ;
     }
@@ -157,7 +158,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string $format of sprintf(), 1st args for current memory, 2nd for peak memory. (default: "\nMemory(current/peak): %01.2f / %01.2f MB ")
      * @return string
      */
-    public static function memory(string $format = "\nMemory(current/peak): %01.2f / %01.2f MB ") : string
+    public static function memory(string $format = "\nMemory(current/peak): %01.2f / %01.2f MB "): string
     {
         return sprintf($format, memory_get_usage() / 1048576, memory_get_peak_usage() / 1048576);
     }
@@ -169,42 +170,42 @@ trait TestHelper // @phpstan-ignore trait.unused
     /**
      * @see PHPUnit\Framework\Assert::assertEquals
      */
-    abstract public static function assertEquals($expected, $actual, string $message = '') : void;
+    abstract public static function assertEquals($expected, $actual, string $message = ''): void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertNotEquals
      */
-    abstract public static function assertNotEquals($expected, $actual, string $message = '') : void;
+    abstract public static function assertNotEquals($expected, $actual, string $message = ''): void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertStringContainsString
      */
-    abstract public static function assertStringContainsString(string $needle, string $haystack, string $message = '') : void;
+    abstract public static function assertStringContainsString(string $needle, string $haystack, string $message = ''): void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertStringNotContainsString
      */
-    abstract public static function assertStringNotContainsString(string $needle, string $haystack, string $message = '') : void;
+    abstract public static function assertStringNotContainsString(string $needle, string $haystack, string $message = ''): void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertMatchesRegularExpression
      */
-    abstract public static function assertMatchesRegularExpression(string $pattern, string $string, string $message = '') : void;
+    abstract public static function assertMatchesRegularExpression(string $pattern, string $string, string $message = ''): void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertDoesNotMatchRegularExpression
      */
-    abstract public static function assertDoesNotMatchRegularExpression(string $pattern, string $string, string $message = '') : void;
+    abstract public static function assertDoesNotMatchRegularExpression(string $pattern, string $string, string $message = ''): void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertTrue
      */
-    abstract public static function assertTrue($condition, string $message = '') : void;
+    abstract public static function assertTrue($condition, string $message = ''): void;
 
     /**
      * @see PHPUnit\Framework\Assert::fail
      */
-    abstract public static function fail(string $message = '') : void;
+    abstract public static function fail(string $message = ''): void;
 
     // ========================================================================
     // Extended assertions
@@ -215,7 +216,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      *
      * @return void
      */
-    public static function success() : void
+    public static function success(): void
     {
         static::assertTrue(true);
     }
@@ -228,7 +229,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string $message (default: '')
      * @return void
      */
-    public static function assertStringEquals(string $expect, string $actual, string $message = '') : void
+    public static function assertStringEquals(string $expect, string $actual, string $message = ''): void
     {
         static::assertEquals($expect, $actual, $message);
     }
@@ -242,7 +243,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStringNotEqualsAny($expects, string $actual, string $message = '') : void
+    public static function assertStringNotEqualsAny($expects, string $actual, string $message = ''): void
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
@@ -258,7 +259,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string   $message (default: '')
      * @return void
      */
-    public static function assertStringEqualsEach(array $expects, array $actuals, string $message = '') : void
+    public static function assertStringEqualsEach(array $expects, array $actuals, string $message = ''): void
     {
         static::assertEquals(count($expects), count($actuals), $message);
         foreach ($expects as $i => $expect) {
@@ -275,7 +276,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStringContainsAll($expects, string $actual, string $message = '') : void
+    public static function assertStringContainsAll($expects, string $actual, string $message = ''): void
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
@@ -292,7 +293,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStringNotContainsAny($expects, string $actual, string $message = '') : void
+    public static function assertStringNotContainsAny($expects, string $actual, string $message = ''): void
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
@@ -309,7 +310,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string              $message (default: '')
      * @return void
      */
-    public static function assertStringContainsEach(array $expects, array $actuals, string $message = '') : void
+    public static function assertStringContainsEach(array $expects, array $actuals, string $message = ''): void
     {
         static::assertEquals(count($expects), count($actuals), $message);
         foreach ($expects as $i => $expect) {
@@ -326,7 +327,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStringRegExpAll($expects, string $actual, string $message = '') : void
+    public static function assertStringRegExpAll($expects, string $actual, string $message = ''): void
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
@@ -343,7 +344,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStringNotRegExpAny($expects, string $actual, string $message = '') : void
+    public static function assertStringNotRegExpAny($expects, string $actual, string $message = ''): void
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
@@ -360,7 +361,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string              $message (default: '')
      * @return void
      */
-    public static function assertStringRegExpEach(array $expects, array $actuals, string $message = '') : void
+    public static function assertStringRegExpEach(array $expects, array $actuals, string $message = ''): void
     {
         static::assertEquals(count($expects), count($actuals), $message);
         foreach ($expects as $i => $expect) {
@@ -379,7 +380,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message   (default: '')
      * @return void
      */
-    public static function assertStringWildcardAll($expects, string $actual, array $wildcards = [], string $message = '') : void
+    public static function assertStringWildcardAll($expects, string $actual, array $wildcards = [], string $message = ''): void
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         $message = empty($message) ? $message : "{$message}\n" ;
@@ -406,7 +407,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message   (default: '')
      * @return void
      */
-    public static function assertStringNotWildcardAny($expects, string $actual, array $wildcards = [], string $message = '') : void
+    public static function assertStringNotWildcardAny($expects, string $actual, array $wildcards = [], string $message = ''): void
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         $message = empty($message) ? $message : "{$message}\n" ;
@@ -433,7 +434,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string              $message   (default: '')
      * @return void
      */
-    public static function assertStringWildcardEach(array $expects, array $actuals, array $wildcards = [], string $message = '') : void
+    public static function assertStringWildcardEach(array $expects, array $actuals, array $wildcards = [], string $message = ''): void
     {
         static::assertEquals(count($expects), count($actuals), $message);
         foreach ($expects as $i => $expect) {
@@ -449,7 +450,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string   $message (default: '')
      * @return void
      */
-    public static function assertStderrEquals(string $expect, \Closure $test, string $message = '') : void
+    public static function assertStderrEquals(string $expect, \Closure $test, string $message = ''): void
     {
         static::assertStringEquals($expect, StderrCapture::via($test), $message);
     }
@@ -463,7 +464,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStderrNotEqualsAny($expects, \Closure $test, string $message = '') : void
+    public static function assertStderrNotEqualsAny($expects, \Closure $test, string $message = ''): void
     {
         static::assertStringNotEqualsAny($expects, StderrCapture::via($test), $message);
     }
@@ -477,7 +478,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStderrContainsAll($expects, \Closure $test, string $message = '') : void
+    public static function assertStderrContainsAll($expects, \Closure $test, string $message = ''): void
     {
         static::assertStringContainsAll($expects, StderrCapture::via($test), $message);
     }
@@ -491,7 +492,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStderrNotContainsAny($expects, \Closure $test, string $message = '') : void
+    public static function assertStderrNotContainsAny($expects, \Closure $test, string $message = ''): void
     {
         static::assertStringNotContainsAny($expects, StderrCapture::via($test), $message);
     }
@@ -505,7 +506,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStderrRegExpAll($expects, \Closure $test, string $message = '') : void
+    public static function assertStderrRegExpAll($expects, \Closure $test, string $message = ''): void
     {
         static::assertStringRegExpAll($expects, StderrCapture::via($test), $message);
     }
@@ -519,7 +520,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStderrNotRegExpAny($expects, \Closure $test, string $message = '') : void
+    public static function assertStderrNotRegExpAny($expects, \Closure $test, string $message = ''): void
     {
         static::assertStringNotRegExpAny($expects, StderrCapture::via($test), $message);
     }
@@ -535,7 +536,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message   (default: '')
      * @return void
      */
-    public static function assertStderrWildcardAll($expects, \Closure $test, array $wildcards = [], string $message = '') : void
+    public static function assertStderrWildcardAll($expects, \Closure $test, array $wildcards = [], string $message = ''): void
     {
         static::assertStringWildcardAll($expects, StderrCapture::via($test), $wildcards, $message);
     }
@@ -551,7 +552,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message   (default: '')
      * @return void
      */
-    public static function assertStderrNotWildcardAny($expects, \Closure $test, array $wildcards = [], string $message = '') : void
+    public static function assertStderrNotWildcardAny($expects, \Closure $test, array $wildcards = [], string $message = ''): void
     {
         static::assertStringNotWildcardAny($expects, StderrCapture::via($test), $wildcards, $message);
     }
@@ -564,7 +565,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string   $message (default: '')
      * @return void
      */
-    public static function assertStdoutEquals(string $expect, \Closure $test, string $message = '') : void
+    public static function assertStdoutEquals(string $expect, \Closure $test, string $message = ''): void
     {
         static::assertStringEquals($expect, StdoutCapture::via($test), $message);
     }
@@ -578,7 +579,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStdoutNotEqualsAny($expects, \Closure $test, string $message = '') : void
+    public static function assertStdoutNotEqualsAny($expects, \Closure $test, string $message = ''): void
     {
         static::assertStringNotEqualsAny($expects, StdoutCapture::via($test), $message);
     }
@@ -592,7 +593,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStdoutContainsAll($expects, \Closure $test, string $message = '') : void
+    public static function assertStdoutContainsAll($expects, \Closure $test, string $message = ''): void
     {
         static::assertStringContainsAll($expects, StdoutCapture::via($test), $message);
     }
@@ -606,7 +607,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStdoutNotContainsAny($expects, \Closure $test, string $message = '') : void
+    public static function assertStdoutNotContainsAny($expects, \Closure $test, string $message = ''): void
     {
         static::assertStringNotContainsAny($expects, StdoutCapture::via($test), $message);
     }
@@ -620,7 +621,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStdoutRegExpAll($expects, \Closure $test, string $message = '') : void
+    public static function assertStdoutRegExpAll($expects, \Closure $test, string $message = ''): void
     {
         static::assertStringRegExpAll($expects, StdoutCapture::via($test), $message);
     }
@@ -634,7 +635,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message (default: '')
      * @return void
      */
-    public static function assertStdoutNotRegExpAny($expects, \Closure $test, string $message = '') : void
+    public static function assertStdoutNotRegExpAny($expects, \Closure $test, string $message = ''): void
     {
         static::assertStringNotRegExpAny($expects, StdoutCapture::via($test), $message);
     }
@@ -650,7 +651,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message   (default: '')
      * @return void
      */
-    public static function assertStdoutWildcardAll($expects, \Closure $test, array $wildcards = [], string $message = '') : void
+    public static function assertStdoutWildcardAll($expects, \Closure $test, array $wildcards = [], string $message = ''): void
     {
         static::assertStringWildcardAll($expects, StdoutCapture::via($test), $wildcards, $message);
     }
@@ -666,7 +667,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      * @param  string          $message   (default: '')
      * @return void
      */
-    public static function assertStdoutNotWildcardAny($expects, \Closure $test, array $wildcards = [], string $message = '') : void
+    public static function assertStdoutNotWildcardAny($expects, \Closure $test, array $wildcards = [], string $message = ''): void
     {
         static::assertStringNotWildcardAny($expects, StdoutCapture::via($test), $wildcards, $message);
     }

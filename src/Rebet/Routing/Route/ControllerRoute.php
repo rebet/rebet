@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
@@ -52,7 +53,7 @@ class ControllerRoute extends ConventionalRoute
             $this->action    = new \ReflectionClass($controller);
             $this->namespace = $this->action->getNamespaceName();
         } catch (\ReflectionException $e) {
-            $this->action = new \ReflectionClass($this->namespace.'\\'.$controller);
+            $this->action = new \ReflectionClass($this->namespace . '\\' . $controller);
         }
     }
 
@@ -62,7 +63,7 @@ class ControllerRoute extends ConventionalRoute
      * @param  string                                             $request_uri
      * @return array{0: string, 1: string, 2: array<int, string>}
      */
-    protected function resolveRequestUri(string $request_uri) : array
+    protected function resolveRequestUri(string $request_uri): array
     {
         $request_uri        = Strings::ltrim($request_uri, $this->uri, 1);
         $requests           = explode('/', trim($request_uri, '/')) ;
@@ -83,7 +84,7 @@ class ControllerRoute extends ConventionalRoute
      * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
-    protected function analyze(Request $request) : array|null
+    protected function analyze(Request $request): array|null
     {
         $request_uri = Strings::ltrim($request->getRequestPath(), $this->prefix, 1);
         $uri         = rtrim($this->uri, '/');
@@ -100,7 +101,7 @@ class ControllerRoute extends ConventionalRoute
      * @param  bool   $with_namespace (default: true)
      * @return string
      */
-    public function getControllerName(bool $with_namespace = true) : string
+    public function getControllerName(bool $with_namespace = true): string
     {
         return $with_namespace ? $this->action->getName() : $this->action->getShortName() ;
     }

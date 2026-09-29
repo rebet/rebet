@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command\Crypto;
@@ -19,16 +20,16 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class CryptoEncryptCommand extends Command
 {
-    const NAME        = 'crypto:encrypt';
-    const DESCRIPTION = 'Encrypt the given text';
-    const ARGUMENTS   = [
+    public const NAME        = 'crypto:encrypt';
+    public const DESCRIPTION = 'Encrypt the given text';
+    public const ARGUMENTS   = [
         ['plain', InputArgument::REQUIRED, 'Text that you want to encrypt'],
     ];
-    const OPTIONS = [
-        ['secret-key'     , 'sk', InputOption::VALUE_OPTIONAL, 'Secret key'],
-        ['cipher'         , 'c', InputOption::VALUE_OPTIONAL, 'Cipher'],
+    public const OPTIONS = [
+        ['secret-key', 'sk', InputOption::VALUE_OPTIONAL, 'Secret key'],
+        ['cipher', 'c', InputOption::VALUE_OPTIONAL, 'Cipher'],
         ['hmac-secret-key', 'hsk', InputOption::VALUE_OPTIONAL, 'HMAC secret key'],
-        ['hmac-algorithm' , 'ha', InputOption::VALUE_OPTIONAL, 'HMAC algorithm'],
+        ['hmac-algorithm', 'ha', InputOption::VALUE_OPTIONAL, 'HMAC algorithm'],
     ];
 
     /**
@@ -41,9 +42,9 @@ class CryptoEncryptCommand extends Command
             $this->option('secret-key'),
             $this->option('cipher'),
             $this->option('hmac-secret-key'),
-            $this->option('hmac-algorithm')
+            $this->option('hmac-algorithm'),
         );
 
-        $this->writeln('<info>Encrypted:</info> '. Nets::encodeBase64Url($encrypted));
+        $this->writeln('<info>Encrypted:</info> ' . Nets::encodeBase64Url($encrypted));
     }
 }

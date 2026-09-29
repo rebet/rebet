@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Middleware\Routing;
@@ -25,7 +26,7 @@ class SetRequestInputDataToView
      * @param  \Closure $next
      * @return Response
      */
-    public function handle(Request $request, \Closure $next) : Response
+    public function handle(Request $request, \Closure $next): Response
     {
         View::share('input', Tinker::promise(function () use ($request) { return $request->input(); }));
         return $next($request);

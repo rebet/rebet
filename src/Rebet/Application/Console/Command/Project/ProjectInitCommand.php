@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command\Project;
@@ -23,28 +24,28 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class ProjectInitCommand extends Command
 {
-    const NAME        = 'project:init';
-    const DESCRIPTION = 'Initialize a new Rebet application';
-    const OPTIONS     = [
-        [['domain'        , 'd'  ], null, InputOption::VALUE_OPTIONAL, 'Application domain for local development. (default: localhost)'],
-        [['locale'        , 'l'  ], null, InputOption::VALUE_OPTIONAL, 'Default application locale. (default: the system locale, ie. locale_get_default())'],
-        [['timezone'      , 't'  ], null, InputOption::VALUE_OPTIONAL, 'Default application timezone. (default: the system timezone, ie. date_default_timezone_get(), falls back to UTC)'],
-        [['database'      , 'db' ], null, InputOption::VALUE_OPTIONAL, 'Database product. (choices: sqlite, mysql, mariadb, pgsql / default: mysql)'],
-        [['database-name' , 'dbn'], null, InputOption::VALUE_OPTIONAL, 'Database name for local development. (default: the application code name)'],
-        [['database-user' , 'dbu'], null, InputOption::VALUE_OPTIONAL, 'Database user for local development. (default: the application code name)'],
-        [['database-pass' , 'dbp'], null, InputOption::VALUE_OPTIONAL, 'Database password for local development. (default: P@ssw0rd)'],
-        [['auth'                 ], 'a' , InputOption::VALUE_NONE    , 'Use user auth (when do not use database then use ArrayProvider as read only authentication)'],
-        [['auth-name'     , 'an' ], null, InputOption::VALUE_OPTIONAL, 'Auth user name for local development (only when --auth is used without a database).'],
-        [['auth-email'    , 'ae' ], null, InputOption::VALUE_OPTIONAL, 'Auth user email for local development (only when --auth is used without a database).'],
-        [['auth-password' , 'ap' ], null, InputOption::VALUE_OPTIONAL, 'Auth user password for local development (only when --auth is used without a database).'],
-        [['view'          , 'v'  ], null, InputOption::VALUE_OPTIONAL, 'View template engine. (choices: twig, blade / default: twig)'],
-        [['cache'         , 'c'  ], null, InputOption::VALUE_OPTIONAL, 'Cache store product. (choices: apcu, file, memcached, redis, and also database when a database is used / default: memcached)'],
+    public const NAME        = 'project:init';
+    public const DESCRIPTION = 'Initialize a new Rebet application';
+    public const OPTIONS     = [
+        [['domain', 'd'  ], null, InputOption::VALUE_OPTIONAL, 'Application domain for local development. (default: localhost)'],
+        [['locale', 'l'  ], null, InputOption::VALUE_OPTIONAL, 'Default application locale. (default: the system locale, ie. locale_get_default())'],
+        [['timezone', 't'  ], null, InputOption::VALUE_OPTIONAL, 'Default application timezone. (default: the system timezone, ie. date_default_timezone_get(), falls back to UTC)'],
+        [['database', 'db' ], null, InputOption::VALUE_OPTIONAL, 'Database product. (choices: sqlite, mysql, mariadb, pgsql / default: mysql)'],
+        [['database-name', 'dbn'], null, InputOption::VALUE_OPTIONAL, 'Database name for local development. (default: the application code name)'],
+        [['database-user', 'dbu'], null, InputOption::VALUE_OPTIONAL, 'Database user for local development. (default: the application code name)'],
+        [['database-pass', 'dbp'], null, InputOption::VALUE_OPTIONAL, 'Database password for local development. (default: P@ssw0rd)'],
+        [['auth'                 ], 'a', InputOption::VALUE_NONE, 'Use user auth (when do not use database then use ArrayProvider as read only authentication)'],
+        [['auth-name', 'an' ], null, InputOption::VALUE_OPTIONAL, 'Auth user name for local development (only when --auth is used without a database).'],
+        [['auth-email', 'ae' ], null, InputOption::VALUE_OPTIONAL, 'Auth user email for local development (only when --auth is used without a database).'],
+        [['auth-password', 'ap' ], null, InputOption::VALUE_OPTIONAL, 'Auth user password for local development (only when --auth is used without a database).'],
+        [['view', 'v'  ], null, InputOption::VALUE_OPTIONAL, 'View template engine. (choices: twig, blade / default: twig)'],
+        [['cache', 'c'  ], null, InputOption::VALUE_OPTIONAL, 'Cache store product. (choices: apcu, file, memcached, redis, and also database when a database is used / default: memcached)'],
         [['memcached-user', 'mu' ], null, InputOption::VALUE_OPTIONAL, 'Memcached user for local development. (default: the application code name)'],
         [['memcached-pass', 'mp' ], null, InputOption::VALUE_OPTIONAL, 'Memcached password for local development. (default: P@ssw0rd)'],
-        [['session'       , 's'  ], null, InputOption::VALUE_OPTIONAL, 'Session storage. (choices: native, database (when a database is used), memcached, redis, mongodb / default: native)'],
-        [['http-port'     , 'hp' ], null, InputOption::VALUE_OPTIONAL, 'Nginx http port number for local development. (default: 80)'],
-        [['https-port'    , 'hsp'], null, InputOption::VALUE_OPTIONAL, 'Nginx https port number for local development. (default: 443)'],
-        [['dry-run'              ], null, InputOption::VALUE_NONE    , 'Show the settings and the list of files that would be generated, without writing anything.'],
+        [['session', 's'  ], null, InputOption::VALUE_OPTIONAL, 'Session storage. (choices: native, database (when a database is used), memcached, redis, mongodb / default: native)'],
+        [['http-port', 'hp' ], null, InputOption::VALUE_OPTIONAL, 'Nginx http port number for local development. (default: 80)'],
+        [['https-port', 'hsp'], null, InputOption::VALUE_OPTIONAL, 'Nginx https port number for local development. (default: 443)'],
+        [['dry-run'              ], null, InputOption::VALUE_NONE, 'Show the settings and the list of files that would be generated, without writing anything.'],
     ];
 
     /**
@@ -53,7 +54,7 @@ class ProjectInitCommand extends Command
      *
      * @var array<string, string>
      */
-    const SUPPORTED_DATABASES = [
+    public const SUPPORTED_DATABASES = [
         'sqlite'  => 'SQLite 3',
         'mysql'   => 'MySQL',
         'mariadb' => 'MariaDB',
@@ -66,7 +67,7 @@ class ProjectInitCommand extends Command
      *
      * @var array<string, string>
      */
-    const SUPPORTED_CACHES = [
+    public const SUPPORTED_CACHES = [
         'apcu'      => 'APCu',
         'database'  => 'Database',
         'file'      => 'File System',
@@ -80,7 +81,7 @@ class ProjectInitCommand extends Command
      *
      * @var array<string, string>
      */
-    const SUPPORTED_SESSIONS = [
+    public const SUPPORTED_SESSIONS = [
         'native'    => 'Native (File)',
         'database'  => 'Database',
         'memcached' => 'Memcached',
@@ -94,15 +95,15 @@ class ProjectInitCommand extends Command
      *
      * @var array<string, array<string, string>>
      */
-    const COMPOSER_REQUIRE = [
+    public const COMPOSER_REQUIRE = [
         'session' => [
             'mongodb' => 'mongodb/mongodb',
             'redis'   => 'predis/predis',
         ],
-        'cache' => [
+        'cache'   => [
             'redis' => 'predis/predis',
         ],
-        'view' => [
+        'view'    => [
             'twig'  => 'twig/twig',
             'blade' => 'illuminate/view',
         ],
@@ -114,7 +115,7 @@ class ProjectInitCommand extends Command
      *
      * @var array<string, array<int, string>>
      */
-    const COMPOSER_REQUIRE_DEV = [
+    public const COMPOSER_REQUIRE_DEV = [
         'always' => [
             "friendsofphp/php-cs-fixer",
             "phpstan/phpstan",
@@ -129,7 +130,7 @@ class ProjectInitCommand extends Command
      *
      * @var array<string, string>
      */
-    const STEPS = [
+    public const STEPS = [
         'stepDefaults' => 'Setup Your Application Default Configs',
         'stepDomain'   => 'Setup Your Application Domain for Local Development',
         'stepDatabase' => 'Setup Database For Local Development Configs',
@@ -218,7 +219,7 @@ class ProjectInitCommand extends Command
                 $this->writeln("  - {$path}");
             }
         }
-        $this->writeln('  '.count($generated).' files '.($dry_run ? 'would be generated.' : 'generated.'));
+        $this->writeln('  ' . count($generated) . ' files ' . ($dry_run ? 'would be generated.' : 'generated.'));
 
         $require     = $this->resolveComposerPackages(static::COMPOSER_REQUIRE, $configs);
         $require_dev = $this->resolveComposerPackages(static::COMPOSER_REQUIRE_DEV, $configs);
@@ -226,10 +227,10 @@ class ProjectInitCommand extends Command
             $this->writeln('');
             $this->writeln($dry_run ? 'Composer packages that would be required...' : 'Installing required Composer packages...');
             if (!empty($require)) {
-                $this->writeln('  - composer require '.implode(' ', $require));
+                $this->writeln('  - composer require ' . implode(' ', $require));
             }
             if (!empty($require_dev)) {
-                $this->writeln('  - composer require --dev '.implode(' ', $require_dev));
+                $this->writeln('  - composer require --dev ' . implode(' ', $require_dev));
             }
             if (!$dry_run) {
                 $this->composerRequire($cwd, $require, false);
@@ -262,7 +263,7 @@ class ProjectInitCommand extends Command
      * @return array<string, mixed>|null updated $configs, or null when the step failed (the
      *                                   failure reason has already been printed via $this->error())
      */
-    protected function runStep(int $step, int $total_step, string $label, string $method, array $configs) : array|null
+    protected function runStep(int $step, int $total_step, string $label, string $method, array $configs): array|null
     {
         $this->writeln('');
         $this->writeln("-------------------------------------------");
@@ -280,7 +281,7 @@ class ProjectInitCommand extends Command
      * @param  int                       $total_step
      * @return array<string, mixed>|null the confirmed $configs, or null when the user aborted
      */
-    protected function reviewConfigs(array $configs, int $total_step) : array|null
+    protected function reviewConfigs(array $configs, int $total_step): array|null
     {
         $methods = array_keys(static::STEPS);
         $labels  = array_values(static::STEPS);
@@ -291,7 +292,7 @@ class ProjectInitCommand extends Command
 
             $choices = ['yes' => 'Yes, proceed with these settings'];
             foreach ($labels as $i => $label) {
-                $choices[$i + 1] = ($i + 1).") Fix: {$label}";
+                $choices[$i + 1] = ($i + 1) . ") Fix: {$label}";
             }
             $choices['abort'] = 'Abort (cancel initialization)';
 
@@ -331,9 +332,9 @@ class ProjectInitCommand extends Command
      * @param  array<string, mixed> $configs
      * @return void
      */
-    protected function displayConfigs(array $configs) : void
+    protected function displayConfigs(array $configs): void
     {
-        $yn     = fn ($value) => $value ? 'Yes' : 'No';
+        $yn     = fn($value) => $value ? 'Yes' : 'No';
         $mask   = '********';
         $use_db = $configs['use_db'] ?? false;
         $labels = array_values(static::STEPS);
@@ -380,7 +381,7 @@ class ProjectInitCommand extends Command
 
         $rows = [];
         foreach ($groups as $i => $group) {
-            $rows[] = [new TableCell("<comment>".($i + 1).") {$labels[$i]}</comment>", ['colspan' => 2])];
+            $rows[] = [new TableCell("<comment>" . ($i + 1) . ") {$labels[$i]}</comment>", ['colspan' => 2])];
             foreach ($group as $setting) {
                 $indent = ($setting[2] ?? false) ? '    ' : '  ';
                 $rows[] = ["{$indent}{$setting[0]}", $setting[1]];
@@ -397,12 +398,12 @@ class ProjectInitCommand extends Command
      * @param  array<string, mixed> $configs
      * @return array<string, mixed>
      */
-    protected function stepDefaults(array $configs) : array
+    protected function stepDefaults(array $configs): array
     {
         $configs['code_name'] = $this->ask("* Application Code Name : ", null, true, Inflector::kebabize(basename($configs['cwd'])));
         // Same fallback as the library default (see Rebet\Application\App::defaultConfig()).
-        $configs['locale']   = $this->ask("* Default Locale        : [".locale_get_default()."] ", 'locale', true, locale_get_default());
-        $configs['timezone'] = $this->ask("* Default Timezone      : [".(date_default_timezone_get() ?: 'UTC')."] ", 'timezone', true, date_default_timezone_get() ?: 'UTC');
+        $configs['locale']   = $this->ask("* Default Locale        : [" . locale_get_default() . "] ", 'locale', true, locale_get_default());
+        $configs['timezone'] = $this->ask("* Default Timezone      : [" . (date_default_timezone_get() ?: 'UTC') . "] ", 'timezone', true, date_default_timezone_get() ?: 'UTC');
         return $configs;
     }
 
@@ -412,7 +413,7 @@ class ProjectInitCommand extends Command
      * @param  array<string, mixed> $configs
      * @return array<string, mixed>
      */
-    protected function stepDomain(array $configs) : array
+    protected function stepDomain(array $configs): array
     {
         $code_name = $configs['code_name'];
         $this->comment(" - If you already have production domain, then type it with prefix `local.` (ex local.{$code_name}.com)");
@@ -431,7 +432,7 @@ class ProjectInitCommand extends Command
      * @param  array<string, mixed>      $configs
      * @return array<string, mixed>|null null when an explicitly given --database value is invalid
      */
-    protected function stepDatabase(array $configs) : array|null
+    protected function stepDatabase(array $configs): array|null
     {
         $code_name = $configs['code_name'];
         unset($configs['db_user'], $configs['db_pass']);
@@ -469,7 +470,7 @@ class ProjectInitCommand extends Command
      * @return array<string, mixed>|null null when `--auth` is used without a database and without
      *                                   `--auth-name`/`--auth-email`/`--auth-password` under `--no-interaction`
      */
-    protected function stepAuth(array $configs) : array|null
+    protected function stepAuth(array $configs): array|null
     {
         unset($configs['auth_name'], $configs['auth_email'], $configs['auth_password']);
         $use_db = $configs['use_db'] ?? false;
@@ -504,7 +505,7 @@ class ProjectInitCommand extends Command
      * @param  array<string, mixed> $configs
      * @return array<string, mixed>
      */
-    protected function stepView(array $configs) : array
+    protected function stepView(array $configs): array
     {
         $configs['view'] = $this->choice("* View Engine : ", [
             'twig'  => 'Twig',
@@ -519,7 +520,7 @@ class ProjectInitCommand extends Command
      * @param  array<string, mixed>      $configs
      * @return array<string, mixed>|null null when an explicitly given --cache value is invalid
      */
-    protected function stepCache(array $configs) : array|null
+    protected function stepCache(array $configs): array|null
     {
         $code_name = $configs['code_name'];
         $use_db    = $configs['use_db'] ?? false;
@@ -557,7 +558,7 @@ class ProjectInitCommand extends Command
      * @param  array<string, mixed>      $configs
      * @return array<string, mixed>|null null when an explicitly given --session value is invalid
      */
-    protected function stepSession(array $configs) : array|null
+    protected function stepSession(array $configs): array|null
     {
         $use_db = $configs['use_db'] ?? false;
 
@@ -580,7 +581,7 @@ class ProjectInitCommand extends Command
      * @param  array<string, mixed> $configs
      * @return array<string, mixed>
      */
-    protected function stepNginx(array $configs) : array
+    protected function stepNginx(array $configs): array
     {
         $configs['http_port']  = $this->ask("* HTTP  Port : [80] ", 'http-port', true, '80');
         $configs['https_port'] = $this->ask("* HTTPS Port : [443] ", 'https-port', true, '443');
@@ -600,7 +601,7 @@ class ProjectInitCommand extends Command
      * @param  string $cwd
      * @return bool
      */
-    protected function checkEnvironment(string $cwd) : bool
+    protected function checkEnvironment(string $cwd): bool
     {
         if (!is_dir($this->skeltons_dir)) {
             $this->error("Rebet skeltons directory `{$this->skeltons_dir}` not exists.");
@@ -610,14 +611,14 @@ class ProjectInitCommand extends Command
         $composer_json = Path::normalize("{$cwd}/composer.json");
         if (!file_exists($composer_json)) {
             $this->error("This directory does not seem to be a Composer project (`{$composer_json}` not found).");
-            $this->error('`'.static::NAME.'` must be run from the root of an existing Composer project.');
+            $this->error('`' . static::NAME . '` must be run from the root of an existing Composer project.');
             return false;
         }
 
         $existing = $this->existingSkeltonEntries($cwd);
         if (!empty($existing)) {
-            $this->error("This directory seems to already be initialized (`".implode('`, `', $existing)."` already exists).");
-            $this->error('`'.static::NAME.'` is only for setting up a brand-new Rebet application, so nothing was done.');
+            $this->error("This directory seems to already be initialized (`" . implode('`, `', $existing) . "` already exists).");
+            $this->error('`' . static::NAME . '` is only for setting up a brand-new Rebet application, so nothing was done.');
             return false;
         }
 
@@ -638,13 +639,13 @@ class ProjectInitCommand extends Command
      * @param  array<string, string> $choices
      * @return bool
      */
-    protected function requireValidChoice(string $option_name, $value, array $choices) : bool
+    protected function requireValidChoice(string $option_name, $value, array $choices): bool
     {
         if (is_string($value) && array_key_exists($value, $choices)) {
             return true;
         }
 
-        $this->error("Invalid value `".$this->option($option_name)."` given via `--{$option_name}`. Choices are: `".implode('`, `', array_keys($choices))."`.");
+        $this->error("Invalid value `" . $this->option($option_name) . "` given via `--{$option_name}`. Choices are: `" . implode('`, `', array_keys($choices)) . "`.");
         return false;
     }
 
@@ -664,7 +665,7 @@ class ProjectInitCommand extends Command
      * @param  string   $cwd
      * @return string[] absolute paths that already exist
      */
-    protected function existingSkeltonEntries(string $cwd) : array
+    protected function existingSkeltonEntries(string $cwd): array
     {
         $existing = [];
         foreach (scandir($this->skeltons_dir) as $item) {
@@ -692,7 +693,7 @@ class ProjectInitCommand extends Command
      * @param  string $dir
      * @return bool
      */
-    protected function containsOnlyVendorDir(string $dir) : bool
+    protected function containsOnlyVendorDir(string $dir): bool
     {
         $entries = array_values(array_diff(scandir($dir), ['.', '..']));
         return $entries === ['vendor'];
@@ -722,10 +723,10 @@ class ProjectInitCommand extends Command
      * @param  string[]             $exclude  absolute source paths to skip (default: [])
      * @return string[]             list of generated (or, when $dry_run, would-be-generated) file paths
      */
-    protected function generate(string $src_dir, string $dest_dir, array $vars, bool $dry_run = false, array $exclude = []) : array
+    protected function generate(string $src_dir, string $dest_dir, array $vars, bool $dry_run = false, array $exclude = []): array
     {
         if (!$dry_run && !is_dir($dest_dir)) {
-            mkdir($dest_dir, 0755, true);
+            mkdir($dest_dir, 0o755, true);
         }
 
         $generated = [];
@@ -745,11 +746,11 @@ class ProjectInitCommand extends Command
             }
 
             $is_template = Letterpress::isTemplateFile($item);
-            $dest        = Path::normalize($dest_dir.'/'.($is_template ? Letterpress::stripMarker($item) : $item));
+            $dest        = Path::normalize($dest_dir . '/' . ($is_template ? Letterpress::stripMarker($item) : $item));
             if (!$dry_run) {
                 $content = file_get_contents($src);
                 file_put_contents($dest, $is_template ? Letterpress::of($content)->with($vars)->render() : $content);
-                chmod($dest, fileperms($src) & 0777);
+                chmod($dest, fileperms($src) & 0o777);
             }
             $generated[] = $dest;
         }
@@ -765,14 +766,14 @@ class ProjectInitCommand extends Command
      * @param  array<string, mixed> $configs
      * @return string[]             absolute source paths to exclude
      */
-    protected function excludedDatabaseDirs(array $configs) : array
+    protected function excludedDatabaseDirs(array $configs): array
     {
         $selected = ($configs['use_db'] ?? false) ? ($configs['database'] ?? null) : null;
-        $excluded = array_filter(array_keys(static::SUPPORTED_DATABASES), fn ($driver) => $driver !== $selected);
+        $excluded = array_filter(array_keys(static::SUPPORTED_DATABASES), fn($driver) => $driver !== $selected);
 
         return array_values(array_map(
-            fn ($driver) => Path::normalize("{$this->skeltons_dir}/.devcontainer/docker/{$driver}"),
-            $excluded
+            fn($driver) => Path::normalize("{$this->skeltons_dir}/.devcontainer/docker/{$driver}"),
+            $excluded,
         ));
     }
 
@@ -791,7 +792,7 @@ class ProjectInitCommand extends Command
      * @param  array<string, mixed>                     $configs
      * @return string[]                                 unique package names
      */
-    protected function resolveComposerPackages(array $rules, array $configs) : array
+    protected function resolveComposerPackages(array $rules, array $configs): array
     {
         $packages = [];
         foreach ($rules as $group => $mapping) {
@@ -818,15 +819,15 @@ class ProjectInitCommand extends Command
      * @param  bool     $dev
      * @return bool     true on success (or when $packages is empty), false if the command failed
      */
-    protected function composerRequire(string $cwd, array $packages, bool $dev) : bool
+    protected function composerRequire(string $cwd, array $packages, bool $dev): bool
     {
         if (empty($packages)) {
             return true;
         }
 
-        $command = 'composer require '.($dev ? '--dev ' : '')
-            .implode(' ', array_map('escapeshellarg', $packages))
-            .' --working-dir='.escapeshellarg($cwd);
+        $command = 'composer require ' . ($dev ? '--dev ' : '')
+            . implode(' ', array_map('escapeshellarg', $packages))
+            . ' --working-dir=' . escapeshellarg($cwd);
 
         $this->writeln("> {$command}");
 
@@ -842,7 +843,7 @@ class ProjectInitCommand extends Command
 
         passthru($command, $exit_code);
         if ($exit_code !== 0) {
-            $this->error('`composer require'.($dev ? ' --dev' : '')."` failed (exit code {$exit_code}).");
+            $this->error('`composer require' . ($dev ? ' --dev' : '') . "` failed (exit code {$exit_code}).");
             return false;
         }
 

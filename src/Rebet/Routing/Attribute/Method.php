@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Attribute;
@@ -40,7 +41,7 @@ final class Method
      * @param  string  $method
      * @return boolean
      */
-    public function allow(string $method) : bool
+    public function allow(string $method): bool
     {
         $method = strtoupper($method);
         return empty($this->allows) ? true : in_array($method, $this->allows) ;
@@ -53,7 +54,7 @@ final class Method
      * @param  string  $method
      * @return boolean
      */
-    public function reject(string $method) : bool
+    public function reject(string $method): bool
     {
         return !$this->allow($method);
     }

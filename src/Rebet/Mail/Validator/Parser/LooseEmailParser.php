@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Mail\Validator\Parser;
@@ -37,7 +38,7 @@ class LooseEmailParser extends EmailParser
     /**
      * {@inheritDoc}
      */
-    protected function parseLeftFromAt() : Result
+    protected function parseLeftFromAt(): Result
     {
         $localPartParser = new LooseLocalPart($this->lexer, $this->ignores);
         $localPartResult = $localPartParser->parse();
@@ -52,7 +53,7 @@ class LooseEmailParser extends EmailParser
      *
      * @return string[] $ignores name that subclass of Reason.
      */
-    public function ignores() : array
+    public function ignores(): array
     {
         return $this->ignores;
     }

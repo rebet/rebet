@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth\Provider\Entity;
@@ -47,7 +48,7 @@ class RememberToken extends Entity
      *
      * @return int
      */
-    public static function deleteExpired() : int
+    public static function deleteExpired(): int
     {
         return static::deleteBy(['expires_at_before' => DateTime::now()]);
     }
@@ -59,7 +60,7 @@ class RememberToken extends Entity
      * @param  mixed  $remember_id
      * @return int
      */
-    public static function deleteByUser(string $provider, $remember_id) : int
+    public static function deleteByUser(string $provider, $remember_id): int
     {
         return static::deleteBy(['provider' => $provider, 'remember_id' => $remember_id]);
     }

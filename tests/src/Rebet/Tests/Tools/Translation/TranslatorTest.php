@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Translation;
 
 use Rebet\Application\App;
@@ -8,7 +9,7 @@ use Rebet\Tools\Translation\Translator;
 
 class TranslatorTest extends RebetTestCase
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
         App::setLocale('ja');

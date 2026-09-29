@@ -16,7 +16,7 @@ use Rebet\Application\Http\WebKernel;
  */
 class AppWebKernel extends WebKernel
 {
-    public function bootstrap() : void
+    public function bootstrap(): void
     {
         parent::bootstrap();
     }
@@ -24,7 +24,7 @@ class AppWebKernel extends WebKernel
     /**
      * {@inheritDoc}
      */
-    protected function bootstrappers() : array
+    protected function bootstrappers(): array
     {
         return [
             LoadEnvironmentVariables::class,
@@ -37,7 +37,7 @@ class AppWebKernel extends WebKernel
         ];
     }
 
-    public function exceptionHandler() : AppWebExceptionHandler
+    public function exceptionHandler(): AppWebExceptionHandler
     {
         return new AppWebExceptionHandler();
     }

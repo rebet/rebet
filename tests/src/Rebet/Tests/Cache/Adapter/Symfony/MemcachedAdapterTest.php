@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Cache\Adapter\Symfony;
 
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
@@ -22,7 +23,7 @@ use Rebet\Tests\RebetTestCase;
 #[RequiresPhpExtension('memcached')]
 class MemcachedAdapterTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         if (!MemcachedAdapter::isSupported()) {
             $this->markTestSkipped('Memcached is not enabled.');

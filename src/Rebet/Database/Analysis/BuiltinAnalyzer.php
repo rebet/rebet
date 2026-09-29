@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Analysis;
@@ -44,7 +45,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
-    public function isUnion() : bool
+    public function isUnion(): bool
     {
         return isset($this->parser->parsed['UNION ALL']) || isset($this->parser->parsed['UNION']);
     }
@@ -52,7 +53,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
-    public function hasWhere() : bool
+    public function hasWhere(): bool
     {
         return isset($this->parser->parsed['WHERE']);
     }
@@ -60,7 +61,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
-    public function hasHaving() : bool
+    public function hasHaving(): bool
     {
         return isset($this->parser->parsed['HAVING']);
     }
@@ -68,7 +69,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
-    public function hasGroupBy() : bool
+    public function hasGroupBy(): bool
     {
         return isset($this->parser->parsed['GROUP']);
     }
@@ -76,7 +77,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
-    public function hasOrderBy() : bool
+    public function hasOrderBy(): bool
     {
         return isset($this->parser->parsed['ORDER']);
     }
@@ -84,7 +85,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
-    public function extractAliasSelectColumn(string $alias) : string
+    public function extractAliasSelectColumn(string $alias): string
     {
         if (isset($this->cache[$alias])) {
             return $this->cache[$alias];
@@ -111,14 +112,14 @@ class BuiltinAnalyzer implements Analyzer
      * @param  array<mixed> $parsed
      * @return string
      */
-    protected function build(array $parsed) : string
+    protected function build(array $parsed): string
     {
         $sql = "";
         $sql .= (new class extends ColumnReferenceBuilder {
             /**
              * @param array<mixed> $parsed
              */
-            protected function buildAlias($parsed) : string
+            protected function buildAlias($parsed): string
             {
                 return '';
             }
@@ -127,7 +128,7 @@ class BuiltinAnalyzer implements Analyzer
             /**
              * @param array<mixed> $parsed
              */
-            protected function buildAlias($parsed) : string
+            protected function buildAlias($parsed): string
             {
                 return '';
             }
@@ -136,7 +137,7 @@ class BuiltinAnalyzer implements Analyzer
             /**
              * @param array<mixed> $parsed
              */
-            protected function buildAlias($parsed) : string
+            protected function buildAlias($parsed): string
             {
                 return '';
             }
@@ -145,7 +146,7 @@ class BuiltinAnalyzer implements Analyzer
             /**
              * @param array<mixed> $parsed
              */
-            protected function buildAlias($parsed) : string
+            protected function buildAlias($parsed): string
             {
                 return '';
             }
@@ -154,7 +155,7 @@ class BuiltinAnalyzer implements Analyzer
             /**
              * @param array<mixed> $parsed
              */
-            protected function buildAlias($parsed) : string
+            protected function buildAlias($parsed): string
             {
                 return '';
             }

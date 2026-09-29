@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -31,9 +32,7 @@ class Namespaces
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Set new alias.
@@ -42,7 +41,7 @@ class Namespaces
      * @param  string $actual can contaiins another alias.
      * @return void
      */
-    public static function setAlias(string $alias, string $actual) : void
+    public static function setAlias(string $alias, string $actual): void
     {
         static::setConfig(['aliases' => [$alias => $actual]]);
     }
@@ -68,7 +67,7 @@ class Namespaces
      * @param  string $class
      * @return string
      */
-    private static function _resolve(string $class) : string
+    private static function _resolve(string $class): string
     {
         if (!Strings::startsWith($class, '@')) {
             return Strings::ltrim($class, '\\', 1);

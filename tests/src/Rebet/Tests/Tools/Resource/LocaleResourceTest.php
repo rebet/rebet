@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Resource;
 
 use Rebet\Application\App;
@@ -9,7 +10,7 @@ use TestApp\Enum\Gender;
 
 class LocaleResourceTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
     }
@@ -30,7 +31,7 @@ class LocaleResourceTest extends RebetTestCase
                     2 => '女性',
                 ],
             ],
-            Kind::class => [
+            Kind::class   => [
                 'label' => [
                     1 => '整合性チェック',
                     2 => '依存性チェック',
@@ -60,7 +61,7 @@ class LocaleResourceTest extends RebetTestCase
                     2 => '女性',
                 ],
             ],
-            Kind::class => [
+            Kind::class   => [
                 'label' => [
                     1 => '整合性チェック',
                     2 => '依存性チェック',
@@ -71,15 +72,15 @@ class LocaleResourceTest extends RebetTestCase
 
         $this->assertSame(
             ['locale' => 'en_US'],
-            LocaleResource::load(App::structure()->resources('/adhoc/Tools/Resource/LocaleResource'), 'en_US', 'locale')
+            LocaleResource::load(App::structure()->resources('/adhoc/Tools/Resource/LocaleResource'), 'en_US', 'locale'),
         );
         $this->assertSame(
             ['locale' => 'en'],
-            LocaleResource::load(App::structure()->resources('/adhoc/Tools/Resource/LocaleResource'), 'en_NZ', 'locale')
+            LocaleResource::load(App::structure()->resources('/adhoc/Tools/Resource/LocaleResource'), 'en_NZ', 'locale'),
         );
         $this->assertSame(
             ['locale' => 'en'],
-            LocaleResource::load(App::structure()->resources('/adhoc/Tools/Resource/LocaleResource'), 'en', 'locale')
+            LocaleResource::load(App::structure()->resources('/adhoc/Tools/Resource/LocaleResource'), 'en', 'locale'),
         );
     }
 }

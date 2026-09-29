@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Mail\Transport;
@@ -29,6 +30,6 @@ class RoundRobinTransport extends SymfonyRoundRobinTransport
         int $retry_period = 60,
         LoggerInterface|null $logger = new NullLogger(),
     ) {
-        parent::__construct(array_map(fn ($transport) => Reflector::instantiate($transport), $transports), $retry_period, $logger);
+        parent::__construct(array_map(fn($transport) => Reflector::instantiate($transport), $transports), $retry_period, $logger);
     }
 }

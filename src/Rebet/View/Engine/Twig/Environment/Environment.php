@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\View\Engine\Twig\Environment;
@@ -31,7 +32,7 @@ class Environment extends TwigEnvironment
      * @param  string $code
      * @return void
      */
-    public function raw(string $tag, string $code) : void
+    public function raw(string $tag, string $code): void
     {
         $this->addTokenParser(new RawTokenParser($tag, $code));
     }
@@ -50,7 +51,7 @@ class Environment extends TwigEnvironment
      * @param  bool                                              $can_omit_first_arg (default: false)
      * @return void
      */
-    public function embed($name, string|null $verbs, array|null $separators, string $open, Processor $processor, string $close, array $binds = [], bool $can_omit_first_arg = false) : void
+    public function embed($name, string|null $verbs, array|null $separators, string $open, Processor $processor, string $close, array $binds = [], bool $can_omit_first_arg = false): void
     {
         $this->addTokenParser(new EmbedTokenParser($name, $verbs, $separators, $open, $processor, $close, $binds, $can_omit_first_arg));
     }

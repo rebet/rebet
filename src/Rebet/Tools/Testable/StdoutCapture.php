@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Testable;
@@ -16,7 +17,7 @@ class StdoutCapture extends AbstractCapture
     /**
      * {@inheritDoc}
      */
-    public static function start() : void
+    public static function start(): void
     {
         \ob_start();
         \ob_clean();
@@ -26,19 +27,19 @@ class StdoutCapture extends AbstractCapture
     /**
      * {@inheritDoc}
      */
-    public static function stop() : string
+    public static function stop(): string
     {
-        return parent::stop().\ob_get_clean();
+        return parent::stop() . \ob_get_clean();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function filter($in, $out, &$consumed, bool $closing) : int
+    public function filter($in, $out, &$consumed, bool $closing): int
     {
         while ($bucket = stream_bucket_make_writeable($in)) {
             if (self::$is_capture) {
-                self::$message .= \ob_get_clean().$bucket->data;
+                self::$message .= \ob_get_clean() . $bucket->data;
                 \ob_start();
             } else {
                 $consumed += $bucket->datalen;

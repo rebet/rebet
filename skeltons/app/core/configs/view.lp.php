@@ -40,7 +40,7 @@ return [
     | This section defines settings for view rendering.
     | You may change these defaults as required.
     */
-    View::class => [
+    View::class  => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Rendering Engine
@@ -92,8 +92,8 @@ return [
         | resolved from, and 'cache_path' defines the directory the compiled view cache is stored in
         | (it will be created automatically if it does not exist).
         */
-        'view_path'  => [App::path('/core/views')],
-        'cache_path' => App::path('/var/cache/views/blade'),
+        'view_path'   => [App::path('/core/views')],
+        'cache_path'  => App::path('/var/cache/views/blade'),
 
 
         /*
@@ -103,7 +103,7 @@ return [
         | Here you may define callables `function(BladeCompiler $compiler) : void` that customize
         | the Blade compiler (ex: registering your own `@directive`).
         */
-        'customizers' => [BladeTagCustomizer::class.'::customize'],
+        'customizers' => [BladeTagCustomizer::class . '::customize'],
     ],
 
 
@@ -114,7 +114,7 @@ return [
     | This section defines settings for Twig view engine.
     | You may change these defaults as required.
     */
-    Twig::class => [
+    Twig::class  => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Template Directory
@@ -134,7 +134,7 @@ return [
         |
         | @see https://twig.symfony.com/doc/3.x/api.html#environment-options
         */
-        'options' => [],
+        'options'      => [],
 
 
         /*
@@ -144,7 +144,7 @@ return [
         | Here you may define callables `function(Environment $twig) : void` that customize the Twig
         | environment (ex: registering your own tags/filters/functions).
         */
-        'customizers' => [TwigTagCustomizer::class.'::customize'],
+        'customizers'  => [TwigTagCustomizer::class . '::customize'],
 
 
         /*
@@ -154,6 +154,6 @@ return [
         | This option defines the file extension appended to a view name when resolving Twig
         | template files.
         */
-        'file_suffix' => '.twig',
+        'file_suffix'  => '.twig',
     ],
 ];

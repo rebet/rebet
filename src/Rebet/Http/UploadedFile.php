@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http;
@@ -54,7 +55,7 @@ class UploadedFile extends SymfonyUploadedFile
      *
      * @return int|null
      */
-    public function getWidth() : int|null
+    public function getWidth(): int|null
     {
         return $this->width;
     }
@@ -64,7 +65,7 @@ class UploadedFile extends SymfonyUploadedFile
      *
      * @return int|null
      */
-    public function getHeight() : int|null
+    public function getHeight(): int|null
     {
         return $this->height;
     }
@@ -74,7 +75,7 @@ class UploadedFile extends SymfonyUploadedFile
      *
      * @return boolean
      */
-    public function hasArea() : bool
+    public function hasArea(): bool
     {
         return $this->width !== null && $this->height !== null;
     }
@@ -85,7 +86,7 @@ class UploadedFile extends SymfonyUploadedFile
      * @param  mixed     $value
      * @return self|null
      */
-    public static function valueOf($value) : self|null
+    public static function valueOf($value): self|null
     {
         switch (true) {
             case $value === null:
@@ -97,14 +98,14 @@ class UploadedFile extends SymfonyUploadedFile
                     $value->getPathname(),
                     $value->getClientOriginalName(),
                     $value->getClientMimeType(),
-                    $value->getError()
+                    $value->getError(),
                 );
             case is_array($value):
                 return new static(
                     $value['tmp_name'],
                     $value['name'],
                     $value['type'],
-                    $value['error']
+                    $value['error'],
                 );
         }
         return null;
@@ -124,7 +125,7 @@ class UploadedFile extends SymfonyUploadedFile
      * @param  string|null                 $disk    name (default: null for private disk)
      * @return string                      of saved path
      */
-    public function store(string $path, $options = [], string|null $disk = null) : string
+    public function store(string $path, $options = [], string|null $disk = null): string
     {
         $options    = is_string($options) ? ['visibility' => $options] : (array) $options ;
         $filesystem = $disk ? Storage::disk($disk) : Storage::private() ;
@@ -144,7 +145,7 @@ class UploadedFile extends SymfonyUploadedFile
      * @see MimeTypes
      * @see getMimeType()
      */
-    public function guessExtension() : string|null
+    public function guessExtension(): string|null
     {
         $candidate_extensions = MimeTypes::getDefault()->getExtensions($this->getMimeType());
         if (count($candidate_extensions) === 1) {

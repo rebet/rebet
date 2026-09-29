@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database;
@@ -119,7 +120,7 @@ class Database
      *
      * @return string
      */
-    public function name() : string
+    public function name(): string
     {
         return $this->name;
     }
@@ -129,7 +130,7 @@ class Database
      *
      * @return Driver
      */
-    public function driver() : Driver
+    public function driver(): Driver
     {
         return $this->driver;
     }
@@ -140,7 +141,7 @@ class Database
      *
      * @return string
      */
-    public function driverName() : string
+    public function driverName(): string
     {
         return $this->driver->name();
     }
@@ -151,7 +152,7 @@ class Database
      *
      * @return string
      */
-    public function serverVersion() : string
+    public function serverVersion(): string
     {
         return $this->driver->serverVersion();
     }
@@ -162,7 +163,7 @@ class Database
      *
      * @return string
      */
-    public function clientVersion() : string
+    public function clientVersion(): string
     {
         return $this->driver->clientVersion();
     }
@@ -172,7 +173,7 @@ class Database
      *
      * @return \PDO
      */
-    public function pdo() : \PDO
+    public function pdo(): \PDO
     {
         return $this->driver->pdo();
     }
@@ -182,7 +183,7 @@ class Database
      *
      * @return Compiler
      */
-    public function compiler() : Compiler
+    public function compiler(): Compiler
     {
         return $this->compiler;
     }
@@ -193,7 +194,7 @@ class Database
      * @param  string   $sql
      * @return Analyzer
      */
-    public function analyzer(string $sql) : Analyzer
+    public function analyzer(string $sql): Analyzer
     {
         return $this->driver->analyzer($sql);
     }
@@ -203,7 +204,7 @@ class Database
      *
      * @return Ransacker
      */
-    public function ransacker() : Ransacker
+    public function ransacker(): Ransacker
     {
         return $this->ransacker;
     }
@@ -214,7 +215,7 @@ class Database
      * @param  bool $debug (default: true)
      * @return self
      */
-    public function debug(bool $debug = true) : self
+    public function debug(bool $debug = true): self
     {
         $this->debug = $debug;
         return $this;
@@ -225,7 +226,7 @@ class Database
      *
      * @return bool
      */
-    public function isDebug() : bool
+    public function isDebug(): bool
     {
         return $this->debug;
     }
@@ -237,7 +238,7 @@ class Database
      * @param  array<int|string, mixed> $params (default: [])
      * @return void
      */
-    public function log(string $sql, array $params = []) : void
+    public function log(string $sql, array $params = []): void
     {
         if ($this->debug) {
             call_user_func($this->log_handler, $this, $this->sql($sql, $params));
@@ -252,9 +253,9 @@ class Database
      * @param  array<int|string, mixed>                                              $params (default: [])
      * @return DatabaseException
      */
-    public function exception($error, string|null $sql = null, array $params = []) : DatabaseException
+    public function exception($error, string|null $sql = null, array $params = []): DatabaseException
     {
-        return DatabaseException::from('db:'.$this->name(), $error, $sql, $params)->db($this);
+        return DatabaseException::from('db:' . $this->name(), $error, $sql, $params)->db($this);
     }
 
     /**
@@ -263,7 +264,7 @@ class Database
      * @return self
      * @throws DatabaseException
      */
-    public function begin() : self
+    public function begin(): self
     {
         $this->log($this->driver->begin());
         return $this;
@@ -276,7 +277,7 @@ class Database
      * @return self
      * @throws DatabaseException|\PDOException
      */
-    public function savepoint(string $name) : self
+    public function savepoint(string $name): self
     {
         $this->log($this->driver->savepoint($name));
         return $this;
@@ -290,7 +291,7 @@ class Database
      * @return self
      * @throws DatabaseException|\PDOException
      */
-    public function rollback(string|null $savepoint = null, bool $quiet = true) : self
+    public function rollback(string|null $savepoint = null, bool $quiet = true): self
     {
         $this->log($this->driver->rollback($savepoint, $quiet) ?? "-- Rollback failed, but continue processing by quiet mode.");
         return $this;
@@ -302,7 +303,7 @@ class Database
      * @return self
      * @throws DatabaseException
      */
-    public function commit() : self
+    public function commit(): self
     {
         $this->log($this->driver->commit());
         return $this;
@@ -316,7 +317,7 @@ class Database
      * @return self
      * @throws \Throwable
      */
-    public function transaction(\Closure $callback) : self
+    public function transaction(\Closure $callback): self
     {
         try {
             $this->begin();
@@ -338,7 +339,7 @@ class Database
      * @param  bool   $with_vacuum if needed for sqlite (default: true)
      * @return void
      */
-    public function truncate(string $table_name, bool $with_vacuum = true) : void
+    public function truncate(string $table_name, bool $with_vacuum = true): void
     {
         $this->log($this->driver->truncate($table_name, $with_vacuum));
     }
@@ -349,7 +350,7 @@ class Database
      * @param  string|null $name (default: null)
      * @return string
      */
-    public function lastInsertId(string|null $name = null) : string
+    public function lastInsertId(string|null $name = null): string
     {
         return $this->driver->lastInsertId($name);
     }
@@ -360,7 +361,7 @@ class Database
      * @param  string    $sql
      * @return Statement
      */
-    protected function prepare(string $sql) : Statement
+    protected function prepare(string $sql): Statement
     {
         return new Statement($this, $this->driver->prepare($sql));
     }
@@ -377,7 +378,7 @@ class Database
      * @param  Cursor|null                        $cursor     (default: null)
      * @return Statement
      */
-    protected function _query(string $sql, $order_by = null, $params = [], int|null $limit = null, bool $for_update = false, Pager|null $pager = null, Cursor|null $cursor = null) : Statement
+    protected function _query(string $sql, $order_by = null, $params = [], int|null $limit = null, bool $for_update = false, Pager|null $pager = null, Cursor|null $cursor = null): Statement
     {
         $query = $this->compiler->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
         $query = $limit && $pager === null ? $query->appendLimitOffset($limit) : $query ;
@@ -392,7 +393,7 @@ class Database
      * @param  array<int|string, mixed> $params (default: [])
      * @return Statement
      */
-    public function query(string $sql, $params = []) : Statement
+    public function query(string $sql, $params = []): Statement
     {
         return $this->_query($sql, null, $params);
     }
@@ -404,7 +405,7 @@ class Database
      * @param  array<int|string, mixed> $params (default: [])
      * @return int
      */
-    public function execute(string $sql, $params = []) : int
+    public function execute(string $sql, $params = []): int
     {
         return $this->query($sql, $params)->affectedRows();
     }
@@ -420,7 +421,7 @@ class Database
      * @param  string                             $class      (default: 'stdClass')
      * @return ResultSet                          of given class instance
      */
-    public function select(string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false, string $class = 'stdClass') : ResultSet
+    public function select(string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false, string $class = 'stdClass'): ResultSet
     {
         return $this->_query($sql, $order_by, $params, $limit, $for_update)->all($class);
     }
@@ -437,7 +438,7 @@ class Database
      * @param  string                        $optimised_count_sql only have one count total column (default: null)
      * @return Paginator
      */
-    public function paginate(string $sql, $order_by, Pager $pager, array $params = [], bool $for_update = false, string $class = 'stdClass', string|null $optimised_count_sql = null) : Paginator
+    public function paginate(string $sql, $order_by, Pager $pager, array $params = [], bool $for_update = false, string $class = 'stdClass', string|null $optimised_count_sql = null): Paginator
     {
         $cursor   = $pager->useCursor() ? Cursor::load($pager->cursor()) : null ;
         $total    = $pager->needTotal() ? ($optimised_count_sql ? $this->get(0, $optimised_count_sql, $params) : $this->count($sql, $params)) : null ;
@@ -470,7 +471,7 @@ class Database
      * @param  string|null                        $type     name of convert to type (default: null)
      * @return ResultSet
      */
-    public function extract($column, string $sql, $order_by = null, array $params = [], string|null $type = null) : ResultSet
+    public function extract($column, string $sql, $order_by = null, array $params = [], string|null $type = null): ResultSet
     {
         return $this->_query($sql, $order_by, $params)->allOf($column, $type);
     }
@@ -497,7 +498,7 @@ class Database
      * @param  array<int|string, mixed> $params (default: null)
      * @return boolean
      */
-    public function exists(string $sql, array $params = []) : bool
+    public function exists(string $sql, array $params = []): bool
     {
         return $this->query($this->driver->appendLimitOffset($sql, 1), $params)->first() !== null;
     }
@@ -509,7 +510,7 @@ class Database
      * @param  array<int|string, mixed> $params (default: null)
      * @return int
      */
-    public function count(string $sql, array $params = []) : int
+    public function count(string $sql, array $params = []): int
     {
         return $this->get('count', "SELECT COUNT(*) AS count FROM ({$sql}) AS T", null, $params, 'int');
     }
@@ -525,7 +526,7 @@ class Database
      * @param  bool                               $for_update (default: false)
      * @return void
      */
-    public function each(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false) : void
+    public function each(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false): void
     {
         $this->_query($sql, $order_by, $params, $limit, $for_update)->each($callback);
     }
@@ -541,7 +542,7 @@ class Database
      * @param  bool                               $for_update (default: false)
      * @return ResultSet
      */
-    public function filter(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false) : ResultSet
+    public function filter(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false): ResultSet
     {
         return $this->_query($sql, $order_by, $params, $limit, $for_update)->filter($callback);
     }
@@ -557,7 +558,7 @@ class Database
      * @param  bool                               $for_update (default: false)
      * @return ResultSet
      */
-    public function map(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false) : ResultSet
+    public function map(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false): ResultSet
     {
         return $this->_query($sql, $order_by, $params, $limit, $for_update)->map($callback);
     }
@@ -588,7 +589,7 @@ class Database
      * @uses Event::dispatch Creating when before data create.
      * @uses Event::dispatch Created when after data created.
      */
-    public function create(Entity &$entity, DateTime|null $now = null) : bool
+    public function create(Entity &$entity, DateTime|null $now = null): bool
     {
         Event::dispatch(new Creating($this, $entity));
 
@@ -619,7 +620,7 @@ class Database
             }
 
             $table_name    = $this->driver->quoteIdentifier($entity::tabelName());
-            $affected_rows = $this->execute("INSERT INTO {$table_name} (".join(',', $columns).") VALUES (:values)", ['values' => $values]);
+            $affected_rows = $this->execute("INSERT INTO {$table_name} (" . join(',', $columns) . ") VALUES (:values)", ['values' => $values]);
             if ($affected_rows !== 1) {
                 return false;
             }
@@ -648,10 +649,10 @@ class Database
      * @uses Event::dispatch Updating when before data update.
      * @uses Event::dispatch Updated when after data updated.
      */
-    public function update(Entity &$entity, DateTime|null $now = null) : bool
+    public function update(Entity &$entity, DateTime|null $now = null): bool
     {
         $old = $entity->origin();
-        $now = $now ?? DateTime::now();
+        $now ??= DateTime::now();
         Event::dispatch(new Updating($this, $old, $entity));
 
         $condition = $entity->buildPrimaryWhere($this);
@@ -665,14 +666,14 @@ class Database
         }
 
         if ($entity::UPDATED_AT && !isset($params[$entity::UPDATED_AT])) {
-            $sets[]                        = $this->driver->quoteIdentifier($entity::UPDATED_AT).' = :'.$entity::UPDATED_AT;
+            $sets[]                        = $this->driver->quoteIdentifier($entity::UPDATED_AT) . ' = :' . $entity::UPDATED_AT;
             $params[$entity::UPDATED_AT]   = $now;
             $entity->{$entity::UPDATED_AT} = $now;
         } elseif (empty($changes)) {
             return true;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$this->driver->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->asWhere(), $params);
+        $affected_rows = $this->execute("UPDATE " . $this->driver->quoteIdentifier($entity::tabelName()) . " SET " . join(', ', $sets) . $condition->asWhere(), $params);
         if ($affected_rows !== 1) {
             return false;
         }
@@ -689,7 +690,7 @@ class Database
      * @param  DateTime|null $now    (default: null for DateTime::now())
      * @return boolean
      */
-    public function save(Entity $entity, DateTime|null $now = null) : bool
+    public function save(Entity $entity, DateTime|null $now = null): bool
     {
         return $entity->exists($this->name) ? $this->update($entity, $now) : $this->create($entity, $now) ;
     }
@@ -702,11 +703,11 @@ class Database
      * @uses Event::dispatch Deleting when before data delete.
      * @uses Event::dispatch Deleted when after data delete.
      */
-    public function delete(Entity $entity) : bool
+    public function delete(Entity $entity): bool
     {
         Event::dispatch(new Deleting($this, $entity));
         $condition     = $entity->buildPrimaryWhere($this);
-        $affected_rows = $this->execute("DELETE FROM ".$this->driver->quoteIdentifier($entity->tabelName()).$condition->asWhere(), $condition->params());
+        $affected_rows = $this->execute("DELETE FROM " . $this->driver->quoteIdentifier($entity->tabelName()) . $condition->asWhere(), $condition->params());
         if ($affected_rows !== 1) {
             return false;
         }
@@ -727,12 +728,12 @@ class Database
      * @uses Event::dispatch BatchUpdating when before batch update.
      * @uses Event::dispatch BatchUpdated when after batch update.
      */
-    public function updateBy(string $entity, array $changes, $ransack, array $alias = [], DateTime|null $now = null) : int
+    public function updateBy(string $entity, array $changes, $ransack, array $alias = [], DateTime|null $now = null): int
     {
-        $now = $now ?? DateTime::now();
+        $now ??= DateTime::now();
         Event::dispatch(new BatchUpdating($this, $entity, $changes, $ransack, $now));
         if ($entity::UPDATED_AT) {
-            $changes[$entity::UPDATED_AT] = $changes[$entity::UPDATED_AT] ?? $now ;
+            $changes[$entity::UPDATED_AT] ??= $now ;
         }
 
         $sets      = [];
@@ -744,7 +745,7 @@ class Database
             $params[$key] = $value;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$this->driver->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->asWhere(), $params);
+        $affected_rows = $this->execute("UPDATE " . $this->driver->quoteIdentifier($entity::tabelName()) . " SET " . join(', ', $sets) . $condition->asWhere(), $params);
         if ($affected_rows !== 0) {
             Event::dispatch(new BatchUpdated($this, $entity, $changes, $ransack, $now, $affected_rows));
         }
@@ -761,12 +762,12 @@ class Database
      * @uses Event::dispatch BatchDeleting when before batch delete.
      * @uses Event::dispatch BatchDeleted when after batch delete.
      */
-    public function deleteBy(string $entity, $ransack, array $alias = []) : int
+    public function deleteBy(string $entity, $ransack, array $alias = []): int
     {
         Event::dispatch(new BatchDeleting($this, $entity, $ransack));
 
         $condition     = $this->ransacker->build($ransack, $alias);
-        $affected_rows = $this->execute("DELETE FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->asWhere(), $condition->params());
+        $affected_rows = $this->execute("DELETE FROM " . $this->driver->quoteIdentifier($entity::tabelName()) . $condition->asWhere(), $condition->params());
         if ($affected_rows !== 0) {
             Event::dispatch(new BatchDeleted($this, $entity, $ransack, $affected_rows));
         }
@@ -781,10 +782,10 @@ class Database
      * @param  array<string, string|array<int, string>> $alias   (default: [])
      * @return bool
      */
-    public function existsBy(string $entity, $ransack, array $alias = []) : bool
+    public function existsBy(string $entity, $ransack, array $alias = []): bool
     {
         $condition = $this->ransacker->build($ransack, $alias);
-        return $this->exists("SELECT * FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->asWhere(), $condition->params());
+        return $this->exists("SELECT * FROM " . $this->driver->quoteIdentifier($entity::tabelName()) . $condition->asWhere(), $condition->params());
     }
 
     /**
@@ -795,10 +796,10 @@ class Database
      * @param  array<string, string|array<int, string>> $alias   (default: [])
      * @return int
      */
-    public function countBy(string $entity, $ransack, array $alias = []) : int
+    public function countBy(string $entity, $ransack, array $alias = []): int
     {
         $condition = $this->ransacker->build($ransack, $alias);
-        return $this->get('count', "SELECT COUNT(*) AS count FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->asWhere(), [], $condition->params());
+        return $this->get('count', "SELECT COUNT(*) AS count FROM " . $this->driver->quoteIdentifier($entity::tabelName()) . $condition->asWhere(), [], $condition->params());
     }
 
     /**
@@ -806,7 +807,7 @@ class Database
      *
      * @return void
      */
-    public function close() : void
+    public function close(): void
     {
         if (!$this->closed()) {
             $this->driver->close();
@@ -818,7 +819,7 @@ class Database
      *
      * @return boolean
      */
-    public function closed() : bool
+    public function closed(): bool
     {
         return $this->driver->closed();
     }
@@ -830,7 +831,7 @@ class Database
      * @param  array<int|string, mixed> $params (default: [])
      * @return Query
      */
-    public function sql(string $sql, array $params = []) : Query
+    public function sql(string $sql, array $params = []): Query
     {
         return $this->driver->sql($sql, $params);
     }

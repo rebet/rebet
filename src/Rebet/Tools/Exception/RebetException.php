@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Exception;
@@ -21,14 +22,14 @@ interface RebetException extends \Throwable
      * @param  \Throwable $previous
      * @return self
      */
-    public function caused(\Throwable $previous) : self ;
+    public function caused(\Throwable $previous): self ;
 
     /**
      * Get the previous exception.
      *
      * @return \Throwable|null
      */
-    public function getCaused() : \Throwable|null ;
+    public function getCaused(): \Throwable|null ;
 
     /**
      * Set the given code
@@ -36,7 +37,7 @@ interface RebetException extends \Throwable
      * @param  mixed $code
      * @return self
      */
-    public function code($code) : self ;
+    public function code($code): self ;
 
     /**
      * Set the given appendix data.
@@ -44,5 +45,5 @@ interface RebetException extends \Throwable
      * @param  mixed $appendix
      * @return self
      */
-    public function appendix($appendix) : self ;
+    public function appendix($appendix): self ;
 }

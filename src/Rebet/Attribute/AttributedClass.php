@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Attribute;
@@ -26,7 +27,7 @@ class AttributedClass
      * @param  string|object|\ReflectionClass $class
      * @return AttributedClass
      */
-    public static function of($class) : AttributedClass
+    public static function of($class): AttributedClass
     {
         return new AttributedClass($class);
     }
@@ -46,9 +47,9 @@ class AttributedClass
      *
      * @return array<object> [Attribute, ...]
      */
-    public function attributes() : array
+    public function attributes(): array
     {
-        return array_map(fn (\ReflectionAttribute $a) => $a->newInstance(), $this->class->getAttributes());
+        return array_map(fn(\ReflectionAttribute $a) => $a->newInstance(), $this->class->getAttributes());
     }
 
     /**
@@ -69,7 +70,7 @@ class AttributedClass
      * @param  string                $method
      * @return AttributedMethod|null
      */
-    public function method(string $method) : AttributedMethod|null
+    public function method(string $method): AttributedMethod|null
     {
         return $this->class->hasMethod($method) ? new AttributedMethod($this->class->getMethod($method), $this) : null ;
     }
@@ -80,7 +81,7 @@ class AttributedClass
      * @param  string                  $property
      * @return AttributedProperty|null
      */
-    public function property(string $property) : AttributedProperty|null
+    public function property(string $property): AttributedProperty|null
     {
         return $this->class->hasProperty($property) ? new AttributedProperty($this->class->getProperty($property), $this) : null ;
     }
@@ -90,7 +91,7 @@ class AttributedClass
      *
      * @return AttributedProperty[]
      */
-    public function properties() : array
+    public function properties(): array
     {
         return array_map(function ($v) { return new AttributedProperty($v, $this); }, $this->class->getProperties());
     }
@@ -100,7 +101,7 @@ class AttributedClass
      *
      * @return \ReflectionClass<object>
      */
-    public function reflector() : \ReflectionClass
+    public function reflector(): \ReflectionClass
     {
         return $this->class;
     }

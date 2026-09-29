@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\Http;
@@ -80,7 +81,7 @@ class WebKernel extends Kernel
      * {@inheritDoc}
      * @return array<int, Bootstrapper|class-string<Bootstrapper>|array<int|string, mixed>>
      */
-    protected function bootstrappers() : array
+    protected function bootstrappers(): array
     {
         return static::config('bootstrappers');
     }
@@ -91,7 +92,7 @@ class WebKernel extends Kernel
      * @param  Request|null $input (default: null for Request::createFromGlobals())
      * @return Response
      */
-    public function handle($input = null) : Response
+    public function handle($input = null): Response
     {
         return $this->response = Router::handle($this->request = $input ?? Request::createFromGlobals());
     }
@@ -103,7 +104,7 @@ class WebKernel extends Kernel
      * @param  array<string, mixed> $parameters (default: [])
      * @return Response
      */
-    public function call(string $action, array $parameters = []) : Response
+    public function call(string $action, array $parameters = []): Response
     {
         return $this->response = Router::handle($this->request = Request::create($action, 'GET', $parameters));
     }
@@ -113,7 +114,7 @@ class WebKernel extends Kernel
      *
      * @return void
      */
-    public function terminate() : void
+    public function terminate(): void
     {
         Router::terminate($this->request ?? $this->request = Request::createFromGlobals(), $this->response);
     }
@@ -121,7 +122,7 @@ class WebKernel extends Kernel
     /**
      * {@inheritDoc}
      */
-    public function fallback(\Throwable $e) : int
+    public function fallback(\Throwable $e): int
     {
         $this->response = $this->exceptionHandler()->handle($this->request ?? $this->request = Request::createFromGlobals(), $e);
         $this->response->send();
@@ -131,7 +132,7 @@ class WebKernel extends Kernel
     /**
      * {@inheritDoc}
      */
-    public function report(\Throwable $e) : void
+    public function report(\Throwable $e): void
     {
         $this->exceptionHandler()->report($this->request ?? $this->request = Request::createFromGlobals(), $this->response, $e);
     }
@@ -141,7 +142,7 @@ class WebKernel extends Kernel
      *
      * @return Request
      */
-    public function request() : Request
+    public function request(): Request
     {
         if ($this->request === null) {
             throw new LogicException('Request has not been set yet.');
@@ -154,7 +155,7 @@ class WebKernel extends Kernel
      *
      * @return WebExceptionHandler
      */
-    public function exceptionHandler() : WebExceptionHandler
+    public function exceptionHandler(): WebExceptionHandler
     {
         return new WebExceptionHandler();
     }

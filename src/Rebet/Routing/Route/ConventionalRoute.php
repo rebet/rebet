@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
@@ -184,7 +185,7 @@ class ConventionalRoute extends Route
      * @param  string                                             $request_uri
      * @return array{0: string, 1: string, 2: array<int, string>}
      */
-    protected function resolveRequestUri(string $request_uri) : array
+    protected function resolveRequestUri(string $request_uri): array
     {
         $requests           = explode('/', trim($request_uri, '/')) ;
         $part_of_controller = array_shift($requests) ?: $this->default_part_of_controller;
@@ -204,7 +205,7 @@ class ConventionalRoute extends Route
      * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
-    protected function analyze(Request $request) : array|null
+    protected function analyze(Request $request): array|null
     {
         $request_uri = Strings::ltrim($request->getRequestPath(), $this->prefix, 1);
         foreach ($this->aliases as $alias => $path) {
@@ -279,7 +280,7 @@ class ConventionalRoute extends Route
      * @return RouteAction
      * @throws RouteNotFoundException
      */
-    protected function createRouteAction(Request $request) : RouteAction
+    protected function createRouteAction(Request $request): RouteAction
     {
         $method = new \ReflectionMethod($this->controller, $this->getActionName());
         $method->setAccessible($this->accessible);
@@ -287,7 +288,7 @@ class ConventionalRoute extends Route
 
         $channel = $route_action->attribute(Channel::class);
         if (!$channel || $channel->reject(Router::getCurrentChannel())) {
-            throw new RouteNotFoundException("{$this} not found. Routing channel '".Router::getCurrentChannel()."' not allowed or not annotated channel meta info.");
+            throw new RouteNotFoundException("{$this} not found. Routing channel '" . Router::getCurrentChannel() . "' not allowed or not annotated channel meta info.");
         }
 
         $method = $route_action->attribute(Method::class);
@@ -301,7 +302,7 @@ class ConventionalRoute extends Route
     /**
      * {@inheritDoc}
      */
-    public function defaultView() : string
+    public function defaultView(): string
     {
         return "/{$this->part_of_controller}/{$this->part_of_action}";
     }
@@ -312,10 +313,10 @@ class ConventionalRoute extends Route
      * @param  bool   $with_namespace
      * @return string
      */
-    public function getControllerName(bool $with_namespace = true) : string
+    public function getControllerName(bool $with_namespace = true): string
     {
-        $namespace = $with_namespace ? $this->namespace.'\\' : '' ;
-        return $namespace.Inflector::pascalize($this->part_of_controller, $this->uri_snake_separator).$this->controller_suffix;
+        $namespace = $with_namespace ? $this->namespace . '\\' : '' ;
+        return $namespace . Inflector::pascalize($this->part_of_controller, $this->uri_snake_separator) . $this->controller_suffix;
     }
 
     /**
@@ -323,9 +324,9 @@ class ConventionalRoute extends Route
      *
      * @return string
      */
-    public function getActionName() : string
+    public function getActionName(): string
     {
-        return Inflector::camelize($this->part_of_action).$this->action_suffix;
+        return Inflector::camelize($this->part_of_action) . $this->action_suffix;
     }
 
     /**
@@ -333,7 +334,7 @@ class ConventionalRoute extends Route
      *
      * @return string|null
      */
-    public function getAliasName() : string|null
+    public function getAliasName(): string|null
     {
         return $this->alias;
     }
@@ -345,7 +346,7 @@ class ConventionalRoute extends Route
      * @param  Response $response
      * @return void
      */
-    public function terminate(Request $request, Response $response) : void
+    public function terminate(Request $request, Response $response): void
     {
         if ($this->controller !== null) {
             $this->controller->terminate($request, $response);
@@ -366,7 +367,7 @@ class ConventionalRoute extends Route
      * @param  boolean $accessible
      * @return self
      */
-    public function accessible(bool $accessible) : self
+    public function accessible(bool $accessible): self
     {
         $this->accessible = $accessible;
         return $this;
@@ -379,7 +380,7 @@ class ConventionalRoute extends Route
      * @param  string|null                  $path
      * @return self
      */
-    public function aliases($alias, string|null $path = null) : self
+    public function aliases($alias, string|null $path = null): self
     {
         foreach (is_array($alias) ? $alias : [$alias => $path] as $key => $value) {
             $this->aliases[$key] = $value;

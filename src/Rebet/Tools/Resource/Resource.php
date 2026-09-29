@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Resource;
@@ -67,7 +68,7 @@ class Resource
     {
         return [
             'loader' => [
-                'php' => function (string $path, array $option) {
+                'php'  => function (string $path, array $option) {
                     if (!\file_exists($path)) {
                         return null;
                     }
@@ -80,13 +81,13 @@ class Resource
                     }
                     return \json_decode(\file_get_contents($path), true);
                 },
-                'ini' => function (string $path, array $option) {
+                'ini'  => function (string $path, array $option) {
                     if (!\file_exists($path)) {
                         return null;
                     }
                     return \parse_ini_file($path, $option['process_sections'] ?? true, $option['scanner_mode'] ?? INI_SCANNER_TYPED);
                 },
-                'txt' => function (string $path, array $option) {
+                'txt'  => function (string $path, array $option) {
                     if (!\file_exists($path)) {
                         return null;
                     }

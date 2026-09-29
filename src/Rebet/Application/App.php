@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application;
@@ -69,7 +70,7 @@ class App
      *
      * @return Kernel<mixed, mixed>
      */
-    public static function kernel() : Kernel
+    public static function kernel(): Kernel
     {
         if (static::$kernel === null) {
             throw new LogicException('Kernel has not been initialized yet. You should call App::init() first.');
@@ -82,7 +83,7 @@ class App
      *
      * @return Structure
      */
-    public static function structure() : Structure
+    public static function structure(): Structure
     {
         return static::kernel()->structure();
     }
@@ -94,7 +95,7 @@ class App
      * @param  T $kernel
      * @return T
      */
-    public static function init(Kernel $kernel) : Kernel
+    public static function init(Kernel $kernel): Kernel
     {
         static::$kernel = $kernel;
         $kernel->bootstrap();
@@ -106,7 +107,7 @@ class App
      *
      * @return string
      */
-    public static function root() : string
+    public static function root(): string
     {
         return static::kernel()->structure()->root();
     }
@@ -117,7 +118,7 @@ class App
      * @param         $root_relative_path
      * @return string
      */
-    public static function path(string $root_relative_path) : string
+    public static function path(string $root_relative_path): string
     {
         return static::kernel()->structure()->path($root_relative_path);
     }
@@ -127,7 +128,7 @@ class App
      *
      * @return string
      */
-    public static function getLocale() : string
+    public static function getLocale(): string
     {
         return self::config('locale');
     }
@@ -137,7 +138,7 @@ class App
      *
      * @return string
      */
-    public static function getFallbackLocale() : string
+    public static function getFallbackLocale(): string
     {
         return self::config('fallback_locale');
     }
@@ -148,7 +149,7 @@ class App
      * @param string      $locale
      * @param string|null $fallback_locale if null given then do nothing (default: null)
      */
-    public static function setLocale(string $locale, string|null $fallback_locale = null) : void
+    public static function setLocale(string $locale, string|null $fallback_locale = null): void
     {
         self::setConfig(['locale' => $locale]);
         if ($fallback_locale !== null) {
@@ -161,7 +162,7 @@ class App
      *
      * @return string
      */
-    public static function codeName() : string
+    public static function codeName(): string
     {
         return self::config('code_name');
     }
@@ -171,7 +172,7 @@ class App
      *
      * @return string
      */
-    public static function domain() : string
+    public static function domain(): string
     {
         return self::config('domain');
     }
@@ -181,7 +182,7 @@ class App
      *
      * @param string ...$locale
      */
-    public static function localeIn(string ...$locale) : bool
+    public static function localeIn(string ...$locale): bool
     {
         return \in_array(self::getLocale(), $locale, true);
     }
@@ -192,7 +193,7 @@ class App
      *
      * @return string
      */
-    public static function env() : string
+    public static function env(): string
     {
         return Env::get('APP_ENV', 'development');
     }
@@ -202,7 +203,7 @@ class App
      *
      * @param string ...$env
      */
-    public static function envIn(string ...$env) : bool
+    public static function envIn(string ...$env): bool
     {
         return \in_array(self::env(), $env, true);
     }
@@ -212,7 +213,7 @@ class App
      *
      * @return string|null
      */
-    public static function channel() : string|null
+    public static function channel(): string|null
     {
         return static::$kernel ? static::$kernel->channel() : null ;
     }
@@ -222,7 +223,7 @@ class App
      *
      * @param string ...$channel
      */
-    public static function channelIn(string ...$channel) : bool
+    public static function channelIn(string ...$channel): bool
     {
         return \in_array(self::channel(), $channel, true);
     }
@@ -239,16 +240,16 @@ class App
      * @param  array<string, mixed> $case
      * @return ConfigPromise
      */
-    public static function when(array $case) : ConfigPromise
+    public static function when(array $case): ConfigPromise
     {
         return Config::promise(function () use ($case) {
             $channel = App::channel();
             $env     = App::env();
             return
-                $case["{$channel}@{$env}"] ??
-                $case[$channel] ??
-                $case[$env] ??
-                $case['default']
+                $case["{$channel}@{$env}"]
+                ?? $case[$channel]
+                ?? $case[$env]
+                ?? $case['default']
             ;
         }, false);
     }
@@ -258,7 +259,7 @@ class App
      *
      * @return string
      */
-    public static function getTimezone() : string
+    public static function getTimezone(): string
     {
         return self::config('timezone');
     }
@@ -268,7 +269,7 @@ class App
      *
      * @param string $timezone
      */
-    public static function setTimezone(string $timezone) : void
+    public static function setTimezone(string $timezone): void
     {
         self::setConfig(['timezone' => $timezone]);
     }
@@ -278,7 +279,7 @@ class App
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         Config::reset();
         System::reset();

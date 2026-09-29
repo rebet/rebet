@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Inflection;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -14,7 +15,7 @@ use Rebet\Tools\Config\Config;
  */
 class InflectorTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
     }
@@ -165,7 +166,7 @@ class InflectorTest extends RebetTestCase
      *
      * @return string[][]
      */
-    public static function dataSampleWords() : array
+    public static function dataSampleWords(): array
     {
         Inflector::reset();
 
@@ -426,18 +427,18 @@ class InflectorTest extends RebetTestCase
     }
 
     #[DataProvider('dataSampleWords')]
-    public function testInflectingSingulars(string $singular, string $plural) : void
+    public function testInflectingSingulars(string $singular, string $plural): void
     {
         $this->assertEquals($singular, Inflector::singularize($plural), "'{$plural}' should be singularized to '{$singular}'");
     }
 
     #[DataProvider('dataSampleWords')]
-    public function testInflectingPlurals(string $singular, string $plural) : void
+    public function testInflectingPlurals(string $singular, string $plural): void
     {
         $this->assertEquals($plural, Inflector::pluralize($singular), "'{$singular}' should be pluralized to '{$plural}'");
     }
 
-    public function testCustomPluralRule() : void
+    public function testCustomPluralRule(): void
     {
         Inflector::reset();
         Config::application([
@@ -478,7 +479,7 @@ class InflectorTest extends RebetTestCase
         $this->assertEquals(Inflector::pluralize('phone'), 'phonezes');
     }
 
-    public function testCustomSingularRule() : void
+    public function testCustomSingularRule(): void
     {
         Inflector::reset();
         Config::application([
@@ -506,7 +507,7 @@ class InflectorTest extends RebetTestCase
         $this->assertEquals(Inflector::singularize('singulars'), 'singulars');
     }
 
-    public function testCustomRuleWithReset() : void
+    public function testCustomRuleWithReset(): void
     {
         Inflector::reset();
         $uninflected      = ['atlas', 'lapis', 'onibus', 'pires', 'virus', '.*x'];
@@ -517,7 +518,7 @@ class InflectorTest extends RebetTestCase
                     'rules'       => [['/^(.*)(a|e|o|u)is$/i', '\1\2l']],
                     'uninflected' => $uninflected,
                 ],
-                'plural=' => [
+                'plural='   => [
                     'rules'       => [['/^(.*)(a|e|o|u)l$/i', '\1\2is']],
                     'uninflected' => $uninflected,
                     'irregular'   => $plural_irregular,

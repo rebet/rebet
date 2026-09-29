@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Log\Driver\Monolog;
 
 use Monolog\Handler\StreamHandler;

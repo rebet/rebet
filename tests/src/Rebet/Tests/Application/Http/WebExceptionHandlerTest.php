@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\Http;
 
 use Rebet\Application\App;
@@ -24,11 +25,11 @@ class WebExceptionHandlerTest extends RebetTestCase
     /** @var WebExceptionHandler */
     public $handler;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         Config::application([
-            View::class => [
+            View::class  => [
                 'engine' => Blade::class,
             ],
             Blade::class => [
@@ -40,7 +41,7 @@ class WebExceptionHandlerTest extends RebetTestCase
         $this->handler = new class extends WebExceptionHandler {
             public $reported_count = 0;
 
-            public function report($input, $result, \Throwable $e) : void
+            public function report($input, $result, \Throwable $e): void
             {
                 $this->reported_count++;
             }
@@ -174,7 +175,7 @@ class WebExceptionHandlerTest extends RebetTestCase
         $request = $this->createRequestMock('/');
         $handler = new WebExceptionHandler();
 
-        $response = $handler->handle($request, new  AuthenticateException('Authentication failed'));
+        $response = $handler->handle($request, new AuthenticateException('Authentication failed'));
         $this->assertStringContainsString('<span class="status">403</span>Forbidden', $response->getContent());
         // AuthenticateException's own message is no longer forwarded as the view detail (avoids
         // leaking internal exception messages to the end user); it only shows a translated message.

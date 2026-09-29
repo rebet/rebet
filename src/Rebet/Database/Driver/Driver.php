@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Driver;
@@ -27,14 +28,14 @@ interface Driver
      * @param  array<int, mixed> $options  PDO driver options keyed by PDO::ATTR_* constant (default: [])
      * @return Driver
      */
-    public static function create(string $dsn, string|null $user = null, string|null $password = null, array $options = []) : Driver;
+    public static function create(string $dsn, string|null $user = null, string|null $password = null, array $options = []): Driver;
 
     /**
      * Get PDO instance of this driver.
      *
      * @return \PDO
      */
-    public function pdo() : \PDO;
+    public function pdo(): \PDO;
 
     /**
      * Get the PDO driver name of this database.
@@ -42,7 +43,7 @@ interface Driver
      *
      * @return string
      */
-    public function name() : string;
+    public function name(): string;
 
     /**
      * Get the server version of this database.
@@ -50,7 +51,7 @@ interface Driver
      *
      * @return string
      */
-    public function serverVersion() : string;
+    public function serverVersion(): string;
 
     /**
      * Get the client version of this database.
@@ -58,7 +59,7 @@ interface Driver
      *
      * @return string
      */
-    public function clientVersion() : string;
+    public function clientVersion(): string;
 
     /**
      * Quotes a string for use in a query.
@@ -67,7 +68,7 @@ interface Driver
      * @param  int    $parameter_type (default: \PDO::PARAM_STR)
      * @return string
      */
-    public function quote(string $string, int $parameter_type = \PDO::PARAM_STR) : string;
+    public function quote(string $string, int $parameter_type = \PDO::PARAM_STR): string;
 
     /**
      * Quote identifier names.
@@ -75,7 +76,7 @@ interface Driver
      * @param  string $identifier
      * @return string
      */
-    public function quoteIdentifier(string $identifier) : string;
+    public function quoteIdentifier(string $identifier): string;
 
     /**
      * Begin a transaction
@@ -83,7 +84,7 @@ interface Driver
      * @return string            executed SQL
      * @throws DatabaseException
      */
-    public function begin() : string;
+    public function begin(): string;
 
     /**
      * Set a transaction save point of given name.
@@ -92,7 +93,7 @@ interface Driver
      * @return string            executed SQL
      * @throws DatabaseException
      */
-    public function savepoint(string $name) : string;
+    public function savepoint(string $name): string;
 
     /**
      * Commit transaction.
@@ -100,7 +101,7 @@ interface Driver
      * @return string            executed SQL
      * @throws DatabaseException
      */
-    public function commit() : string;
+    public function commit(): string;
 
     /**
      * Rolls back a transaction
@@ -110,7 +111,7 @@ interface Driver
      * @return string            executed SQL
      * @throws DatabaseException
      */
-    public function rollback(string|null $savepoint = null, bool $quiet = true) : string|null;
+    public function rollback(string|null $savepoint = null, bool $quiet = true): string|null;
 
     /**
      * Execute an SQL statement and return the number of affected rows
@@ -119,7 +120,7 @@ interface Driver
      * @return int
      * @throws DatabaseException
      */
-    public function exec(string $sql) : int;
+    public function exec(string $sql): int;
 
     /**
      * Prepares a statement for execution and returns a statement object.
@@ -128,7 +129,7 @@ interface Driver
      * @param  array<int, mixed> $driver_options (default: [])
      * @return \PDOStatement
      */
-    public function prepare(string $sql, array $driver_options = []) : \PDOStatement;
+    public function prepare(string $sql, array $driver_options = []): \PDOStatement;
 
     /**
      * Returns the ID of the last inserted row or sequence value of given name
@@ -136,7 +137,7 @@ interface Driver
      * @param  string|null $name (default: null)
      * @return string
      */
-    public function lastInsertId(string|null $name = null) : string;
+    public function lastInsertId(string|null $name = null): string;
 
     /**
      * Truncate given table data.
@@ -146,21 +147,21 @@ interface Driver
      * @param  bool   $with_vacuum if needed for sqlite (default: true)
      * @return string executed SQL
      */
-    public function truncate(string $table_name, bool|null $with_vacuum = true) : string;
+    public function truncate(string $table_name, bool|null $with_vacuum = true): string;
 
     /**
      * Close database connection.
      *
      * @return void
      */
-    public function close() : void;
+    public function close(): void;
 
     /**
      * It checks the database connection is closed or not.
      *
      * @return boolean
      */
-    public function closed() : bool;
+    public function closed(): bool;
 
     /**
      * Append where condition to given SQL.
@@ -169,7 +170,7 @@ interface Driver
      * @param  string|array<int, string> $where
      * @return string
      */
-    public function appendWhere(string $sql, $where) : string;
+    public function appendWhere(string $sql, $where): string;
 
     /**
      * Append limit offset partial SQL to given SQL.
@@ -179,7 +180,7 @@ interface Driver
      * @param  int|null $offset (default: null)
      * @return string
      */
-    public function appendLimitOffset(string $sql, int|null $limit, int|null $offset = null) : string;
+    public function appendLimitOffset(string $sql, int|null $limit, int|null $offset = null): string;
 
     /**
      * Append for update partial SQL to given SQL.
@@ -188,7 +189,7 @@ interface Driver
      * @return string
      * @throws DatabaseException if the database does not support `FOR UPDATE`.
      */
-    public function appendForUpdate(string $sql) : string;
+    public function appendForUpdate(string $sql): string;
 
     /**
      * Convert given PHP type value to PDO data type.
@@ -196,7 +197,7 @@ interface Driver
      * @param  mixed        $value
      * @return PdoParameter
      */
-    public function toPdoType($value) : PdoParameter;
+    public function toPdoType($value): PdoParameter;
 
     /**
      * Convert given PDO data type to PHP data type.
@@ -214,7 +215,7 @@ interface Driver
      * @param  string   $sql
      * @return Analyzer
      */
-    public function analyzer(string $sql) : Analyzer;
+    public function analyzer(string $sql): Analyzer;
 
     /**
      * Get ransack value converters depends on this PDO driver.
@@ -222,7 +223,7 @@ interface Driver
      * @see Rebet\Database\Ransack\Ransack
      * @return array<string, \Closure> $name => function($value) { ... }
      */
-    public function ransackValueConverters() : array;
+    public function ransackValueConverters(): array;
 
     /**
      * Get ransack predicates depends on this PDO driver.
@@ -230,7 +231,7 @@ interface Driver
      * @see Rebet\Database\Ransack\Ransack
      * @return array<string, array{0: string, 1: string|\Closure|null, 2: string}> predicate => [template, value_converter, multiple_columns_conjunction]
      */
-    public function ransackPredicates() : array;
+    public function ransackPredicates(): array;
 
     /**
      * Get ransack options depends on this PDO driver.
@@ -238,7 +239,7 @@ interface Driver
      * @see Rebet\Database\Ransack\Ransack
      * @return array<string, string> option_name => template
      */
-    public function ransackOptions() : array;
+    public function ransackOptions(): array;
 
     /**
      * Create SQL query for this driver.
@@ -247,5 +248,5 @@ interface Driver
      * @param  array<int|string, mixed> $params (default: [])
      * @return Query
      */
-    public function sql(string $sql, array $params = []) : Query;
+    public function sql(string $sql, array $params = []): Query;
 }

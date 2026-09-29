@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Translation;
@@ -28,15 +29,15 @@ class Translator
     public static function defaultConfig()
     {
         return [
-            'dictionary'     => FileDictionary::class,
-            'resource_adder' => [
+            'dictionary'      => FileDictionary::class,
+            'resource_adder'  => [
                 FileDictionary::class => function (FileDictionary $dictionary, ...$args) { $dictionary->addLibraryResource(...$args); },
             ],
             'locale'          => \locale_get_default(),
             'fallback_locale' => 'en',
             'ordinalize'      => [
                 'en' => function (int $num) {
-                    return in_array($num % 100, [11, 12, 13]) ? $num.'th' : $num.(['th', 'st', 'nd', 'rd'][$num % 10] ?? 'th');
+                    return in_array($num % 100, [11, 12, 13]) ? $num . 'th' : $num . (['th', 'st', 'nd', 'rd'][$num % 10] ?? 'th');
                 },
             ],
         ];
@@ -52,9 +53,7 @@ class Translator
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Add resource to the dictionary if will use the specified dictionary class.
@@ -63,11 +62,11 @@ class Translator
      * @param  mixed  ...$args of dictionary resource parameters
      * @return void
      */
-    public static function addResourceTo(string $class, ...$args) : void
+    public static function addResourceTo(string $class, ...$args): void
     {
         $dictionary = static::dictionary();
         if ($dictionary instanceof $class) {
-            $resource_adder = static::config('resource_adder.'.$class, false);
+            $resource_adder = static::config('resource_adder.' . $class, false);
             if ($resource_adder) {
                 call_user_func($resource_adder, $dictionary, ...$args);
             }
@@ -79,7 +78,7 @@ class Translator
      *
      * @return Dictionary
      */
-    public static function dictionary() : Dictionary
+    public static function dictionary(): Dictionary
     {
         if (static::$dictionary === null) {
             static::$dictionary = static::configInstantiate('dictionary');
@@ -92,7 +91,7 @@ class Translator
      *
      * @return string|null
      */
-    public static function getLocale() : string|null
+    public static function getLocale(): string|null
     {
         return static::config('locale', false);
     }
@@ -104,7 +103,7 @@ class Translator
      * @param  string|null $fallback_locale if null given then do nothing (default: null)
      * @return void
      */
-    public static function setLocale(string $locale, string|null $fallback_locale = null) : void
+    public static function setLocale(string $locale, string|null $fallback_locale = null): void
     {
         static::setConfig(['locale' => $locale]);
         if ($fallback_locale !== null) {
@@ -117,7 +116,7 @@ class Translator
      *
      * @return string
      */
-    public static function getFallbackLocale() : string
+    public static function getFallbackLocale(): string
     {
         return static::config('fallback_locale');
     }
@@ -127,7 +126,7 @@ class Translator
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         static::$dictionary = null;
     }
@@ -167,7 +166,7 @@ class Translator
      * @param  string               $locale      (default: depend on configure)
      * @return string|null
      */
-    public static function get(string|null $key, array $replacement = [], $selector = null, bool $recursive = true, string|null $locale = null) : string|null
+    public static function get(string|null $key, array $replacement = [], $selector = null, bool $recursive = true, string|null $locale = null): string|null
     {
         if ($key === null) {
             return null;
@@ -177,7 +176,7 @@ class Translator
             return null;
         }
 
-        $locale   = $locale ?? static::config('locale');
+        $locale ??= static::config('locale');
         $sentence = static::dictionary()->sentence($group, $key, array_unique([$locale, static::config('fallback_locale')]), $selector, $recursive);
 
         return static::replace($sentence, $replacement, static::grammar($group, 'delimiter', ', ', $locale));
@@ -191,7 +190,7 @@ class Translator
      * @param  string               $delimiter   for join array to string (default: ', ')
      * @return string|null
      */
-    public static function replace(string|null $sentence, array $replacement, string $delimiter = ', ') : string|null
+    public static function replace(string|null $sentence, array $replacement, string $delimiter = ', '): string|null
     {
         if ($sentence === null) {
             return null;
@@ -203,7 +202,7 @@ class Translator
 
         $replacement = Tinker::with($replacement, true)->sortKeys(SORT_DESC, Callbacks::compareLength())->return();
         foreach ($replacement as $key => $value) {
-            $sentence = str_replace(':'.$key, (string) (Arrays::implode($value, $delimiter) ?? $value ?? ''), $sentence);
+            $sentence = str_replace(':' . $key, (string) (Arrays::implode($value, $delimiter) ?? $value ?? ''), $sentence);
         }
 
         return $sentence;
@@ -216,7 +215,7 @@ class Translator
      * @param  callable $ordinalize function($number):mixed
      * @return void
      */
-    public static function setOrdinalize(string $locale, callable $ordinalize) : void
+    public static function setOrdinalize(string $locale, callable $ordinalize): void
     {
         static::setConfig(['ordinalize' => [$locale => \Closure::fromCallable($ordinalize)]]);
     }
@@ -229,10 +228,10 @@ class Translator
      * @param  string|null $locale (default: depend on self locale)
      * @return string
      */
-    public static function ordinalize(int $num, string|null $locale = null) : string
+    public static function ordinalize(int $num, string|null $locale = null): string
     {
-        $locale     = $locale ?? static::config('locale');
+        $locale ??= static::config('locale');
         $ordinalize = static::config("ordinalize.{$locale}", false, function (int $num) { return $num; });
-        return (string)$ordinalize($num);
+        return (string) $ordinalize($num);
     }
 }

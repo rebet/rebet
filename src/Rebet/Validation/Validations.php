@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Validation;
@@ -21,5 +22,5 @@ interface Validations
      * @param  mixed   ...$args
      * @return boolean
      */
-    public function validate(string $name, Context $c, ...$args) : bool;
+    public function validate(string $name, Context $c, ...$args): bool;
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Reflection;
@@ -69,7 +70,7 @@ trait Populatable
      * @param  array<string, mixed> $options that availables are 'embeds', 'aliases', 'includes' and 'excludes' (default: [])
      * @return self
      */
-    public function populate($src, $options = []) : self
+    public function populate($src, $options = []): self
     {
         return $this->_populate($src, $options, '');
     }
@@ -82,7 +83,7 @@ trait Populatable
      * @param  string               $prefix
      * @return self
      */
-    protected function _populate($src, array $options = [], string $prefix = '') : self
+    protected function _populate($src, array $options = [], string $prefix = ''): self
     {
         if (empty($src)) {
             return $this;
@@ -183,7 +184,7 @@ trait Populatable
      * @param  string               $field
      * @return bool
      */
-    protected function isIgnoreEmbed(array $options, string $field) : bool
+    protected function isIgnoreEmbed(array $options, string $field): bool
     {
         if (empty($options)) {
             return false;

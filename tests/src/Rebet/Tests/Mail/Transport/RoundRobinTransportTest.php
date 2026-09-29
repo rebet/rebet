@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Mail\Transport;
 
 use Psr\Log\NullLogger;

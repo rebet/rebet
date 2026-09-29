@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http;
@@ -20,7 +21,7 @@ class AppWebKernel extends WebKernel
      * @return array<int, Bootstrapper|class-string<Bootstrapper>|array<int|string, mixed>>
      */
     #[Override]
-    protected function bootstrappers() : array
+    protected function bootstrappers(): array
     {
         return parent::bootstrappers();
     }
@@ -31,7 +32,7 @@ class AppWebKernel extends WebKernel
      * @return AppWebExceptionHandler
      */
     #[Override]
-    public function exceptionHandler() : AppWebExceptionHandler
+    public function exceptionHandler(): AppWebExceptionHandler
     {
         return new AppWebExceptionHandler();
     }

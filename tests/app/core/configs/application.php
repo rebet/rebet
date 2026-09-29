@@ -1,4 +1,5 @@
 <?php
+
 use Rebet\Application\App;
 
 return [

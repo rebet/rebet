@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\DataModel;
@@ -32,7 +33,7 @@ abstract class Entity extends DataModel
      *
      * @var string
      */
-    const CREATED_AT = 'created_at';
+    public const CREATED_AT = 'created_at';
 
     /**
      * Data update timestamp field name.
@@ -41,7 +42,7 @@ abstract class Entity extends DataModel
      *
      * @var string
      */
-    const UPDATED_AT = 'updated_at';
+    public const UPDATED_AT = 'updated_at';
 
     /**
      * Original data when fetched.
@@ -57,7 +58,7 @@ abstract class Entity extends DataModel
      * @return self|null
      * @throws \InvalidArgumentException when the given $origin class is not same as this
      */
-    public function origin(Entity|null $origin = null) : self|null
+    public function origin(Entity|null $origin = null): self|null
     {
         if ($origin !== null && ($class = get_class($this)) !== get_class($origin)) {
             throw new \InvalidArgumentException("Origin must be same class of [{$class}].");
@@ -70,7 +71,7 @@ abstract class Entity extends DataModel
      *
      * @return self
      */
-    public function removeOrigin() : self
+    public function removeOrigin(): self
     {
         $this->_origin = null;
         return $this;
@@ -84,7 +85,7 @@ abstract class Entity extends DataModel
      * @see Inflector::tableize()
      * @see Inflector::pivotize()
      */
-    public static function tabelName() : string
+    public static function tabelName(): string
     {
         if ($table = static::meta(__METHOD__)) {
             return $table;
@@ -109,7 +110,7 @@ abstract class Entity extends DataModel
      *
      * @return boolean
      */
-    protected static function isPivot() : bool
+    protected static function isPivot(): bool
     {
         if ($is_pivot = static::meta(__METHOD__)) {
             return $is_pivot;
@@ -130,7 +131,7 @@ abstract class Entity extends DataModel
      * @return array<int, string>
      * @see Unmap
      */
-    public static function unmaps() : array
+    public static function unmaps(): array
     {
         if ($unmaps = static::meta(__METHOD__)) {
             return $unmaps;
@@ -152,7 +153,7 @@ abstract class Entity extends DataModel
      * @return array<string, array{0: mixed, 1: string|null}> [property_name => [default_value, null|php_type(from property hint)]]
      * @see Defaults
      */
-    public static function defaults() : array
+    public static function defaults(): array
     {
         if ($defaults = static::meta(__METHOD__)) {
             return $defaults;
@@ -178,7 +179,7 @@ abstract class Entity extends DataModel
      * @see Unmap
      * @see Entity::isDynamicProperty()
      */
-    public function changes() : array
+    public function changes(): array
     {
         $changes = [];
         $unmaps  = static::unmaps();
@@ -199,7 +200,7 @@ abstract class Entity extends DataModel
      *
      * @return bool
      */
-    public function isDirty() : bool
+    public function isDirty(): bool
     {
         $unmaps = static::unmaps();
         foreach (get_object_vars($this) as $property => $value) {
@@ -219,7 +220,7 @@ abstract class Entity extends DataModel
      * @param  string $property
      * @return bool
      */
-    public function isDynamicProperty(string $property) : bool
+    public function isDynamicProperty(string $property): bool
     {
         return !property_exists(static::class, $property);
     }
@@ -230,10 +231,10 @@ abstract class Entity extends DataModel
      * @param  Database|string|null $db (default: null)
      * @return boolean
      */
-    public function exists($db = null) : bool
+    public function exists($db = null): bool
     {
         $condition = $this->buildPrimaryWhere($db = static::db($db));
-        return $db->exists("SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName()).$condition->asWhere(), $condition->params());
+        return $db->exists("SELECT * FROM " . $db->driver()->quoteIdentifier(static::tabelName()) . $condition->asWhere(), $condition->params());
     }
 
     /**
@@ -244,7 +245,7 @@ abstract class Entity extends DataModel
      * @param  Database|string|null $db  (default: null)
      * @return bool
      */
-    public function create(DateTime|null $now = null, $db = null) : bool
+    public function create(DateTime|null $now = null, $db = null): bool
     {
         return static::db($db)->create($this, $now);
     }
@@ -257,7 +258,7 @@ abstract class Entity extends DataModel
      * @param  Database|string|null $db  (default: null)
      * @return bool
      */
-    public function update(DateTime|null $now = null, $db = null) : bool
+    public function update(DateTime|null $now = null, $db = null): bool
     {
         return static::db($db)->update($this, $now);
     }
@@ -269,7 +270,7 @@ abstract class Entity extends DataModel
      * @param  Database|string|null $db  (default: null)
      * @return bool
      */
-    public function save(DateTime|null $now = null, $db = null) : bool
+    public function save(DateTime|null $now = null, $db = null): bool
     {
         return static::db($db)->save($this, $now);
     }
@@ -280,7 +281,7 @@ abstract class Entity extends DataModel
      * @param  Database|string|null $db (default: null)
      * @return bool
      */
-    public function delete($db = null) : bool
+    public function delete($db = null): bool
     {
         return static::db($db)->delete($this);
     }
@@ -294,7 +295,7 @@ abstract class Entity extends DataModel
      * @param  Database|string|null $db      (default: null)
      * @return int                  affected row count
      */
-    public static function updateBy(array $changes, $ransack = [], DateTime|null $now = null, $db = null) : int
+    public static function updateBy(array $changes, $ransack = [], DateTime|null $now = null, $db = null): int
     {
         return static::db($db)->updateBy(static::class, $changes, $ransack, static::ransackAliases(), $now);
     }
@@ -306,7 +307,7 @@ abstract class Entity extends DataModel
      * @param  Database|string|null $db      (default: null)
      * @return int                  affected row count
      */
-    public static function deleteBy($ransack = [], $db = null) : int
+    public static function deleteBy($ransack = [], $db = null): int
     {
         return static::db($db)->deleteBy(static::class, $ransack, static::ransackAliases());
     }
@@ -318,7 +319,7 @@ abstract class Entity extends DataModel
      * @param  Database|string|null $db      (default: null)
      * @return bool
      */
-    public static function existsBy($ransack, $db = null) : bool
+    public static function existsBy($ransack, $db = null): bool
     {
         return static::db($db)->existsBy(static::class, $ransack, static::ransackAliases());
     }
@@ -330,7 +331,7 @@ abstract class Entity extends DataModel
      * @param  Database|string|null $db      (default: null)
      * @return int
      */
-    public static function count($ransack = [], $db = null) : int
+    public static function count($ransack = [], $db = null): int
     {
         return static::db($db)->countBy(static::class, $ransack, static::ransackAliases());
     }
@@ -338,9 +339,9 @@ abstract class Entity extends DataModel
     /**
      * {@inheritDoc}
      */
-    protected static function buildSelectAllSql(Database $db) : Query
+    protected static function buildSelectAllSql(Database $db): Query
     {
-        return $db->sql("SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName()));
+        return $db->sql("SELECT * FROM " . $db->driver()->quoteIdentifier(static::tabelName()));
     }
 
     /**
@@ -349,12 +350,12 @@ abstract class Entity extends DataModel
      * @param  Database|string|null $db (default: null)
      * @return Query
      */
-    public function buildPrimaryWhere($db = null) : Query
+    public function buildPrimaryWhere($db = null): Query
     {
         $driver   = static::db($db)->driver();
         $primarys = static::primaryKeys();
         if (empty($primarys)) {
-            throw new DatabaseException("Can not build SQL because of ".static::class." entity do not have any primary keys.");
+            throw new DatabaseException("Can not build SQL because of " . static::class . " entity do not have any primary keys.");
         }
 
         $wheres = [];

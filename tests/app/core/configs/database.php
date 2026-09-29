@@ -9,7 +9,7 @@ return [
         'storage' => ArrayCursorStorage::class,
     ],
 
-    Pager::class => [
+    Pager::class  => [
         'resolver' => function (Pager $pager) { return $pager; },
     ],
 ];

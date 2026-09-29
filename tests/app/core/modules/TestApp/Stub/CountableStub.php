@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Stub;
 
 class CountableStub implements \Countable
@@ -10,7 +11,7 @@ class CountableStub implements \Countable
         $this->count = $count;
     }
 
-    public function count() : int
+    public function count(): int
     {
         return $this->count;
     }

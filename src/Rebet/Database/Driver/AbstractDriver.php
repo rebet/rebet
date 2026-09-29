@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Driver;
@@ -71,7 +72,7 @@ abstract class AbstractDriver implements Driver
      *
      * @param array<int, mixed> $options
      */
-    public static function create(string $dsn, string|null $user = null, string|null $password = null, array $options = []) : Driver
+    public static function create(string $dsn, string|null $user = null, string|null $password = null, array $options = []): Driver
     {
         return new static(new \PDO($dsn, $user, $password), $options);
     }
@@ -86,7 +87,7 @@ abstract class AbstractDriver implements Driver
     {
         $driver = $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
         if ($driver !== static::SUPPORTED_PDO_DRIVER) {
-            throw new DatabaseException("Invalid PDO driver '{$driver}' was given. This driver require '".static::SUPPORTED_PDO_DRIVER."' PDO driver.");
+            throw new DatabaseException("Invalid PDO driver '{$driver}' was given. This driver require '" . static::SUPPORTED_PDO_DRIVER . "' PDO driver.");
         }
         foreach (array_replace(static::config("options.pdo", false) ?? [], $driver_options) as $key => $value) {
             $pdo->setAttribute($key, $value);
@@ -97,10 +98,10 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function pdo() : \PDO
+    public function pdo(): \PDO
     {
         if ($this->closed()) {
-            throw new DatabaseException("[".static::SUPPORTED_PDO_DRIVER."] Database connection was lost.");
+            throw new DatabaseException("[" . static::SUPPORTED_PDO_DRIVER . "] Database connection was lost.");
         }
         return $this->pdo;
     }
@@ -108,7 +109,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function name() : string
+    public function name(): string
     {
         return $this->pdo()->getAttribute(\PDO::ATTR_DRIVER_NAME);
     }
@@ -116,7 +117,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function serverVersion() : string
+    public function serverVersion(): string
     {
         return $this->pdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
     }
@@ -124,7 +125,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function clientVersion() : string
+    public function clientVersion(): string
     {
         $version = $this->pdo()->getAttribute(\PDO::ATTR_CLIENT_VERSION);
         return is_array($version) ? Arrays::implode($version, '; ', '=') : $version ;
@@ -138,15 +139,15 @@ abstract class AbstractDriver implements Driver
      * @param  array<int|string, mixed>                                              $params (default: [])
      * @return DatabaseException
      */
-    protected function exception($error, string|null $sql = null, array $params = []) : DatabaseException
+    protected function exception($error, string|null $sql = null, array $params = []): DatabaseException
     {
-        return DatabaseException::from('pdo:'.static::SUPPORTED_PDO_DRIVER, $error, $sql, $params);
+        return DatabaseException::from('pdo:' . static::SUPPORTED_PDO_DRIVER, $error, $sql, $params);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function quote(string $string, int $parameter_type = \PDO::PARAM_STR) : string
+    public function quote(string $string, int $parameter_type = \PDO::PARAM_STR): string
     {
         return $this->pdo()->quote($string, $parameter_type);
     }
@@ -154,19 +155,19 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function quoteIdentifier(string $identifier) : string
+    public function quoteIdentifier(string $identifier): string
     {
         if (!preg_match('/^[a-zA-Z0-9_]+$/', $identifier)) {
             return $identifier;
         }
 
-        return static::IDENTIFIER_QUOTES[0].$identifier.static::IDENTIFIER_QUOTES[1];
+        return static::IDENTIFIER_QUOTES[0] . $identifier . static::IDENTIFIER_QUOTES[1];
     }
 
     /**
      * {@inheritDoc}
      */
-    public function begin() : string
+    public function begin(): string
     {
         try {
             // NOTE: Some drivers (e.g. mysql) are connected with autocommit disabled, so a plain query
@@ -187,7 +188,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function savepoint(string $name) : string
+    public function savepoint(string $name): string
     {
         $this->exec($sql = $this->buildSavepointSql($name));
         return $sql;
@@ -199,7 +200,7 @@ abstract class AbstractDriver implements Driver
      * @param  string $name of savepoint
      * @return string of savepoint SQL
      */
-    protected function buildSavepointSql(string $name) : string
+    protected function buildSavepointSql(string $name): string
     {
         return "SAVEPOINT {$name}";
     }
@@ -207,7 +208,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function commit() : string
+    public function commit(): string
     {
         try {
             if (!$this->pdo()->commit()) {
@@ -222,7 +223,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function rollback(string|null $savepoint = null, bool $quiet = true) : string|null
+    public function rollback(string|null $savepoint = null, bool $quiet = true): string|null
     {
         try {
             if ($savepoint) {
@@ -248,7 +249,7 @@ abstract class AbstractDriver implements Driver
      * @param  string $name of savepoint
      * @return string of rollback to savepoint SQL.
      */
-    protected function buildRollbackToSavepointSql(string $name) : string
+    protected function buildRollbackToSavepointSql(string $name): string
     {
         return "ROLLBACK TO SAVEPOINT {$name}";
     }
@@ -256,7 +257,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function exec(string $sql) : int
+    public function exec(string $sql): int
     {
         if (($affected_rows = $this->pdo()->exec($sql)) === false) {
             throw $this->exception($this->pdo()->errorInfo(), $sql);
@@ -269,7 +270,7 @@ abstract class AbstractDriver implements Driver
      *
      * @param array<int, mixed> $driver_options
      */
-    public function prepare(string $sql, array $driver_options = []) : \PDOStatement
+    public function prepare(string $sql, array $driver_options = []): \PDOStatement
     {
         try {
             $options = array_replace(static::config("options.statement", false) ?? [], $driver_options);
@@ -286,7 +287,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function lastInsertId(string|null $name = null) : string
+    public function lastInsertId(string|null $name = null): string
     {
         return $this->pdo()->lastInsertId($name);
     }
@@ -294,7 +295,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function truncate(string $table_name, bool|null $with_vacuum = true) : string
+    public function truncate(string $table_name, bool|null $with_vacuum = true): string
     {
         $quoted_table_name = $this->quoteIdentifier($table_name);
         $this->exec($sql = "TRUNCATE TABLE {$quoted_table_name}");
@@ -304,7 +305,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function close() : void
+    public function close(): void
     {
         if ($this->pdo) {
             $this->rollback();
@@ -315,7 +316,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function closed() : bool
+    public function closed(): bool
     {
         return $this->pdo === null;
     }
@@ -325,7 +326,7 @@ abstract class AbstractDriver implements Driver
      *
      * @param string|array<int, string> $where
      */
-    public function appendWhere(string $sql, $where) : string
+    public function appendWhere(string $sql, $where): string
     {
         if (empty($where)) {
             return $sql;
@@ -341,9 +342,9 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function appendLimitOffset(string $sql, int|null $limit, int|null $offset = null) : string
+    public function appendLimitOffset(string $sql, int|null $limit, int|null $offset = null): string
     {
-        $limit  = $limit  ? " LIMIT {$limit}"   : "" ;
+        $limit  = $limit ? " LIMIT {$limit}" : "" ;
         $offset = $offset ? " OFFSET {$offset}" : "" ;
         return "{$sql}{$limit}{$offset}";
     }
@@ -351,7 +352,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function appendForUpdate(string $sql) : string
+    public function appendForUpdate(string $sql): string
     {
         return "{$sql} FOR UPDATE";
     }
@@ -359,7 +360,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function toPdoType($value) : PdoParameter
+    public function toPdoType($value): PdoParameter
     {
         if ($value instanceof Enum) {
             $value = $value->value;
@@ -383,7 +384,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function analyzer(string $sql) : Analyzer
+    public function analyzer(string $sql): Analyzer
     {
         return new BuiltinAnalyzer($sql);
     }
@@ -393,7 +394,7 @@ abstract class AbstractDriver implements Driver
      *
      * @return array<string, \Closure>
      */
-    public function ransackValueConverters() : array
+    public function ransackValueConverters(): array
     {
         return static::config('ransack.value_converters', false, []);
     }
@@ -403,7 +404,7 @@ abstract class AbstractDriver implements Driver
      *
      * @return array<string, array{0: string, 1: string|\Closure|null, 2: string}>
      */
-    public function ransackPredicates() : array
+    public function ransackPredicates(): array
     {
         return static::config('ransack.predicates', false, []);
     }
@@ -413,7 +414,7 @@ abstract class AbstractDriver implements Driver
      *
      * @return array<string, string>
      */
-    public function ransackOptions() : array
+    public function ransackOptions(): array
     {
         return static::config('ransack.options', false, []);
     }
@@ -423,7 +424,7 @@ abstract class AbstractDriver implements Driver
      *
      * @param array<int|string, mixed> $params
      */
-    public function sql(string $sql, array $params = []) : Query
+    public function sql(string $sql, array $params = []): Query
     {
         return new Query($this, $sql, $params);
     }

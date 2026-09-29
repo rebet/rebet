@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Http\Session\Storage\Handler;
 
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
@@ -8,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class NativeFileSessionHandlerTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->vfs([

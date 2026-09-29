@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\Console\Command\Hash;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -9,14 +10,14 @@ use Rebet\Tools\Utility\Strings;
 
 class HashPasswordCommandTest extends RebetConsoleTestCase
 {
-    const AVIRABLE_COMMANDS = [HashPasswordCommand::class];
+    public const AVIRABLE_COMMANDS = [HashPasswordCommand::class];
 
     // public function test_run()
     // {
     //     $this->execute('hash:password foobar -o \'{"cost": 8}\'');
     // }
 
-    public static function dataExecutes() : array
+    public static function dataExecutes(): array
     {
         return [
             ['foobar'],

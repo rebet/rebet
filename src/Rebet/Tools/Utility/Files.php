@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -18,9 +19,7 @@ class Files
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Delete the target directory including the subdirectory or all contains files and subdirectories.
@@ -29,7 +28,7 @@ class Files
      * @param  bool        $remove_target_dir (default: true)
      * @return void
      */
-    public static function removeDir(string|null $dir, bool $remove_target_dir = true) : void
+    public static function removeDir(string|null $dir, bool $remove_target_dir = true): void
     {
         if ($dir === null || !file_exists($dir)) {
             return;
@@ -59,7 +58,7 @@ class Files
      * @return void
      * @throws ZipArchiveException
      */
-    public static function unzip(string $zip_path, string $dest_dir) : void
+    public static function unzip(string $zip_path, string $dest_dir): void
     {
         $zip = new \ZipArchive();
         self::zipErrorCheck($zip->open($zip_path), "Open {$zip_path} failed.");
@@ -74,7 +73,7 @@ class Files
      * @param  string              $message of error happend (default: 'ZipArchive error.')
      * @throws ZipArchiveException
      */
-    private static function zipErrorCheck($code, string $message = 'ZipArchive error.') : void
+    private static function zipErrorCheck($code, string $message = 'ZipArchive error.'): void
     {
         if ($code === true) {
             return;
@@ -149,7 +148,7 @@ class Files
      * @return void
      * @throws ZipArchiveException
      */
-    public static function zip(string $source_path, string $out_zip_path, bool $include_target_dir = true, \Closure|null $filter = null, int $out_dir_permission = 0775) : void
+    public static function zip(string $source_path, string $out_zip_path, bool $include_target_dir = true, \Closure|null $filter = null, int $out_dir_permission = 0o775): void
     {
         if (empty($filter)) {
             $filter = function ($path) {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Event;
@@ -11,6 +12,4 @@ namespace Rebet\Database\Event;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-interface Saving
-{
-}
+interface Saving {}

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\View\Engine\Blade\Compiler;
@@ -32,7 +33,7 @@ class BladeCompiler extends LaravelBladeCompiler
      * @param  string $code
      * @return void
      */
-    public function raw(string $name, string $code) : void
+    public function raw(string $name, string $code): void
     {
         $this->directive($name, function () use ($code) {
             return "<?php {$code} ?>";
@@ -63,10 +64,10 @@ class BladeCompiler extends LaravelBladeCompiler
      * @param  string|null   $binds     (default: null)
      * @return void
      */
-    public function embed(string $name, string $open, Processor $processor, string $close, \Closure|null $lf_trimer = null, string|null $binds = null) : void
+    public function embed(string $name, string $open, Processor $processor, string $close, \Closure|null $lf_trimer = null, string|null $binds = null): void
     {
         $this->processors[$name] = $processor;
-        $lf_trimer               = $lf_trimer ?? function (string|null $expression) { return true; };
+        $lf_trimer ??= function (string|null $expression) { return true; };
         $this->directive($name, function ($expression) use ($name, $open, $close, $binds, $lf_trimer) {
             $lf = $lf_trimer($expression) ? "" : "\n" ;
             return $binds
@@ -94,32 +95,32 @@ class BladeCompiler extends LaravelBladeCompiler
                     : "<?php if (\Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>";
         });
 
-        $this->directive('else'.$name, function ($expression) use ($name, $binds) {
+        $this->directive('else' . $name, function ($expression) use ($name, $binds) {
             return $binds
                 ? "<?php elseif (\Illuminate\Support\Facades\Blade::execute('{$name}', [{$binds}, {$expression}])): ?>"
                 : "<?php elseif (\Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>";
         });
 
-        $this->directive('end'.$name, function () {
+        $this->directive('end' . $name, function () {
             return '<?php endif; ?>';
         });
 
         $this->directive(
-            $name.'not',
+            $name . 'not',
             function ($expression) use ($name, $binds) {
                 return $binds
                 ? "<?php if (! \Illuminate\Support\Facades\Blade::execute('{$name}', [{$binds}, {$expression}])): ?>"
                 : "<?php if (! \Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>";
-            }
+            },
         );
 
         $this->directive(
-            'else'.$name.'not',
+            'else' . $name . 'not',
             function ($expression) use ($name, $binds) {
                 return $binds
                 ? "<?php elseif (! \Illuminate\Support\Facades\Blade::execute('{$name}', [{$binds}, {$expression}])): ?>"
                 : "<?php elseif (! \Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>";
-            }
+            },
         );
     }
 
@@ -130,9 +131,9 @@ class BladeCompiler extends LaravelBladeCompiler
      * @param  callable|string $thrower function(){ return/throw new XxxxException(); } or a error message for LogicException
      * @return void
      */
-    public function disable(string $name, $thrower = null) : void
+    public function disable(string $name, $thrower = null): void
     {
-        $thrower = $thrower ?? "The '{$name}' directive is not supported in Rebet." ;
+        $thrower ??= "The '{$name}' directive is not supported in Rebet." ;
         $this->directive($name, function ($expression) use ($thrower) {
             throw is_string($thrower) ? new LogicException($thrower) : $thrower() ;
         });

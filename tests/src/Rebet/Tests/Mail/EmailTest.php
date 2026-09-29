@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Mail;
 
 use Rebet\Mail\Email;
@@ -44,10 +45,10 @@ class EmailTest extends RebetTestCase
             Email::class => [
                 'mailers' => [
                     'rotate' => [
-                        'transport' => [
-                            '@factory'   => RoundRobinTransport::class,
-                            'transports' => [
-                                ['@factory' => Transport::class."::fromDsn", 'dsn' => 'sendmail://default'],
+                        'transport'  => [
+                            '@factory'     => RoundRobinTransport::class,
+                            'transports'   => [
+                                ['@factory' => Transport::class . "::fromDsn", 'dsn' => 'sendmail://default'],
                                 ['@factory' => InMemoryTransport::class],
                                 ['@factory' => NullTransport::class],
                             ],
@@ -76,10 +77,10 @@ class EmailTest extends RebetTestCase
             Email::class => [
                 'mailers' => [
                     'failover' => [
-                        'transport' => [
-                            '@factory'   => FailoverTransport::class,
-                            'transports' => [
-                                ['@factory' => Transport::class."::fromDsn", 'dsn' => 'sendmail://default'],
+                        'transport'  => [
+                            '@factory'     => FailoverTransport::class,
+                            'transports'   => [
+                                ['@factory' => Transport::class . "::fromDsn", 'dsn' => 'sendmail://default'],
                                 InMemoryTransport::class,
                                 NullTransport::class,
                             ],
@@ -143,7 +144,7 @@ class EmailTest extends RebetTestCase
 
         $mail = (new Email())
             ->html($html)
-            ->generateTextBodyFromHtml(fn ($body) => strip_tags(str_replace('</h1>', "\n----------\n\n", $body)))
+            ->generateTextBodyFromHtml(fn($body) => strip_tags(str_replace('</h1>', "\n----------\n\n", $body)))
         ;
         $this->assertEquals($html, $mail->getHtmlBody());
         $this->assertStringContainsString("Subject\n----------\n\nText bold italic", $mail->getTextBody());
@@ -212,7 +213,7 @@ class EmailTest extends RebetTestCase
         $this->assertStringContainsString('CC3 <cc3@test.local>', $cc_header, 'A pure ASCII display name must be left as-is, not wrapped in an encoded-word');
         $this->assertSame(
             '長い場合はどうなる長い場合はどうなる長い場合はどうなる長い場合はどうなる <cc@test.local>, 宛先2 <cc2@test.local>, CC3 <cc3@test.local>',
-            mb_decode_mimeheader($cc_header)
+            mb_decode_mimeheader($cc_header),
         );
 
         $bcc_header = $builded_mail->getHeaders()->get('Bcc')->getBodyAsString();
@@ -246,7 +247,7 @@ class EmailTest extends RebetTestCase
         $subject_header = $builded_mail->getHeaders()->get('Subject');
         $body_as_string = $subject_header->getBodyAsString();
 
-        $this->assertSame('=?UTF-8?B?'.base64_encode('タイトル').'?=', $body_as_string);
+        $this->assertSame('=?UTF-8?B?' . base64_encode('タイトル') . '?=', $body_as_string);
         $this->assertStringNotContainsString("\r\n", $body_as_string, 'No line-fold should be inserted when the whole subject fits on a single line');
         $this->assertSame(1, substr_count($body_as_string, '=?UTF-8?B?'), 'A short subject must not be split into multiple (or spurious empty) encoded-words');
         $this->assertSame('タイトル', mb_decode_mimeheader($body_as_string));
@@ -254,7 +255,7 @@ class EmailTest extends RebetTestCase
         // Also verify the fully rendered header line (as it would actually be sent over the
         // wire) has no spurious blank continuation line.
         $rendered = $subject_header->toString();
-        $this->assertSame('Subject: =?UTF-8?B?'.base64_encode('タイトル').'?=', $rendered);
+        $this->assertSame('Subject: =?UTF-8?B?' . base64_encode('タイトル') . '?=', $rendered);
         $this->assertStringNotContainsString("\r\n", $rendered);
     }
 
@@ -448,7 +449,7 @@ class EmailTest extends RebetTestCase
         $this->assertStringContainsString('CC3 <cc3@test.local>', $cc_header, 'A pure ASCII display name must be left as-is, not wrapped in an encoded-word');
         $this->assertSame(
             '長い場合はどうなる長い場合はどうなる長い場合はどうなる長い場合はどうなる <cc@test.local>, 宛先2 <cc2@test.local>, CC3 <cc3@test.local>',
-            mb_decode_mimeheader($cc_header)
+            mb_decode_mimeheader($cc_header),
         );
 
         $bcc_header = $sent_mail->getHeaders()->get('Bcc')->getBodyAsString();

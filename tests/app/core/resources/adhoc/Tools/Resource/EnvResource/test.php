@@ -1,4 +1,5 @@
 <?php
+
 return [
     'int'    => 1,
     'string' => 'a',

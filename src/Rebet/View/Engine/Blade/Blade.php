@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\View\Engine\Blade;
@@ -51,7 +52,7 @@ class Blade implements Engine
     /**
      * @return array<string, mixed>
      */
-    public static function defaultConfigOverrideOptions() : array
+    public static function defaultConfigOverrideOptions(): array
     {
         return [
             'customizers' => OverrideOption::APPEND,
@@ -63,7 +64,7 @@ class Blade implements Engine
      *
      * @return void
      */
-    public static function clear() : void
+    public static function clear(): void
     {
         Application::setInstance(null);
     }
@@ -81,21 +82,21 @@ class Blade implements Engine
             return;
         }
 
-        $view_path  = (array)static::config('view_path');
+        $view_path  = (array) static::config('view_path');
         $cache_path = static::config('cache_path', false);
 
         $app->bind('files', function () {
             return new Filesystem();
         });
         $app->bind('view.finder', function ($app) use ($view_path) {
-            return new FileViewFinder($app['files'], (array)$view_path);
+            return new FileViewFinder($app['files'], (array) $view_path);
         });
         $app->bind('events', function () {
             return new Dispatcher();
         });
         $app->singleton('view.engine.resolver', function ($app) use ($cache_path) {
             if (! is_dir($cache_path)) {
-                mkdir($cache_path, 0777, true);
+                mkdir($cache_path, 0o777, true);
             }
             $resolver = new EngineResolver();
             $app->singleton('blade.compiler', function ($app) use ($cache_path) {
@@ -140,7 +141,7 @@ class Blade implements Engine
      *
      * @return array<int, string>
      */
-    public function getPaths() : array
+    public function getPaths(): array
     {
         return array_map(function ($path) { return Path::normalize($path); }, $this->finder()->getPaths());
     }
@@ -148,7 +149,7 @@ class Blade implements Engine
     /**
      * {@inheritDoc}
      */
-    public function prependPath(string $path) : Engine
+    public function prependPath(string $path): Engine
     {
         $path = Path::normalize($path);
         if (!in_array($path, $this->getPaths())) {
@@ -160,7 +161,7 @@ class Blade implements Engine
     /**
      * {@inheritDoc}
      */
-    public function appendPath(string $path) : Engine
+    public function appendPath(string $path): Engine
     {
         $path = Path::normalize($path);
         if (!in_array($path, $this->getPaths())) {
@@ -174,7 +175,7 @@ class Blade implements Engine
      *
      * @param array<string, mixed> $data
      */
-    public function render(string $name, array $data = []) : string
+    public function render(string $name, array $data = []): string
     {
         return $this->core()->make($name, $data)->render();
     }
@@ -182,7 +183,7 @@ class Blade implements Engine
     /**
      * {@inheritDoc}
      */
-    public function exists(string $name) : bool
+    public function exists(string $name): bool
     {
         return $this->core()->exists($name);
     }
@@ -192,7 +193,7 @@ class Blade implements Engine
      *
      * @return FileViewFinder
      */
-    public function finder() : FileViewFinder
+    public function finder(): FileViewFinder
     {
         $finder = $this->core()->getFinder();
         if (!$finder instanceof FileViewFinder) {
@@ -206,7 +207,7 @@ class Blade implements Engine
      *
      * @return BladeCompiler
      */
-    public function compiler() : BladeCompiler
+    public function compiler(): BladeCompiler
     {
         $engine = $this->core()->getEngineResolver()->resolve('blade');
         if (!$engine instanceof CompilerEngine) {

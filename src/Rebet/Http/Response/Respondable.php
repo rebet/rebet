@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http\Response;
@@ -38,7 +39,7 @@ trait Respondable
      * @param  boolean                   $replace (default: true)
      * @return Response
      */
-    public function setHeader(string $key, $values, bool $replace = true) : Response
+    public function setHeader(string $key, $values, bool $replace = true): Response
     {
         $this->headers->set($key, $values, $replace);
         return $this;
@@ -74,7 +75,7 @@ trait Respondable
      * @param  Cookie   $cookie
      * @return Response
      */
-    public function setCookie(Cookie $cookie) : Response
+    public function setCookie(Cookie $cookie): Response
     {
         $this->headers->setCookie($cookie);
         return $this;

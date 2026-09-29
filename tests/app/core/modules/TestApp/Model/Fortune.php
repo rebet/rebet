@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Model;
 
 use Rebet\Database\Attribute\PrimaryKey;
@@ -21,7 +22,7 @@ class Fortune extends Entity
     public DateTime|null $created_at = null;
     public DateTime|null $updated_at = null;
 
-    public function users($ransack = [], int|null $limit = null, bool $for_update = false, bool $eager_load = true) : array
+    public function users($ransack = [], int|null $limit = null, bool $for_update = false, bool $eager_load = true): array
     {
         return parent::hasMany(User::class, [], $ransack, null, $limit, $for_update, $eager_load);
     }
@@ -37,7 +38,7 @@ class Fortune extends Entity
     /**
      * Method for unit test
      */
-    public function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true, string|null $name = null) : array
+    public function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true, string|null $name = null): array
     {
         return parent::hasMany($class, $alias, $ransacks, $order_by, $limit, $for_update, $eager_load, $name ?? Reflector::caller());
     }

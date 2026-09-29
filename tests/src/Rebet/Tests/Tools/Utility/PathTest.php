@@ -1,9 +1,9 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Exception\LogicException;
-
 use Rebet\Tools\Utility\Path;
 
 class PathTest extends RebetTestCase

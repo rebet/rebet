@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -19,9 +20,7 @@ class Env
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Gets the value of an environment variable.
@@ -46,7 +45,7 @@ class Env
      * @param  bool          $only_once (default: true)
      * @return ConfigPromise
      */
-    public static function promise(string $name, $default = null, bool $only_once = true) : ConfigPromise
+    public static function promise(string $name, $default = null, bool $only_once = true): ConfigPromise
     {
         return Config::promise(function () use ($name, $default) { return static::get($name, $default); }, $only_once);
     }

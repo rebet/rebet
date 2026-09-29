@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database;
@@ -44,7 +45,7 @@ class OrderBy implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeri
      *
      * @return array<string, string>
      */
-    protected function &container() : array
+    protected function &container(): array
     {
         return $this->order_by;
     }
@@ -54,7 +55,7 @@ class OrderBy implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeri
      *
      * @return self
      */
-    public function reverse() : self
+    public function reverse(): self
     {
         return new static(array_map(function ($v) { return $v === 'ASC' ? 'DESC' : 'ASC'; }, $this->order_by));
     }
@@ -65,7 +66,7 @@ class OrderBy implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeri
      * @param  mixed     $order_by
      * @return self|null
      */
-    public static function valueOf($order_by) : self|null
+    public static function valueOf($order_by): self|null
     {
         switch (true) {
             case empty($order_by):            return null;

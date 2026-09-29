@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Log\Driver;
 
 use Rebet\Log\Driver\NullDriver;

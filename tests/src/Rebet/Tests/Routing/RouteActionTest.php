@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Routing;
 
 use Rebet\Application\App;
@@ -19,14 +20,14 @@ class RouteActionTest extends RebetTestCase
         $this->assertInstanceOf(RouteAction::class, $this->createRouteActionBasedClosureMock(function () { return 'Hello'; }));
     }
 
-    protected function createRouteActionBasedClosureMock(callable $action) : RouteAction
+    protected function createRouteActionBasedClosureMock(callable $action): RouteAction
     {
         $action = \Closure::fromCallable($action);
         $route  = new ClosureRoute([], '/', $action);
         return new RouteAction($route, new \ReflectionFunction($action));
     }
 
-    protected function createRouteActionBasedControllerMock(string $url) : array
+    protected function createRouteActionBasedControllerMock(string $url): array
     {
         $route   = new ConventionalRoute();
         $request = $this->createRequestMock($url, null, 'web', 'web', 'GET', '', $route);

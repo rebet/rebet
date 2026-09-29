@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Filesystem;
@@ -31,22 +32,22 @@ interface Filesystem
     /**
      * @var string 'public' visibility
      */
-    const VISIBILITY_PUBLIC = 'public';
+    public const VISIBILITY_PUBLIC = 'public';
 
     /**
      * @var string 'private' visibility
      */
-    const VISIBILITY_PRIVATE = 'private';
+    public const VISIBILITY_PRIVATE = 'private';
 
     /**
      * @var string 'wildcard' matching mode
      */
-    const MATCHING_MODE_WILDCARD = 'wildcard';
+    public const MATCHING_MODE_WILDCARD = 'wildcard';
 
     /**
      * @var string 'regex' matching mode
      */
-    const MATCHING_MODE_REGEX = 'regex';
+    public const MATCHING_MODE_REGEX = 'regex';
 
     /**
      * Create Filesystem using given adapter and config.
@@ -61,14 +62,14 @@ interface Filesystem
      *
      * @return FilesystemOperator
      */
-    public function driver() : FilesystemOperator;
+    public function driver(): FilesystemOperator;
 
     /**
      * Get the filesystem adapter.
      *
      * @return FilesystemAdapter
      */
-    public function adapter() : FilesystemAdapter;
+    public function adapter(): FilesystemAdapter;
 
     /**
      * Determine if a file exists.
@@ -76,7 +77,7 @@ interface Filesystem
      * @param  string $path
      * @return bool
      */
-    public function exists(string $path) : bool;
+    public function exists(string $path): bool;
 
     /**
      * It checks the given path is file or not
@@ -84,7 +85,7 @@ interface Filesystem
      * @param  string  $path
      * @return boolean
      */
-    public function isFile(string $path) : bool;
+    public function isFile(string $path): bool;
 
     /**
      * It checks the given path is directory or not
@@ -92,7 +93,7 @@ interface Filesystem
      * @param  string  $path
      * @return boolean
      */
-    public function isDirectory(string $path) : bool;
+    public function isDirectory(string $path): bool;
 
     /**
      * Get the full path for the file at the given "short" path.
@@ -100,7 +101,7 @@ interface Filesystem
      * @param  string $path (default: '/')
      * @return string
      */
-    public function path(string $path = '/') : string;
+    public function path(string $path = '/'): string;
 
     /**
      * Get the contents of a file.
@@ -109,7 +110,7 @@ interface Filesystem
      * @return string
      * @throws FileNotFoundException
      */
-    public function get(string $path) : string;
+    public function get(string $path): string;
 
     /**
      * Write the contents of a file.
@@ -126,7 +127,7 @@ interface Filesystem
      * @return string                                       of saved path
      * @throws FilesystemException                          when can not save given contents
      */
-    public function put(string $path, $contents, $options = []) : string;
+    public function put(string $path, $contents, $options = []): string;
 
     /**
      * Write the contents of a file.
@@ -143,7 +144,7 @@ interface Filesystem
      * @return string                                       of saved path
      * @throws FilesystemException                          when can not save given file
      */
-    public function putFile(string $path, $file, $options = []) : string;
+    public function putFile(string $path, $file, $options = []): string;
 
     /**
      * Get the visibility for the given path.
@@ -152,7 +153,7 @@ interface Filesystem
      * @return string              The visibility Filesystem::VISIBILITY_* (public|private)
      * @throws FilesystemException when can not get visibility
      */
-    public function getVisibility(string $path) : string;
+    public function getVisibility(string $path): string;
 
     /**
      * Set the visibility for the given path.
@@ -163,7 +164,7 @@ interface Filesystem
      * @throws FileNotFoundException
      * @throws FilesystemException   when can not set visibility
      */
-    public function setVisibility(string $path, string $visibility) : self;
+    public function setVisibility(string $path, string $visibility): self;
 
     /**
      * Prepend data to a file.
@@ -173,7 +174,7 @@ interface Filesystem
      * @param  string $separator (default: "\n")
      * @return self
      */
-    public function prepend(string $path, string $data, string $separator = "\n") : self;
+    public function prepend(string $path, string $data, string $separator = "\n"): self;
 
     /**
      * Append data to a file.
@@ -183,7 +184,7 @@ interface Filesystem
      * @param  string $separator (default: "\n")
      * @return self
      */
-    public function append(string $path, string $data, string $separator = "\n") : self;
+    public function append(string $path, string $data, string $separator = "\n"): self;
 
     /**
      * Delete the file and directory at a given path.
@@ -192,7 +193,7 @@ interface Filesystem
      * @return self
      * @throws FilesystemException when data can not delete
      */
-    public function delete(string ...$paths) : self;
+    public function delete(string ...$paths): self;
 
     /**
      * Delete all of the files and directories in the given path.
@@ -201,7 +202,7 @@ interface Filesystem
      * @return self
      * @throws FilesystemException when data can not delete
      */
-    public function clean(string $directory = '/') : self;
+    public function clean(string $directory = '/'): self;
 
     /**
      * Copy a file/directory to a new location.
@@ -213,7 +214,7 @@ interface Filesystem
      * @throws FileNotFoundException
      * @throws FilesystemException   when can not copy
      */
-    public function copy(string $from, string $to, bool $replace = false) : self;
+    public function copy(string $from, string $to, bool $replace = false): self;
 
     /**
      * Move/Rename a file/directory to a new location.
@@ -225,7 +226,7 @@ interface Filesystem
      * @throws FileNotFoundException
      * @throws FilesystemException   when can not move
      */
-    public function move(string $from, string $to, bool $replace = false) : self;
+    public function move(string $from, string $to, bool $replace = false): self;
 
     /**
      * Get the file size of a given file.
@@ -235,7 +236,7 @@ interface Filesystem
      * @throws FileNotFoundException
      * @throws FilesystemException   when can not get size
      */
-    public function size(string $path) : int ;
+    public function size(string $path): int ;
 
     /**
      * Get a file's metadata.
@@ -245,7 +246,7 @@ interface Filesystem
      * @throws FileNotFoundException
      * @throws FilesystemException                                               when can not get metadata
      */
-    public function metadata(string $path) : array;
+    public function metadata(string $path): array;
 
     /**
      * Get the mime-type of a given file.
@@ -254,7 +255,7 @@ interface Filesystem
      * @return string|null
      * @throws FileNotFoundException
      */
-    public function mimeType(string $path) : string|null ;
+    public function mimeType(string $path): string|null ;
 
     /**
      * Get the file's last modification time.
@@ -264,7 +265,7 @@ interface Filesystem
      * @throws FileNotFoundException
      * @throws FilesystemException   when can not get last modified
      */
-    public function lastModified(string $path) : DateTime;
+    public function lastModified(string $path): DateTime;
 
     /**
      * Get the URL for the file at the given path.
@@ -274,7 +275,7 @@ interface Filesystem
      * @throws FileNotFoundException when file not found or the file is not public.
      * @throws FilesystemException   when the adapter does not support retrieving URLs.
      */
-    public function url(string $path) : string|null;
+    public function url(string $path): string|null;
 
     /**
      * Retrieves a read-stream for a path.
@@ -295,7 +296,7 @@ interface Filesystem
      * @param  string             $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
      * @return array<int, string> of matching file paths
      */
-    public function ls(string|null $directory = null, $pattern = '*', string|null $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
+    public function ls(string|null $directory = null, $pattern = '*', string|null $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD): array;
 
     /**
      * Get an array of files in a directory.
@@ -306,7 +307,7 @@ interface Filesystem
      * @param  string             $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
      * @return array<int, string> of matching file paths
      */
-    public function files(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
+    public function files(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD): array;
 
     /**
      * Get an array of directories in a directory.
@@ -317,7 +318,7 @@ interface Filesystem
      * @param  string             $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
      * @return array<int, string> of matching file paths
      */
-    public function directories(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
+    public function directories(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD): array;
 
     /**
      * Create a directory
@@ -326,5 +327,5 @@ interface Filesystem
      * @param  array<string, mixed> $config (default: [])
      * @return self
      */
-    public function mkdir(string $path, array $config = []) : self;
+    public function mkdir(string $path, array $config = []): self;
 }

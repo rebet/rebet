@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\View\Engine\Twig\Node;
@@ -30,7 +31,7 @@ class EmbedNode extends Node
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         static::$processors = [];
     }
@@ -42,7 +43,7 @@ class EmbedNode extends Node
      * @param  Processor $processor
      * @return void
      */
-    public static function addCode(string $name, Processor $processor) : void
+    public static function addCode(string $name, Processor $processor): void
     {
         static::$processors[$name] = $processor;
     }
@@ -75,7 +76,7 @@ class EmbedNode extends Node
         $elements = [];
         $args     = array_merge(
             array_map(function ($value) use ($lineno) { return new NameExpression($value, $lineno); }, $binds),
-            array_map(function ($value) use ($lineno) { return $value instanceof Node ? $value : new ConstantExpression($value, $lineno); }, $args)
+            array_map(function ($value) use ($lineno) { return $value instanceof Node ? $value : new ConstantExpression($value, $lineno); }, $args),
         );
         foreach ($args as $key => $value) {
             $elements[] = new ConstantExpression($key, $lineno);
@@ -93,7 +94,7 @@ class EmbedNode extends Node
                 'invert' => $invert,
             ],
             $lineno,
-            $name
+            $name,
         );
     }
 

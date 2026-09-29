@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Log;
 
 use Rebet\Log\LogLevel;

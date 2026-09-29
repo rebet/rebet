@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Filesystem;
 
 use Rebet\Filesystem\Exception\FilesystemException;
@@ -9,7 +10,7 @@ use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 
 class StorageTest extends RebetTestCase
 {
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         Storage::reset();
         parent::tearDown();

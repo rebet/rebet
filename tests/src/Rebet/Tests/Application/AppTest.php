@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application;
 
 use Rebet\Application\App;
@@ -9,7 +10,7 @@ use TestApp\Stub\KernelStub;
 
 class AppTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
     }

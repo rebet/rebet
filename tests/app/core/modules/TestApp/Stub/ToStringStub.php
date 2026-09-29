@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Stub;
 
 class ToStringStub

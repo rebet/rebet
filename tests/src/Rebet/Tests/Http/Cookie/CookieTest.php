@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Http\Cookie;
 
 use Rebet\Http\Cookie\Cookie;
@@ -9,7 +10,7 @@ use Rebet\Tools\Exception\LogicException;
 
 class CookieTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database\Driver;
 
 use Rebet\Database\Database;
@@ -11,7 +12,7 @@ use Rebet\Tools\Reflection\Reflector;
 
 class MysqlDriverTest extends RebetDatabaseTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2001-02-03 04:05:06');
@@ -22,61 +23,61 @@ class MysqlDriverTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db) {
             $db->execute("DROP TABLE IF EXISTS native_types;");
             $dml = <<<EOS
-                CREATE TABLE IF NOT EXISTS native_types (
-                    type_tinyint            TINYINT,
-                    type_smallint           SMALLINT,
-                    type_mediumint          MEDIUMINT,
-                    type_int                INT,
-                    type_integer            INTEGER,
-                    type_bigint             BIGINT,
-    
-                    type_bool               BOOL,
-                    type_boolean            BOOLEAN,
-                    type_tinyint_one        TINYINT(1),
-    
-                    type_bit                BIT(3),
-    
-                    type_decimal            DECIMAL(5, 2),
-                    type_dec                DEC(5, 2),
-                    type_numeric            NUMERIC,
-    
-                    type_float              FLOAT,
-                    type_double             DOUBLE,
-    
-                    type_date               DATE,
-                    type_datetime           DATETIME,
-                    type_timestamp          TIMESTAMP,
-                    type_time               TIME,
-                    type_year               YEAR,
-    
-                    type_char               CHAR(5),
-                    type_varchar            VARCHAR(5),
-                    type_binary             BINARY(5),
-                    type_varbinary          VARBINARY(5),
-                    type_tinyblob           TINYBLOB,
-                    type_blob               BLOB,
-                    type_mediumblob         MEDIUMBLOB,
-                    type_longblob           LONGBLOB,
-                    type_tinytext           TINYTEXT,
-                    type_text               TEXT,
-                    type_mediumtext         MEDIUMTEXT,
-    
-                    type_enum               ENUM('a','b','c'),
-                    type_set                SET('a','b','c'),
-    
-                    type_geometry           GEOMETRY,
-                    type_point              POINT,
-                    type_linestring         LINESTRING,
-                    type_polygon            POLYGON,
-                    type_multipoint         MULTIPOINT,
-                    type_multilinestring    MULTILINESTRING,
-                    type_multipolygon       MULTIPOLYGON,
-                    type_geometrycollection GEOMETRYCOLLECTION,
-                    type_geometry_null      GEOMETRY,
-    
-                    type_text_null          TEXT
-                );
-EOS;
+                                CREATE TABLE IF NOT EXISTS native_types (
+                                    type_tinyint            TINYINT,
+                                    type_smallint           SMALLINT,
+                                    type_mediumint          MEDIUMINT,
+                                    type_int                INT,
+                                    type_integer            INTEGER,
+                                    type_bigint             BIGINT,
+                    
+                                    type_bool               BOOL,
+                                    type_boolean            BOOLEAN,
+                                    type_tinyint_one        TINYINT(1),
+                    
+                                    type_bit                BIT(3),
+                    
+                                    type_decimal            DECIMAL(5, 2),
+                                    type_dec                DEC(5, 2),
+                                    type_numeric            NUMERIC,
+                    
+                                    type_float              FLOAT,
+                                    type_double             DOUBLE,
+                    
+                                    type_date               DATE,
+                                    type_datetime           DATETIME,
+                                    type_timestamp          TIMESTAMP,
+                                    type_time               TIME,
+                                    type_year               YEAR,
+                    
+                                    type_char               CHAR(5),
+                                    type_varchar            VARCHAR(5),
+                                    type_binary             BINARY(5),
+                                    type_varbinary          VARBINARY(5),
+                                    type_tinyblob           TINYBLOB,
+                                    type_blob               BLOB,
+                                    type_mediumblob         MEDIUMBLOB,
+                                    type_longblob           LONGBLOB,
+                                    type_tinytext           TINYTEXT,
+                                    type_text               TEXT,
+                                    type_mediumtext         MEDIUMTEXT,
+                    
+                                    type_enum               ENUM('a','b','c'),
+                                    type_set                SET('a','b','c'),
+                    
+                                    type_geometry           GEOMETRY,
+                                    type_point              POINT,
+                                    type_linestring         LINESTRING,
+                                    type_polygon            POLYGON,
+                                    type_multipoint         MULTIPOINT,
+                                    type_multilinestring    MULTILINESTRING,
+                                    type_multipolygon       MULTIPOLYGON,
+                                    type_geometrycollection GEOMETRYCOLLECTION,
+                                    type_geometry_null      GEOMETRY,
+                    
+                                    type_text_null          TEXT
+                                );
+                EOS;
             $db->execute($dml);
             $db->begin();
             $db->execute("INSERT INTO native_types VALUES (:values)", ['values' => [

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth\Guard;
@@ -49,7 +50,7 @@ class TokenGuard extends Guard
     /**
      * {@inheritDoc}
      */
-    public function authenticate() : Response|null
+    public function authenticate(): Response|null
     {
         $this->user    = $this->provider->findByToken($this->token()) ?? AuthUser::guest() ;
         $allowed_roles = $this->request->route->roles() ?: [];
@@ -61,11 +62,11 @@ class TokenGuard extends Guard
      *
      * @return string|null
      */
-    protected function token() : string|null
+    protected function token(): string|null
     {
-        return $this->request->input($this->input_key) ?:
-               $this->request->bearerToken() ?:
-               $this->request->getPassword()
+        return $this->request->input($this->input_key)
+               ?: $this->request->bearerToken()
+               ?: $this->request->getPassword()
         ;
     }
 
@@ -74,7 +75,7 @@ class TokenGuard extends Guard
      *
      * @return Response
      */
-    protected function fallback() : Response
+    protected function fallback(): Response
     {
         return Responder::problem(403);
     }

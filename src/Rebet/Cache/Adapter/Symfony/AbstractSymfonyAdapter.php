@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Cache\Adapter\Symfony;
@@ -52,9 +53,9 @@ abstract class AbstractSymfonyAdapter implements Adapter
                 break;
         }
         if ($taggable) {
-            $this->pool = // PdoAdapter for pgsql can not contains '\0' for cache_item_id, so change TAGS_PREFIX.
-                new class($adapter, $tags_pool, $known_tag_versions_ttl) extends TagAwareAdapter {
-                    const TAGS_PREFIX = " [tags] ";
+            $this->pool // PdoAdapter for pgsql can not contains '\0' for cache_item_id, so change TAGS_PREFIX.
+                = new class ($adapter, $tags_pool, $known_tag_versions_ttl) extends TagAwareAdapter {
+                    public const TAGS_PREFIX = " [tags] ";
                 };
         } else {
             $this->pool = $adapter;
@@ -64,7 +65,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function getItem($key) : CacheItemInterface
+    public function getItem($key): CacheItemInterface
     {
         return $this->pool->getItem($key);
     }
@@ -74,7 +75,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
      *
      * @return iterable<string, CacheItemInterface>
      */
-    public function getItems(array $keys = []) : iterable
+    public function getItems(array $keys = []): iterable
     {
         return $this->pool->getItems($keys);
     }
@@ -82,7 +83,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function hasItem($key) : bool
+    public function hasItem($key): bool
     {
         return $this->pool->hasItem($key);
     }
@@ -90,7 +91,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function clear() : bool
+    public function clear(): bool
     {
         return $this->pool->clear();
     }
@@ -98,7 +99,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function deleteItem($key) : bool
+    public function deleteItem($key): bool
     {
         return $this->pool->deleteItem($key);
     }
@@ -106,7 +107,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function deleteItems(array $keys) : bool
+    public function deleteItems(array $keys): bool
     {
         return $this->pool->deleteItems($keys);
     }
@@ -114,7 +115,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function save(CacheItemInterface $item) : bool
+    public function save(CacheItemInterface $item): bool
     {
         return $this->pool->save($item);
     }
@@ -122,7 +123,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function saveDeferred(CacheItemInterface $item) : bool
+    public function saveDeferred(CacheItemInterface $item): bool
     {
         return $this->pool->saveDeferred($item);
     }
@@ -130,7 +131,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function commit() : bool
+    public function commit(): bool
     {
         return $this->pool->commit();
     }
@@ -139,7 +140,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
      * {@inheritDoc}
      * @phpstan-assert-if-true TagAwareAdapterInterface $this->pool
      */
-    public function taggable() : bool
+    public function taggable(): bool
     {
         return $this->pool instanceof TagAwareAdapterInterface;
     }
@@ -181,7 +182,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function clearByTags(array $tags) : bool
+    public function clearByTags(array $tags): bool
     {
         if ($this->taggable()) {
             return $this->pool->invalidateTags($tags);
@@ -193,7 +194,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function prune() : bool
+    public function prune(): bool
     {
         return $this->pool instanceof PruneableInterface && $this->pool->prune() ;
     }

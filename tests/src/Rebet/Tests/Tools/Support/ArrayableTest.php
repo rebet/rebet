@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Support;
 
 use Rebet\Tests\RebetTestCase;
@@ -11,7 +12,7 @@ class ArrayableTest extends RebetTestCase
     private $array;
     private $map;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->empty = new ArrayableTest_Mock();
@@ -135,7 +136,7 @@ class ArrayableTest_Mock implements \ArrayAccess, \Countable, \IteratorAggregate
         $this->container = $array;
     }
 
-    protected function &container() : array
+    protected function &container(): array
     {
         return $this->container;
     }

@@ -7,10 +7,10 @@ use Rebet\View\Engine\Twig\Twig;
 
 return [
     Blade::class => [
-        'customizers' => [BladeTagCustomizer::class.'::customize'],
+        'customizers' => [BladeTagCustomizer::class . '::customize'],
     ],
 
-    Twig::class => [
-        'customizers' => [TwigTagCustomizer::class.'::customize'],
+    Twig::class  => [
+        'customizers' => [TwigTagCustomizer::class . '::customize'],
     ],
 ];

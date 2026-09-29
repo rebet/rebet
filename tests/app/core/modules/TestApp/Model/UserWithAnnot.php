@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Model;
 
 use Rebet\Database\Attribute\Defaults;
@@ -45,22 +46,22 @@ class UserWithAnnot extends Entity
     #[Unmap]
     public $bar;
 
-    public function age() : int|null
+    public function age(): int|null
     {
         return $this->birthday ? Date::valueOf($this->birthday)->age() : null ;
     }
 
-    public function fortune(bool $for_update = false, bool $eager_load = true) : Fortune|null
+    public function fortune(bool $for_update = false, bool $eager_load = true): Fortune|null
     {
         return $this->belongsTo(Fortune::class, [], $for_update, $eager_load);
     }
 
-    public function bank() : Bank|null
+    public function bank(): Bank|null
     {
         return $this->hasOne(Bank::class);
     }
 
-    public function articles(int|null $limit = null) : array
+    public function articles(int|null $limit = null): array
     {
         return $this->hasMany(Article::class, [], [], null, $limit);
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Attribute;
@@ -15,6 +16,4 @@ namespace Rebet\Routing\Attribute;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD)]
-final class AliasOnly
-{
-}
+final class AliasOnly {}

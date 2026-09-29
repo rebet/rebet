@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Ransack;
@@ -22,7 +23,7 @@ interface Ransacker
      * @param  Driver $driver
      * @return self
      */
-    public static function of(Driver $driver) : self;
+    public static function of(Driver $driver): self;
 
     /**
      * Resolve 'WHERE' condition expression part from given ransack predicate and value.
@@ -33,7 +34,7 @@ interface Ransacker
      * @param  \Closure|null                            $extention function(Ransack $ransack) : ?Condition (default: null)
      * @return Query|null                               condition or null when ignored
      */
-    public function resolve($predicate, $value, array $alias = [], \Closure|null $extention = null) : Query|null;
+    public function resolve($predicate, $value, array $alias = [], \Closure|null $extention = null): Query|null;
 
     /**
      * Build 'WHERE' condition expression from given ransack conditions.
@@ -43,5 +44,5 @@ interface Ransacker
      * @param  \Closure|null                            $extention function(Ransack $ransack) : ?Condition (default: null)
      * @return Query
      */
-    public function build($ransack, array $alias = [], \Closure|null $extention = null) : Query;
+    public function build($ransack, array $alias = [], \Closure|null $extention = null): Query;
 }

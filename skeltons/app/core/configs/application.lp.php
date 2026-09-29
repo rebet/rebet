@@ -1,4 +1,5 @@
 <?php
+
 use Rebet\Application\App;
 use Rebet\Application\Bootstrap\EmailValidatorEnable;
 use Rebet\Application\Bootstrap\HandleExceptions;
@@ -45,7 +46,7 @@ return [
     | Common settings (locale, etc.) are referenced from each package configuration and the
     | settings are linked.
     */
-    App::class => [
+    App::class       => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Application Code Name
@@ -54,7 +55,7 @@ return [
         | Since this value may be used for directories, file names, prefixes of various key names,
         | etc., so set it using only half-width alphanumeric characters (including '_' and '-').
         */
-        'code_name' => '{! $code_name !}',
+        'code_name'       => '{! $code_name !}',
 
 
         /*
@@ -64,7 +65,7 @@ return [
         | The application domain.
         | The settings of domain in libary layer use `localhost`.
         */
-        'domain' => Env::promise('APP_DOMAIN', 'localhost'),
+        'domain'          => Env::promise('APP_DOMAIN', 'localhost'),
 
 
         /*
@@ -77,7 +78,7 @@ return [
         | The settings of locale in libary layer use `locale_get_default()`, so you don't need to
         | set this configuration if you are set 'intl.default_locale' in php.ini.
         */
-        'locale' => '{! $locale !}',
+        'locale'          => '{! $locale !}',
 
 
         /*
@@ -100,7 +101,7 @@ return [
         | The settings of timezone in libary layer use `date_default_timezone_get()`, so you don't
         | need to set this configuration if you are set 'date.timezone' in php.ini.
         */
-        'timezone' => '{! $timezone !}',
+        'timezone'        => '{! $timezone !}',
 
 
         /*
@@ -111,7 +112,7 @@ return [
         | 'View' -> (Http) -> 'Database' -> 'View'.
         | You are free to change these settings as needed.
         */
-        'paginate' => [
+        'paginate'        => [
             /*
             |--------------------------------------------------------------------------------------
             | Page Number Property Name
@@ -120,7 +121,7 @@ return [
             |
             | NOTE: This setting for 'paginate' tag for view.
             */
-            'page_name' => 'page',
+            'page_name'          => 'page',
 
 
             /*
@@ -135,7 +136,7 @@ return [
             |
             | NOTE: This setting for Rebet\Database\Pagination\Pager::class resolver.
             */
-            'page_size_name' => 'page_size',
+            'page_size_name'     => 'page_size',
 
 
             /*
@@ -150,7 +151,7 @@ return [
             |
             | NOTE: This setting for 'paginate' tag for view.
             */
-            'default_template' => 'paginate@bootstrap-4',
+            'default_template'   => 'paginate@bootstrap-4',
 
 
             /*
@@ -161,7 +162,7 @@ return [
             |
             | NOTE: This setting for Rebet\Database\Pagination\Pager::class.
             */
-            'default_page_size' => 10,
+            'default_page_size'  => 10,
 
 
             /*
@@ -172,7 +173,7 @@ return [
             |
             | NOTE: This setting for Rebet\Database\Pagination\Pager::class.
             */
-            'max_page_size' => 100,
+            'max_page_size'      => 100,
 
 
             /*
@@ -188,7 +189,7 @@ return [
             | NOTE: This setting for Rebet\Database\Pagination\Pager::class, but it will influence
             |       'paginate' tag behavior of view.
             */
-            'default_each_side' => 0,
+            'default_each_side'  => 0,
 
 
             /*
@@ -221,7 +222,7 @@ return [
             |
             | NOTE: This setting for Rebet\Database\Pagination\Pager::class
             */
-            'resolver' => function (Pager $pager) {
+            'resolver'           => function (Pager $pager) {
                 $request = Request::current();
                 return $pager
                     ->page($request->get(App::config('paginate.page_name')) ?? 1)

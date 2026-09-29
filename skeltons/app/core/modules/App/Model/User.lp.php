@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Model;
@@ -100,7 +101,7 @@ class User extends Entity
      *
      * @return int|null
      */
-    public function age() : int|null
+    public function age(): int|null
     {
         return $this->birthday ? Date::valueOf($this->birthday)->age() : null ;
     }

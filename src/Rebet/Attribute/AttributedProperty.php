@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Attribute;
@@ -34,7 +35,7 @@ class AttributedProperty
      * @param  string|object|\ReflectionClass|null $class
      * @return AttributedProperty
      */
-    public static function of($property, $class = null) : AttributedProperty
+    public static function of($property, $class = null): AttributedProperty
     {
         if (is_string($property)) {
             $property = new \ReflectionProperty($class, $property);
@@ -59,9 +60,9 @@ class AttributedProperty
      *
      * @return array<object> Attribute
      */
-    public function attributes() : array
+    public function attributes(): array
     {
-        return array_map(fn (\ReflectionAttribute $a) => $a->newInstance(), $this->property->getAttributes());
+        return array_map(fn(\ReflectionAttribute $a) => $a->newInstance(), $this->property->getAttributes());
     }
 
     /**
@@ -76,8 +77,8 @@ class AttributedProperty
     public function attribute(string $attribute, bool $check_declaring_class = true)
     {
         $attributes = $this->property->getAttributes($attribute);
-        return !empty($attributes) ? $attributes[0]->newInstance() :
-               ($check_declaring_class ? $this->attributed_class->attribute($attribute) : null)
+        return !empty($attributes) ? $attributes[0]->newInstance()
+               : ($check_declaring_class ? $this->attributed_class->attribute($attribute) : null)
         ;
     }
 
@@ -86,7 +87,7 @@ class AttributedProperty
      *
      * @return AttributedClass
      */
-    public function declaringClass() : AttributedClass
+    public function declaringClass(): AttributedClass
     {
         return $this->attributed_class;
     }
@@ -96,7 +97,7 @@ class AttributedProperty
      *
      * @return \ReflectionProperty
      */
-    public function reflector() : \ReflectionProperty
+    public function reflector(): \ReflectionProperty
     {
         return $this->property;
     }

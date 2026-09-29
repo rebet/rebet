@@ -44,7 +44,7 @@ return [
         | Conversion rules of pluralize are applied and processed in the order `irregular` ->
         | `uninflected` -> `common uninflected` -> `rules`.
         */
-        'plural' => [
+        'plural'      => [
             /*
             |--------------------------------------------------------------------------------------
             | Basic Rules
@@ -111,7 +111,7 @@ return [
         | Conversion rules of singularize are applied and processed in the order `irregular` ->
         | `uninflected` -> `rules`.
         */
-        'singular' => [
+        'singular'    => [
             /*
             |--------------------------------------------------------------------------------------
             | Basic Rules

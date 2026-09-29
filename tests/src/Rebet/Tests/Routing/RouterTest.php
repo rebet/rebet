@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Routing;
 
 use Rebet\Application\App;
@@ -25,7 +26,7 @@ use TestApp\Enum\Gender;
 
 class RouterTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         App::setLocale('ja');
@@ -37,14 +38,14 @@ class RouterTest extends RebetTestCase
                     throw $e;
                 },
             ],
-            View::class => [
+            View::class   => [
                 'engine' => Blade::class,
             ],
-            Blade::class => [
+            Blade::class  => [
                 'view_path'  => [App::structure()->views('/blade')],
                 'cache_path' => static::makeSubWorkingDir('cache'),
             ],
-            Log::class => [
+            Log::class    => [
                 'channels' => [
                     'web' => [
                         'driver' => StderrDriver::class,
@@ -110,11 +111,11 @@ class RouterTest extends RebetTestCase
             })->where('id', '/^[0-9]+$/');
 
             Router::get('/parameter/convert/int/{value}', function (int $value) {
-                return "Content: /parameter/convert/int/{value} - {$value} ".(is_int($value) ? 'int' : 'not int');
+                return "Content: /parameter/convert/int/{value} - {$value} " . (is_int($value) ? 'int' : 'not int');
             });
 
             Router::get('/parameter/convert/array/{value}', function (array $value) {
-                return "Content: /parameter/convert/array/{value} - ".join('/', $value);
+                return "Content: /parameter/convert/array/{value} - " . join('/', $value);
             });
 
             Router::get('/parameter/convert/date-time/{value}', function (DateTime $value) {
@@ -1076,7 +1077,7 @@ class RouterTest_TerminatableMiddleware
 {
     public $terminate_count = 0;
 
-    public function handle(Request $request, \Closure $next) : Response
+    public function handle(Request $request, \Closure $next): Response
     {
         return $next($request);
     }

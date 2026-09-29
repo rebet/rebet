@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Validation;
@@ -26,7 +27,7 @@ class Kind extends Enum
      * ex) Date format validation before date and time comparison
      * ex) Numeric format validation before numeric comparison
      */
-    const TYPE_CONSISTENCY_CHECK = [1, 'TYPE_CONSISTENCY_CHECK'];
+    public const TYPE_CONSISTENCY_CHECK = [1, 'TYPE_CONSISTENCY_CHECK'];
 
     /**
      * This is a type that represents type dependent check.
@@ -35,21 +36,21 @@ class Kind extends Enum
      * ex) Date and time comparison after date format validation
      * ex) Numeric comparison after numeric format validation
      */
-    const TYPE_DEPENDENT_CHECK = [2, 'TYPE_DEPENDENT_CHECK'];
+    public const TYPE_DEPENDENT_CHECK = [2, 'TYPE_DEPENDENT_CHECK'];
 
     /**
      * This is a type that represents independently check.
      *
      * An independently check is specified if the validation can be performed independently.
      */
-    const INDEPENDENTLY = [3, 'INDEPENDENTLY'];
+    public const INDEPENDENTLY = [3, 'INDEPENDENTLY'];
 
     /**
      * This enum do not need to translate.
      *
      * @return boolean
      */
-    protected function translatable() : bool
+    protected function translatable(): bool
     {
         return false;
     }

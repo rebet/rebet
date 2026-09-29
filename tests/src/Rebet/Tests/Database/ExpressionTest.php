@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -20,7 +21,7 @@ class ExpressionTest extends RebetDatabaseTestCase
         $this->assertInstanceOf(Expression::class, $expression);
     }
 
-    public static function dataCompiles() : array
+    public static function dataCompiles(): array
     {
         return [
             ['now()', [], ':foo', Expression::of('now()')],

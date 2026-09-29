@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Routing\Route;
 
 use Rebet\Application\App;
@@ -12,11 +13,11 @@ use Rebet\View\View;
 
 class ViewRouteTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         Config::application([
-            View::class => [
+            View::class  => [
                 'engine' => Blade::class,
             ],
             Blade::class => [

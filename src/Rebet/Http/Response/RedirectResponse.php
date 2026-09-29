@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http\Response;
@@ -39,7 +40,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      * @param  array<string, mixed> $input
      * @return self
      */
-    public function with(array $input) : self
+    public function with(array $input): self
     {
         Session::current()->saveInheritData('input', $input, $this->getTargetUrlWithoutRoutePrefix());
         return $this;
@@ -53,7 +54,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      * @param  array<string, array<int, string>> $errors
      * @return self
      */
-    public function errors(array $errors) : self
+    public function errors(array $errors): self
     {
         Session::current()->saveInheritData('errors', $errors, $this->getTargetUrlWithoutRoutePrefix());
         return $this;
@@ -64,7 +65,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      *
      * @return string
      */
-    protected function getTargetUrlWithoutRoutePrefix() : string
+    protected function getTargetUrlWithoutRoutePrefix(): string
     {
         $request = Request::current();
         return Strings::ltrim($this->getTargetUrl(), $request ? $request->getRoutePrefix() : '', 1);

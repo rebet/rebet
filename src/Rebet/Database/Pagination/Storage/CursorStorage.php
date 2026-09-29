@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Pagination\Storage;
@@ -22,7 +23,7 @@ interface CursorStorage
      * @param  Cursor $cursor
      * @return void
      */
-    public function save(string $name, Cursor $cursor) : void;
+    public function save(string $name, Cursor $cursor): void;
 
     /**
      * Load the cursor as given name from strage.
@@ -30,7 +31,7 @@ interface CursorStorage
      * @param  string      $name
      * @return Cursor|null
      */
-    public function load(string $name) : Cursor|null;
+    public function load(string $name): Cursor|null;
 
     /**
      * Remove the cursor as given name from strage.
@@ -38,12 +39,12 @@ interface CursorStorage
      * @param  string $name
      * @return void
      */
-    public function remove(string $name) : void ;
+    public function remove(string $name): void ;
 
     /**
      * Clear the cursor from strage.
      *
      * @return void
      */
-    public function clear() : void ;
+    public function clear(): void ;
 }

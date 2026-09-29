@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth\Guard;
@@ -42,7 +43,7 @@ abstract class StatefulGuard extends Guard
      * @param  string|null $password
      * @return AuthUser
      */
-    public function attempt($signin_id, string|null $password) : AuthUser
+    public function attempt($signin_id, string|null $password): AuthUser
     {
         $user = $this->provider->findByCredentials($signin_id, $password);
         return $user ? $user : AuthUser::guest($signin_id);
@@ -56,7 +57,7 @@ abstract class StatefulGuard extends Guard
      * @param  boolean  $remember (default: false)
      * @return Response
      */
-    abstract public function signin(AuthUser $user, string $goto = '/', bool $remember = false) : Response;
+    abstract public function signin(AuthUser $user, string $goto = '/', bool $remember = false): Response;
 
     /**
      * It will sign out the authenticated user.
@@ -64,14 +65,14 @@ abstract class StatefulGuard extends Guard
      * @param  string   $goto (default: '/')
      * @return Response
      */
-    abstract public function signout(string $goto = '/') : Response;
+    abstract public function signout(string $goto = '/'): Response;
 
     /**
      * Get the 'remember me' days period.
      *
      * @return int of days
      */
-    public function getRememberDays() : int
+    public function getRememberDays(): int
     {
         return $this->remember_days;
     }

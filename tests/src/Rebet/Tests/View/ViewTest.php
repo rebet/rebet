@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\View;
 
 use Rebet\Application\App;
@@ -14,18 +15,18 @@ use Rebet\View\View;
 
 class ViewTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         Config::application([
-            View::class => [
+            View::class  => [
                 'engine' => Blade::class,
             ],
             Blade::class => [
                 'view_path'  => [App::structure()->views('/blade')],
                 'cache_path' => static::makeSubWorkingDir('cache'),
             ],
-            Twig::class => [
+            Twig::class  => [
                 'template_dir' => [App::structure()->views('/twig')],
                 'options'      => [
                     // 'cache' => static::makeSubWorkingDir('cache'),

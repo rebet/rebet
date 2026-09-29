@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database\Analysis;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -7,12 +8,12 @@ use Rebet\Tests\RebetDatabaseTestCase;
 
 class BuiltinAnalyzerTest extends RebetDatabaseTestCase
 {
-    public static function dataIsUnions() : array
+    public static function dataIsUnions(): array
     {
         return [
             [false, "SELECT * FROM users"],
-            [true , "SELECT 1 as foo FROM bar UNION SELECT 2 as foo FROM baz"],
-            [true , "SELECT 1 as foo FROM bar UNION ALL SELECT 2 as foo FROM baz"],
+            [true, "SELECT 1 as foo FROM bar UNION SELECT 2 as foo FROM baz"],
+            [true, "SELECT 1 as foo FROM bar UNION ALL SELECT 2 as foo FROM baz"],
             [false, "SELECT * FROM (SELECT 1 as foo FROM bar UNION ALL SELECT 2 as foo FROM baz) AS T"],
         ];
     }
@@ -24,15 +25,15 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         $this->assertSame($expect, $analyser->isUnion());
     }
 
-    public static function dataHasWheres() : array
+    public static function dataHasWheres(): array
     {
         return [
-            [false , "SELECT * FROM users"],
-            [true  , "SELECT * FROM users WHERE gender = 1"],
-            [false , "SELECT * FROM users ORDER BY created_at"],
-            [true  , "SELECT * FROM users WHERE gender = 1 ORDER BY created_at"],
-            [false , "SELECT * FROM (SELECT * FROM users WHERE gender = 1) AS T"],
-            [false , "SELECT (SELECT max(user_id) FROM users WHERE gender = 1) AS max_male_user_id"],
+            [false, "SELECT * FROM users"],
+            [true, "SELECT * FROM users WHERE gender = 1"],
+            [false, "SELECT * FROM users ORDER BY created_at"],
+            [true, "SELECT * FROM users WHERE gender = 1 ORDER BY created_at"],
+            [false, "SELECT * FROM (SELECT * FROM users WHERE gender = 1) AS T"],
+            [false, "SELECT (SELECT max(user_id) FROM users WHERE gender = 1) AS max_male_user_id"],
         ];
     }
 
@@ -43,15 +44,15 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         $this->assertSame($expect, $analyser->hasWhere());
     }
 
-    public static function dataHasHavings() : array
+    public static function dataHasHavings(): array
     {
         return [
-            [false , "SELECT * FROM users"],
-            [true  , "SELECT * FROM users HAVING gender = 1"],
-            [false , "SELECT * FROM users ORDER BY created_at"],
-            [true  , "SELECT * FROM users HAVING gender = 1 ORDER BY created_at"],
-            [false , "SELECT * FROM (SELECT * FROM users HAVING gender = 1) AS T"],
-            [false , "SELECT (SELECT max(user_id) FROM users HAVING gender = 1) AS max_male_user_id"],
+            [false, "SELECT * FROM users"],
+            [true, "SELECT * FROM users HAVING gender = 1"],
+            [false, "SELECT * FROM users ORDER BY created_at"],
+            [true, "SELECT * FROM users HAVING gender = 1 ORDER BY created_at"],
+            [false, "SELECT * FROM (SELECT * FROM users HAVING gender = 1) AS T"],
+            [false, "SELECT (SELECT max(user_id) FROM users HAVING gender = 1) AS max_male_user_id"],
         ];
     }
 
@@ -62,13 +63,13 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         $this->assertSame($expect, $analyser->hasHaving());
     }
 
-    public static function dataHasGroupBys() : array
+    public static function dataHasGroupBys(): array
     {
         return [
-            [false , "SELECT * FROM users"],
-            [false , "SELECT * FROM users WHERE name = 'GROUP BY'"],
-            [true  , "SELECT gender, count(*) AS count FROM users GROUP BY gender"],
-            [false , "SELECT * FROM (SELECT gender, count(*) AS count FROM users GROUP BY gender) AS T"],
+            [false, "SELECT * FROM users"],
+            [false, "SELECT * FROM users WHERE name = 'GROUP BY'"],
+            [true, "SELECT gender, count(*) AS count FROM users GROUP BY gender"],
+            [false, "SELECT * FROM (SELECT gender, count(*) AS count FROM users GROUP BY gender) AS T"],
         ];
     }
 
@@ -79,13 +80,13 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         $this->assertSame($expect, $analyser->hasGroupBy());
     }
 
-    public static function dataHasOrderBys() : array
+    public static function dataHasOrderBys(): array
     {
         return [
-            [false , "SELECT * FROM users"],
-            [false , "SELECT * FROM users WHERE name = 'ORDER BY'"],
-            [true  , "SELECT gender, count(*) AS count FROM users ORDER BY gender"],
-            [false , "SELECT * FROM (SELECT gender, count(*) AS count FROM users ORDER BY gender) AS T"],
+            [false, "SELECT * FROM users"],
+            [false, "SELECT * FROM users WHERE name = 'ORDER BY'"],
+            [true, "SELECT gender, count(*) AS count FROM users ORDER BY gender"],
+            [false, "SELECT * FROM (SELECT gender, count(*) AS count FROM users ORDER BY gender) AS T"],
         ];
     }
 
@@ -96,7 +97,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         $this->assertSame($expect, $analyser->hasOrderBy());
     }
 
-    public static function dataExtractAliasSelectColumns() : array
+    public static function dataExtractAliasSelectColumns(): array
     {
         return [
             ['user_id', "SELECT * FROM users", 'user_id'],

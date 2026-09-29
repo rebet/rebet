@@ -1,4 +1,5 @@
 <?php
+
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Utility\Path;
 
@@ -15,4 +16,4 @@ use Rebet\Tools\Utility\Path;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-return require(Path::normalize(__DIR__.'/../en/datetime.php'));
+return require(Path::normalize(__DIR__ . '/../en/datetime.php'));

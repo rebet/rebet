@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Filesystem;
 
 use League\Flysystem\FileAttributes;
@@ -19,14 +20,14 @@ class BuiltinFilesystemTest extends RebetTestCase
     /** @var Filesystem */
     private $filesystem;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->root       = App::structure()->storage('/test/Filesystem/BuiltinFilesystem');
         $this->filesystem = new BuiltinFilesystem(new LocalFilesystemAdapter($this->root));
     }
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         $this->filesystem->clean();
         parent::tearDown();

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Auth\Exception;
 
 use Rebet\Auth\Exception\AuthenticateException;

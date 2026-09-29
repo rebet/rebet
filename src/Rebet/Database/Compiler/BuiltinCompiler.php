@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Compiler;
@@ -60,7 +61,7 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
-    public static function of(Driver $driver) : Compiler
+    public static function of(Driver $driver): Compiler
     {
         return new static($driver);
     }
@@ -70,7 +71,7 @@ class BuiltinCompiler implements Compiler
      *
      * @param array<string, mixed>|object|null $params
      */
-    public function compile(string $sql, OrderBy|null $order_by = null, $params = [], Pager|null $pager = null, Cursor|null $cursor = null) : Query
+    public function compile(string $sql, OrderBy|null $order_by = null, $params = [], Pager|null $pager = null, Cursor|null $cursor = null): Query
     {
         // ---------------------------------------------------------------------
         // Resolve embedded `Letterpress` tags
@@ -80,7 +81,7 @@ class BuiltinCompiler implements Compiler
         // ---------------------------------------------------------------------
         // Check params key format, non use params and resolve multi placeholder
         // ---------------------------------------------------------------------
-        $params = $params ?? [];
+        $params ??= [];
         foreach ($params as $key => $value) {
             if (!preg_match('/[a-zA-Z0-9_]+/', $key)) {
                 throw new DatabaseException("Invalid SQL query parameter key [ {$key} ], the key must be pattern of /[a-zA-Z0-9_]+/.");
@@ -89,7 +90,7 @@ class BuiltinCompiler implements Compiler
                 throw new DatabaseException("Invalid SQL query parameter key [ {$key} ], the key may not be contain '__'(combined two underscores).");
             }
             $holder = ":{$key}";
-            $count  = preg_match_all('/'.$holder.'([^a-zA-Z0-9_]|$)/', $sql);
+            $count  = preg_match_all('/' . $holder . '([^a-zA-Z0-9_]|$)/', $sql);
             if ($count === 0) {
                 unset($params[$key]);
                 continue;
@@ -98,7 +99,7 @@ class BuiltinCompiler implements Compiler
                 continue;
             }
             for ($i = 0 ; $i < $count ; $i++) {
-                $sql                    = preg_replace('/('.$holder.')([^a-zA-Z0-9_]|$)/', '$1__'.$i.'$2', $sql, 1);
+                $sql                    = preg_replace('/(' . $holder . ')([^a-zA-Z0-9_]|$)/', '$1__' . $i . '$2', $sql, 1);
                 $params["{$key}__{$i}"] = $value;
             }
             unset($params[$key]);
@@ -163,7 +164,7 @@ class BuiltinCompiler implements Compiler
      * @param  Cursor|null $cursor
      * @return Cursor|null
      */
-    protected function verify(Pager|null $pager, Cursor|null $cursor) : Cursor|null
+    protected function verify(Pager|null $pager, Cursor|null $cursor): Cursor|null
     {
         return $cursor && !$cursor->expired() && $cursor->pager()->verify($pager) ? $cursor : null ;
     }
@@ -177,7 +178,7 @@ class BuiltinCompiler implements Compiler
      * @param  bool        $near_by_first
      * @return int
      */
-    protected function offset(Pager $pager, Cursor|null $cursor = null, bool $forward_feed = true, bool $near_by_first = true) : int
+    protected function offset(Pager $pager, Cursor|null $cursor = null, bool $forward_feed = true, bool $near_by_first = true): int
     {
         $page = $pager->page();
         $size = $pager->size();
@@ -198,7 +199,7 @@ class BuiltinCompiler implements Compiler
      * @param  bool        $near_by_first
      * @return int
      */
-    protected function limit(Pager $pager, Cursor|null $cursor = null, bool $forward_feed = true, bool $near_by_first = true) : int
+    protected function limit(Pager $pager, Cursor|null $cursor = null, bool $forward_feed = true, bool $near_by_first = true): int
     {
         $page            = $pager->page();
         $size            = $pager->size();
@@ -222,7 +223,7 @@ class BuiltinCompiler implements Compiler
      * @param  OrderBy $order_by
      * @return string
      */
-    protected function compileOrderBy(OrderBy $order_by) : string
+    protected function compileOrderBy(OrderBy $order_by): string
     {
         $order = [];
         foreach ($order_by as $col => $asc_desc) {
@@ -241,9 +242,9 @@ class BuiltinCompiler implements Compiler
      * @param  bool     $near_by_first
      * @return Query    of partial where SQL sentence
      */
-    protected function compileCursor(Analyzer $analyzer, OrderBy $order_by, Cursor $cursor, bool $forward_feed, bool $near_by_first) : Query
+    protected function compileCursor(Analyzer $analyzer, OrderBy $order_by, Cursor $cursor, bool $forward_feed, bool $near_by_first): Query
     {
-        $expressions = $forward_feed ? ['ASC' => '>', 'DESC' => '<'] :  ($near_by_first ? ['ASC' => '<', 'DESC' => '>'] :  ['ASC' => '>', 'DESC' => '<']) ;
+        $expressions = $forward_feed ? ['ASC' => '>', 'DESC' => '<'] : ($near_by_first ? ['ASC' => '<', 'DESC' => '>'] : ['ASC' => '>', 'DESC' => '<']) ;
         $first       = true;
 
         $where        = "";
@@ -282,7 +283,7 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
-    public function paging(Statement $stmt, OrderBy|null $order_by, Pager $pager, Cursor|null $cursor = null, int|null $total = null, string $class = 'stdClass') : Paginator
+    public function paging(Statement $stmt, OrderBy|null $order_by, Pager $pager, Cursor|null $cursor = null, int|null $total = null, string $class = 'stdClass'): Paginator
     {
         $cursor = $this->verify($pager, $cursor);
 
@@ -322,7 +323,7 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
-    public function convertParam(string $key, $value) : Query
+    public function convertParam(string $key, $value): Query
     {
         $key = Strings::startsWith($key, ':') ? $key : ":{$key}" ;
         if ($value instanceof Expression) {

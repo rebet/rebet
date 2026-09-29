@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Cache\Adapter\Symfony;
@@ -42,11 +43,11 @@ class MemcachedAdapter extends AbstractSymfonyAdapter
                 SymfonyMemcachedAdapter::createConnection($dsn, $options),
                 $namespace,
                 Unit::of(Unit::TIME)->convert($default_lifetime)->toInt(),
-                $marshaller
+                $marshaller,
             ),
             $taggable,
             $tags_pool,
-            $known_tag_versions_ttl
+            $known_tag_versions_ttl,
         );
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Log;
@@ -36,7 +37,7 @@ class LogLevel extends PsrLogLevel
         E_STRICT            => 'E_STRICT',
     ];
 
-    public static function errorTypeLabel(int $type) : string
+    public static function errorTypeLabel(int $type): string
     {
         return static::ERROR_TYPE_LABELS[$type] ?? "E_UNKNOWN({$type})" ;
     }
@@ -47,7 +48,7 @@ class LogLevel extends PsrLogLevel
      * @param  int    $type
      * @return string
      */
-    public static function errorTypeOf(int $type) : string
+    public static function errorTypeOf(int $type): string
     {
         switch ($type) {
             case E_CORE_ERROR:

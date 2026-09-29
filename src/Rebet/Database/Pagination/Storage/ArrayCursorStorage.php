@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Pagination\Storage;
@@ -27,7 +28,7 @@ class ArrayCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
-    public function save(string $name, Cursor $cursor) : void
+    public function save(string $name, Cursor $cursor): void
     {
         self::$strage[$name] = $cursor;
     }
@@ -35,7 +36,7 @@ class ArrayCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
-    public function load(string $name) : Cursor|null
+    public function load(string $name): Cursor|null
     {
         return self::$strage[$name] ?? null ;
     }
@@ -43,7 +44,7 @@ class ArrayCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
-    public function remove(string $name) : void
+    public function remove(string $name): void
     {
         unset(self::$strage[$name]);
     }
@@ -51,7 +52,7 @@ class ArrayCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
-    public function clear() : void
+    public function clear(): void
     {
         self::$strage = [];
     }

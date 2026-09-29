@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Cache;
@@ -76,7 +77,7 @@ class TagSet
      * @param  int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
      * @return bool
      */
-    public function put(array $values, $expire) : bool
+    public function put(array $values, $expire): bool
     {
         $ok = true;
         foreach ($this->adapter->getItems(array_keys($values)) as $item) {
@@ -97,7 +98,7 @@ class TagSet
      *
      * @return boolean
      */
-    public function flush() : bool
+    public function flush(): bool
     {
         return $this->adapter->clearByTags($this->tags);
     }

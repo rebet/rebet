@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\View\Engine\Twig;
@@ -42,7 +43,7 @@ class Twig implements Engine
     /**
      * @return array<string, mixed>
      */
-    public static function defaultConfigOverrideOptions() : array
+    public static function defaultConfigOverrideOptions(): array
     {
         return [
             'customizers' => OverrideOption::APPEND,
@@ -68,7 +69,7 @@ class Twig implements Engine
      *
      * @return void
      */
-    public static function clear() : void
+    public static function clear(): void
     {
         static::$twig = null;
     }
@@ -107,7 +108,7 @@ class Twig implements Engine
      *
      * @return array<int, string>
      */
-    public function getPaths() : array
+    public function getPaths(): array
     {
         $loader = static::$twig->getLoader();
         return $loader instanceof FilesystemLoader ? $loader->getPaths() : [] ;
@@ -116,7 +117,7 @@ class Twig implements Engine
     /**
      * {@inheritDoc}
      */
-    public function prependPath(string $path) : Engine
+    public function prependPath(string $path): Engine
     {
         $path   = Path::normalize($path);
         $loader = static::$twig->getLoader();
@@ -129,7 +130,7 @@ class Twig implements Engine
     /**
      * {@inheritDoc}
      */
-    public function appendPath(string $path) : Engine
+    public function appendPath(string $path): Engine
     {
         $path   = Path::normalize($path);
         $loader = static::$twig->getLoader();
@@ -144,16 +145,16 @@ class Twig implements Engine
      *
      * @param array<string, mixed> $data
      */
-    public function render(string $name, array $data = []) : string
+    public function render(string $name, array $data = []): string
     {
-        return static::$twig->render($name.$this->file_suffix, $data);
+        return static::$twig->render($name . $this->file_suffix, $data);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function exists(string $name) : bool
+    public function exists(string $name): bool
     {
-        return static::$twig->getLoader()->exists($name.$this->file_suffix);
+        return static::$twig->getLoader()->exists($name . $this->file_suffix);
     }
 }

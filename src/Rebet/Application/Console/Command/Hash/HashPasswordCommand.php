@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command\Hash;
@@ -18,14 +19,14 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class HashPasswordCommand extends Command
 {
-    const NAME        = 'hash:password';
-    const DESCRIPTION = 'Hash the given password';
-    const ARGUMENTS   = [
+    public const NAME        = 'hash:password';
+    public const DESCRIPTION = 'Hash the given password';
+    public const ARGUMENTS   = [
         ['password', InputArgument::REQUIRED, 'Password that you want to hash'],
     ];
-    const OPTIONS = [
+    public const OPTIONS = [
         ['algorithm', 'a', InputOption::VALUE_OPTIONAL, 'Hash algorithm'],
-        ['option'   , 'o', InputOption::VALUE_OPTIONAL, 'Algorithm option (JSON)'],
+        ['option', 'o', InputOption::VALUE_OPTIONAL, 'Algorithm option (JSON)'],
     ];
 
     /**
@@ -37,11 +38,11 @@ class HashPasswordCommand extends Command
         if ($this->option('option')) {
             $option = json_decode($this->option('option'), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->error("Can not parse --option JSON : ".json_last_error_msg());
+                $this->error("Can not parse --option JSON : " . json_last_error_msg());
                 return 1;
             }
         }
 
-        $this->writeln('<info>Hashed password:</info> '. Password::hash($this->argument('password'), $this->option('algorithm'), $option));
+        $this->writeln('<info>Hashed password:</info> ' . Password::hash($this->argument('password'), $this->option('algorithm'), $option));
     }
 }

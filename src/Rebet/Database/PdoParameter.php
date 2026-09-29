@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database;
@@ -80,7 +81,7 @@ class PdoParameter
      * @param  mixed $option for driver (default: null)
      * @return self
      */
-    public static function str($value, $option = null) : self
+    public static function str($value, $option = null): self
     {
         return new static($value, \PDO::PARAM_STR, $option);
     }
@@ -92,7 +93,7 @@ class PdoParameter
      * @param  mixed $option for driver (default: null)
      * @return self
      */
-    public static function int($value, $option = null) : self
+    public static function int($value, $option = null): self
     {
         return new static($value, \PDO::PARAM_INT, $option);
     }
@@ -104,7 +105,7 @@ class PdoParameter
      * @param  mixed $option for driver (default: null)
      * @return self
      */
-    public static function bool($value, $option = null) : self
+    public static function bool($value, $option = null): self
     {
         return new static($value, \PDO::PARAM_BOOL, $option);
     }
@@ -116,7 +117,7 @@ class PdoParameter
      * @param  mixed $option for driver (default: null)
      * @return self
      */
-    public static function lob($value, $option = null) : self
+    public static function lob($value, $option = null): self
     {
         return new static($value, \PDO::PARAM_LOB, $option);
     }
@@ -127,7 +128,7 @@ class PdoParameter
      * @param  mixed $option for driver (default: null)
      * @return self
      */
-    public static function null($option = null) : self
+    public static function null($option = null): self
     {
         return new static(null, \PDO::PARAM_NULL, $option);
     }

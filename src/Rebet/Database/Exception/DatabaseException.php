@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Exception;
@@ -75,18 +76,18 @@ class DatabaseException extends RuntimeException
      * @param  array<int|string, mixed>                                              $params (default: [])
      * @return self
      */
-    public static function from(string $name, $error, string|null $sql = null, array $params = []) : self
+    public static function from(string $name, $error, string|null $sql = null, array $params = []): self
     {
         $error_info = is_array($error) ? $error : $error->errorInfo ;
         $sql_state  = $error_info[0] ?? '-----' ;
         $code       = $error_info[1] ?? ($error instanceof \PDOException ? $error->getCode() : null) ;
         $message    = $error_info[2] ?? ($error instanceof \PDOException ? $error->getMessage() : 'Unkown error occured.') ;
 
-        $sql = empty($sql)    ? '' : "\n--- [SQL] ---\n{$sql}";
-        $sql .= empty($params) ? '' : "\n-- [PARAM] --\n".Strings::stringify($params) ;
-        $sql .= empty($sql)    ? '' : "\n-------------\n" ;
+        $sql = empty($sql) ? '' : "\n--- [SQL] ---\n{$sql}";
+        $sql .= empty($params) ? '' : "\n-- [PARAM] --\n" . Strings::stringify($params) ;
+        $sql .= empty($sql) ? '' : "\n-------------\n" ;
 
-        $e = (new static("[{$name}/{$sql_state}".($code ? "({$code})" : "")."] {$message}{$sql}"))->sqlState($sql_state)->code($code)->appendix($error_info);
+        $e = (new static("[{$name}/{$sql_state}" . ($code ? "({$code})" : "") . "] {$message}{$sql}"))->sqlState($sql_state)->code($code)->appendix($error_info);
         if ($error instanceof \Throwable) {
             $e->caused($error);
         }

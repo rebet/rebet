@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Attribute;
 
 use Rebet\Attribute\AttributedClass;
@@ -122,11 +123,7 @@ class AttributedClassTest_Mock
     public $foo;
 
     #[Channel("web")]
-    public function bar()
-    {
-    }
+    public function bar() {}
 }
 
-class AttributedClassTest_Mock_Sub extends AttributedClassTest_Mock
-{
-}
+class AttributedClassTest_Mock_Sub extends AttributedClassTest_Mock {}

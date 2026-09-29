@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\Console\Command\Hash;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -8,9 +9,9 @@ use Rebet\Tools\Utility\Securities;
 
 class HashTextCommandTest extends RebetConsoleTestCase
 {
-    const AVIRABLE_COMMANDS = [HashTextCommand::class];
+    public const AVIRABLE_COMMANDS = [HashTextCommand::class];
 
-    public static function dataExecutes() : array
+    public static function dataExecutes(): array
     {
         return [
             ['foobar'],
@@ -35,7 +36,7 @@ class HashTextCommandTest extends RebetConsoleTestCase
             $options['--salt'] ?? null,
             $options['--pepper'] ?? null,
             $options['--algorithm'] ?? null,
-            isset($options['--stretching']) ? (int) $options['--stretching'] : null
+            isset($options['--stretching']) ? (int) $options['--stretching'] : null,
         );
         $this->assertSame("Hashed text: {$expect}\n", $display);
     }

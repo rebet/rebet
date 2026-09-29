@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use Rebet\Tests\RebetTestCase;

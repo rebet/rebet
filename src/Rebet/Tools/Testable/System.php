@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Testable;
@@ -37,14 +38,14 @@ class System
     {
         return [
             'emulators' => [
-                'header' => [
+                'header'         => [
                     'emulator' => function (string $header, bool $replace = true, int|null $http_response_code = null) {
                         $emulated_header = &System::memory('emulated_header');
                         $http_status     = System::datasets('header', 'http_status');
                         if (\preg_match('/^HTTP\//', $header)) {
                             $emulated_header['http'] = [$header];
                         } elseif ($http_response_code !== null && isset($http_status[$http_response_code])) {
-                            $emulated_header['http'] = ["HTTP/1.1 {$http_response_code} ".$http_status[$http_response_code]];
+                            $emulated_header['http'] = ["HTTP/1.1 {$http_response_code} " . $http_status[$http_response_code]];
                         } elseif (!isset($emulated_header['http'])) {
                             $emulated_header['http'] = ['HTTP/1.1 200 OK'];
                         }
@@ -72,13 +73,13 @@ class System
                         ],
                     ],
                 ],
-                'headers_list' => [
+                'headers_list'   => [
                     'emulator' => function () {
                         return Arrays::flatten(\array_values(System::memory('emulated_header')));
                     },
                 ],
                 'dns_get_record' => [
-                    'emulator' => function (string $hostname, int $type = DNS_ANY, array|null &$authns = null, array|null &$addtl = null, bool $raw = false) : array {
+                    'emulator' => function (string $hostname, int $type = DNS_ANY, array|null &$authns = null, array|null &$addtl = null, bool $raw = false): array {
                         $emulated_dns = System::datasets('dns_get_record', 'emulated_dns');
                         if (isset($emulated_dns[$hostname])) {
                             $c = Tinker::with($emulated_dns[$hostname], true);
@@ -110,14 +111,14 @@ class System
                     'datasets' => [
                         'emulated_dns' => [
                             'sample.local' => [
-                                ["host" => "sample.local", "class" => "IN", "ttl" => 60  , "type" => "A", "ip" => "127.0.0.1"],
+                                ["host" => "sample.local", "class" => "IN", "ttl" => 60, "type" => "A", "ip" => "127.0.0.1"],
                                 ["host" => "sample.local", "class" => "IN", "ttl" => 3600, "type" => "MX", "pri" => 1, "target" => "mx.sample.local"],
                                 ["host" => "sample.local", "class" => "IN", "ttl" => 3600, "type" => "MX", "pri" => 5, "target" => "alt1.mx.sample.local"],
                                 ["host" => "sample.local", "class" => "IN", "ttl" => 3600, "type" => "MX", "pri" => 5, "target" => "alt2.mx.sample.local"],
                                 ["host" => "sample.local", "class" => "IN", "ttl" => 3600, "type" => "TXT", "txt" => "v=spf1 mx ~all", "entries" => ["v=spf1 mx ~all"]],
                                 ["host" => "sample.local", "class" => "IN", "ttl" => 3600, "type" => "SOA", "mname" => "ns1.p01.dynect.net", "rname" => "hostmaster.sample.local", "serial" => 1234567890, "refresh" => 3600, "retry" => 600, "expire" => 604800, "minimum-ttl" => 60],
-                                ["host" => "sample.local", "class" => "IN", "ttl" => 836 , "type" => "NS", "target" => "ns1.p01.dynect.net"],
-                                ["host" => "sample.local", "class" => "IN", "ttl" => 836 , "type" => "NS", "target" => "ns2.p01.dynect.net"],
+                                ["host" => "sample.local", "class" => "IN", "ttl" => 836, "type" => "NS", "target" => "ns1.p01.dynect.net"],
+                                ["host" => "sample.local", "class" => "IN", "ttl" => 836, "type" => "NS", "target" => "ns2.p01.dynect.net"],
                             ],
                         ],
                     ],
@@ -146,7 +147,7 @@ class System
      * @param  string       $name
      * @return array<mixed>
      */
-    public static function &memory(string $name) : array
+    public static function &memory(string $name): array
     {
         if (!isset(static::$memory[$name])) {
             static::$memory[$name] = [];
@@ -159,7 +160,7 @@ class System
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         static::$memory = [];
     }
@@ -207,7 +208,7 @@ class System
      * @param  bool|null $is_testing
      * @return bool
      */
-    public static function testing(bool|null $is_testing = null) : bool
+    public static function testing(bool|null $is_testing = null): bool
     {
         return $is_testing === null ? static::$is_testing : static::$is_testing = $is_testing ;
     }
@@ -218,7 +219,7 @@ class System
      * @param  string $function_name
      * @return bool
      */
-    public static function emulatable($function_name) : bool
+    public static function emulatable($function_name): bool
     {
         return static::config("emulators.{$function_name}.emulator", false) !== null;
     }
@@ -236,13 +237,11 @@ class System
             $emulator = static::config("emulators.{$name}.emulator");
             return $emulator(...$args);
         }
-        return call_user_func('\\'.$name, ...$args);
+        return call_user_func('\\' . $name, ...$args);
     }
 
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 }

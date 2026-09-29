@@ -40,14 +40,14 @@ return [
     | This section defines Cookie settings.
     | You may change these defaults as required.
     */
-    Cookie::class => [
+    Cookie::class                   => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default Time of Cookie Expires
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Here you may set default time of cookie expires.
         */
-        'expire' => 0,
+        'expire'    => 0,
 
 
         /*
@@ -68,7 +68,7 @@ return [
         | Here you may set default domain that the cookie is available to.
         | Normally you don't need to change the settings, but if you need to set the domain.
         */
-        'domain' => null,
+        'domain'    => null,
 
 
         /*
@@ -79,7 +79,7 @@ return [
         | Whether the client should send back the cookie only over HTTPS or null to auto-enable
         | this when the request is already using HTTPS.
         */
-        'secure' => true,
+        'secure'    => true,
 
 
         /*
@@ -100,7 +100,7 @@ return [
         | Setting this value to true will the cookie value should be sent with no url encoding.
         | Normally you don't need to change the settings, but you can set to true if you want.
         */
-        'raw' => false,
+        'raw'       => false,
 
 
         /*
@@ -114,7 +114,7 @@ return [
         | Supported Options:
         |  - Cookie::SAMESITE_*
         */
-        'samesite' => Cookie::SAMESITE_LAX,
+        'samesite'  => Cookie::SAMESITE_LAX,
     ],
 
 
@@ -125,7 +125,7 @@ return [
     | This section defines Session settings.
     | You may change these defaults as required.
     */
-    Session::class => [
+    Session::class                  => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Session Storage
@@ -148,7 +148,7 @@ return [
     | This section defines Session Storage settings that use by default.
     | You may change these defaults as required.
     */
-    SessionStorage::class => [
+    SessionStorage::class           => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Session Storage Handler
@@ -290,7 +290,7 @@ return [
     | required.
     */
     //{%-- commentif $session != 'mongodb', 'message' => '--- Please uncomment if you want to use mongodb session ---' -%}
-    MongoDbSessionHandler::class => [
+    MongoDbSessionHandler::class    => [
         'database'   => App::codeName(),
         'collection' => 'sessions',
         // --- You can change only what you need for these default options ---
@@ -315,7 +315,7 @@ return [
     |  * expiretime : The time to live in seconds.                                          [default: 86400]
     */
     //{%-- commentif $session != 'memcached', 'message' => '--- Please uncomment if you want to use memcached session ---' -%}
-    MemcachedSessionHandler::class => [
+    MemcachedSessionHandler::class  => [
         'prefix' => App::codeName(),
         // --- You can change only what you need for these default options ---
         // 'expiretime' => 86400,
@@ -336,7 +336,7 @@ return [
     |  * ttl    : The time to live in seconds.                                      [default: null]
     */
     //{%-- commentif $session != 'redis', 'message' => '--- Please uncomment if you want to use redis session ---' -%}
-    RedisSessionHandler::class => [
+    RedisSessionHandler::class      => [
         'prefix' => App::codeName(),
         // --- You can change only what you need for these default options ---
         // 'ttl'    => null,
@@ -351,7 +351,7 @@ return [
     | This section defines HTTP Status settings.
     | You may change these defaults as required.
     */
-    HttpStatus::class => [
+    HttpStatus::class               => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | HTTP Status Reason Phrases

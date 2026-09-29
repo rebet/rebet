@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Log\Driver\Monolog\Handler;
@@ -54,7 +55,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
-    protected function getDefaultFormatter() : FormatterInterface
+    protected function getDefaultFormatter(): FormatterInterface
     {
         return new TextFormatter();
     }
@@ -62,7 +63,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
-    protected function write(LogRecord $record) : void
+    protected function write(LogRecord $record): void
     {
         // Accumulate records
         static::$records[] = $record;
@@ -82,7 +83,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
      *
      * @return void
      */
-    public static function send() : void
+    public static function send(): void
     {
         $format = static::getResponseFormat();
         if ($format === 'unknown') {
@@ -99,7 +100,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
-    public function close() : void
+    public function close(): void
     {
         static::clear();
     }
@@ -107,7 +108,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
-    public function reset() : void
+    public function reset(): void
     {
         static::clear();
     }
@@ -115,7 +116,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * Clear all logged records
      */
-    public static function clear() : void
+    public static function clear(): void
     {
         static::$records = [];
     }
@@ -154,7 +155,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
      *
      * @return string
      */
-    protected static function generateScript() : string
+    protected static function generateScript(): string
     {
         $script = [];
         foreach (static::$records as $record) {
@@ -163,11 +164,11 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
             [$method, $h_style, $d_style] = static::OUTPUT_STYLES[$record->level->value ?? MonologDriver::DEBUG];
 
             if ($details) {
-                $script[] = 'c.groupCollapsed('.static::quote("%c{$headline}").', '.static::quote($h_style).');';
-                $script[] = "c.{$method}(".static::quote("%c{$details}").', '.static::quote($d_style).');';
+                $script[] = 'c.groupCollapsed(' . static::quote("%c{$headline}") . ', ' . static::quote($h_style) . ');';
+                $script[] = "c.{$method}(" . static::quote("%c{$details}") . ', ' . static::quote($d_style) . ');';
                 $script[] = 'c.groupEnd();';
             } else {
-                $script[] = "c.{$method}(".static::quote("%c{$headline}").', '.static::quote($h_style).');';
+                $script[] = "c.{$method}(" . static::quote("%c{$headline}") . ', ' . static::quote($h_style) . ');';
             }
         }
 
@@ -180,7 +181,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
      * @param  string $arg
      * @return string
      */
-    protected static function quote(string $arg) : string
+    protected static function quote(string $arg): string
     {
         return '"' . addcslashes($arg, "\"\n\\") . '"';
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Enum;
@@ -175,9 +176,9 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  string|null $class
      * @return void
      */
-    public static function reset(string|null $class = null) : void
+    public static function reset(string|null $class = null): void
     {
-        $class = $class ?? get_called_class() ;
+        $class ??= get_called_class() ;
         if ($class === Enum::class) {
             self::$enum_data_cache = [];
             self::$enum_list_cache = [];
@@ -186,7 +187,7 @@ abstract class Enum implements \JsonSerializable, Convertible
             unset(
                 self::$enum_data_cache[$class],
                 self::$enum_list_cache[$class],
-                self::$enum_map_cache[$class]
+                self::$enum_map_cache[$class],
             );
         }
     }
@@ -214,7 +215,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      *
      * @return boolean
      */
-    protected function translatable() : bool
+    protected function translatable(): bool
     {
         return true;
     }
@@ -227,14 +228,14 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  string|null $locale (default: depend on configure)
      * @return string
      */
-    public function translate(string $field = 'label', string|null $locale = null) : string
+    public function translate(string $field = 'label', string|null $locale = null): string
     {
         if (!$this->translatable()) {
             return $this->$field;
         }
         $class      = get_called_class();
         $key        = "{$class}.{$field}.{$this->value}";
-        $translated = Translator::get(static::TRANSLATION_GROUP.".{$key}", [], null, true, $locale);
+        $translated = Translator::get(static::TRANSLATION_GROUP . ".{$key}", [], null, true, $locale);
         return $translated === null ? $this->$field : $translated ;
     }
 
@@ -244,7 +245,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  mixed $value
      * @return bool
      */
-    public function equals($value) : bool
+    public function equals($value): bool
     {
         return $value instanceof static ? $this == $value : $this->value == $value ;
     }
@@ -255,7 +256,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  mixed   ...$values
      * @return boolean
      */
-    public function in(...$values) : bool
+    public function in(...$values): bool
     {
         foreach ($values as $value) {
             if ($this->equals($value)) {
@@ -270,7 +271,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      *
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->translate();
     }
@@ -278,7 +279,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      * Get JSON Serialize objects.
      */
-    public function jsonSerialize() : mixed
+    public function jsonSerialize(): mixed
     {
         return $this->value;
     }
@@ -299,7 +300,7 @@ abstract class Enum implements \JsonSerializable, Convertible
         }
         switch ($type) {
             case 'string':
-                return (string)$this->value;
+                return (string) $this->value;
         }
         return null;
     }
@@ -311,7 +312,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  string                   $name
      * @return self|null
      */
-    private static function constToEnum(\ReflectionClass $rc, string $name) : self|null
+    private static function constToEnum(\ReflectionClass $rc, string $name): self|null
     {
         if (in_array($name, ['TRANSLATION_GROUP'])) {
             return null;
@@ -350,7 +351,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      *
      * @return array<int, self>
      */
-    protected static function generate() : array
+    protected static function generate(): array
     {
         $rc   = new \ReflectionClass(get_called_class());
         $list = [];
@@ -368,7 +369,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      *
      * @return array<int, self>
      */
-    public static function lists() : array
+    public static function lists(): array
     {
         $class = get_called_class();
         if (isset(self::$enum_list_cache[$class])) {
@@ -388,15 +389,15 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @return array<int|string, self>
      * @throws LogicException
      */
-    public static function maps(string $field = 'value', bool $translate = false, string|null $locale = null) : array
+    public static function maps(string $field = 'value', bool $translate = false, string|null $locale = null): array
     {
         $class = get_called_class();
         if (!\property_exists($class, $field)) {
             throw new LogicException("Invalid property access. Property {$class}->{$field} is not exists.");
         }
 
-        $locale = $locale ?? Translator::getLocale();
-        $key    = $translate ? "{$class}@{$field}:{$locale}" : "{$class}@{$field}";
+        $locale ??= Translator::getLocale();
+        $key = $translate ? "{$class}@{$field}:{$locale}" : "{$class}@{$field}";
         if (isset(self::$enum_map_cache[$key])) {
             return self::$enum_map_cache[$key];
         }
@@ -421,7 +422,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @return self|null
      * @throws LogicException
      */
-    public static function fieldOf(string $field, $value, bool $translate = false, string|null $locale = null) : self|null
+    public static function fieldOf(string $field, $value, bool $translate = false, string|null $locale = null): self|null
     {
         if ($value instanceof static) {
             return $value;
@@ -430,7 +431,7 @@ abstract class Enum implements \JsonSerializable, Convertible
             return null;
         }
         $maps = self::maps($field, $translate, $locale);
-        return isset($maps[$value]) ? $maps[$value] : null ;
+        return $maps[$value] ?? null ;
     }
 
     /**
@@ -440,7 +441,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  mixed     $value
      * @return self|null
      */
-    public static function valueOf($value) : self|null
+    public static function valueOf($value): self|null
     {
         return self::fieldOf('value', $value);
     }
@@ -454,7 +455,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  string|null $locale    (default: depend on configure)
      * @return self|null
      */
-    public static function labelOf(string $label, bool $translate = false, string|null $locale = null) : self|null
+    public static function labelOf(string $label, bool $translate = false, string|null $locale = null): self|null
     {
         return self::fieldOf('label', $label, $translate, $locale);
     }
@@ -466,7 +467,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  string    $name
      * @return self|null
      */
-    public static function nameOf(string $name) : self|null
+    public static function nameOf(string $name): self|null
     {
         return self::fieldOf('name', $name);
     }
@@ -480,7 +481,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  string|null       $locale    (default: depend on configure)
      * @return array<int, mixed>
      */
-    public static function listOf(string $name, \Closure|null $matcher = null, bool $translate = false, string|null $locale = null) : array
+    public static function listOf(string $name, \Closure|null $matcher = null, bool $translate = false, string|null $locale = null): array
     {
         $class = get_called_class();
         if (!\property_exists($class, $name)) {
@@ -504,7 +505,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  string|null       $locale    (default: depend on configure)
      * @return array<int, mixed>
      */
-    public static function values(\Closure|null $matcher = null, bool $translate = false, string|null $locale = null) : array
+    public static function values(\Closure|null $matcher = null, bool $translate = false, string|null $locale = null): array
     {
         return self::listOf('value', $matcher, $translate, $locale);
     }
@@ -517,7 +518,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  string|null       $locale    (default: depend on configure)
      * @return array<int, mixed>
      */
-    public static function labels(\Closure|null $matcher = null, bool $translate = false, string|null $locale = null) : array
+    public static function labels(\Closure|null $matcher = null, bool $translate = false, string|null $locale = null): array
     {
         return self::listOf('label', $matcher, $translate, $locale);
     }
@@ -528,7 +529,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  \Closure|null     $matcher (default: null)
      * @return array<int, mixed>
      */
-    public static function names(\Closure|null $matcher = null) : array
+    public static function names(\Closure|null $matcher = null): array
     {
         return self::listOf('name', $matcher);
     }
@@ -542,7 +543,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  array<mixed>|null $context (default: null)
      * @return array<int, self>
      */
-    public static function nexts($current, array|null $context = null) : array
+    public static function nexts($current, array|null $context = null): array
     {
         return self::lists();
     }
@@ -558,7 +559,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  string|null       $locale    (default: depend on configure)
      * @return array<int, mixed>
      */
-    public static function nextOf(string $name, $current, array|null $context = null, bool $translate = false, string|null $locale = null) : array
+    public static function nextOf(string $name, $current, array|null $context = null, bool $translate = false, string|null $locale = null): array
     {
         $class = get_called_class();
         if (!\property_exists($class, $name)) {
@@ -580,7 +581,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  array<mixed>|null $context (default: null)
      * @return array<int, mixed>
      */
-    public static function nextValues($current, array|null $context = null) : array
+    public static function nextValues($current, array|null $context = null): array
     {
         return self::nextOf('value', $current, $context);
     }
@@ -593,7 +594,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  array<mixed>|null $context (default: null)
      * @return array<int, mixed>
      */
-    public static function nextLabels($current, array|null $context = null) : array
+    public static function nextLabels($current, array|null $context = null): array
     {
         return self::nextOf('label', $current, $context);
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Ransack;
@@ -109,34 +110,34 @@ class Ransack
             'compound_separator' => '/[\s　]/',
             'value_converters'   => [
                 'ignore'   => function ($value) { return null; },
-                'contains' => function ($value) { return '%'.str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value).'%'; },
-                'starts'   => function ($value) { return     str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value).'%'; },
-                'ends'     => function ($value) { return '%'.str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value)    ; },
+                'contains' => function ($value) { return '%' . str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value) . '%'; },
+                'starts'   => function ($value) { return     str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value) . '%'; },
+                'ends'     => function ($value) { return '%' . str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value)    ; },
             ],
-            'predicates' => [
+            'predicates'         => [
                 // predicate => [template, value_converter, multiple_columns_conjunction]
-                'eq'           => ["{col} = {val}"                           , null      , 'OR' ],
-                'not_eq'       => ["{col} <> {val}"                          , null      , 'AND'],
-                'in'           => ["{col} IN ({val})"                        , null      , 'OR' ],
-                'not_in'       => ["{col} NOT IN ({val})"                    , null      , 'AND'],
-                'gt'           => ["{col} > {val}"                           , null      , 'OR' ],
-                'lt'           => ["{col} < {val}"                           , null      , 'OR' ],
-                'gteq'         => ["{col} >= {val}"                          , null      , 'OR' ],
-                'lteq'         => ["{col} <= {val}"                          , null      , 'OR' ],
-                'after'        => ["{col} > {val}"                           , null      , 'OR' ],
-                'before'       => ["{col} < {val}"                           , null      , 'OR' ],
-                'from'         => ["{col} >= {val}"                          , null      , 'OR' ],
-                'to'           => ["{col} <= {val}"                          , null      , 'OR' ],
-                'contains'     => ["{col} LIKE {val} ESCAPE '|'"             , 'contains', 'OR' ],
-                'not_contains' => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'contains', 'AND'],
-                'starts'       => ["{col} LIKE {val} ESCAPE '|'"             , 'starts'  , 'OR' ],
-                'not_starts'   => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'starts'  , 'AND'],
-                'ends'         => ["{col} LIKE {val} ESCAPE '|'"             , 'ends'    , 'OR' ],
-                'not_ends'     => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'ends'    , 'AND'],
-                'null'         => ["{col} IS NULL"                           , 'ignore'  , 'AND'],
-                'not_null'     => ["{col} IS NOT NULL"                       , 'ignore'  , 'OR' ],
-                'blank'        => ["({col} IS NULL OR {col} = '')"           , 'ignore'  , 'AND'],
-                'not_blank'    => ["({col} IS NOT NULL AND {col} <> '')"     , 'ignore'  , 'OR' ],
+                'eq'           => ["{col} = {val}", null, 'OR' ],
+                'not_eq'       => ["{col} <> {val}", null, 'AND'],
+                'in'           => ["{col} IN ({val})", null, 'OR' ],
+                'not_in'       => ["{col} NOT IN ({val})", null, 'AND'],
+                'gt'           => ["{col} > {val}", null, 'OR' ],
+                'lt'           => ["{col} < {val}", null, 'OR' ],
+                'gteq'         => ["{col} >= {val}", null, 'OR' ],
+                'lteq'         => ["{col} <= {val}", null, 'OR' ],
+                'after'        => ["{col} > {val}", null, 'OR' ],
+                'before'       => ["{col} < {val}", null, 'OR' ],
+                'from'         => ["{col} >= {val}", null, 'OR' ],
+                'to'           => ["{col} <= {val}", null, 'OR' ],
+                'contains'     => ["{col} LIKE {val} ESCAPE '|'", 'contains', 'OR' ],
+                'not_contains' => ["{col} NOT LIKE {val} ESCAPE '|'", 'contains', 'AND'],
+                'starts'       => ["{col} LIKE {val} ESCAPE '|'", 'starts', 'OR' ],
+                'not_starts'   => ["{col} NOT LIKE {val} ESCAPE '|'", 'starts', 'AND'],
+                'ends'         => ["{col} LIKE {val} ESCAPE '|'", 'ends', 'OR' ],
+                'not_ends'     => ["{col} NOT LIKE {val} ESCAPE '|'", 'ends', 'AND'],
+                'null'         => ["{col} IS NULL", 'ignore', 'AND'],
+                'not_null'     => ["{col} IS NOT NULL", 'ignore', 'OR' ],
+                'blank'        => ["({col} IS NULL OR {col} = '')", 'ignore', 'AND'],
+                'not_blank'    => ["({col} IS NOT NULL AND {col} <> '')", 'ignore', 'OR' ],
             ],
         ];
     }
@@ -257,7 +258,7 @@ class Ransack
      * @param  string                                   $placeholder_suffix (default: '')
      * @return Query|null
      */
-    public static function resolve(Driver $driver, $ransack_predicate, $value, array $alias = [], \Closure|null $extension = null, string $placeholder_suffix = '') : Query|null
+    public static function resolve(Driver $driver, $ransack_predicate, $value, array $alias = [], \Closure|null $extension = null, string $placeholder_suffix = ''): Query|null
     {
         //  1 | If value is blank(null, '' or []) then ransack will be ignored
         if (Utils::isBlank($value)) {
@@ -277,10 +278,10 @@ class Ransack
                         $sub_params   = array_merge($sub_params, $sub_condition->params());
                     }
                 }
-                $wheres[] = '('.implode(' AND ', $sub_wheres).')';
+                $wheres[] = '(' . implode(' AND ', $sub_wheres) . ')';
                 $params   = array_merge($params, $sub_params);
             }
-            return $driver->sql('('.implode(' OR ', $wheres).')', $params);
+            return $driver->sql('(' . implode(' OR ', $wheres) . ')', $params);
         }
 
         $ransack = static::analyze($driver, $ransack_predicate, $value, $alias, $placeholder_suffix);
@@ -304,7 +305,7 @@ class Ransack
      * @param  string                                   $placeholder_suffix (default: '')
      * @return self
      */
-    public static function analyze(Driver $driver, string $ransack_predicate, $value, array $alias = [], string $placeholder_suffix = '') : self
+    public static function analyze(Driver $driver, string $ransack_predicate, $value, array $alias = [], string $placeholder_suffix = ''): self
     {
         $origin = $ransack_predicate;
         $option = null;
@@ -370,7 +371,7 @@ class Ransack
      * @param  array<string, string|array<int, string>> $alias
      * @return array<int, string>
      */
-    protected static function resolveAlias(string $column, array $alias) : array
+    protected static function resolveAlias(string $column, array $alias): array
     {
         $columns = [];
         foreach (Arrays::toArray($alias[$column] ?? $column) as $column) {
@@ -388,7 +389,7 @@ class Ransack
      *
      * @return Driver
      */
-    public function driver() : Driver
+    public function driver(): Driver
     {
         return $this->driver;
     }
@@ -398,7 +399,7 @@ class Ransack
      *
      * @return string
      */
-    public function origin() : string
+    public function origin(): string
     {
         return $this->origin;
     }
@@ -421,7 +422,7 @@ class Ransack
             $value = is_array($value) ? $value : array_values(Arrays::compact(preg_split(static::config('compound_separator'), $value))) ;
         }
 
-        $value_converter = $value_converter ?? $this->value_converter ;
+        $value_converter ??= $this->value_converter ;
         if ($value_converter) {
             return $this->compound ? array_map(function ($v) use ($value_converter) { return $value_converter($v); }, $value) : $value_converter($value) ;
         }
@@ -433,7 +434,7 @@ class Ransack
      *
      * @return string
      */
-    public function predicate() : string
+    public function predicate(): string
     {
         return $this->predicate;
     }
@@ -444,7 +445,7 @@ class Ransack
      *
      * @return string
      */
-    public function template() : string
+    public function template(): string
     {
         return $this->template;
     }
@@ -454,7 +455,7 @@ class Ransack
      *
      * @return \Closure|null
      */
-    public function valueConverter() : \Closure|null
+    public function valueConverter(): \Closure|null
     {
         return $this->value_converter;
     }
@@ -464,7 +465,7 @@ class Ransack
      *
      * @return string 'AND'|'OR'
      */
-    public function conjunction() : string
+    public function conjunction(): string
     {
         return $this->conjunction;
     }
@@ -474,7 +475,7 @@ class Ransack
      *
      * @return string|null 'any'|'all'
      */
-    public function compound() : string|null
+    public function compound(): string|null
     {
         return $this->compound;
     }
@@ -485,7 +486,7 @@ class Ransack
      *
      * @return string|null
      */
-    public function option() : string|null
+    public function option(): string|null
     {
         return $this->option;
     }
@@ -497,7 +498,7 @@ class Ransack
      * @param  boolean            $apply_option (default: true)
      * @return array<int, string>
      */
-    public function columns(bool $apply_option = true) : array
+    public function columns(bool $apply_option = true): array
     {
         if (!$apply_option) {
             return $this->columns;
@@ -513,7 +514,7 @@ class Ransack
      *
      * @return string
      */
-    public function placeholderSuffix() : string
+    public function placeholderSuffix(): string
     {
         return $this->placeholder_suffix;
     }
@@ -526,9 +527,9 @@ class Ransack
      * @param  \Closure|null $value_converter function(mixed $value) { ... } (default: null)
      * @return Query
      */
-    public function convert(string|null $template = null, \Closure|null $value_converter = null) : Query
+    public function convert(string|null $template = null, \Closure|null $value_converter = null): Query
     {
-        $template      = $template ?? $this->template;
+        $template ??= $this->template;
         $params        = [];
         $wheres        = [];
         $columns       = $this->columns();
@@ -547,9 +548,9 @@ class Ransack
                     $params[$key] = $value ;
                 }
             }
-            $wheres[] = count($sub_wheres) === 1 ? $sub_wheres[0] : '('.implode(" {$this->conjunction} ", $sub_wheres).')' ;
+            $wheres[] = count($sub_wheres) === 1 ? $sub_wheres[0] : '(' . implode(" {$this->conjunction} ", $sub_wheres) . ')' ;
         }
-        $sql = count($wheres) === 1 ? $wheres[0] : '('.implode($this->compound === 'any' ? ' OR ' : ' AND ', $wheres).')' ;
+        $sql = count($wheres) === 1 ? $wheres[0] : '(' . implode($this->compound === 'any' ? ' OR ' : ' AND ', $wheres) . ')' ;
 
         return $this->driver->sql($sql, $params);
     }

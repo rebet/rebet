@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\View;
@@ -89,7 +90,7 @@ class View implements Renderable
      *
      * @return bool
      */
-    public static function isEnabled() : bool
+    public static function isEnabled(): bool
     {
         return static::config('engine', false) !== null;
     }
@@ -101,7 +102,7 @@ class View implements Renderable
      * @param  callable|null $changer function($view_name):string to return cahnged name.
      * @return self
      */
-    public static function of(string $name, callable|null $changer = null) : self
+    public static function of(string $name, callable|null $changer = null): self
     {
         return new static($name, $changer);
     }
@@ -111,7 +112,7 @@ class View implements Renderable
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         static::$share    = [];
         static::$composer = [];
@@ -145,7 +146,7 @@ class View implements Renderable
      * @param  callable $composer function(View $view):void
      * @return void
      */
-    public static function composer(string $regex, callable $composer) : void
+    public static function composer(string $regex, callable $composer): void
     {
         static::$composer[$regex] = \Closure::fromCallable($composer);
     }
@@ -157,7 +158,7 @@ class View implements Renderable
      * @param  mixed                       $value
      * @return void
      */
-    public static function share($key, $value = null) : void
+    public static function share($key, $value = null): void
     {
         if (is_array($key)) {
             static::$share = array_merge(static::$share, $key);
@@ -184,7 +185,7 @@ class View implements Renderable
      * @param  mixed                       $value
      * @return self
      */
-    public function with($key, $value = null) : self
+    public function with($key, $value = null): self
     {
         if (is_array($key)) {
             $this->data = array_merge($this->data, array_map(function ($value) {
@@ -202,7 +203,7 @@ class View implements Renderable
      * @param  EofLineFeed $processer
      * @return self
      */
-    public function eof(EofLineFeed $processer) : self
+    public function eof(EofLineFeed $processer): self
     {
         $this->eof = $processer;
         return $this;
@@ -214,7 +215,7 @@ class View implements Renderable
      * @return string
      * @throws ViewRenderFailedException
      */
-    public function render() : string
+    public function render(): string
     {
         $names = $this->getPossibleNames();
         $eof   = $this->eof ?? static::config('eof_line_feed');
@@ -228,7 +229,7 @@ class View implements Renderable
             }
         }
 
-        throw new ViewRenderFailedException("The view [{$this->name}] (possible: ".join(', ', $names).") render failed because of all of view templates not exists.");
+        throw new ViewRenderFailedException("The view [{$this->name}] (possible: " . join(', ', $names) . ") render failed because of all of view templates not exists.");
     }
 
     /**
@@ -236,7 +237,7 @@ class View implements Renderable
      *
      * @return boolean
      */
-    public function exists() : bool
+    public function exists(): bool
     {
         foreach ($this->getPossibleNames() as $name) {
             if ($this->engine->exists($name)) {
@@ -251,10 +252,10 @@ class View implements Renderable
      *
      * @return string[]
      */
-    public function getPossibleNames() : array
+    public function getPossibleNames(): array
     {
         $changer = $this->changer;
-        return (array)($changer ? $changer($this->name) : $this->name);
+        return (array) ($changer ? $changer($this->name) : $this->name);
     }
 
     /**
@@ -262,7 +263,7 @@ class View implements Renderable
      *
      * @return array<int, string>
      */
-    public function getPaths() : array
+    public function getPaths(): array
     {
         return $this->engine->getPaths();
     }
@@ -273,7 +274,7 @@ class View implements Renderable
      * @param  string $path
      * @return self
      */
-    public function prependPath(string $path) : self
+    public function prependPath(string $path): self
     {
         $this->engine->prependPath($path);
         return $this;
@@ -285,7 +286,7 @@ class View implements Renderable
      * @param  string $path
      * @return self
      */
-    public function appendPath(string $path) : self
+    public function appendPath(string $path): self
     {
         $this->engine->appendPath($path);
         return $this;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Log\Driver;
@@ -65,7 +66,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
     /**
      * {@inheritDoc}
      */
-    public function setName(string $name) : self
+    public function setName(string $name): self
     {
         $this->name = $name;
         foreach ($this->drivers as $driver) {
@@ -79,7 +80,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
     /**
      * {@inheritDoc}
      */
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -87,7 +88,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
     /**
      * {@inheritDoc}
      */
-    public function withName(string $name) : self
+    public function withName(string $name): self
     {
         $new          = clone $this;
         $new->name    = $name;
@@ -106,7 +107,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
      * @param  array<string, mixed> $context (default: [])
      * @return void
      */
-    public function log($level, string|\Stringable $message, array $context = []) : void
+    public function log($level, string|\Stringable $message, array $context = []): void
     {
         static::$call_stack[] = $this;
         foreach ($this->drivers as $driver) {

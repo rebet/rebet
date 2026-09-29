@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing;
@@ -73,7 +74,7 @@ class ViewSelector
      * @param  boolean       $apply_change
      * @return \Closure|null
      */
-    protected function changer(bool $apply_change) : \Closure|null
+    protected function changer(bool $apply_change): \Closure|null
     {
         if (!$this->changer || !$apply_change) {
             return null;
@@ -91,9 +92,9 @@ class ViewSelector
      * @param  bool        $apply_change (default: true)
      * @return View
      */
-    public function view(string|null $name = null, bool $apply_change = true) : View
+    public function view(string|null $name = null, bool $apply_change = true): View
     {
-        $name    = $name ?? $this->request->route->defaultView();
+        $name ??= $this->request->route->defaultView();
         $changer = $this->changer($apply_change);
         return new View($name, $changer);
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Middleware\Routing;
@@ -40,7 +41,7 @@ abstract class InputDataTransform
      * @param  \Closure $next
      * @return Response
      */
-    public function handle(Request $request, \Closure $next) : Response
+    public function handle(Request $request, \Closure $next): Response
     {
         $this->transformBag($request->request);
         $this->transformBag($request->query);
@@ -65,7 +66,7 @@ abstract class InputDataTransform
      * @param  string                   $prefix (default: '')
      * @return array<int|string, mixed>
      */
-    protected function transformArray(array $array, string $prefix = '') : array
+    protected function transformArray(array $array, string $prefix = ''): array
     {
         return Arrays::map($array, function ($value, $key) use ($prefix) {
             $key = is_int($key) ? $prefix : ($prefix === '' ? $key : "{$prefix}.{$key}") ;

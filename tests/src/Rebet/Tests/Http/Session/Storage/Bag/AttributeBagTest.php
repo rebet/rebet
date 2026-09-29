@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Http\Session\Storage\Bag;
 
 use Rebet\Http\Session\Storage\Bag\AttributeBag;

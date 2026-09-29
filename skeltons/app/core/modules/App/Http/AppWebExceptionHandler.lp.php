@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http;
@@ -25,7 +26,7 @@ class AppWebExceptionHandler extends WebExceptionHandler
      * @return void
      */
     #[Override]
-    public function report($input, $result, \Throwable $e) : void
+    public function report($input, $result, \Throwable $e): void
     {
         parent::report($input, $result, $e);
     }

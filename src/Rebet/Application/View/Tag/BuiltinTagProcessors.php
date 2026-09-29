@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\View\Tag;
@@ -38,7 +39,7 @@ class BuiltinTagProcessors
      *
      * @return string|null
      */
-    public static function currentField() : string|null
+    public static function currentField(): string|null
     {
         return static::$field;
     }
@@ -48,7 +49,7 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function env() : Processor
+    public static function env(): Processor
     {
         $processor = function (string ...$env) {
             return in_array(App::env(), $env);
@@ -62,7 +63,7 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function prefix() : Processor
+    public static function prefix(): Processor
     {
         $processor = function ($prefix) {
             return Tinker::with($prefix, true)->escape() ;
@@ -76,7 +77,7 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function role() : Processor
+    public static function role(): Processor
     {
         $processor = function (string ...$roles) {
             return Auth::user()->is(...$roles);
@@ -90,7 +91,7 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function can() : Processor
+    public static function can(): Processor
     {
         $processor = function (string $action, $target, ...$extras) {
             return Auth::user()->can($action, $target, ...$extras);
@@ -104,7 +105,7 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function field() : Processor
+    public static function field(): Processor
     {
         $processor = function ($name = null) {
             if ($name === null) {
@@ -122,7 +123,7 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function endfield() : Processor
+    public static function endfield(): Processor
     {
         $processor = function () {
             BuiltinTagProcessors::$field = null;
@@ -136,13 +137,13 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function error() : Processor
+    public static function error(): Processor
     {
         $processor = function ($errors, string|null $names = null, string|null $outer = null, string|null $inner = null) {
             $errors = Tinker::with($errors, true);
-            $names  = $names ?? '*' ;
-            $outer  = $outer ?? Translator::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
-            $inner  = $inner ?? Translator::grammar('message', "errors.inner") ?? '<li>:message</li>';
+            $names ??= '*' ;
+            $outer ??= Translator::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
+            $inner ??= Translator::grammar('message', "errors.inner") ?? '<li>:message</li>';
 
             $output = '';
             if ($names === '*') {
@@ -152,7 +153,7 @@ class BuiltinTagProcessors
                     }
                 }
             } else {
-                $names = (array)$names;
+                $names = (array) $names;
                 foreach ($names as $name) {
                     foreach ($errors[$name] as $message) {
                         $output .= str_replace(':message', (string) $message->escape(), $inner);
@@ -177,11 +178,11 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function errors() : Processor
+    public static function errors(): Processor
     {
         $processor = function ($errors, $name = null) {
             $errors = Tinker::with($errors, true);
-            $name   = $name ?? BuiltinTagProcessors::$field ;
+            $name ??= BuiltinTagProcessors::$field ;
             return $name ? !$errors[$name]->isBlank() : !$errors->isEmpty() ;
         };
 
@@ -193,7 +194,7 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function iferror() : Processor
+    public static function iferror(): Processor
     {
         $processor = function ($errors, string $name, $then, $else = null) {
             $errors = Tinker::with($errors, true);
@@ -218,11 +219,11 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function e() : Processor
+    public static function e(): Processor
     {
         $processor = function ($errors, string $name, string $grammer) {
             $errors         = Tinker::with($errors, true);
-            [$value, $else] = array_pad((array)Translator::grammar('message', "errors.{$grammer}"), 2, '');
+            [$value, $else] = array_pad((array) Translator::grammar('message', "errors.{$grammer}"), 2, '');
             return $errors[$name]->isBlank() ? $else : $value ;
         };
 
@@ -244,7 +245,7 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function input() : Processor
+    public static function input(): Processor
     {
         $processor = function ($input, string $name, $default = null) {
             $input = Tinker::with($input, true);
@@ -269,7 +270,7 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function csrfToken() : Processor
+    public static function csrfToken(): Processor
     {
         $processor = function (...$scope) {
             $session = Session::current();
@@ -284,13 +285,13 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function csrf() : Processor
+    public static function csrf(): Processor
     {
         $processor = function (...$scope) {
             $session = Session::current();
             $key     = Session::createTokenKey(...$scope);
             $token   = $session->token(...$scope) ?? $session->generateToken(...$scope) ;
-            return '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($token).'" />';
+            return '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($token) . '" />';
         };
 
         return new CallbackProcessor($processor);
@@ -301,10 +302,10 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function lang() : Processor
+    public static function lang(): Processor
     {
         $processor = function (string $key, array $replacement = [], $selector = null, string|null $locale = null) {
-            $replacement = array_map(function ($value) { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }, $replacement);
+            $replacement = array_map(function ($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }, $replacement);
             return Translator::get($key, $replacement, $selector, true, $locale);
         };
 
@@ -317,7 +318,7 @@ class BuiltinTagProcessors
      *
      * @return Processor
      */
-    public static function paginate() : Processor
+    public static function paginate(): Processor
     {
         $processor = function (Paginator $paginator, array $options = []) {
             $request  = Request::current();
@@ -342,4 +343,4 @@ class BuiltinTagProcessors
 // ---------------------------------------------------------
 // Add library default translation resource
 // ---------------------------------------------------------
-Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__.'/i18n'), 'pagination');
+Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__ . '/i18n'), 'pagination');

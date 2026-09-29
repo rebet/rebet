@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Ransack;
@@ -41,7 +42,7 @@ class BuiltinRansacker implements Ransacker
     /**
      * {@inheritDoc}
      */
-    public static function of(Driver $driver) : Ransacker
+    public static function of(Driver $driver): Ransacker
     {
         return new static($driver);
     }
@@ -53,7 +54,7 @@ class BuiltinRansacker implements Ransacker
      * @param mixed                                    $value
      * @param array<string, string|array<int, string>> $alias
      */
-    public function resolve($ransack_predicate, $value, array $alias = [], \Closure|null $extension = null) : Query|null
+    public function resolve($ransack_predicate, $value, array $alias = [], \Closure|null $extension = null): Query|null
     {
         return Ransack::resolve($this->driver, $ransack_predicate, $value, $alias, $extension);
     }
@@ -64,7 +65,7 @@ class BuiltinRansacker implements Ransacker
      * @param mixed                                    $ransack condition that arrayable
      * @param array<string, string|array<int, string>> $alias
      */
-    public function build($ransack, array $alias = [], \Closure|null $extension = null) : Query
+    public function build($ransack, array $alias = [], \Closure|null $extension = null): Query
     {
         $wheres = [];
         $params = [];

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -11,19 +12,19 @@ class FilesTest extends RebetTestCase
 {
     protected $test_dir;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->vfs([
             'public' => [
-                'css' => [
+                'css'        => [
                     'normalize.css'   => 'This is normalize.css',
                     'application.css' => 'This is application.css',
                 ],
-                'img' => [
+                'img'        => [
                     // empty directory
                 ],
-                'js' => [
+                'js'         => [
                     'application.js' => 'This is application.js',
                     'underscore'     => [
                         'underscore.min.js' => 'This is underscore.min.js',
@@ -32,12 +33,12 @@ class FilesTest extends RebetTestCase
                 'index.html' => 'This is index.html',
                 'robot.txt'  => '', // empty file
             ],
-            'var' => [],
+            'var'    => [],
         ]);
 
         $this->test_dir = static::makeSubWorkingDir('/FilesTest');
-        mkdir("{$this->test_dir}/parent", 0777, true);
-        mkdir("{$this->test_dir}/parent/child", 0777, true);
+        mkdir("{$this->test_dir}/parent", 0o777, true);
+        mkdir("{$this->test_dir}/parent/child", 0o777, true);
         file_put_contents("{$this->test_dir}/parent/foo.txt", "foo");
         file_put_contents("{$this->test_dir}/parent/bar.ini", "bar");
         file_put_contents("{$this->test_dir}/parent/child/baz.log", "baz");
@@ -138,35 +139,35 @@ class FilesTest extends RebetTestCase
         $this->assertSame("baz", file_get_contents("{$this->test_dir}/parent/child/baz.log"));
     }
 
-    public static function dataZipErrorChecks() : array
+    public static function dataZipErrorChecks(): array
     {
         return [
             ['ZipArchive error.', false],
             [null, \ZipArchive::ER_OK],
-            ["ZipArchive error. (Multi-disk zip archives not supported)" , \ZipArchive::ER_MULTIDISK],
-            ["ZipArchive error. (Renaming temporary file failed)" , \ZipArchive::ER_RENAME],
-            ["ZipArchive error. (Closing zip archive failed)" , \ZipArchive::ER_CLOSE],
-            ["ZipArchive error. (Seek error)" , \ZipArchive::ER_SEEK],
-            ["ZipArchive error. (Read error)" , \ZipArchive::ER_READ],
-            ["ZipArchive error. (Write error)" , \ZipArchive::ER_WRITE],
-            ["ZipArchive error. (CRC error)" , \ZipArchive::ER_CRC],
-            ["ZipArchive error. (Containing zip archive was closed)" , \ZipArchive::ER_ZIPCLOSED],
-            ["ZipArchive error. (No such file)" , \ZipArchive::ER_NOENT],
-            ["ZipArchive error. (File already exists)" , \ZipArchive::ER_EXISTS],
-            ["ZipArchive error. (Can't open file)" , \ZipArchive::ER_OPEN],
-            ["ZipArchive error. (Failure to create temporary file)" , \ZipArchive::ER_TMPOPEN],
-            ["ZipArchive error. (Zlib error)" , \ZipArchive::ER_ZLIB],
-            ["ZipArchive error. (Malloc failure)" , \ZipArchive::ER_MEMORY],
-            ["ZipArchive error. (Entry has been changed)" , \ZipArchive::ER_CHANGED],
-            ["ZipArchive error. (Compression method not supported)" , \ZipArchive::ER_COMPNOTSUPP],
-            ["ZipArchive error. (Premature EOF)" , \ZipArchive::ER_EOF],
-            ["ZipArchive error. (Invalid argument)" , \ZipArchive::ER_INVAL],
-            ["ZipArchive error. (Not a zip archive)" , \ZipArchive::ER_NOZIP],
-            ["ZipArchive error. (Internal error)" , \ZipArchive::ER_INTERNAL],
-            ["ZipArchive error. (Zip archive inconsistent)" , \ZipArchive::ER_INCONS],
-            ["ZipArchive error. (Can't remove file)" , \ZipArchive::ER_REMOVE],
-            ["ZipArchive error. (Entry has been delete)" , \ZipArchive::ER_DELETED],
-            ["ZipArchive error. (Unknown reason)" , 999],
+            ["ZipArchive error. (Multi-disk zip archives not supported)", \ZipArchive::ER_MULTIDISK],
+            ["ZipArchive error. (Renaming temporary file failed)", \ZipArchive::ER_RENAME],
+            ["ZipArchive error. (Closing zip archive failed)", \ZipArchive::ER_CLOSE],
+            ["ZipArchive error. (Seek error)", \ZipArchive::ER_SEEK],
+            ["ZipArchive error. (Read error)", \ZipArchive::ER_READ],
+            ["ZipArchive error. (Write error)", \ZipArchive::ER_WRITE],
+            ["ZipArchive error. (CRC error)", \ZipArchive::ER_CRC],
+            ["ZipArchive error. (Containing zip archive was closed)", \ZipArchive::ER_ZIPCLOSED],
+            ["ZipArchive error. (No such file)", \ZipArchive::ER_NOENT],
+            ["ZipArchive error. (File already exists)", \ZipArchive::ER_EXISTS],
+            ["ZipArchive error. (Can't open file)", \ZipArchive::ER_OPEN],
+            ["ZipArchive error. (Failure to create temporary file)", \ZipArchive::ER_TMPOPEN],
+            ["ZipArchive error. (Zlib error)", \ZipArchive::ER_ZLIB],
+            ["ZipArchive error. (Malloc failure)", \ZipArchive::ER_MEMORY],
+            ["ZipArchive error. (Entry has been changed)", \ZipArchive::ER_CHANGED],
+            ["ZipArchive error. (Compression method not supported)", \ZipArchive::ER_COMPNOTSUPP],
+            ["ZipArchive error. (Premature EOF)", \ZipArchive::ER_EOF],
+            ["ZipArchive error. (Invalid argument)", \ZipArchive::ER_INVAL],
+            ["ZipArchive error. (Not a zip archive)", \ZipArchive::ER_NOZIP],
+            ["ZipArchive error. (Internal error)", \ZipArchive::ER_INTERNAL],
+            ["ZipArchive error. (Zip archive inconsistent)", \ZipArchive::ER_INCONS],
+            ["ZipArchive error. (Can't remove file)", \ZipArchive::ER_REMOVE],
+            ["ZipArchive error. (Entry has been delete)", \ZipArchive::ER_DELETED],
+            ["ZipArchive error. (Unknown reason)", 999],
         ];
     }
 

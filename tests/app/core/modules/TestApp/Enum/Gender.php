@@ -1,10 +1,11 @@
 <?php
+
 namespace TestApp\Enum;
 
 use Rebet\Tools\Enum\Enum;
 
 class Gender extends Enum
 {
-    const MALE   = [1, 'Male'];
-    const FEMALE = [2, 'Female'];
+    public const MALE   = [1, 'Male'];
+    public const FEMALE = [2, 'Female'];
 }

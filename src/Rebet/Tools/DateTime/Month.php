@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\DateTime;
@@ -33,18 +34,18 @@ class Month extends Enum
 {
     protected const TRANSLATION_GROUP = 'datetime';
 
-    const JANUARY  = [ 1, 'January'  , 'Jan'];
-    const FEBRUARY = [ 2, 'February' , 'Feb'];
-    const MARCH    = [ 3, 'March'    , 'Mar'];
-    const APRIL    = [ 4, 'April'    , 'Apr'];
-    const MAY      = [ 5, 'May'      , 'May'];
-    const JUNE     = [ 6, 'June'     , 'Jun'];
-    const JULY     = [ 7, 'July'     , 'Jul'];
-    const AUGUST   = [ 8, 'August'   , 'Aug'];
-    const SEPTEMBE = [ 9, 'September', 'Sep'];
-    const OCTOBER  = [10, 'October'  , 'Oct'];
-    const NOVEMBER = [11, 'November' , 'Nov'];
-    const DECEMBER = [12, 'December' , 'Dec'];
+    public const JANUARY  = [ 1, 'January', 'Jan'];
+    public const FEBRUARY = [ 2, 'February', 'Feb'];
+    public const MARCH    = [ 3, 'March', 'Mar'];
+    public const APRIL    = [ 4, 'April', 'Apr'];
+    public const MAY      = [ 5, 'May', 'May'];
+    public const JUNE     = [ 6, 'June', 'Jun'];
+    public const JULY     = [ 7, 'July', 'Jul'];
+    public const AUGUST   = [ 8, 'August', 'Aug'];
+    public const SEPTEMBE = [ 9, 'September', 'Sep'];
+    public const OCTOBER  = [10, 'October', 'Oct'];
+    public const NOVEMBER = [11, 'November', 'Nov'];
+    public const DECEMBER = [12, 'December', 'Dec'];
 
     /**
      * @var string of short day of week label
@@ -68,4 +69,4 @@ class Month extends Enum
 // ---------------------------------------------------------
 // Add library default translation resource
 // ---------------------------------------------------------
-Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__.'/i18n'), 'datetime');
+Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__ . '/i18n'), 'datetime');

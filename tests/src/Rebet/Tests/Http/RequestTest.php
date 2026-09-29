@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Http;
 
 use BadMethodCallException;
@@ -24,12 +25,12 @@ use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 
 class RequestTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         Blade::clear();
         Config::application([
-            View::class => [
+            View::class  => [
                 'engine' => Blade::class,
             ],
             Blade::class => [
@@ -239,7 +240,7 @@ class RequestTest extends RebetTestCase
         $this->assertSame('token', $request->bearerToken());
     }
 
-    public static function dataGetRequestPaths() : array
+    public static function dataGetRequestPaths(): array
     {
         return [
             ['/', '/', '', false],

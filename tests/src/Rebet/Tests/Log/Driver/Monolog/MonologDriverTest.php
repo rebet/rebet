@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Log\Driver\Monolog;
 
 use Monolog\Handler\TestHandler;
@@ -10,7 +11,7 @@ use Rebet\Tools\DateTime\DateTime;
 
 class MonologDriverTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.123456');

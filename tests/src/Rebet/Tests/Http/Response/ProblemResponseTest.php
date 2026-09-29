@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Http\Response;
 
 use Rebet\Application\App;
@@ -146,7 +147,7 @@ class ProblemResponseTest extends RebetTestCase
                     ->detail('Detail')
                     ->instance('Instance')
                     ->additional([
-                        'input' => [
+                        'input'  => [
                             'name' => null,
                         ],
                         'errors' => [

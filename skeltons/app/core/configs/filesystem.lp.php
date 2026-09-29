@@ -52,7 +52,7 @@ return [
     | This section defines filesystem storage settings.
     | You may change these defaults as required.
     */
-    Storage::class => [
+    Storage::class           => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Filesystem
@@ -78,7 +78,7 @@ return [
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Specifies the disk name to use as a public disk.
         */
-        'public_disk' => 'public',
+        'public_disk'  => 'public',
 
 
         /*
@@ -102,7 +102,7 @@ return [
         |  - And you can find other Officially/Community Supported Adapters in
         |    https://github.com/thephpleague/flysystem/tree/3.x
         */
-        'disks' => [
+        'disks'        => [
             /*
             |--------------------------------------------------------------------------------------
             | Private Disk Settings
@@ -117,7 +117,7 @@ return [
                     // 'writeFlags'   => LOCK_EX,
                     // 'linkHandling' => LocalFilesystemAdapter::DISALLOW_LINKS,
                 ],
-                'config' => null,
+                'config'  => null,
             ],
 
 
@@ -127,7 +127,7 @@ return [
             |--------------------------------------------------------------------------------------
             | A filesystem disk for public using Local file storage.
             */
-            'public' => [
+            'public'  => [
                 'adapter' => [
                     '@factory' => LocalFilesystemAdapter::class,
                     'location' => App::structure()->publicStorage(),
@@ -135,7 +135,7 @@ return [
                     // 'writeFlags'   => LOCK_EX,
                     // 'linkHandling' => LocalFilesystemAdapter::DISALLOW_LINKS,
                 ],
-                'config' => [
+                'config'  => [
                     'visibility' => 'public',
                     'url'        => App::structure()->storageUrl(),
                 ],

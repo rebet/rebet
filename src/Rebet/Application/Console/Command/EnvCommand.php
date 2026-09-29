@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command;
@@ -16,14 +17,14 @@ use Rebet\Console\Command\Command;
  */
 class EnvCommand extends Command
 {
-    const NAME        = 'env';
-    const DESCRIPTION = 'Display the current framework environment';
+    public const NAME        = 'env';
+    public const DESCRIPTION = 'Display the current framework environment';
 
     /**
      * {@inheritDoc}
      */
     protected function handle()
     {
-        $this->writeln('<info>Current application environment:</info> <comment>'.App::env().'.</comment>');
+        $this->writeln('<info>Current application environment:</info> <comment>' . App::env() . '.</comment>');
     }
 }

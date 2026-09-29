@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command\Hash;
@@ -18,14 +19,14 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class HashHmacCommand extends Command
 {
-    const NAME        = 'hash:hmac';
-    const DESCRIPTION = 'Generate an HMAC for the given text';
-    const ARGUMENTS   = [
+    public const NAME        = 'hash:hmac';
+    public const DESCRIPTION = 'Generate an HMAC for the given text';
+    public const ARGUMENTS   = [
         ['text', InputArgument::REQUIRED, 'Text that you want to generate an HMAC for'],
     ];
-    const OPTIONS = [
+    public const OPTIONS = [
         ['secret-key', 'sk', InputOption::VALUE_OPTIONAL, 'Secret key'],
-        ['algorithm' , 'a' , InputOption::VALUE_OPTIONAL, 'HMAC algorithm'],
+        ['algorithm', 'a', InputOption::VALUE_OPTIONAL, 'HMAC algorithm'],
     ];
 
     /**
@@ -33,10 +34,10 @@ class HashHmacCommand extends Command
      */
     protected function handle()
     {
-        $this->writeln('<info>HMAC:</info> '. Securities::hmac(
+        $this->writeln('<info>HMAC:</info> ' . Securities::hmac(
             $this->argument('text'),
             $this->option('secret-key'),
-            $this->option('algorithm')
+            $this->option('algorithm'),
         ));
     }
 }

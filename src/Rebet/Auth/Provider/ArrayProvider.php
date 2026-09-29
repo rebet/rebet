@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth\Provider;
@@ -82,7 +83,7 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function findById($id) : AuthUser|null
+    public function findById($id): AuthUser|null
     {
         return $this->users
             ->first(function ($user) use ($id) { return $user['user_id'] == $id; })
@@ -92,7 +93,7 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function findByToken(string|null $token) : AuthUser|null
+    public function findByToken(string|null $token): AuthUser|null
     {
         return $this->users
             ->where(function ($user) use ($token) { return $user[$this->token_name] == $this->hashToken($token); })
@@ -104,7 +105,7 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    protected function findBySigninId($signin_id) : AuthUser|null
+    protected function findBySigninId($signin_id): AuthUser|null
     {
         return $this->users
             ->where(function ($user) use ($signin_id) { return $user[$this->signin_id_name] == $signin_id; })
@@ -116,7 +117,7 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function rehashPassword($id, string $new_hash) : void
+    public function rehashPassword($id, string $new_hash): void
     {
         // Nothing to do (Password rehash not supported)
     }

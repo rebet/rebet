@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth\Exception;
@@ -27,7 +28,7 @@ class AuthenticateException extends RuntimeException implements ProblemRespondab
     /**
      * {@inheritDoc}
      */
-    public function problem() : ProblemResponse
+    public function problem(): ProblemResponse
     {
         return Responder::problem(403)->detail(Translator::get('message.http.403.detail') ?? $this->getMessage());
     }

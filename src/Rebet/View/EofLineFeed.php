@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\View;
@@ -22,17 +23,17 @@ class EofLineFeed extends Enum
     /**
      * EOF line feed processing : Keep (Do nothing)
      */
-    const KEEP = [1, 'keep'];
+    public const KEEP = [1, 'keep'];
 
     /**
      * EOF line feed processing : Trim CR/LF
      */
-    const TRIM = [2, 'trim'];
+    public const TRIM = [2, 'trim'];
 
     /**
      * EOF line feed processing : Trim CR/LF then append one LF
      */
-    const ONE = [3, 'one'];
+    public const ONE = [3, 'one'];
 
     /**
      * Process EOF line feeds.
@@ -40,7 +41,7 @@ class EofLineFeed extends Enum
      * @param  string|null $contents
      * @return string|null
      */
-    public function process(string|null $contents) : string|null
+    public function process(string|null $contents): string|null
     {
         if ($contents === null) {
             return null;

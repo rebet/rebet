@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\View\Engine\Blade;
 
 use Rebet\Application\App;
@@ -11,10 +12,10 @@ use Rebet\View\View;
 
 class BladeTagCustomizerTest extends EngineCustomizerTestCase
 {
-    protected function createEngine() : Engine
+    protected function createEngine(): Engine
     {
         Config::application([
-            View::class => [
+            View::class  => [
                 'engine' => Blade::class,
             ],
             Blade::class => [

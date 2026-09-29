@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\Console;
@@ -46,7 +47,7 @@ class CliExceptionHandler extends ExceptionHandler
      * @param  \Throwable     $e
      * @return void
      */
-    public function report($input, $result, \Throwable $e) : void
+    public function report($input, $result, \Throwable $e): void
     {
         Log::error("Console unhandled exception occurred. Error code: {$result}", ['arguments' => $input->getArguments(), 'options' => $input->getOptions()], $e);
     }
@@ -60,13 +61,13 @@ class CliExceptionHandler extends ExceptionHandler
      */
     public function handle($input, \Throwable $e)
     {
-        $input  = $input ?? new ArgvInput();
+        $input ??= new ArgvInput();
         $status = 1;
         $this->report($input, $status, $e);
         $this->output->writeln('<error>********************************************</error>');
         $this->output->writeln('<error>*   Console Unhandled Exception Occurred   *</error>');
         $this->output->writeln('<error>********************************************</error>');
-        $this->output->writeln('<comment>'.$e->getMessage().'</comment>');
+        $this->output->writeln('<comment>' . $e->getMessage() . '</comment>');
         $this->output->writeln('Exception:');
         $this->output->writeln($e->getTraceAsString());
         return $status;

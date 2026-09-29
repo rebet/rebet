@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Exception;
@@ -23,7 +24,7 @@ trait RebetExceptionable
     /**
      * {@inheritDoc}
      */
-    public function caused(\Throwable $previous) : static
+    public function caused(\Throwable $previous): static
     {
         $rc = new \ReflectionClass(\Exception::class);
         $rp = $rc->getProperty('previous');
@@ -34,7 +35,7 @@ trait RebetExceptionable
     /**
      * {@inheritDoc}
      */
-    public function getCaused() : \Throwable|null
+    public function getCaused(): \Throwable|null
     {
         $rc = new \ReflectionClass(\Exception::class);
         $rp = $rc->getProperty('previous');
@@ -44,7 +45,7 @@ trait RebetExceptionable
     /**
      * {@inheritDoc}
      */
-    public function code($code) : static
+    public function code($code): static
     {
         $this->code = $code;
         return $this;
@@ -53,7 +54,7 @@ trait RebetExceptionable
     /**
      * {@inheritDoc}
      */
-    public function appendix($appendix) : static
+    public function appendix($appendix): static
     {
         $this->appendix = $appendix;
         return $this;

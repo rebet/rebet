@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth;
@@ -126,7 +127,7 @@ class AuthUser implements \JsonSerializable
      * @param  array<string, mixed> $aliases             (default: depend on configure)
      * @return self
      */
-    public static function guest(mixed $charenged_signin_id = null, array $aliases = []) : self
+    public static function guest(mixed $charenged_signin_id = null, array $aliases = []): self
     {
         $guest = new static(null, array_merge(static::config('guest_aliases', false, []), $aliases));
 
@@ -139,7 +140,7 @@ class AuthUser implements \JsonSerializable
      *
      * @return AuthProvider|null
      */
-    public function provider() : AuthProvider|null
+    public function provider(): AuthProvider|null
     {
         return $this->provider;
     }
@@ -198,7 +199,7 @@ class AuthUser implements \JsonSerializable
      *
      * @return self
      */
-    public function refresh() : self
+    public function refresh(): self
     {
         if ($this->provider) {
             $user       = $this->provider->findById($this->id);
@@ -212,7 +213,7 @@ class AuthUser implements \JsonSerializable
      *
      * @return boolean
      */
-    public function isGuest() : bool
+    public function isGuest(): bool
     {
         return $this->user === null;
     }
@@ -234,7 +235,7 @@ class AuthUser implements \JsonSerializable
      * @param  string  ...$roles
      * @return boolean
      */
-    public function is(string ...$roles) : bool
+    public function is(string ...$roles): bool
     {
         return Auth::role($this, ...$roles);
     }
@@ -246,7 +247,7 @@ class AuthUser implements \JsonSerializable
      * @param  string  ...$roles
      * @return boolean
      */
-    public function isnot(string ...$roles) : bool
+    public function isnot(string ...$roles): bool
     {
         return !$this->is(...$roles);
     }
@@ -259,7 +260,7 @@ class AuthUser implements \JsonSerializable
      * @param  mixed         ...$extras
      * @return boolean
      */
-    public function can(string $action, $target, ...$extras) : bool
+    public function can(string $action, $target, ...$extras): bool
     {
         return Auth::policy($this, $action, $target, ...$extras);
     }
@@ -272,7 +273,7 @@ class AuthUser implements \JsonSerializable
      * @param  mixed         ...$extras
      * @return boolean
      */
-    public function cannot(string $action, $target, ...$extras) : bool
+    public function cannot(string $action, $target, ...$extras): bool
     {
         return !$this->can($action, $target, ...$extras);
     }
@@ -327,7 +328,7 @@ class AuthUser implements \JsonSerializable
     /**
      * {@inheritDoc}
      */
-    public function jsonSerialize() : mixed
+    public function jsonSerialize(): mixed
     {
         return Json::serialize($this->user);
     }

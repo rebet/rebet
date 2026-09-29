@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Config;
@@ -80,6 +81,6 @@ class ConfigPromise implements DotAccessDelegator
         if ($this->is_evaluated) {
             return Strings::stringify($this->evaluated_value);
         }
-        return "<Promise: ".($this->only_once ? "once" : "dynamic").'>';
+        return "<Promise: " . ($this->only_once ? "once" : "dynamic") . '>';
     }
 }

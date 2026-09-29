@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Cache\Adapter\Symfony;
@@ -33,11 +34,11 @@ class ArrayAdapter extends AbstractSymfonyAdapter
             new ProxyAdapter(
                 new ArrayPool(), // @todo Symfony ver 4.4.12 ProxyAdapter + ArrayAdapter has problem that invalidateTags() not working when wrraped by TagAwareAdapter.
                 $namespace,
-                Unit::of(Unit::TIME)->convert($default_lifetime)->toInt()
+                Unit::of(Unit::TIME)->convert($default_lifetime)->toInt(),
             ),
             $taggable,
             $tags_pool,
-            $known_tag_versions_ttl
+            $known_tag_versions_ttl,
         );
     }
 }

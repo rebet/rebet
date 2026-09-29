@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Auth\Event;
 
 use Rebet\Auth\Event\Authentication;

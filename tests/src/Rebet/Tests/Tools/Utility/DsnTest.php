@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use Exception;
@@ -24,7 +25,7 @@ class DsnTest extends RebetTestCase
         }
     }
 
-    public static function dataParses() : array
+    public static function dataParses(): array
     {
         return [
             [null, []],

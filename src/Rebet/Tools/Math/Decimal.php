@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Math;
@@ -48,7 +49,7 @@ class Decimal
      *                                       - max_scale    : For MODE_AUTO_PRECISION_SCALING
      * @return void
      */
-    public static function setMode(int $mode, array $options = []) : void
+    public static function setMode(int $mode, array $options = []): void
     {
         static::setConfig(['mode' => $mode, 'options' => $options]);
     }
@@ -59,7 +60,7 @@ class Decimal
      * @param  integer $fixed_scale
      * @return void
      */
-    public static function setFixedScale(int $fixed_scale) : void
+    public static function setFixedScale(int $fixed_scale): void
     {
         static::setConfig(['options' => ['fixed_scale' => $fixed_scale]]);
     }
@@ -70,7 +71,7 @@ class Decimal
      * @param  integer $guard_digits
      * @return void
      */
-    public static function setGuardDigits(int $guard_digits) : void
+    public static function setGuardDigits(int $guard_digits): void
     {
         static::setConfig(['options' => ['guard_digits' => $guard_digits]]);
     }
@@ -81,7 +82,7 @@ class Decimal
      * @param  integer $max_scale
      * @return void
      */
-    public static function setMaxScale(int $max_scale) : void
+    public static function setMaxScale(int $max_scale): void
     {
         static::setConfig(['options' => ['max_scale' => $max_scale]]);
     }
@@ -120,7 +121,7 @@ class Decimal
      *
      * @var int
      */
-    const MODE_AUTO_PRECISION_SCALING = 1;
+    public const MODE_AUTO_PRECISION_SCALING = 1;
 
     /**
      * Significance Arithmetic Mode
@@ -161,7 +162,7 @@ class Decimal
      *
      * @var int
      */
-    const MODE_SIGNIFICANCE_ARITHMETIC = 2;
+    public const MODE_SIGNIFICANCE_ARITHMETIC = 2;
 
     /**
      * Fixed Decimal Places Mode
@@ -197,17 +198,17 @@ class Decimal
      *
      * @var int
      */
-    const MODE_FIXED_DECIMAL_PLACES = 3;
+    public const MODE_FIXED_DECIMAL_PLACES = 3;
 
     /**
      * @var int Precision type decimal places for add/sub.
      */
-    const TYPE_DECIMAL_PLACES = 1;
+    public const TYPE_DECIMAL_PLACES = 1;
 
     /**
      * @var int Precision type significant figures for mul/div.
      */
-    const TYPE_SIGNIFICANT_FIGURES = 2;
+    public const TYPE_SIGNIFICANT_FIGURES = 2;
 
     /**
      * @var string of decimal value.
@@ -252,7 +253,7 @@ class Decimal
      * @return array{0: string, 1: int, 2: int|null} of [value, scale, significant_figures]
      * @throws InvalidArgumentException              when the value format is invalid.
      */
-    protected static function analyze(string $value, string $decimal_point = ".", string $thousands_separator = ",") : array
+    protected static function analyze(string $value, string $decimal_point = ".", string $thousands_separator = ","): array
     {
         $value               = trim(str_replace([$decimal_point, $thousands_separator], ['.', ''], $value));
         $capture             = [];
@@ -267,10 +268,10 @@ class Decimal
             $sf      = $capture['sf'] ?? null;
             $scale   = mb_strlen($decimal) - $exp;
             if ($scale <= 0) {
-                $value = $sign.$integer.$decimal.str_repeat('0', abs($scale));
+                $value = $sign . $integer . $decimal . str_repeat('0', abs($scale));
             } else {
-                $value = str_repeat('0', max($scale - mb_strlen($integer.$decimal) + 1, 0)).$integer.$decimal;
-                $value = $sign.substr($value, 0, mb_strlen($value) - $scale).'.'.substr($value, -1 * $scale);
+                $value = str_repeat('0', max($scale - mb_strlen($integer . $decimal) + 1, 0)) . $integer . $decimal;
+                $value = $sign . substr($value, 0, mb_strlen($value) - $scale) . '.' . substr($value, -1 * $scale);
             }
             $significant_figures = $sf ? intval($sf) : static::significantFiguresOf("{$integer}.{$decimal}") ;
         } else {
@@ -285,7 +286,7 @@ class Decimal
      * @param  string $value
      * @return int
      */
-    protected static function scaleOf(string $value) : int
+    protected static function scaleOf(string $value): int
     {
         return ($pos = strrpos($value, '.')) === false ? 0 : mb_strlen($value) - $pos - 1;
     }
@@ -297,11 +298,11 @@ class Decimal
      * @param  string $value
      * @return int
      */
-    protected static function significantFiguresOf(string $value) : int
+    protected static function significantFiguresOf(string $value): int
     {
         $value = preg_replace('/[^0-9.]/', '', $value);
         $scale = mb_strlen(str_replace('.', '', ltrim($value, '0.')));
-        return $scale === 0 ?  1 + mb_strlen(Strings::ltrim(Strings::ltrim($value, '0'), '.')) : $scale ;
+        return $scale === 0 ? 1 + mb_strlen(Strings::ltrim(Strings::ltrim($value, '0'), '.')) : $scale ;
     }
 
     /**
@@ -315,7 +316,7 @@ class Decimal
      * @param  int|null     $precision (default: null for apply mode rules)
      * @return self
      */
-    protected static function roundBy(int $mode, Decimal $left, string $formula, Decimal|null $right, Decimal $result, int|null $precision = null) : self
+    protected static function roundBy(int $mode, Decimal $left, string $formula, Decimal|null $right, Decimal $result, int|null $precision = null): self
     {
         if ($precision) {
             return $result->roundByDecimalPlaces($precision);
@@ -371,7 +372,7 @@ class Decimal
      * @param  string                     $thousands_separator (default: ',')
      * @return self|null
      */
-    public static function of(float|int|self|string|null $value, string $decimal_point = ".", string $thousands_separator = ",") : self|null
+    public static function of(float|int|self|string|null $value, string $decimal_point = ".", string $thousands_separator = ","): self|null
     {
         if ($value === null) {
             return null;
@@ -380,11 +381,11 @@ class Decimal
             return $value;
         }
         if (is_float($value)) {
-            $value           = static::of(number_format($value, static::of((string)$value)->scale + static::config('options.guard_digits'), '.', ''))->compact();
+            $value           = static::of(number_format($value, static::of((string) $value)->scale + static::config('options.guard_digits'), '.', ''))->compact();
             $value->is_dirty = true;
             return $value;
         }
-        return new static((string)$value, $decimal_point, $thousands_separator);
+        return new static((string) $value, $decimal_point, $thousands_separator);
     }
 
     /**
@@ -393,7 +394,7 @@ class Decimal
      * @param  bool   $with_guard_digits (default: true)
      * @return string
      */
-    public function value(bool $with_guard_digits = true) : string
+    public function value(bool $with_guard_digits = true): string
     {
         return $with_guard_digits ? $this->value : $this->roundBySignificantFigures($this->significant_figures, 0)->value;
     }
@@ -404,7 +405,7 @@ class Decimal
      * @param  boolean $with_guard_digits (default: true)
      * @return integer
      */
-    public function scale(bool $with_guard_digits = true) : int
+    public function scale(bool $with_guard_digits = true): int
     {
         return $with_guard_digits ? $this->scale : max($this->scale - $this->guardDigits(), 0) ;
     }
@@ -415,7 +416,7 @@ class Decimal
      * @param  boolean $with_guard_digits (default: true)
      * @return integer
      */
-    public function significantFigures(bool $with_guard_digits = true) : int
+    public function significantFigures(bool $with_guard_digits = true): int
     {
         return $with_guard_digits ? static::significantFiguresOf($this->value) : $this->significant_figures ;
     }
@@ -425,7 +426,7 @@ class Decimal
      *
      * @return int
      */
-    public function guardDigits() : int
+    public function guardDigits(): int
     {
         return max(static::significantFiguresOf($this->value) - $this->significant_figures, 0);
     }
@@ -435,7 +436,7 @@ class Decimal
      *
      * @return boolean
      */
-    public function isDirty() : bool
+    public function isDirty(): bool
     {
         return $this->is_dirty;
     }
@@ -446,7 +447,7 @@ class Decimal
      * @param  Decimal ...$operands
      * @return self
      */
-    protected function inheritDirtyFrom(Decimal ...$operands) : self
+    protected function inheritDirtyFrom(Decimal ...$operands): self
     {
         foreach ($operands as $operand) {
             if ($operand->is_dirty) {
@@ -470,7 +471,7 @@ class Decimal
      *
      * @return self
      */
-    public function compact() : self
+    public function compact(): self
     {
         return static::of($this->format(true, '.', ''))->inheritDirtyFrom($this);
     }
@@ -484,11 +485,11 @@ class Decimal
      * @param  string $thousands_separator (default: ',')
      * @return string
      */
-    public function format(bool $omit_zero = false, string $decimal_point = ".", string $thousands_separator = ",") : string
+    public function format(bool $omit_zero = false, string $decimal_point = ".", string $thousands_separator = ","): string
     {
         [$integer, $decimal] = Strings::split($this->value, '.', 2, '');
         $decimal             = $omit_zero ? Strings::rtrim($decimal, '0') : $decimal ;
-        $integer             = preg_replace('/(\d)(?=(\d{3})+(?!\d))/', '$1'.$thousands_separator, $integer);
+        $integer             = preg_replace('/(\d)(?=(\d{3})+(?!\d))/', '$1' . $thousands_separator, $integer);
         return empty($decimal) ? $integer : "{$integer}{$decimal_point}{$decimal}" ;
     }
 
@@ -497,7 +498,7 @@ class Decimal
      *
      * @return self
      */
-    public function abs() : self
+    public function abs(): self
     {
         return static::of(Strings::ltrim($this->value, '-'))->inheritDirtyFrom($this);
     }
@@ -509,13 +510,13 @@ class Decimal
      * @param  int|null                      $precision (default: null for max scale of operand)
      * @return int
      */
-    public function comp(Decimal|float|int|string|null $other, int|null $precision = null) : int
+    public function comp(Decimal|float|int|string|null $other, int|null $precision = null): int
     {
         if ($other === null) {
             return 1;
         }
-        $other     = static::of($other);
-        $precision = $precision ?? max($this->scale, $other->scale) ;
+        $other = static::of($other);
+        $precision ??= max($this->scale, $other->scale) ;
         return \bccomp($this->value, $other->value, $precision);
     }
 
@@ -526,7 +527,7 @@ class Decimal
      * @param  int|null                      $precision (default: null for max scale of operand)
      * @return bool
      */
-    public function eq(Decimal|float|int|string|null $other, int|null $precision = null) : bool
+    public function eq(Decimal|float|int|string|null $other, int|null $precision = null): bool
     {
         return $this->comp($other, $precision) === 0;
     }
@@ -538,7 +539,7 @@ class Decimal
      * @param  int|null                      $precision (default: null for max scale of operand)
      * @return bool
      */
-    public function gt(Decimal|float|int|string|null $other, int|null $precision = null) : bool
+    public function gt(Decimal|float|int|string|null $other, int|null $precision = null): bool
     {
         return $this->comp($other, $precision) === 1;
     }
@@ -550,7 +551,7 @@ class Decimal
      * @param  int|null                      $precision (default: null for max scale of operand)
      * @return bool
      */
-    public function gte(Decimal|float|int|string|null $other, int|null $precision = null) : bool
+    public function gte(Decimal|float|int|string|null $other, int|null $precision = null): bool
     {
         return $this->comp($other, $precision) !== -1;
     }
@@ -562,7 +563,7 @@ class Decimal
      * @param  int|null                      $precision (default: null for max scale of operand)
      * @return bool
      */
-    public function lt(Decimal|float|int|string|null $other, int|null $precision = null) : bool
+    public function lt(Decimal|float|int|string|null $other, int|null $precision = null): bool
     {
         return $this->comp($other, $precision) === -1;
     }
@@ -574,7 +575,7 @@ class Decimal
      * @param  int|null                      $precision (default: null for max scale of operand)
      * @return bool
      */
-    public function lte(Decimal|float|int|string|null $other, int|null $precision = null) : bool
+    public function lte(Decimal|float|int|string|null $other, int|null $precision = null): bool
     {
         return $this->comp($other, $precision) !== 1;
     }
@@ -584,7 +585,7 @@ class Decimal
      *
      * @return boolean
      */
-    public function isNegative() : bool
+    public function isNegative(): bool
     {
         return $this->lt('0');
     }
@@ -595,7 +596,7 @@ class Decimal
      * @param  int  $scale
      * @return self
      */
-    public function shift(int $scale) : self
+    public function shift(int $scale): self
     {
         return static::of(bcmul($this->value, bcpow('10', (string) $scale, abs(min($scale, 0))), max($this->scale - $scale, 0)))->inheritDirtyFrom($this);
     }
@@ -606,7 +607,7 @@ class Decimal
      * @param  int  $scale
      * @return self
      */
-    public function unshift(int $scale) : self
+    public function unshift(int $scale): self
     {
         return $this->shift(-1 * $scale);
     }
@@ -616,7 +617,7 @@ class Decimal
      *
      * @return string
      */
-    public function integers() : string
+    public function integers(): string
     {
         return $this->scale === 0 ? $this->value : substr($this->value, 0, mb_strlen($this->value) - $this->scale - 1) ;
     }
@@ -626,7 +627,7 @@ class Decimal
      *
      * @return string
      */
-    public function decimals() : string
+    public function decimals(): string
     {
         return $this->scale === 0 ? '0' : substr($this->value, -1 * $this->scale) ;
     }
@@ -637,7 +638,7 @@ class Decimal
      * @param  int  $precision (default: 0)
      * @return self
      */
-    public function floor(int $precision = 0) : self
+    public function floor(int $precision = 0): self
     {
         $decimal = $this->shift($precision);
         $delta   = $decimal->isNegative() && bccomp($decimal->decimals(), '0') === 1 ? '-1' : '0' ;
@@ -651,7 +652,7 @@ class Decimal
      * @param  int  $precision (default: 0)
      * @return self
      */
-    public function ceil(int $precision = 0) : self
+    public function ceil(int $precision = 0): self
     {
         $decimal = $this->shift($precision);
         $delta   = !$decimal->isNegative() && bccomp($decimal->decimals(), '0') === 1 ? '1' : '0' ;
@@ -668,7 +669,7 @@ class Decimal
      * @return self
      * @throws LogicException when invalid $precision_type given.
      */
-    public function round(int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES) : self
+    public function round(int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES): self
     {
         switch ($precision_type) {
             case static::TYPE_DECIMAL_PLACES:
@@ -684,7 +685,7 @@ class Decimal
      *
      * @return self
      */
-    public function normalize() : self
+    public function normalize(): self
     {
         return $this->roundBySignificantFigures($this->significant_figures, 0);
     }
@@ -696,7 +697,7 @@ class Decimal
      * @param  int  $guard_digits for reduce roundoff error. (default: 0)
      * @return self
      */
-    protected function roundByDecimalPlaces(int $precision, int $guard_digits = 0) : self
+    protected function roundByDecimalPlaces(int $precision, int $guard_digits = 0): self
     {
         $decimal = $this->shift($precision + $guard_digits);
         $delta   = $decimal->isNegative() ? '-0.5' : '0.5' ;
@@ -714,14 +715,14 @@ class Decimal
      * @param  int  $guard_digits for reduce roundoff error. (default: 0)
      * @return self
      */
-    protected function roundBySignificantFigures(int $precision, int $guard_digits = 0) : self
+    protected function roundBySignificantFigures(int $precision, int $guard_digits = 0): self
     {
         if ($precision < 1) {
             throw new LogicException("Invalid significant figures precision [{$precision}] was given. Significant figures precision must be higher than 0.");
         }
 
         if ($this->eq('0')) {
-            $result                      = static::of('0.'.str_repeat('0', $precision + $guard_digits - 1))->inheritDirtyFrom($this);
+            $result                      = static::of('0.' . str_repeat('0', $precision + $guard_digits - 1))->inheritDirtyFrom($this);
             $result->significant_figures = $precision;
             return $result;
         }
@@ -730,7 +731,7 @@ class Decimal
         $vsf = $this->significantFigures();
         $gp  = $precision + $guard_digits;
         if ($vsf < $gp) {
-            $result                      = static::of($this->value.($vs === 0 ? '.' : '').str_repeat('0', $gp - $vsf))->inheritDirtyFrom($this);
+            $result                      = static::of($this->value . ($vs === 0 ? '.' : '') . str_repeat('0', $gp - $vsf))->inheritDirtyFrom($this);
             $result->significant_figures = $precision;
             return $result;
         }
@@ -748,7 +749,7 @@ class Decimal
      * @param  int|null                 $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function add(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
+    public function add(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null): self
     {
         $other  = static::of($other);
         $result = static::of(bcadd($this->value, $other->value, max($this->scale, $other->scale)))->inheritDirtyFrom($this, $other);
@@ -763,7 +764,7 @@ class Decimal
      * @param  int|null                 $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function sub(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
+    public function sub(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null): self
     {
         $other  = static::of($other);
         $result = static::of(bcsub($this->value, $other->value, max($this->scale, $other->scale)))->inheritDirtyFrom($this, $other);
@@ -778,7 +779,7 @@ class Decimal
      * @param  int|null                 $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function mul(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
+    public function mul(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null): self
     {
         $other  = static::of($other);
         $result = static::of(bcmul($this->value, $other->value, $this->scale + $other->scale))->inheritDirtyFrom($this, $other);
@@ -793,7 +794,7 @@ class Decimal
      * @param  int|null                 $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function div(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
+    public function div(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null): self
     {
         $other  = static::of($other);
         $result = static::of(bcdiv($this->value, $other->value, max(mb_strlen($other->integers()) + min($this->significant_figures, $other->significant_figures), static::config('options.max_scale')) + 2))->inheritDirtyFrom($this, $other);
@@ -808,7 +809,7 @@ class Decimal
      * @param  int|null                 $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function pow(Decimal|float|int|string $exponent, int|null $precision = null, int|null $mode = null) : self
+    public function pow(Decimal|float|int|string $exponent, int|null $precision = null, int|null $mode = null): self
     {
         $exponent = static::of($exponent)->floor();
         $result   = static::of(bcpow($this->value, $exponent->value, $exponent->isNegative() ? static::config('options.max_scale') : $this->scale * abs(intval($exponent->value)) + 2))->inheritDirtyFrom($this, $exponent);
@@ -822,7 +823,7 @@ class Decimal
      * @param  int|null $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function sqrt(int|null $precision = null, int|null $mode = null) : self
+    public function sqrt(int|null $precision = null, int|null $mode = null): self
     {
         $result = static::of(bcsqrt($this->value, static::config('options.max_scale')))->inheritDirtyFrom($this);
         return static::roundBy($mode ?? static::config('mode'), $this, '^', null, $result, $precision);
@@ -835,7 +836,7 @@ class Decimal
      * @param  Decimal|float|int|string $modulus
      * @return self|null
      */
-    public function mod(Decimal|float|int|string $modulus) : self|null
+    public function mod(Decimal|float|int|string $modulus): self|null
     {
         $modulus = static::of($modulus);
         return $modulus->eq(0, 0) ? null : static::of(bcmod($this->value, $modulus->integers()))->inheritDirtyFrom($this, $modulus);
@@ -848,7 +849,7 @@ class Decimal
      * @param  Decimal|float|int|string $modulus
      * @return self
      */
-    public function powmod(Decimal|float|int|string $exponent, Decimal|float|int|string $modulus) : self
+    public function powmod(Decimal|float|int|string $exponent, Decimal|float|int|string $modulus): self
     {
         $exponent = static::of($exponent);
         $modulus  = static::of($modulus);
@@ -861,7 +862,7 @@ class Decimal
      * @param  array<mixed>|Decimal|string|int|float ...$values
      * @return self
      */
-    public static function min(...$values) : self
+    public static function min(...$values): self
     {
         $min = null;
         foreach (is_array($values[0] ?? null) ? $values[0] : $values as $value) {
@@ -883,7 +884,7 @@ class Decimal
      * @param  array<mixed>|Decimal|string|int|float ...$values
      * @return self
      */
-    public static function max(...$values) : self
+    public static function max(...$values): self
     {
         $max = null;
         foreach (is_array($values[0] ?? null) ? $values[0] : $values as $value) {
@@ -905,7 +906,7 @@ class Decimal
      *
      * @return int
      */
-    public function toInt() : int
+    public function toInt(): int
     {
         return intval($this->value());
     }
@@ -916,7 +917,7 @@ class Decimal
      *
      * @return float
      */
-    public function toFloat() : float
+    public function toFloat(): float
     {
         return floatval($this->value());
     }

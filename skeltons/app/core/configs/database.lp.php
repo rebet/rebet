@@ -43,7 +43,7 @@ return [
     | This section defines DAO (Database Access Object) settings.
     | You may change these defaults as required.
     */
-    Dao::class => [
+    Dao::class          => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default Database Connections Name
@@ -76,7 +76,7 @@ return [
         |  - log_handler : Defaultly use log handler defined by `Database.log_handler`, but you can
         |                  change the log handler to use just for this database connection.
         */
-        'dbs' => [
+        'dbs'        => [
             //{%-- if $database == 'sqlite' -%}
             /*
             |--------------------------------------------------------------------------------------
@@ -85,10 +85,10 @@ return [
             | A databse connection for SQLite 3.
             */
             //{%-- commentif !$use_db, '// ', '--- Please uncomment if you want to use database ---' -%}
-            'sqlite' => [
-                'dsn' => App::when([
+            'sqlite'  => [
+                'dsn'   => App::when([
                     'local'      => 'sqlite:/tmp/sqlite/{! $db_name !}.db', // actual: {app_root}/docker/var/data/sqlite/{! $db_name !}.db
-                    'production' => 'sqlite:'.App::path('/var/data/sqlite/{! $db_name !}.db'),
+                    'production' => 'sqlite:' . App::path('/var/data/sqlite/{! $db_name !}.db'),
                 ]),
                 'debug' => App::when([
                     'local'      => true,
@@ -118,8 +118,8 @@ return [
             | A databse connection for MySQL.
             */
             //{%-- commentif !$use_db, '// ', '--- Please uncomment if you want to use database ---' -%}
-            'mysql' => [
-                'dsn' => App::when([
+            'mysql'   => [
+                'dsn'      => App::when([
                     'local'      => 'mysql:host=mysql;dbname={! $db_name !};charset=utf8mb4',
                     'production' => 'mysql:host=localhost;dbname={! $db_name !};charset=utf8mb4',
                 ]),
@@ -155,7 +155,7 @@ return [
             */
             //{%-- commentif !$use_db, '// ', '--- Please uncomment if you want to use database ---' -%}
             'mariadb' => [
-                'dsn' => App::when([
+                'dsn'      => App::when([
                     'local'      => 'mysql:host=mariadb;dbname={! $db_name !};charset=utf8mb4',
                     'production' => 'mysql:host=localhost;dbname={! $db_name !};charset=utf8mb4',
                 ]),
@@ -190,8 +190,8 @@ return [
             | A databse connection for PostgreSQL.
             */
             //{%-- commentif !$use_db, '// ', '--- Please uncomment if you want to use database ---' -%}
-            'pgsql' => [
-                'dsn' => App::when([
+            'pgsql'   => [
+                'dsn'      => App::when([
                     'local'      => 'pgsql:host=pgsql;dbname={! $db_name !};options=\'--client_encoding=UTF8\'',
                     'production' => 'pgsql:host=localhost;dbname={! $db_name !};options=\'--client_encoding=UTF8\'',
                 ]),
@@ -233,7 +233,7 @@ return [
         |  - 'mysql'  => Rebet\Database\Driver\MysqlDriver::class
         |  - 'pgsql'  => Rebet\Database\Driver\PgsqlDriver::class
         */
-        'drivers' => [
+        'drivers'    => [
             // 'driver_name' => YourDatabaseDriver::class,
         ],
     ],
@@ -246,7 +246,7 @@ return [
     | This section defines database settings.
     | You may change these defaults as required.
     */
-    Database::class => [
+    Database::class     => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | SQL Compiler
@@ -291,7 +291,7 @@ return [
         | The log handler defined here can be overwritten individually in configuration of
         | `Dao.dbs.{db_name}.log_handler`.
         */
-        'log_handler' => function (Database $db, Query $query) { Log::debug("[".$db->name()."] SQL: ".$query->emulate()); },
+        'log_handler' => function (Database $db, Query $query) { Log::debug("[" . $db->name() . "] SQL: " . $query->emulate()); },
     ],
 
 
@@ -304,7 +304,7 @@ return [
     | configuration for convenience when setting up.
     | Please update `application.php` to modify the setting values that refered here.
     */
-    Pager::class => Config::refer(App::class, 'paginate'),
+    Pager::class        => Config::refer(App::class, 'paginate'),
 
 
     /*
@@ -316,7 +316,7 @@ return [
     | paging without using offset.
     | You may change these defaults as required.
     */
-    Cursor::class => [
+    Cursor::class       => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Cursor Storage
@@ -329,7 +329,7 @@ return [
         |  - @see Rebet\Database\Pagination\Storage\ArrayCursorStorage
         |  - @see Rebet\Application\Database\Pagination\Storage\SessionCursorStorage
         */
-        'storage' => SessionCursorStorage::class,
+        'storage'  => SessionCursorStorage::class,
 
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -359,7 +359,7 @@ return [
     |
     | NOTE: Items that depend on the database specifications should be set on each driver side.
     */
-    Ransack::class => [
+    Ransack::class      => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Compound Separator
@@ -414,7 +414,7 @@ return [
         | Preinstalled Rredicates:
         |  - Items commented out below
         */
-        'predicates' => [
+        'predicates'       => [
             // --- You can add/change only what you need for these default converters ---
             // 'eq'           => ["{col} = {val}"                           , null      , 'OR' ],
             // 'not_eq'       => ["{col} <> {val}"                          , null      , 'AND'],
@@ -511,7 +511,7 @@ return [
             | Preinstalled Rredicates:
             |  - Items commented out below
             */
-            'predicates' => [
+            'predicates'       => [
                 // --- You can add/change/override only what you need for these default converters ---
                 // 'matches'     => ["{col} REGEXP {val}"     , null , 'OR' ],
                 // 'not_matches' => ["{col} NOT REGEXP {val}" , null , 'AND'],
@@ -534,7 +534,7 @@ return [
             | Preinstalled Ransack Options:
             |  - Items commented out below
             */
-            'options' => [
+            'options'          => [
                 // --- You can add/change only what you need for these ransack options ---
                 // 'bin' => 'BINARY {col}',
                 // 'ci'  => '{col} COLLATE nocase',
@@ -567,7 +567,7 @@ return [
     | examples of ransack search.
     */
     //{%-- commentif !$use_db, '// ', '--- Please uncomment if you want to use database ---' -%}
-    MysqlDriver::class => [
+    MysqlDriver::class  => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default PDO Options
@@ -624,7 +624,7 @@ return [
             | Preinstalled Rredicates:
             |  - Items commented out below
             */
-            'predicates' => [
+            'predicates'       => [
                 // --- You can add/change/override only what you need for these default converters ---
                 // 'matches'     => ["{col} REGEXP {val}"          , null , 'OR' ],
                 // 'not_matches' => ["{col} NOT REGEXP {val}"      , null , 'AND'],
@@ -647,7 +647,7 @@ return [
             | Preinstalled Ransack Options:
             |  - Items commented out below
             */
-            'options' => [
+            'options'          => [
                 // --- You can add/change only what you need for these ransack options ---
                 // 'bin' => 'BINARY {col}',
                 // 'cs'  => '{col} COLLATE utf8mb4_bin',
@@ -682,7 +682,7 @@ return [
     | examples of ransack search.
     */
     //{%-- commentif !$use_db, '// ', '--- Please uncomment if you want to use database ---' -%}
-    PgsqlDriver::class => [
+    PgsqlDriver::class  => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default PDO Options
@@ -738,7 +738,7 @@ return [
             | Preinstalled Rredicates:
             |  - Items commented out below
             */
-            'predicates' => [
+            'predicates'       => [
                 // --- You can add/change/override only what you need for these default converters ---
                 // 'matches'     => ["{col} ~ {val}"                           , null , 'OR' ],
                 // 'not_matches' => ["{col} !~ {val}"                          , null , 'AND'],
@@ -761,7 +761,7 @@ return [
             | Preinstalled Ransack Options:
             |  - Items commented out below
             */
-            'options' => [
+            'options'          => [
                 // --- You can add/change only what you need for these ransack options ---
                 // 'len' => 'LENGTH({col})',
                 // 'uc'  => 'UPPER({col})',

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database\Driver;
 
 use Rebet\Database\Dao;
@@ -12,7 +13,7 @@ use Rebet\Tools\Utility\Strings;
 
 class PgsqlDriverTest extends RebetDatabaseTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2001-02-03 04:05:06');
@@ -23,70 +24,70 @@ class PgsqlDriverTest extends RebetDatabaseTestCase
         $db = Dao::db('pgsql');
         $db->execute("DROP TABLE IF EXISTS native_types;");
         $dml = <<<EOS
-            CREATE TABLE IF NOT EXISTS native_types (
-                type_smallint          SMALLINT,
-                type_integer           INTEGER,
-                type_bigint            BIGINT,
+                        CREATE TABLE IF NOT EXISTS native_types (
+                            type_smallint          SMALLINT,
+                            type_integer           INTEGER,
+                            type_bigint            BIGINT,
 
-                type_real              REAL,
-                type_double_precision  DOUBLE PRECISION,
+                            type_real              REAL,
+                            type_double_precision  DOUBLE PRECISION,
 
-                type_numeric           NUMERIC(5, 2),
+                            type_numeric           NUMERIC(5, 2),
 
-                type_money             MONEY,
+                            type_money             MONEY,
 
-                type_smallserial       SMALLSERIAL,
-                type_serial            SERIAL,
-                type_bigserial         BIGSERIAL,
+                            type_smallserial       SMALLSERIAL,
+                            type_serial            SERIAL,
+                            type_bigserial         BIGSERIAL,
 
-                type_bit               BIT(3),
-                type_bit_over_64       BIT(65),
-                type_bit_varying       BIT VARYING (3),
+                            type_bit               BIT(3),
+                            type_bit_over_64       BIT(65),
+                            type_bit_varying       BIT VARYING (3),
 
-                type_boolean           BOOLEAN,
+                            type_boolean           BOOLEAN,
 
-                type_uuid              UUID,
+                            type_uuid              UUID,
 
-                type_character         CHARACTER(20),
-                type_character_varying CHARACTER VARYING (20),
-                type_text              TEXT,
+                            type_character         CHARACTER(20),
+                            type_character_varying CHARACTER VARYING (20),
+                            type_text              TEXT,
 
-                type_bytea             BYTEA,
+                            type_bytea             BYTEA,
 
-                type_cidr              CIDR,
-                type_inet              INET,
-                type_macaddr           MACADDR,
+                            type_cidr              CIDR,
+                            type_inet              INET,
+                            type_macaddr           MACADDR,
 
-                type_date              DATE,
-                type_timestamp         TIMESTAMP,
-                type_timestamp_with_tz TIMESTAMP WITH TIME ZONE,
-                type_time              TIME,
-                type_time_with_tz      TIME WITH TIME ZONE,
+                            type_date              DATE,
+                            type_timestamp         TIMESTAMP,
+                            type_timestamp_with_tz TIMESTAMP WITH TIME ZONE,
+                            type_time              TIME,
+                            type_time_with_tz      TIME WITH TIME ZONE,
 
-                type_interval          INTERVAL,
-                type_interval_hour     INTERVAL HOUR,
+                            type_interval          INTERVAL,
+                            type_interval_hour     INTERVAL HOUR,
 
-                type_json              JSON,
-                type_jsonb             JSONB,
-                type_xml               XML,
+                            type_json              JSON,
+                            type_jsonb             JSONB,
+                            type_xml               XML,
 
-                type_box               BOX,
-                type_circle            CIRCLE,
-                type_line              LINE,
-                type_lseg              LSEG,
-                type_path_close        PATH,
-                type_path_open         PATH,
-                type_point             POINT,
-                type_polygon           POLYGON,
-                type_pg_lsn            PG_LSN,
+                            type_box               BOX,
+                            type_circle            CIRCLE,
+                            type_line              LINE,
+                            type_lseg              LSEG,
+                            type_path_close        PATH,
+                            type_path_open         PATH,
+                            type_point             POINT,
+                            type_polygon           POLYGON,
+                            type_pg_lsn            PG_LSN,
 
-                type_tsquery           TSQUERY,
-                type_tsvector          TSVECTOR,
-                type_txid_snapshot     TXID_SNAPSHOT,
+                            type_tsquery           TSQUERY,
+                            type_tsvector          TSVECTOR,
+                            type_txid_snapshot     TXID_SNAPSHOT,
 
-                type_text_null         TEXT
-            );
-EOS;
+                            type_text_null         TEXT
+                        );
+            EOS;
         $db->execute($dml);
         $db->begin();
         $db->execute("INSERT INTO native_types VALUES (:values)", ['values' => [
@@ -141,51 +142,51 @@ EOS;
         $meta = $stmt->meta();
         $rs   = $stmt->first();
         foreach ([
-            'type_smallint'          => ['int2'         , 'int'],
-            'type_integer'           => ['int4'         , 'int'],
-            'type_bigint'            => ['int8'         , 'int'],
-            'type_real'              => ['float4'       , 'float'],
-            'type_double_precision'  => ['float8'       , 'float'],
-            'type_numeric'           => ['numeric'      , Decimal::class],
-            'type_money'             => ['money'        , 'string'],
-            'type_smallserial'       => ['int2'         , 'int'],
-            'type_serial'            => ['int4'         , 'int'],
-            'type_bigserial'         => ['int8'         , 'int'],
-            'type_bit'               => ['bit'          , 'int'],
-            'type_bit_over_64'       => ['bit'          , 'string'],
-            'type_bit_varying'       => ['varbit'       , 'int'],
-            'type_boolean'           => ['bool'         , 'bool'],
-            'type_uuid'              => ['uuid'         , 'string'],
-            'type_character'         => ['bpchar'       , 'string'],
-            'type_character_varying' => ['varchar'      , 'string'],
-            'type_text'              => ['text'         , 'string'],
-            'type_bytea'             => ['bytea'        , 'resource'],
-            'type_cidr'              => ['cidr'         , 'string'],
-            'type_inet'              => ['inet'         , 'string'],
-            'type_macaddr'           => ['macaddr'      , 'string'],
-            'type_date'              => ['date'         , Date::class],
-            'type_timestamp'         => ['timestamp'    , DateTime::class],
-            'type_timestamp_with_tz' => ['timestamptz'  , DateTime::class],
-            'type_time'              => ['time'         , 'string'],
-            'type_time_with_tz'      => ['timetz'       , 'string'],
-            'type_interval'          => ['interval'     , 'string'],
-            'type_interval_hour'     => ['interval'     , 'string'],
-            'type_json'              => ['json'         , 'array'],
-            'type_jsonb'             => ['jsonb'        , 'array'],
-            'type_xml'               => ['xml'          , \SimpleXMLElement::class],
-            'type_box'               => ['box'          , 'string'],
-            'type_circle'            => ['circle'       , 'string'],
-            'type_line'              => ['line'         , 'string'],
-            'type_lseg'              => ['lseg'         , 'string'],
-            'type_path_open'         => ['path'         , 'string'],
-            'type_path_close'        => ['path'         , 'string'],
-            'type_point'             => ['point'        , 'string'],
-            'type_polygon'           => ['polygon'      , 'string'],
-            'type_pg_lsn'            => ['pg_lsn'       , 'string'],
-            'type_tsquery'           => ['tsquery'      , 'string'],
-            'type_tsvector'          => ['tsvector'     , 'string'],
+            'type_smallint'          => ['int2', 'int'],
+            'type_integer'           => ['int4', 'int'],
+            'type_bigint'            => ['int8', 'int'],
+            'type_real'              => ['float4', 'float'],
+            'type_double_precision'  => ['float8', 'float'],
+            'type_numeric'           => ['numeric', Decimal::class],
+            'type_money'             => ['money', 'string'],
+            'type_smallserial'       => ['int2', 'int'],
+            'type_serial'            => ['int4', 'int'],
+            'type_bigserial'         => ['int8', 'int'],
+            'type_bit'               => ['bit', 'int'],
+            'type_bit_over_64'       => ['bit', 'string'],
+            'type_bit_varying'       => ['varbit', 'int'],
+            'type_boolean'           => ['bool', 'bool'],
+            'type_uuid'              => ['uuid', 'string'],
+            'type_character'         => ['bpchar', 'string'],
+            'type_character_varying' => ['varchar', 'string'],
+            'type_text'              => ['text', 'string'],
+            'type_bytea'             => ['bytea', 'resource'],
+            'type_cidr'              => ['cidr', 'string'],
+            'type_inet'              => ['inet', 'string'],
+            'type_macaddr'           => ['macaddr', 'string'],
+            'type_date'              => ['date', Date::class],
+            'type_timestamp'         => ['timestamp', DateTime::class],
+            'type_timestamp_with_tz' => ['timestamptz', DateTime::class],
+            'type_time'              => ['time', 'string'],
+            'type_time_with_tz'      => ['timetz', 'string'],
+            'type_interval'          => ['interval', 'string'],
+            'type_interval_hour'     => ['interval', 'string'],
+            'type_json'              => ['json', 'array'],
+            'type_jsonb'             => ['jsonb', 'array'],
+            'type_xml'               => ['xml', \SimpleXMLElement::class],
+            'type_box'               => ['box', 'string'],
+            'type_circle'            => ['circle', 'string'],
+            'type_line'              => ['line', 'string'],
+            'type_lseg'              => ['lseg', 'string'],
+            'type_path_open'         => ['path', 'string'],
+            'type_path_close'        => ['path', 'string'],
+            'type_point'             => ['point', 'string'],
+            'type_polygon'           => ['polygon', 'string'],
+            'type_pg_lsn'            => ['pg_lsn', 'string'],
+            'type_tsquery'           => ['tsquery', 'string'],
+            'type_tsvector'          => ['tsvector', 'string'],
             'type_txid_snapshot'     => ['txid_snapshot', 'string'],
-            'type_text_null'         => ['text'         , null],
+            'type_text_null'         => ['text', null],
         ] as $col => [$native_type, $php_type]) {
             $meta_native_type = $meta[$col]['native_type'] ?? null;
             $this->assertSame($native_type, $meta_native_type, "Failed {$col} => {$native_type} actual {$meta_native_type}");

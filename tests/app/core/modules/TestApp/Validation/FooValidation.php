@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Validation;
 
 use Rebet\Validation\Rule;
@@ -6,7 +7,7 @@ use Rebet\Validation\Valid;
 
 class FooValidation extends Rule
 {
-    public function rules() : array
+    public function rules(): array
     {
         return [
             'foo' => [

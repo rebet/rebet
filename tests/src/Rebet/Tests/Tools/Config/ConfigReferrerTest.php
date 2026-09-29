@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Config;
 
 use Rebet\Tests\RebetTestCase;
@@ -39,7 +40,7 @@ class ConfigReferrerTest extends RebetTestCase
     private $ref_database;
     private $ref_user;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->ref_driver   = new ConfigReferrer(ConfigReferrerTest_Mock::class, 'driver');
@@ -56,7 +57,7 @@ class ConfigReferrerTest extends RebetTestCase
         $this->assertSame('default_user', $this->ref_user->get());
 
         Config::framework([
-            ConfigReferrerTest_Mock::class => [
+            ConfigReferrerTest_Mock::class       => [
                 'driver'   => 'sqlite',
                 'database' => 'test_db',
             ],

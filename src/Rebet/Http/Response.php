@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http;
@@ -43,7 +44,7 @@ interface Response
      * @param  boolean                   $replace (default: true)
      * @return self
      */
-    public function setHeader(string $key, $values, bool $replace = true) : self;
+    public function setHeader(string $key, $values, bool $replace = true): self;
 
     /**
      * Get the cookie of given name.
@@ -61,7 +62,7 @@ interface Response
      * @param  Cookie $cookie
      * @return self
      */
-    public function setCookie(Cookie $cookie) : self;
+    public function setCookie(Cookie $cookie): self;
 
     /******************************************************
      * Symfony's interface
@@ -77,7 +78,7 @@ interface Response
      * @return string The Response as an HTTP string
      * @see prepare()
      */
-    public function __toString() : string;
+    public function __toString(): string;
 
     /**
      * Clones the current Response instance.
@@ -147,7 +148,7 @@ interface Response
      *
      * @final
      */
-    public function getProtocolVersion() : string;
+    public function getProtocolVersion(): string;
 
     /**
      * Sets the response status code.
@@ -166,7 +167,7 @@ interface Response
      *
      * @final
      */
-    public function getStatusCode() : int;
+    public function getStatusCode(): int;
 
     /**
      * Sets the response charset.
@@ -181,7 +182,7 @@ interface Response
      *
      * @final
      */
-    public function getCharset() : string|null;
+    public function getCharset(): string|null;
 
     /**
      * Returns true if the response may safely be kept in a shared (surrogate) cache.
@@ -200,7 +201,7 @@ interface Response
      *
      * @final
      */
-    public function isCacheable() : bool;
+    public function isCacheable(): bool;
 
     /**
      * Returns true if the response is "fresh".
@@ -211,7 +212,7 @@ interface Response
      *
      * @final
      */
-    public function isFresh() : bool;
+    public function isFresh(): bool;
 
     /**
      * Returns true if the response includes headers that can be used to validate
@@ -219,7 +220,7 @@ interface Response
      *
      * @final
      */
-    public function isValidateable() : bool;
+    public function isValidateable(): bool;
 
     /**
      * Marks the response as "private".
@@ -254,7 +255,7 @@ interface Response
      *
      * @final
      */
-    public function isImmutable() : bool;
+    public function isImmutable(): bool;
 
     /**
      * Returns true if the response must be revalidated by caches.
@@ -266,7 +267,7 @@ interface Response
      *
      * @final
      */
-    public function mustRevalidate() : bool;
+    public function mustRevalidate(): bool;
 
     /**
      * Returns the Date header as a DateTime instance.
@@ -275,7 +276,7 @@ interface Response
      *
      * @final
      */
-    public function getDate() : \DateTimeInterface|null;
+    public function getDate(): \DateTimeInterface|null;
 
     /**
      * Sets the Date header.
@@ -290,7 +291,7 @@ interface Response
      *
      * @final
      */
-    public function getAge() : int;
+    public function getAge(): int;
 
     /**
      * Marks the response stale by setting the Age header to be equal to the maximum age of the response.
@@ -304,7 +305,7 @@ interface Response
      *
      * @final
      */
-    public function getExpires() : \DateTimeInterface|null;
+    public function getExpires(): \DateTimeInterface|null;
 
     /**
      * Sets the Expires HTTP header with a DateTime instance.
@@ -325,7 +326,7 @@ interface Response
      *
      * @final
      */
-    public function getMaxAge() : int|null;
+    public function getMaxAge(): int|null;
 
     /**
      * Sets the number of seconds after which the response should no longer be considered fresh.
@@ -357,7 +358,7 @@ interface Response
      *
      * @final
      */
-    public function getTtl() : int|null;
+    public function getTtl(): int|null;
 
     /**
      * Sets the response's time-to-live for shared caches in seconds.
@@ -385,7 +386,7 @@ interface Response
      * @throws \RuntimeException When the HTTP header is not parseable
      * @final
      */
-    public function getLastModified() : \DateTimeInterface|null;
+    public function getLastModified(): \DateTimeInterface|null;
 
     /**
      * Sets the Last-Modified HTTP header with a DateTime instance.
@@ -402,7 +403,7 @@ interface Response
      *
      * @final
      */
-    public function getEtag() : string|null;
+    public function getEtag(): string|null;
 
     /**
      * Sets the ETag value.
@@ -443,7 +444,7 @@ interface Response
      *
      * @final
      */
-    public function hasVary() : bool;
+    public function hasVary(): bool;
 
     /**
      * Returns an array of header names given in the Vary header.
@@ -451,7 +452,7 @@ interface Response
      * @return array<int, string>
      * @final
      */
-    public function getVary() : array;
+    public function getVary(): array;
 
     /**
      * Sets the Vary header.
@@ -473,7 +474,7 @@ interface Response
      * @return bool true if the Response validators match the Request, false otherwise
      * @final
      */
-    public function isNotModified(Request $request) : bool;
+    public function isNotModified(Request $request): bool;
 
     /**
      * Is response invalid?
@@ -481,77 +482,77 @@ interface Response
      * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
      * @final
      */
-    public function isInvalid() : bool;
+    public function isInvalid(): bool;
 
     /**
      * Is response informative?
      *
      * @final
      */
-    public function isInformational() : bool;
+    public function isInformational(): bool;
 
     /**
      * Is response successful?
      *
      * @final
      */
-    public function isSuccessful() : bool;
+    public function isSuccessful(): bool;
 
     /**
      * Is the response a redirect?
      *
      * @final
      */
-    public function isRedirection() : bool;
+    public function isRedirection(): bool;
 
     /**
      * Is there a client error?
      *
      * @final
      */
-    public function isClientError() : bool;
+    public function isClientError(): bool;
 
     /**
      * Was there a server side error?
      *
      * @final
      */
-    public function isServerError() : bool;
+    public function isServerError(): bool;
 
     /**
      * Is the response OK?
      *
      * @final
      */
-    public function isOk() : bool;
+    public function isOk(): bool;
 
     /**
      * Is the response forbidden?
      *
      * @final
      */
-    public function isForbidden() : bool;
+    public function isForbidden(): bool;
 
     /**
      * Is the response a not found error?
      *
      * @final
      */
-    public function isNotFound() : bool;
+    public function isNotFound(): bool;
 
     /**
      * Is the response a redirect of some form?
      *
      * @final
      */
-    public function isRedirect(string $location = null) : bool;
+    public function isRedirect(string $location = null): bool;
 
     /**
      * Is the response empty?
      *
      * @final
      */
-    public function isEmpty() : bool;
+    public function isEmpty(): bool;
 
     /**
      * Cleans or flushes output buffers up to target level.
@@ -568,5 +569,5 @@ interface Response
      *
      * @see https://tools.ietf.org/html/rfc8674
      */
-    public function setContentSafe(bool $safe = true) : void ;
+    public function setContentSafe(bool $safe = true): void ;
 }

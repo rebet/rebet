@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database\Driver;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -15,13 +16,13 @@ use TestApp\Enum\Gender;
 
 class DriverTest extends RebetDatabaseTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2001-02-03 04:05:06');
     }
 
-    public static function dataToPdoTypes() : array
+    public static function dataToPdoTypes(): array
     {
         self::setUpStatic();
         DateTime::setTestNow('2001-02-03 04:05:06');
@@ -61,7 +62,7 @@ class DriverTest extends RebetDatabaseTestCase
         });
     }
 
-    public static function dataAppendLimitOffers() : array
+    public static function dataAppendLimitOffers(): array
     {
         return [
             ["SELECT * FROM users", "SELECT * FROM users", null, null],

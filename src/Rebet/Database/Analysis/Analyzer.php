@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Analysis;
@@ -18,35 +19,35 @@ interface Analyzer
      *
      * @return bool
      */
-    public function isUnion() : bool;
+    public function isUnion(): bool;
 
     /**
      * It checks the target sql has top level WHERE clause.
      *
      * @return bool
      */
-    public function hasWhere() : bool;
+    public function hasWhere(): bool;
 
     /**
      * It checks the target sql has top level HAVING clause.
      *
      * @return bool
      */
-    public function hasHaving() : bool;
+    public function hasHaving(): bool;
 
     /**
      * It checks the target sql has top level GROUP BY clause.
      *
      * @return bool
      */
-    public function hasGroupBy() : bool;
+    public function hasGroupBy(): bool;
 
     /**
      * It checks the target sql has top level ORDER BY clause.
      *
      * @return bool
      */
-    public function hasOrderBy() : bool;
+    public function hasOrderBy(): bool;
 
     /**
      * Extract the actual statement (real column name / expression / CASE statement / subquery, etc.) of the column that is aliased in the top level SELECT clause.
@@ -55,5 +56,5 @@ interface Analyzer
      * @param  string $alias
      * @return string
      */
-    public function extractAliasSelectColumn(string $alias) : string;
+    public function extractAliasSelectColumn(string $alias): string;
 }

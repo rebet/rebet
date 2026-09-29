@@ -5,7 +5,7 @@ use Rebet\Cache\Cache;
 
 return [
     Cache::class => [
-        'stores=' => [
+        'stores='       => [
             'array' => [
                 'adapter' => ArrayAdapter::class,
             ],

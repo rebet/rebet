@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Validation;
 
 use Rebet\Tools\Utility\Strings;
@@ -10,16 +11,16 @@ use TestApp\Enum\Gender;
 class UserValidation extends Rule
 {
     // Validation rules
-    public function rules() : array
+    public function rules(): array
     {
         return [
-            'user_id' => [
+            'user_id'            => [
                 'label' => '会員ID',
                 'rule'  => [
                     ['RUD', Valid::REQUIRED],
                 ],
             ],
-            'name' => [
+            'name'               => [
                 'label' => '氏名',
                 'rule'  => [
                     ['CU', Valid::REQUIRED],
@@ -27,7 +28,7 @@ class UserValidation extends Rule
                     ['CU', Valid::DEPENDENCE_CHAR],
                 ],
             ],
-            'mail_address' => [
+            'mail_address'       => [
                 'label' => 'メールアドレス',
                 'rule'  => [
                     ['CU', Valid::REQUIRED],
@@ -37,41 +38,41 @@ class UserValidation extends Rule
                     ]],
                 ],
             ],
-            'password' => [
+            'password'           => [
                 'label' => 'パスワード',
                 'rule'  => [
-                    ['C' , Valid::REQUIRED],
+                    ['C', Valid::REQUIRED],
                     ['CU', Valid::MIN_LENGTH, 8],
                 ],
             ],
-            'password_confirm' => [
+            'password_confirm'   => [
                 'label' => 'パスワード(確認)',
                 'rule'  => [
                     ['CU', Valid::SATISFY, function (Context $c) { return !Auth::isAdmin(); }, 'then' => [
-                        ['C' , Valid::REQUIRED],
+                        ['C', Valid::REQUIRED],
                         ['CU', Valid::SAME_AS, ':password'],
                     ]],
                 ],
             ],
-            'avatar' => [
+            'avatar'             => [
                 'label' => 'アバター画像',
                 'rule'  => [
                     ['CU', Valid::FILE_SIZE, '2M'],
                     ['CU', Valid::FILE_TYPE_WEB_IMAGES],
                 ],
             ],
-            'gender' => [
-                'label' => '性別',
-                'rule'  => [
+            'gender'             => [
+                'label'   => '性別',
+                'rule'    => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::CONTAINS, Gender::values()],
                 ],
                 'convert' => Gender::class,
             ],
-            'birthday' => [
-                'label'  => '生年月日',
-                'before' => function ($value) { return mb_convert_kana($value, 'a'); },
-                'rule'   => [
+            'birthday'           => [
+                'label'   => '生年月日',
+                'before'  => function ($value) { return mb_convert_kana($value, 'a'); },
+                'rule'    => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::DATETIME],
                     ['C', Valid::MIN_AGE, 18],
@@ -79,7 +80,7 @@ class UserValidation extends Rule
                 ],
                 'convert' => DateTime::class,
             ],
-            'bank' => [
+            'bank'               => [
                 'label' => '銀行',
                 'nest'  => [
                     'name' => [
@@ -95,11 +96,11 @@ class UserValidation extends Rule
                 'label' => '送付先',
                 'rule'  => [
                     ['CU', Valid::REQUIRED],
-                    ['CU', Valid::MAX_COUNT.'!', 5],
+                    ['CU', Valid::MAX_COUNT . '!', 5],
                     ['CU', Valid::SEQUENTIAL_NUMBER, 'shipping_no'],
                 ],
                 'nests' => [
-                    'zip' => [
+                    'zip'           => [
                         'label' => ':parent郵便番号',
                         'rule'  => [
                             ['CU', Valid::REQUIRED],
@@ -112,7 +113,7 @@ class UserValidation extends Rule
                             ['CU', Valid::CONTAINS, range(1, 47)],
                         ],
                     ],
-                    'addess' => [
+                    'addess'        => [
                         'label' => ':parent住所',
                         'rule'  => [
                             ['CU', Valid::REQUIRED],
@@ -126,7 +127,7 @@ class UserValidation extends Rule
     }
 
     // Define Custom Validation
-    protected function validationMailAddressExists(Context $c) : bool
+    protected function validationMailAddressExists(Context $c): bool
     {
         if ($c->blank()) {
             return true;

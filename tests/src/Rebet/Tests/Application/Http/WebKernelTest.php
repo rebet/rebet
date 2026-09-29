@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\Http;
 
 use Rebet\Application\App;
@@ -17,7 +18,7 @@ class WebKernelTest extends RebetTestCase
     /** @var WebKernel */
     protected $kernel;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         Router::reset();

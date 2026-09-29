@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http\Exception;
@@ -58,7 +59,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
      *
      * @return integer
      */
-    public function getStatus() : int
+    public function getStatus(): int
     {
         return $this->status;
     }
@@ -69,7 +70,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
      * @param  string|null $title or full transration key (default: Basic HTTP status label)
      * @return self
      */
-    public function title(string|null $title) : self
+    public function title(string|null $title): self
     {
         $this->title = Translator::get($title) ?? $title ?? Translator::get("message.http.{$this->status}.title") ?? HttpStatus::reasonPhraseOf($this->status) ?? 'Unknown Error';
         return $this;
@@ -80,7 +81,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
      *
      * @return string
      */
-    public function getTitle() : string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -91,7 +92,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
      * @param  string|null $detail message or full transration key (default: null)
      * @return self
      */
-    public function detail(string|null $detail) : self
+    public function detail(string|null $detail): self
     {
         $this->detail = Translator::get($detail) ?? $detail ;
         return $this;
@@ -102,7 +103,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
      *
      * @return string|null
      */
-    public function getDetail() : string|null
+    public function getDetail(): string|null
     {
         return $this->detail;
     }
@@ -110,7 +111,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
     /**
      * {@inheritDoc}
      */
-    public function problem() : ProblemResponse
+    public function problem(): ProblemResponse
     {
         return Responder::problem($this->status, $this->title)->detail($this->detail);
     }

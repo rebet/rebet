@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -271,7 +272,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame(['1', '-'], Strings::split('1', ',', 2, '-'));
     }
 
-    public static function dataStringifis() : array
+    public static function dataStringifis(): array
     {
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
         return [
@@ -279,32 +280,32 @@ class StringsTest extends RebetTestCase
             ['single line text', 'single line text'],
             [
                 <<<EOS
-                array:1 [
-                    0 => single line text in array
-                ]
-                EOS,
+                    array:1 [
+                        0 => single line text in array
+                    ]
+                    EOS,
                 ['single line text in array'],
             ],
             [
                 <<<EOS
-                multi
-                line
-                text
-                EOS,
+                    multi
+                    line
+                    text
+                    EOS,
                 "multi\nline\ntext",
             ],
             [
                 <<<EOS
-                array:1 [
-                    0 => """
-                        multi
-                        line
-                        text
-                        in
-                        array
-                    """
-                ]
-                EOS,
+                    array:1 [
+                        0 => """
+                            multi
+                            line
+                            text
+                            in
+                            array
+                        """
+                    ]
+                    EOS,
                 ["multi\nline\ntext\nin\narray"],
             ],
             ['123', 123],
@@ -317,114 +318,114 @@ class StringsTest extends RebetTestCase
             ['TestApp\Stub\ToStringStub : single line', new ToStringStub('single line')],
             [
                 <<<EOS
-                array:1 [
-                    0 => TestApp\Stub\ToStringStub : single line text in array
-                ]
-                EOS,
+                    array:1 [
+                        0 => TestApp\Stub\ToStringStub : single line text in array
+                    ]
+                    EOS,
                 [new ToStringStub('single line text in array')],
             ],
             [
                 <<<EOS
-                TestApp\Stub\ToStringStub : """
-                    multi
-                    line
-                    text
-                """
-                EOS,
+                    TestApp\Stub\ToStringStub : """
+                        multi
+                        line
+                        text
+                    """
+                    EOS,
                 new ToStringStub("multi\nline\ntext"),
             ],
             [
                 <<<EOS
-                array:1 [
-                    0 => TestApp\Stub\ToStringStub : """
-                        multi
-                        line
-                        text
-                        in
-                        array
-                    """
-                ]
-                EOS,
+                    array:1 [
+                        0 => TestApp\Stub\ToStringStub : """
+                            multi
+                            line
+                            text
+                            in
+                            array
+                        """
+                    ]
+                    EOS,
                 [new ToStringStub("multi\nline\ntext\nin\narray")],
             ],
-            ['Rebet\Tests\Tools\Utility\StringsTest::{closure}($a, ?int $b, string $c = default) : ?bool', function ($a, int|null $b, string $c = 'default') : bool|null { return true; }],
+            ['Rebet\Tests\Tools\Utility\StringsTest::{closure}($a, ?int $b, string $c = default) : ?bool', function ($a, int|null $b, string $c = 'default'): bool|null { return true; }],
             ['TestApp\Stub\JsonSerializableStub : 123', new JsonSerializableStub(123)],
             ['TestApp\Stub\JsonSerializableStub : abc', new JsonSerializableStub('abc')],
             [
                 <<<EOS
-                TestApp\Stub\JsonSerializableStub : array:1 [
-                    a => A
-                ]
-                EOS,
+                    TestApp\Stub\JsonSerializableStub : array:1 [
+                        a => A
+                    ]
+                    EOS,
                 new JsonSerializableStub(['a' => 'A']),
             ],
             ['[]', []],
             [
                 <<<EOS
-                array:3 [
-                    0 => 1,
-                    1 => 2,
-                    2 => 3
-                ]
-                EOS,
+                    array:3 [
+                        0 => 1,
+                        1 => 2,
+                        2 => 3
+                    ]
+                    EOS,
                 [1, 2, 3],
             ],
             [
                 <<<EOS
-                array:3 [
-                    a => A,
-                    b => B,
-                    c => C
-                ]
-                EOS,
+                    array:3 [
+                        a => A,
+                        b => B,
+                        c => C
+                    ]
+                    EOS,
                 ['a' => 'A', 'b' => 'B', 'c' => 'C'],
             ],
             [
                 <<<EOS
-                array:2 [
-                    0 => 1,
-                    1 => array:2 [
-                        0 => 2,
-                        1 => array:1 [
-                            0 => 3
+                    array:2 [
+                        0 => 1,
+                        1 => array:2 [
+                            0 => 2,
+                            1 => array:1 [
+                                0 => 3
+                            ]
                         ]
                     ]
-                ]
-                EOS,
+                    EOS,
                 [1, [2, [3]]],
             ],
             [
                 <<<EOS
-                ArrayObject:3 [
-                    0 => 1,
-                    1 => 2,
-                    2 => 3
-                ]
-                EOS,
+                    ArrayObject:3 [
+                        0 => 1,
+                        1 => 2,
+                        2 => 3
+                    ]
+                    EOS,
                 new \ArrayObject([1, 2, 3]),
             ],
             ['<instance of Rebet\Tests\Tools\Utility\StringsTest_Mock>', new StringsTest_Mock()],
             [
                 <<<EOS
-                array:3 [
-                    a => ********,
-                    b => B,
-                    c => C
-                ]
-                EOS,
+                    array:3 [
+                        a => ********,
+                        b => B,
+                        c => C
+                    ]
+                    EOS,
                 ['a' => 'A', 'b' => 'B', 'c' => 'C'], ['a'],
             ],
             [
                 <<<EOS
-                array:3 [
-                    a => *,
-                    b => array:2 [
+                    array:3 [
                         a => *,
-                        b => B
-                    ],
-                    c => *
-                ]
-                EOS,
+                        b => array:2 [
+                            a => *,
+                            b => B
+                        ],
+                        c => *
+                    ]
+                    EOS,
                 ['a' => 'A', 'b' => ['a' => 'A', 'b' => 'B'], 'c' => 'C'], ['a', 'c'], '*',
             ],
         ];
@@ -449,7 +450,7 @@ class StringsTest extends RebetTestCase
 
 class StringsTest_Mock
 {
-    public function getTrace($options = DEBUG_BACKTRACE_PROVIDE_OBJECT, int $limit = 0) : array
+    public function getTrace($options = DEBUG_BACKTRACE_PROVIDE_OBJECT, int $limit = 0): array
     {
         return debug_backtrace($options, $limit);
     }

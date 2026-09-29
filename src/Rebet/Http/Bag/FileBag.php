@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http\Bag;
@@ -23,7 +24,7 @@ class FileBag extends SymfonyFileBag
      * @param  array<mixed>|SymfonyUploadedFile $file
      * @return UploadedFile|UploadedFile[]|null
      */
-    protected function convertFileInformation(array|SymfonyUploadedFile $file) : array|SymfonyUploadedFile|null
+    protected function convertFileInformation(array|SymfonyUploadedFile $file): array|SymfonyUploadedFile|null
     {
         $file = parent::convertFileInformation($file);
         if (is_array($file)) {

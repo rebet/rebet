@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Stub;
 
 class IteratorAggregateStub implements \IteratorAggregate
@@ -10,7 +11,7 @@ class IteratorAggregateStub implements \IteratorAggregate
         $this->data = $data;
     }
 
-    public function getIterator() : \Traversable
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->data);
     }

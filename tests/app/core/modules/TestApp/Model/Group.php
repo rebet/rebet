@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Model;
 
 use Rebet\Database\DataModel\Entity;

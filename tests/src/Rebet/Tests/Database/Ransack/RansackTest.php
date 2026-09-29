@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database\Ransack;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -11,54 +12,54 @@ use Rebet\Tests\RebetDatabaseTestCase;
 
 class RansackTest extends RebetDatabaseTestCase
 {
-    public static function dataResolves() : array
+    public static function dataResolves(): array
     {
         return [
-            [null, null, 'name'   , null],
+            [null, null, 'name', null],
             [null, null, 'name_eq', ''],
             [null, null, 'name_in', []],
             [
                 '?age? > :age_gt',
                 ['age_gt' => 0],
-                'age_gt' , 0,
+                'age_gt', 0,
             ],
             [
                 '((?name? = :name_0 AND ?age? > :age_gt_0) OR (?name? = :name_1 AND ?age? > :age_gt_1))',
                 ['name_0' => 'foo', 'age_gt_0' => 20, 'name_1' => 'bar', 'age_gt_1' => 18],
-                0 , [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]],
+                0, [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]],
             ],
             [
                 '((((?name? = :name_0_0) OR (?name? = :name_0_1)) AND ?age? > :age_gt_0) OR (?name? = :name_1 AND ?age? > :age_gt_1))',
                 ['name_0_0' => 'foo', 'name_0_1' => 'bar', 'age_gt_0' => 20, 'name_1' => 'baz', 'age_gt_1' => 18],
-                0 , [[[['name' => 'foo'], ['name' => 'bar']], 'age_gt' => 20], ['name' => 'baz', 'age_gt' => 18]],
+                0, [[[['name' => 'foo'], ['name' => 'bar']], 'age_gt' => 20], ['name' => 'baz', 'age_gt' => 18]],
             ],
             [
                 '(((?last_name? = :name_0_0 OR ?first_name? = :name_0_1) AND ?age? > :age_gt_0) OR ((?last_name? = :name_1_0 OR ?first_name? = :name_1_1) AND ?age? > :age_gt_1))',
                 ['name_0_0' => 'foo', 'name_0_1' => 'foo', 'age_gt_0' => 20, 'name_1_0' => 'bar', 'name_1_1' => 'bar', 'age_gt_1' => 18],
-                0 , [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]],
+                0, [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]],
                 ['name' => ['last_name', 'first_name']],
             ],
             [
                 '?age? > :age_gt',
                 ['age_gt' => 20],
-                'age_gt' , 20, [],
-                function (Ransack $ransack) : Query|null {
+                'age_gt', 20, [],
+                function (Ransack $ransack): Query|null {
                     return null;
                 },
             ],
             [
                 '?age? > :age_gt',
                 ['age_gt' => 20],
-                'age_gt' , 20, [],
-                function (Ransack $ransack) : Query|null {
+                'age_gt', 20, [],
+                function (Ransack $ransack): Query|null {
                     return $ransack->convert();
                 },
             ],
             [
                 '?age? grater than :age_gt',
                 ['age_gt' => 20],
-                'age_gt' , 20, [],
-                function (Ransack $ransack) : Query|null {
+                'age_gt', 20, [],
+                function (Ransack $ransack): Query|null {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->convert('{col} grater than {val}');
                     }
@@ -68,8 +69,8 @@ class RansackTest extends RebetDatabaseTestCase
             [
                 '?age? grater than :age_gt',
                 ['age_gt' => 40],
-                'age_gt' , 20, [],
-                function (Ransack $ransack) : Query|null {
+                'age_gt', 20, [],
+                function (Ransack $ransack): Query|null {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->convert('{col} grater than {val}', function ($v) { return $v * 2; });
                     }
@@ -79,8 +80,8 @@ class RansackTest extends RebetDatabaseTestCase
             [
                 'age <> :bar',
                 ['bar' => 20],
-                'age_gt' , 20, [],
-                function (Ransack $ransack) : Query|null {
+                'age_gt', 20, [],
+                function (Ransack $ransack): Query|null {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->driver()->sql('age <> :bar', ['bar' => $ransack->value(true)]);
                     }
@@ -120,15 +121,15 @@ class RansackTest extends RebetDatabaseTestCase
         Ransack::analyze(Dao::db()->driver(), 'name_any', 'John');
     }
 
-    public static function dataOrigins() : array
+    public static function dataOrigins(): array
     {
         return [
-            ['name'                , 'foo'         , []                                                           ],
-            ['name'                , ['foo', 'bar'], []                                                           ],
-            ['name_contains'       , 'foo'         , []                                                           ],
-            ['name_contains_any'   , ['foo', 'bar'], []                                                           ],
-            ['name_contains_any'   , 'foo bar'     , []                                                           ],
-            ['name_contains_any_cs', ['foo', 'bar'], []                                     , ['mysql', 'mariadb']],
+            ['name', 'foo', []                                                           ],
+            ['name', ['foo', 'bar'], []                                                           ],
+            ['name_contains', 'foo', []                                                           ],
+            ['name_contains_any', ['foo', 'bar'], []                                                           ],
+            ['name_contains_any', 'foo bar', []                                                           ],
+            ['name_contains_any_cs', ['foo', 'bar'], [], ['mysql', 'mariadb']],
             ['name_contains_any_cs', ['foo', 'bar'], ['name' => ['last_name', 'first_name']], ['mysql', 'mariadb']],
         ];
     }
@@ -142,28 +143,28 @@ class RansackTest extends RebetDatabaseTestCase
         }, ...$dbs);
     }
 
-    public static function dataValues() : array
+    public static function dataValues(): array
     {
         return [
-            ['foo'                   , true , 'name'                , 'foo'              , []                                                           ],
-            ['foo 100%'              , true , 'name'                , 'foo 100%'         , []                                                           ],
-            [['foo', '100%']         , true , 'name'                , ['foo', '100%']    , []                                                           ],
-            ['%foo%'                 , true , 'name_contains'       , 'foo'              , []                                                           ],
-            ['foo'                   , false, 'name_contains'       , 'foo'              , []                                                           ],
-            ['%foo 100|%%'           , true , 'name_contains'       , 'foo 100%'         , []                                                           ],
-            ['foo 100%'              , false, 'name_contains'       , 'foo 100%'         , []                                                           ],
-            [['%foo%']               , true , 'name_contains_any'   , 'foo'              , []                                                           ],
-            ['foo'                   , false, 'name_contains_any'   , 'foo'              , []                                                           ],
-            [['%foo%', '%100|%%']    , true , 'name_contains_any'   , 'foo 100%'         , []                                                           ],
-            ['foo 100%'              , false, 'name_contains_any'   , 'foo 100%'         , []                                                           ],
-            [['%foo%', '%100|%%']    , true , 'name_contains_any'   , ['foo', '100%']    , []                                                           ],
-            [['foo', '100%']         , false, 'name_contains_any'   , ['foo', '100%']    , []                                                           ],
-            [['%foo%', '%bar 100|%%'], true , 'name_contains_any'   , ['foo', 'bar 100%'], []                                                           ],
-            [['foo', 'bar 100%']     , false, 'name_contains_any'   , ['foo', 'bar 100%'], []                                                           ],
-            [['%foo%', '%100|%%']    , true , 'name_contains_any_cs', 'foo　 100%'       , []                                     , ['mysql', 'mariadb']],
-            ['foo　 100%'            , false, 'name_contains_any_cs', 'foo　 100%'       , []                                     , ['mysql', 'mariadb']],
-            [['%foo%', '%100|%%']    , true , 'name_contains_any_cs', "foo\t100%"        , ['name' => ['last_name', 'first_name']], ['mysql', 'mariadb']],
-            ["foo\t100%"             , false, 'name_contains_any_cs', "foo\t100%"        , ['name' => ['last_name', 'first_name']], ['mysql', 'mariadb']],
+            ['foo', true, 'name', 'foo', []                                                           ],
+            ['foo 100%', true, 'name', 'foo 100%', []                                                           ],
+            [['foo', '100%'], true, 'name', ['foo', '100%'], []                                                           ],
+            ['%foo%', true, 'name_contains', 'foo', []                                                           ],
+            ['foo', false, 'name_contains', 'foo', []                                                           ],
+            ['%foo 100|%%', true, 'name_contains', 'foo 100%', []                                                           ],
+            ['foo 100%', false, 'name_contains', 'foo 100%', []                                                           ],
+            [['%foo%'], true, 'name_contains_any', 'foo', []                                                           ],
+            ['foo', false, 'name_contains_any', 'foo', []                                                           ],
+            [['%foo%', '%100|%%'], true, 'name_contains_any', 'foo 100%', []                                                           ],
+            ['foo 100%', false, 'name_contains_any', 'foo 100%', []                                                           ],
+            [['%foo%', '%100|%%'], true, 'name_contains_any', ['foo', '100%'], []                                                           ],
+            [['foo', '100%'], false, 'name_contains_any', ['foo', '100%'], []                                                           ],
+            [['%foo%', '%bar 100|%%'], true, 'name_contains_any', ['foo', 'bar 100%'], []                                                           ],
+            [['foo', 'bar 100%'], false, 'name_contains_any', ['foo', 'bar 100%'], []                                                           ],
+            [['%foo%', '%100|%%'], true, 'name_contains_any_cs', 'foo　 100%', [], ['mysql', 'mariadb']],
+            ['foo　 100%', false, 'name_contains_any_cs', 'foo　 100%', [], ['mysql', 'mariadb']],
+            [['%foo%', '%100|%%'], true, 'name_contains_any_cs', "foo\t100%", ['name' => ['last_name', 'first_name']], ['mysql', 'mariadb']],
+            ["foo\t100%", false, 'name_contains_any_cs', "foo\t100%", ['name' => ['last_name', 'first_name']], ['mysql', 'mariadb']],
         ];
     }
 
@@ -176,19 +177,19 @@ class RansackTest extends RebetDatabaseTestCase
         }, ...$dbs);
     }
 
-    public static function dataPredicates() : array
+    public static function dataPredicates(): array
     {
         self::setUpStatic();
         $data = [
-            ['eq'          , 'name'                , 'foo'         , []                                                           ],
-            ['in'          , 'name'                , ['foo', 'bar'], []                                                           ],
-            ['contains'    , 'name_contains'       , 'foo'         , []                                                           ],
-            ['contains'    , 'name_contains_any'   , ['foo', 'bar'], []                                                           ],
-            ['contains'    , 'name_contains_any'   , 'foo bar'     , []                                                           ],
-            ['contains'    , 'name_contains_all'   , ['foo', 'bar'], []                                                           ],
-            ['contains'    , 'name_contains_all'   , 'foo bar'     , []                                                           ],
-            ['contains'    , 'name_contains_any_cs', ['foo', 'bar'], []                                     , ['mysql', 'mariadb']],
-            ['contains'    , 'name_contains_any_cs', ['foo', 'bar'], ['name' => ['last_name', 'first_name']], ['mysql', 'mariadb']],
+            ['eq', 'name', 'foo', []                                                           ],
+            ['in', 'name', ['foo', 'bar'], []                                                           ],
+            ['contains', 'name_contains', 'foo', []                                                           ],
+            ['contains', 'name_contains_any', ['foo', 'bar'], []                                                           ],
+            ['contains', 'name_contains_any', 'foo bar', []                                                           ],
+            ['contains', 'name_contains_all', ['foo', 'bar'], []                                                           ],
+            ['contains', 'name_contains_all', 'foo bar', []                                                           ],
+            ['contains', 'name_contains_any_cs', ['foo', 'bar'], [], ['mysql', 'mariadb']],
+            ['contains', 'name_contains_any_cs', ['foo', 'bar'], ['name' => ['last_name', 'first_name']], ['mysql', 'mariadb']],
         ];
 
         self::eachDb(function (Database $db) use (&$data) {
@@ -209,18 +210,18 @@ class RansackTest extends RebetDatabaseTestCase
         }, ...$dbs);
     }
 
-    public static function dataTemplates() : array
+    public static function dataTemplates(): array
     {
         self::setUpStatic();
         $data = [
-            ['{col} = {val}'              , 'name'                , 'foo'         , []                                                           ],
-            ['{col} IN ({val})'           , 'name'                , ['foo', 'bar'], []                                                           ],
-            ["{col} LIKE {val} ESCAPE '|'", 'name_contains'       , 'foo'         , []                                                           ],
-            ["{col} LIKE {val} ESCAPE '|'", 'name_contains_any'   , ['foo', 'bar'], []                                                           ],
-            ["{col} LIKE {val} ESCAPE '|'", 'name_contains_any'   , 'foo bar'     , []                                                           ],
-            ["{col} LIKE {val} ESCAPE '|'", 'name_contains_all'   , ['foo', 'bar'], []                                                           ],
-            ["{col} LIKE {val} ESCAPE '|'", 'name_contains_all'   , 'foo bar'     , []                                                           ],
-            ["{col} LIKE {val} ESCAPE '|'", 'name_contains_any_cs', ['foo', 'bar'], []                                     , ['mysql', 'mariadb']],
+            ['{col} = {val}', 'name', 'foo', []                                                           ],
+            ['{col} IN ({val})', 'name', ['foo', 'bar'], []                                                           ],
+            ["{col} LIKE {val} ESCAPE '|'", 'name_contains', 'foo', []                                                           ],
+            ["{col} LIKE {val} ESCAPE '|'", 'name_contains_any', ['foo', 'bar'], []                                                           ],
+            ["{col} LIKE {val} ESCAPE '|'", 'name_contains_any', 'foo bar', []                                                           ],
+            ["{col} LIKE {val} ESCAPE '|'", 'name_contains_all', ['foo', 'bar'], []                                                           ],
+            ["{col} LIKE {val} ESCAPE '|'", 'name_contains_all', 'foo bar', []                                                           ],
+            ["{col} LIKE {val} ESCAPE '|'", 'name_contains_any_cs', ['foo', 'bar'], [], ['mysql', 'mariadb']],
             ["{col} LIKE {val} ESCAPE '|'", 'name_contains_any_cs', ['foo', 'bar'], ['name' => ['last_name', 'first_name']], ['mysql', 'mariadb']],
         ];
 
@@ -242,7 +243,7 @@ class RansackTest extends RebetDatabaseTestCase
         }, ...$dbs);
     }
 
-    public static function dataValueConverters() : array
+    public static function dataValueConverters(): array
     {
         self::setUpStatic();
         $data = [];
@@ -264,7 +265,7 @@ class RansackTest extends RebetDatabaseTestCase
         }, ...$dbs);
     }
 
-    public static function dataConjunctions() : array
+    public static function dataConjunctions(): array
     {
         self::setUpStatic();
         $data = [];
@@ -285,18 +286,18 @@ class RansackTest extends RebetDatabaseTestCase
         }, ...$dbs);
     }
 
-    public static function dataCompounds() : array
+    public static function dataCompounds(): array
     {
         $data = [
-            [null , 'name'                , 'foo'         , []                                                           ],
-            [null , 'name'                , ['foo', 'bar'], []                                                           ],
-            [null , 'name_contains'       , 'foo'         , []                                                           ],
-            [null , 'name_contains_cs'    , 'foo'         , []                                     , ['mysql', 'mariadb']],
-            ['any', 'name_contains_any'   , ['foo', 'bar'], []                                                           ],
-            ['any', 'name_contains_any'   , 'foo bar'     , []                                                           ],
-            ['all', 'name_contains_all'   , ['foo', 'bar'], []                                                           ],
-            ['all', 'name_contains_all'   , 'foo bar'     , []                                                           ],
-            ['any', 'name_contains_any_cs', ['foo', 'bar'], []                                     , ['mysql', 'mariadb']],
+            [null, 'name', 'foo', []                                                           ],
+            [null, 'name', ['foo', 'bar'], []                                                           ],
+            [null, 'name_contains', 'foo', []                                                           ],
+            [null, 'name_contains_cs', 'foo', [], ['mysql', 'mariadb']],
+            ['any', 'name_contains_any', ['foo', 'bar'], []                                                           ],
+            ['any', 'name_contains_any', 'foo bar', []                                                           ],
+            ['all', 'name_contains_all', ['foo', 'bar'], []                                                           ],
+            ['all', 'name_contains_all', 'foo bar', []                                                           ],
+            ['any', 'name_contains_any_cs', ['foo', 'bar'], [], ['mysql', 'mariadb']],
             ['any', 'name_contains_any_ci', ['foo', 'bar'], ['name' => ['last_name', 'first_name']], ['mysql', 'mariadb']],
         ];
         return $data;
@@ -311,7 +312,7 @@ class RansackTest extends RebetDatabaseTestCase
         }, ...$dbs);
     }
 
-    public static function dataOptions() : array
+    public static function dataOptions(): array
     {
         static::setUpStatic();
         $data = [];
@@ -332,44 +333,41 @@ class RansackTest extends RebetDatabaseTestCase
         }, ...$dbs);
     }
 
-    public static function dataColumns() : array
+    public static function dataColumns(): array
     {
         $data = [
-            [['?name?'                                   ], true , 'name'                 , 'foo'         , []                                                                     ],
-            [['?name?'                                   ], true , 'name'                 , ['foo', 'bar'], []                                                                     ],
-            [['name'                                     ], false, 'name_bin'             , 'foo'         , []                                     , ['sqlite', 'mysql', 'mariadb']],
-            [['BINARY ?name?'                            ], true , 'name_bin'             , 'foo'         , []                                     , ['sqlite', 'mysql', 'mariadb']],
-            [['name_bin'                                 ], false, 'name_bin'             , 'foo'         , []                                     , ['pgsql'                     ]],
-            [['?name?'                                   ], true , 'name_contains'        , 'foo'         , []                                                                     ],
-            [['name'                                     ], false, 'name_contains_bin'    , 'foo'         , []                                     , ['sqlite', 'mysql', 'mariadb']],
-            [['BINARY ?name?'                            ], true , 'name_contains_bin'    , 'foo'         , []                                     , ['sqlite', 'mysql', 'mariadb']],
-            [['?name? COLLATE utf8mb4_bin'               ], true , 'name_contains_cs'     , 'foo'         , []                                     , ['mysql', 'mariadb'          ]],
-            [['?name?'                                   ], true , 'name_contains_any'    , 'foo bar'     , []                                                                     ],
-            [['?name?'                                   ], true , 'name_contains_all'    , 'foo bar'     , []                                                                     ],
-            [['?name? COLLATE utf8mb4_bin'               ], true , 'name_contains_any_cs' , 'foo'         , []                                     , ['mysql', 'mariadb'          ]],
-            [['?name? COLLATE utf8mb4_general_ci'        ], true , 'name_contains_any_ci' , 'foo'         , []                                     , ['mysql', 'mariadb'          ]],
-            [['?name? COLLATE nocase'                    ], true , 'name_contains_any_ci' , 'foo'         , []                                     , ['sqlite'                    ]],
-            [['?name? COLLATE utf8mb4_unicode_ci'        ], true , 'name_contains_any_fs' , 'foo'         , []                                     , ['mysql', 'mariadb'          ]],
+            [['?name?'                                   ], true, 'name', 'foo', []                                                                     ],
+            [['?name?'                                   ], true, 'name', ['foo', 'bar'], []                                                                     ],
+            [['name'                                     ], false, 'name_bin', 'foo', [], ['sqlite', 'mysql', 'mariadb']],
+            [['BINARY ?name?'                            ], true, 'name_bin', 'foo', [], ['sqlite', 'mysql', 'mariadb']],
+            [['name_bin'                                 ], false, 'name_bin', 'foo', [], ['pgsql'                     ]],
+            [['?name?'                                   ], true, 'name_contains', 'foo', []                                                                     ],
+            [['name'                                     ], false, 'name_contains_bin', 'foo', [], ['sqlite', 'mysql', 'mariadb']],
+            [['BINARY ?name?'                            ], true, 'name_contains_bin', 'foo', [], ['sqlite', 'mysql', 'mariadb']],
+            [['?name? COLLATE utf8mb4_bin'               ], true, 'name_contains_cs', 'foo', [], ['mysql', 'mariadb'          ]],
+            [['?name?'                                   ], true, 'name_contains_any', 'foo bar', []                                                                     ],
+            [['?name?'                                   ], true, 'name_contains_all', 'foo bar', []                                                                     ],
+            [['?name? COLLATE utf8mb4_bin'               ], true, 'name_contains_any_cs', 'foo', [], ['mysql', 'mariadb'          ]],
+            [['?name? COLLATE utf8mb4_general_ci'        ], true, 'name_contains_any_ci', 'foo', [], ['mysql', 'mariadb'          ]],
+            [['?name? COLLATE nocase'                    ], true, 'name_contains_any_ci', 'foo', [], ['sqlite'                    ]],
+            [['?name? COLLATE utf8mb4_unicode_ci'        ], true, 'name_contains_any_fs', 'foo', [], ['mysql', 'mariadb'          ]],
 
-            [['?last_name?', '?first_name?'              ], true , 'name'                 , 'foo'         , ['name' => ['last_name', 'first_name']], [                            ]],
-            [['?last_name?', '?first_name?'              ], true , 'name'                 , ['foo', 'bar'], ['name' => ['last_name', 'first_name']], [                            ]],
-            [['BINARY ?last_name?', 'BINARY ?first_name?'], true , 'name_bin'             , 'foo'         , ['name' => ['last_name', 'first_name']], ['sqlite', 'mysql', 'mariadb']],
-            [['last_name', 'first_name'                  ], false, 'name_bin'             , 'foo'         , ['name' => ['last_name', 'first_name']], ['sqlite', 'mysql', 'mariadb']],
+            [['?last_name?', '?first_name?'              ], true, 'name', 'foo', ['name' => ['last_name', 'first_name']], [                            ]],
+            [['?last_name?', '?first_name?'              ], true, 'name', ['foo', 'bar'], ['name' => ['last_name', 'first_name']], [                            ]],
+            [['BINARY ?last_name?', 'BINARY ?first_name?'], true, 'name_bin', 'foo', ['name' => ['last_name', 'first_name']], ['sqlite', 'mysql', 'mariadb']],
+            [['last_name', 'first_name'                  ], false, 'name_bin', 'foo', ['name' => ['last_name', 'first_name']], ['sqlite', 'mysql', 'mariadb']],
             [
-                ['?last_name? COLLATE nocase', '?first_name? COLLATE nocase']
-                , true , 'name_contains_any_ci', 'foo',
+                ['?last_name? COLLATE nocase', '?first_name? COLLATE nocase'], true, 'name_contains_any_ci', 'foo',
                 ['name' => ['last_name', 'first_name']],
                 ['sqlite'],
             ],
             [
-                ['?name? COLLATE nocase', '?name_ruby? COLLATE nocase']
-                , true , 'name_contains_any_ci', 'foo',
+                ['?name? COLLATE nocase', '?name_ruby? COLLATE nocase'], true, 'name_contains_any_ci', 'foo',
                 ['name' => ['name', 'name_ruby']],
                 ['sqlite'],
             ],
             [
-                ['CONCAT(last_name,first_name) COLLATE nocase']
-                , true , 'name_contains_any_ci', 'foo',
+                ['CONCAT(last_name,first_name) COLLATE nocase'], true, 'name_contains_any_ci', 'foo',
                 ['name' => "CONCAT(last_name,first_name)"],
                 ['sqlite'],
             ],
@@ -379,8 +377,7 @@ class RansackTest extends RebetDatabaseTestCase
                     '?first_name? COLLATE nocase',
                     '?last_name_ruby? COLLATE nocase',
                     '?first_name_ruby? COLLATE nocase',
-                ]
-                , true , 'full_name_contains_any_ci', 'foo',
+                ], true, 'full_name_contains_any_ci', 'foo',
                 ['full_name' => ['@name', '@name_ruby'], 'name' => ['last_name', 'first_name'], 'name_ruby' => ['last_name_ruby', 'first_name_ruby']],
                 ['sqlite'],
             ],
@@ -390,8 +387,7 @@ class RansackTest extends RebetDatabaseTestCase
                     'first_name',
                     'last_name_ruby',
                     'first_name_ruby',
-                ]
-                , false, 'full_name_contains_any_ci', 'foo',
+                ], false, 'full_name_contains_any_ci', 'foo',
                 ['full_name' => ['@name', '@name_ruby'], 'name' => ['last_name', 'first_name'], 'name_ruby' => ['last_name_ruby', 'first_name_ruby']],
                 ['sqlite'],
             ],
@@ -399,8 +395,7 @@ class RansackTest extends RebetDatabaseTestCase
                 [
                     'CONCAT(last_name,first_name) COLLATE nocase',
                     'CONCAT(last_name_ruby,first_name_ruby) COLLATE nocase',
-                ]
-                , true , 'full_name_contains_any_ci', 'foo',
+                ], true, 'full_name_contains_any_ci', 'foo',
                 ['full_name' => ['@name', '@name_ruby'], 'name' => "CONCAT(last_name,first_name)", 'name_ruby' => "CONCAT(last_name_ruby,first_name_ruby)"],
                 ['sqlite'],
             ],
@@ -417,7 +412,7 @@ class RansackTest extends RebetDatabaseTestCase
         }, ...$dbs);
     }
 
-    public static function dataConverts() : array
+    public static function dataConverts(): array
     {
         return [
             [

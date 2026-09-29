@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database\Ransack;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -27,11 +28,11 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
     {
         self::eachDb(function (Database $db) {
             $driver = $db->driver();
-            $this->assertEquals($db->sql($driver->quoteIdentifier('name').' = :name', ['name' => 'foo']), BuiltinRansacker::of($driver)->resolve('name', 'foo'));
+            $this->assertEquals($db->sql($driver->quoteIdentifier('name') . ' = :name', ['name' => 'foo']), BuiltinRansacker::of($driver)->resolve('name', 'foo'));
         });
     }
 
-    public static function dataBuilds() : array
+    public static function dataBuilds(): array
     {
         return [
             [

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Reflection;
 
 use Rebet\Tests\RebetTestCase;
@@ -11,14 +12,14 @@ class PopulatableTest extends RebetTestCase
 {
     public $valid_data;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->valid_data = new ValidData([
-            'name'          => 'John Smith',
-            'altanate_name' => 'JOHN SMITH',
-            'birthday'      => '1987-01-23',
-            'bank'          => [
+            'name'               => 'John Smith',
+            'altanate_name'      => 'JOHN SMITH',
+            'birthday'           => '1987-01-23',
+            'bank'               => [
                 'name'       => 'SampleBank',
                 'short_name' => 'SB',
                 'branch'     => 'FooBranch',
@@ -66,7 +67,7 @@ class PopulatableTest extends RebetTestCase
                     'bank'               => Bank::class,
                     'shipping_addresses' => Address::class,
                 ],
-                Bank::class => [
+                Bank::class     => [
                     'location' => Address::class,
                 ],
             ],
@@ -121,10 +122,10 @@ class PopulatableTest extends RebetTestCase
                 Customer::class => [
                     'shipping_addresses' => Address::class,
                 ],
-                Address::class => [
+                Address::class  => [
                     'bank' => Bank::class,
                 ],
-                Bank::class => [
+                Bank::class     => [
                     'location' => Address::class,
                 ],
             ],
@@ -147,7 +148,7 @@ class PopulatableTest extends RebetTestCase
     {
         $customer = new Customer();
         $customer->populate($this->valid_data, [
-            'embeds' => [
+            'embeds'  => [
                 Customer::class => [
                     'bank'               => Bank::class,
                     'shipping_addresses' => Address::class,
@@ -172,7 +173,7 @@ class PopulatableTest extends RebetTestCase
     {
         $customer = new Customer();
         $customer->populate($this->valid_data, [
-            'embeds' => [
+            'embeds'   => [
                 Customer::class => [
                     'bank'               => Bank::class,
                     'shipping_addresses' => Address::class,
@@ -199,7 +200,7 @@ class PopulatableTest extends RebetTestCase
     {
         $customer = new Customer();
         $customer->populate($this->valid_data, [
-            'embeds' => [
+            'embeds'   => [
                 Customer::class => [
                     'bank'               => Bank::class,
                     'shipping_addresses' => Address::class,

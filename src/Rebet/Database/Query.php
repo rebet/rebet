@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database;
@@ -54,7 +55,7 @@ class Query
      *
      * @return Driver
      */
-    public function driver() : Driver
+    public function driver(): Driver
     {
         return $this->driver;
     }
@@ -64,7 +65,7 @@ class Query
      *
      * @return string
      */
-    public function sql() : string
+    public function sql(): string
     {
         return $this->sql;
     }
@@ -74,7 +75,7 @@ class Query
      *
      * @return array<int|string, mixed>
      */
-    public function params() : array
+    public function params(): array
     {
         return $this->params;
     }
@@ -86,7 +87,7 @@ class Query
      * @param  array<int|string, mixed>  $params (default: [])
      * @return self
      */
-    public function appendWhere($where, array $params = []) : self
+    public function appendWhere($where, array $params = []): self
     {
         $this->sql    = $this->driver->appendWhere($this->sql, $where);
         $this->params = array_merge($this->params, $params);
@@ -100,7 +101,7 @@ class Query
      * @param  int|null $offset (default: null)
      * @return self
      */
-    public function appendLimitOffset(int|null $limit, int|null $offset = null) : self
+    public function appendLimitOffset(int|null $limit, int|null $offset = null): self
     {
         $this->sql = $this->driver->appendLimitOffset($this->sql, $limit, $offset);
         return $this;
@@ -111,7 +112,7 @@ class Query
      *
      * @return self
      */
-    public function appendForUpdate() : self
+    public function appendForUpdate(): self
     {
         $this->sql = $this->driver->appendForUpdate($this->sql);
         return $this;
@@ -122,7 +123,7 @@ class Query
      *
      * @return string
      */
-    public function asWhere() : string
+    public function asWhere(): string
     {
         return empty($this->sql) ? '' : " WHERE {$this->sql}" ;
     }
@@ -133,16 +134,16 @@ class Query
      *
      * @return string
      */
-    public function emulate() : string
+    public function emulate(): string
     {
         $sql = $this->sql;
         foreach ($this->params as $key => $value) {
             $key   = Strings::startsWith($key, ':') ? $key : ":{$key}" ;
             $value = is_array($value) ? join(', ', array_map(function ($v) { return $this->convertToSql($v); }, $value)) : $this->convertToSql($value) ;
-            $sql   = preg_replace("/".preg_quote($key, '/')."(?=[^a-zA-Z0-9_]|$)/", $value, $sql);
+            $sql   = preg_replace("/" . preg_quote($key, '/') . "(?=[^a-zA-Z0-9_]|$)/", $value, $sql);
         }
 
-        return "/* Emulated SQL */ ".$sql;
+        return "/* Emulated SQL */ " . $sql;
     }
 
     /**
@@ -152,14 +153,14 @@ class Query
      * @param  mixed  $value
      * @return string
      */
-    protected function convertToSql($value) : string
+    protected function convertToSql($value): string
     {
         $param = $value instanceof PdoParameter ? $value : $this->driver->toPdoType($value);
         if ($param->value === null) {
             return 'NULL';
         }
         if ($param->type === \PDO::PARAM_LOB) {
-            return 'NULL/*LOB('.strlen($param->value).')*/';
+            return 'NULL/*LOB(' . strlen($param->value) . ')*/';
         }
         return $this->driver->quote((string) $param->value, $param->type);
     }
@@ -169,12 +170,12 @@ class Query
      *
      * @return string
      */
-    public function toString() : string
+    public function toString(): string
     {
-        return "Query[".$this->driver->name()."] {\n".
-               "  sql: ".Strings::indent(Strings::stringify($this->sql), " ", 4).
-               "  params: ".Strings::indent(Strings::stringify($this->params), " ", 4).
-               "}"
+        return "Query[" . $this->driver->name() . "] {\n"
+               . "  sql: " . Strings::indent(Strings::stringify($this->sql), " ", 4)
+               . "  params: " . Strings::indent(Strings::stringify($this->params), " ", 4)
+               . "}"
         ;
     }
 }

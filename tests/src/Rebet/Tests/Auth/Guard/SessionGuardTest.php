@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Auth\Guard;
 
 use Rebet\Auth\Auth;
@@ -167,7 +168,7 @@ class SessionGuardTest extends RebetTestCase
         $this->assertNull($session->get('auth:member:signin_id'));
         $cookie = Cookie::peek('auth:member:remember_token');
         $this->assertNull($cookie->getValue());
-        $this->assertSame('auth:member:remember_token=deleted; expires='.gmdate('D, d M Y H:i:s T', time() - 31536001).'; Max-Age=0; path=/; httponly; samesite=lax', "{$cookie}");
+        $this->assertSame('auth:member:remember_token=deleted; expires=' . gmdate('D, d M Y H:i:s T', time() - 31536001) . '; Max-Age=0; path=/; httponly; samesite=lax', "{$cookie}");
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/signouted', $response->getTargetUrl());
         $this->assertSame('MOCKED_TOKEN', $removed);

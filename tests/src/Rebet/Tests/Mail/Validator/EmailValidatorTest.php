@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Mail\Validator;
 
 use Egulias\EmailValidator\Validation\RFCValidation;
@@ -14,7 +15,7 @@ class EmailValidatorTest extends RebetTestCase
     private $validator_backup;
     private $original_validator_backup;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         // App::init() (triggered by parent::setUp()) runs the EmailValidatorEnable bootstrapper,
@@ -25,7 +26,7 @@ class EmailValidatorTest extends RebetTestCase
         $this->original_validator_backup = Reflector::get(EmailValidator::class, 'original_validator', null, true);
     }
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         $address_class = Address::class;
         Reflector::set($address_class, 'validator', $this->validator_backup, true);

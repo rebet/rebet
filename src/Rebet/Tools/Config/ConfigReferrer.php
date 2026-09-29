@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Config;
@@ -70,6 +71,6 @@ class ConfigReferrer implements DotAccessDelegator
      */
     public function __toString()
     {
-        return "<Referrer: {$this->section}.{$this->key} (default: ".Strings::stringify($this->default).")>";
+        return "<Referrer: {$this->section}.{$this->key} (default: " . Strings::stringify($this->default) . ")>";
     }
 }

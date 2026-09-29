@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Routing\Route;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -24,7 +25,7 @@ class RedirectRouteTest extends RebetTestCase
     // Router::redirect('/redirect/query/with-param/{id}', '/destination', ['page' => 1]);
     // Router::redirect('/redirect/query/inline/with-param/{id}', '/destination?page=1');
 
-    public static function dataRoutings() : array
+    public static function dataRoutings(): array
     {
         return [
             ['/destination', '/redirect', '/destination', '/redirect'],

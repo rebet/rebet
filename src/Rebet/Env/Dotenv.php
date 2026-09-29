@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Env;
@@ -26,7 +27,7 @@ class Dotenv
      * @param  bool            $overload (default: true)
      * @return void
      */
-    public static function load($paths, $names = '.env', bool $overload = true) : void
+    public static function load($paths, $names = '.env', bool $overload = true): void
     {
         $builder = RepositoryBuilder::createWithDefaultAdapters()->addWriter(PutenvAdapter::class);
         $dotenv  = VlucasDotenv::create($overload ? $builder->make() : $builder->immutable()->make(), $paths, $names);

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Console\Command;
@@ -34,35 +35,35 @@ abstract class Command extends SymfonyCommand
      * Must be overloaded in subclass.
      * @var string|null
      */
-    const NAME = null;
+    public const NAME = null;
 
     /**
      * The description of command.
      * Must be overloaded in subclass.
      * @var string|null
      */
-    const DESCRIPTION = null;
+    public const DESCRIPTION = null;
 
     /**
      * The arguments of command.
      * Must be overloaded in subclass if necessary.
      * @var array<int, array<int, mixed>>
      */
-    const ARGUMENTS = [];
+    public const ARGUMENTS = [];
 
     /**
      * The options of command.
      * Must be overloaded in subclass if necessary.
      * @var array<int, array<int, mixed>>
      */
-    const OPTIONS = [];
+    public const OPTIONS = [];
 
     /**
      * The mapping between human readable verbosity levels and Symfony's OutputInterface.
      *
      * @var array<string, int>
      */
-    const VERBOSITIES = [
+    public const VERBOSITIES = [
         'q'   => OutputInterface::VERBOSITY_QUIET,
         ''    => OutputInterface::VERBOSITY_NORMAL,
         'v'   => OutputInterface::VERBOSITY_VERBOSE,
@@ -143,7 +144,7 @@ abstract class Command extends SymfonyCommand
                     $mode,
                     $i === 0 ? $description : "Alias of --{$name_and_aliases[0]}.",
                     $default,
-                    $suggested_values
+                    $suggested_values,
                 );
             }
         }
@@ -157,7 +158,7 @@ abstract class Command extends SymfonyCommand
      * @param  OutputInterface $output
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output) : int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->input  = $input;
         $this->output = $output;
@@ -182,7 +183,7 @@ abstract class Command extends SymfonyCommand
      * @param  string|int $key
      * @return bool
      */
-    public function hasArgument($key) : bool
+    public function hasArgument($key): bool
     {
         return $this->input->hasArgument($key);
     }
@@ -193,7 +194,7 @@ abstract class Command extends SymfonyCommand
      * @param  string      $key
      * @return string|null
      */
-    public function argument(string $key) : string|null
+    public function argument(string $key): string|null
     {
         return $this->input->getArgument($key) ;
     }
@@ -203,7 +204,7 @@ abstract class Command extends SymfonyCommand
      *
      * @return array<string, string|bool|int|float|array<int|string, mixed>|null>
      */
-    public function arguments() : array
+    public function arguments(): array
     {
         return $this->input->getArguments();
     }
@@ -214,7 +215,7 @@ abstract class Command extends SymfonyCommand
      * @param  string $key
      * @return bool
      */
-    public function hasOption(string $key) : bool
+    public function hasOption(string $key): bool
     {
         return $this->input->hasOption($key);
     }
@@ -246,7 +247,7 @@ abstract class Command extends SymfonyCommand
      *
      * @return array<string, string|bool|int|float|array<int|string, mixed>|null>
      */
-    public function options() : array
+    public function options(): array
     {
         return $this->input->getOptions();
     }
@@ -269,7 +270,7 @@ abstract class Command extends SymfonyCommand
      * @param  bool   $default  (default: false)
      * @return bool
      */
-    protected function confirm(string $question, bool $default = false) : bool
+    protected function confirm(string $question, bool $default = false): bool
     {
         return $this->_ask(new ConfirmationQuestion($question, $default));
     }
@@ -312,7 +313,7 @@ abstract class Command extends SymfonyCommand
      * @param  array<int|string, string> $availables of choice (both keys and values are accepted) (default: [])
      * @return string|null
      */
-    protected function viaOption(string $question, string|null $via_option = null, array $availables = []) : string|null
+    protected function viaOption(string $question, string|null $via_option = null, array $availables = []): string|null
     {
         if ($via_option) {
             $value = Strings::startsWith($via_option, '@') ? Strings::ltrim($via_option, '@') : $this->option($via_option);
@@ -349,7 +350,7 @@ abstract class Command extends SymfonyCommand
      * @param  bool   $fallback        (default: true)
      * @return string password
      */
-    protected function password(string $input_massage = "> Input password   : ", string $confirm_message = "> Confirm password : ", bool $fallback = true) : string
+    protected function password(string $input_massage = "> Input password   : ", string $confirm_message = "> Confirm password : ", bool $fallback = true): string
     {
         while (true) {
             $password = $this->secret($input_massage, $fallback);
@@ -426,7 +427,7 @@ abstract class Command extends SymfonyCommand
      * @param  string|int|null $level
      * @return int
      */
-    protected function parseVerbosity($level) : int
+    protected function parseVerbosity($level): int
     {
         return self::VERBOSITIES[$level] ?? $level ?? $this->verbosity ;
     }

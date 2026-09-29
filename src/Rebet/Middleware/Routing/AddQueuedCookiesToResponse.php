@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Middleware\Routing;
@@ -24,7 +25,7 @@ class AddQueuedCookiesToResponse
      * @param  \Closure $next
      * @return Response
      */
-    public function handle(Request $request, \Closure $next) : Response
+    public function handle(Request $request, \Closure $next): Response
     {
         $response = $next($request);
         foreach (Cookie::queued() as $cookie) {

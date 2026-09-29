@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Exception;
@@ -32,7 +33,7 @@ class RouteNotFoundException extends RuntimeException implements ProblemResponda
     /**
      * {@inheritDoc}
      */
-    public function problem() : ProblemResponse
+    public function problem(): ProblemResponse
     {
         return Responder::problem(404)->detail(Translator::get('message.http.404.detail') ?? $this->getMessage());
     }

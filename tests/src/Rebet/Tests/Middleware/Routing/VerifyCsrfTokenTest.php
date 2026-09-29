@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Middleware\Routing;
 
 use PHPUnit\Framework\AssertionFailedError;
@@ -23,38 +24,38 @@ class VerifyCsrfTokenTest extends RebetTestCase
         $this->assertInstanceOf(VerifyCsrfToken::class, new VerifyCsrfToken(['/exclude/path/*'], true, '2 hour'));
     }
 
-    public static function dataHandles() : array
+    public static function dataHandles(): array
     {
         return [
-            [true , '/article/edit/1', 'GET'    , [], true , [], true ],
-            [true , '/article/edit/1', 'HEAD'   , [], true , [], true ],
-            [true , '/article/edit/1', 'OPTIONS', [], true , [], true ],
-            [true , '/article/edit/1', 'POST'   , [], true , [], true ],
-            [true , '/article/edit/1', 'PUT'    , [], true , [], true ],
-            [true , '/article/edit/1', 'DELETE' , [], true , [], true ],
+            [true, '/article/edit/1', 'GET', [], true, [], true ],
+            [true, '/article/edit/1', 'HEAD', [], true, [], true ],
+            [true, '/article/edit/1', 'OPTIONS', [], true, [], true ],
+            [true, '/article/edit/1', 'POST', [], true, [], true ],
+            [true, '/article/edit/1', 'PUT', [], true, [], true ],
+            [true, '/article/edit/1', 'DELETE', [], true, [], true ],
 
-            [true , '/article/edit/1', 'GET'    , [], false, [], true ],
-            [true , '/article/edit/1', 'HEAD'   , [], false, [], true ],
-            [true , '/article/edit/1', 'OPTIONS', [], false, [], true ],
-            [false, '/article/edit/1', 'POST'   , [], false, [], true ],
-            [false, '/article/edit/1', 'PUT'    , [], false, [], true ],
-            [false, '/article/edit/1', 'DELETE' , [], false, [], true ],
+            [true, '/article/edit/1', 'GET', [], false, [], true ],
+            [true, '/article/edit/1', 'HEAD', [], false, [], true ],
+            [true, '/article/edit/1', 'OPTIONS', [], false, [], true ],
+            [false, '/article/edit/1', 'POST', [], false, [], true ],
+            [false, '/article/edit/1', 'PUT', [], false, [], true ],
+            [false, '/article/edit/1', 'DELETE', [], false, [], true ],
 
-            [true , '/article/edit/1'      , 'POST', ['/article/edit*'       ], false, [], true ],
-            [true , '/article/edit/2'      , 'POST', ['/article/edit*'       ], false, [], true ],
-            [true , '/article/edit-confirm', 'POST', ['/article/edit*'       ], false, [], true ],
-            [false, '/'                    , 'POST', ['/article/edit*'       ], false, [], true ],
-            [false, '/article/register'    , 'POST', ['/article/edit*'       ], false, [], true ],
+            [true, '/article/edit/1', 'POST', ['/article/edit*'       ], false, [], true ],
+            [true, '/article/edit/2', 'POST', ['/article/edit*'       ], false, [], true ],
+            [true, '/article/edit-confirm', 'POST', ['/article/edit*'       ], false, [], true ],
+            [false, '/', 'POST', ['/article/edit*'       ], false, [], true ],
+            [false, '/article/register', 'POST', ['/article/edit*'       ], false, [], true ],
             [false, '/article/edit-confirm', 'POST', ['/article/edit'        ], false, [], true ],
-            [true , '/article/edit-confirm', 'POST', ['/article/edit-confirm'], false, [], true ],
-            [true , '/foo'                 , 'POST', ['/foo', '/bar'         ], false, [], true ],
-            [true , '/bar'                 , 'POST', ['/foo', '/bar'         ], false, [], true ],
-            [false, '/baz'                 , 'POST', ['/foo', '/bar'         ], false, [], true ],
+            [true, '/article/edit-confirm', 'POST', ['/article/edit-confirm'], false, [], true ],
+            [true, '/foo', 'POST', ['/foo', '/bar'         ], false, [], true ],
+            [true, '/bar', 'POST', ['/foo', '/bar'         ], false, [], true ],
+            [false, '/baz', 'POST', ['/foo', '/bar'         ], false, [], true ],
 
-            [true , '/article/edit/1', 'POST', [            ], true, ['article', 'edit', 1], true ],
+            [true, '/article/edit/1', 'POST', [            ], true, ['article', 'edit', 1], true ],
             [false, '/article/edit/1', 'POST', [            ], true, ['article', 'edit', 1], false],
-            [true , '/article/edit/1', 'POST', ['/article/*'], true, ['article', 'edit', 1], false],
-            [true , '/article/edit/1', 'GET' , [            ], true, ['article', 'edit', 1], false],
+            [true, '/article/edit/1', 'POST', ['/article/*'], true, ['article', 'edit', 1], false],
+            [true, '/article/edit/1', 'GET', [            ], true, ['article', 'edit', 1], false],
         ];
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Http;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,7 +20,7 @@ use TestApp\Enum\Gender;
 
 class ResponderTest extends RebetTestCase
 {
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         parent::tearDown();
         Storage::reset();
@@ -47,7 +48,7 @@ class ResponderTest extends RebetTestCase
         $this->assertInstanceOf(StreamedResponse::class, $response);
 
         Config::application([
-            View::class => [
+            View::class  => [
                 'engine' => Blade::class,
             ],
             Blade::class => [
@@ -61,7 +62,7 @@ class ResponderTest extends RebetTestCase
         $this->assertSame('Hello, Rebet.', $response->getContent());
     }
 
-    public static function dataRedirects() : array
+    public static function dataRedirects(): array
     {
         return [
             ['/redirect/to', '/redirect/to', [], 302, ''],
@@ -108,7 +109,7 @@ class ResponderTest extends RebetTestCase
         $response = Responder::file('foo.txt');
         $this->assertSame('text/plain', $response->getHeader('Content-Type'));
         $this->assertSame('3', $response->getHeader('Content-Length'));
-        $this->assertSame("inline; filename=".md5('foo.txt').".txt; filename*=utf-8''foo.txt", $response->getHeader('Content-Disposition'));
+        $this->assertSame("inline; filename=" . md5('foo.txt') . ".txt; filename*=utf-8''foo.txt", $response->getHeader('Content-Disposition'));
         $this->assertStdoutEquals('foo', function () use ($response) {
             $response->sendContent();
         });
@@ -120,7 +121,7 @@ class ResponderTest extends RebetTestCase
         $response = Responder::download('foo.csv');
         $this->assertSame('text/csv', $response->getHeader('Content-Type'));
         $this->assertSame('5', $response->getHeader('Content-Length'));
-        $this->assertSame("attachment; filename=".md5('foo.csv').".csv; filename*=utf-8''foo.csv", $response->getHeader('Content-Disposition'));
+        $this->assertSame("attachment; filename=" . md5('foo.csv') . ".csv; filename*=utf-8''foo.csv", $response->getHeader('Content-Disposition'));
         $this->assertStdoutEquals('1,2,3', function () use ($response) {
             $response->sendContent();
         });

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command\Hash;
@@ -18,15 +19,15 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class HashTextCommand extends Command
 {
-    const NAME        = 'hash:text';
-    const DESCRIPTION = 'Hash the given text';
-    const ARGUMENTS   = [
+    public const NAME        = 'hash:text';
+    public const DESCRIPTION = 'Hash the given text';
+    public const ARGUMENTS   = [
         ['text', InputArgument::REQUIRED, 'Text that you want to hash'],
     ];
-    const OPTIONS = [
-        ['salt'      , 's', InputOption::VALUE_OPTIONAL, 'Salt'],
-        ['pepper'    , 'p', InputOption::VALUE_OPTIONAL, 'Pepper'],
-        ['algorithm' , 'a', InputOption::VALUE_OPTIONAL, 'Hash algorithm'],
+    public const OPTIONS = [
+        ['salt', 's', InputOption::VALUE_OPTIONAL, 'Salt'],
+        ['pepper', 'p', InputOption::VALUE_OPTIONAL, 'Pepper'],
+        ['algorithm', 'a', InputOption::VALUE_OPTIONAL, 'Hash algorithm'],
         ['stretching', 't', InputOption::VALUE_OPTIONAL, 'Stretching count'],
     ];
 
@@ -37,12 +38,12 @@ class HashTextCommand extends Command
     {
         $stretching = $this->option('stretching');
 
-        $this->writeln('<info>Hashed text:</info> '. Securities::hash(
+        $this->writeln('<info>Hashed text:</info> ' . Securities::hash(
             $this->argument('text'),
             $this->option('salt'),
             $this->option('pepper'),
             $this->option('algorithm'),
-            $stretching === null ? null : (int) $stretching
+            $stretching === null ? null : (int) $stretching,
         ));
     }
 }

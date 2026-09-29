@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\DataModel;
@@ -11,6 +12,4 @@ namespace Rebet\Database\DataModel;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-abstract class Presentation extends DataModel
-{
-}
+abstract class Presentation extends DataModel {}

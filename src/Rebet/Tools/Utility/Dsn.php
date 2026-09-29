@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -18,9 +19,7 @@ class Dsn
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Parse given DSN string.
@@ -50,7 +49,7 @@ class Dsn
      * @param  string|null          $dsn
      * @return array<string, mixed>
      */
-    public static function parse(string|null $dsn) : array
+    public static function parse(string|null $dsn): array
     {
         if (empty($dsn)) {
             return [];

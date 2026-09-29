@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Template;
@@ -167,7 +168,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @throws LogicException when given template has syntax error
      * @return static
      */
-    public static function of(string|null $template) : self
+    public static function of(string|null $template): self
     {
         return new static($template);
     }
@@ -183,7 +184,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  string $filename
      * @return bool
      */
-    public static function isTemplateFile(string $filename) : bool
+    public static function isTemplateFile(string $filename): bool
     {
         return Strings::contains($filename, '.lp.') || Strings::endsWith($filename, '.lp');
     }
@@ -195,7 +196,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  string $filename
      * @return string
      */
-    public static function stripMarker(string $filename) : string
+    public static function stripMarker(string $filename): string
     {
         return Strings::endsWith($filename, '.lp') ? Strings::rtrim($filename, '.lp', 1) : str_replace('.lp.', '.', $filename) ;
     }
@@ -205,7 +206,7 @@ class Letterpress implements Renderable, \JsonSerializable
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         static::$tag_set = [];
         static::init();
@@ -217,7 +218,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  string $tag
      * @return bool
      */
-    public static function defined(string $tag) : bool
+    public static function defined(string $tag): bool
     {
         return isset(static::$tag_set[$tag])
             || in_array($tag, Arrays::flatten(Arrays::pluck(static::$tag_set, 'siblings')))
@@ -230,7 +231,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  array<mixed>      $siblings
      * @return array<int, mixed>
      */
-    protected static function unavailableSiblings(array $siblings) : array
+    protected static function unavailableSiblings(array $siblings): array
     {
         return Arrays::intersect(Arrays::unique(Arrays::flatten($siblings)), array_keys(static::$tag_set));
     }
@@ -243,14 +244,14 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  \Closure                               $handler  for tag processing `function(array $nodes, array $vars) : string { ... }`, The nodes is passed a chunk block of consecutive tags defined in siblings.
      * @return void
      */
-    public static function block(string $tag, array|null $siblings, \Closure $handler) : void
+    public static function block(string $tag, array|null $siblings, \Closure $handler): void
     {
         if (static::defined($tag)) {
             throw new LogicException("Tag '{$tag}' is already defined.");
         }
 
         if (!empty($unavailables = static::unavailableSiblings($siblings ?? []))) {
-            throw new LogicException("Tag '{$tag}' contains unavailable sibling tags [".implode(', ', $unavailables)."], these are already defined as tag.");
+            throw new LogicException("Tag '{$tag}' contains unavailable sibling tags [" . implode(', ', $unavailables) . "], these are already defined as tag.");
         }
 
         static::$tag_set[$tag] = [
@@ -267,7 +268,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  \Closure $handler for tag processing `function(array $node, array $vars) : string { ... }`, The node is passed tag node ['tag' => '', 'code' => '', 'nodes' => []].
      * @return void
      */
-    public static function embed(string $tag, \Closure $handler) : void
+    public static function embed(string $tag, \Closure $handler): void
     {
         if (static::defined($tag)) {
             throw new LogicException("Tag '{$tag}' is already defined.");
@@ -291,17 +292,17 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  \Closure $filter function($resolved_contents_text, $options1, $options2, ...) : string { ... }
      * @return void
      */
-    public static function filter(string $tag, \Closure $filter) : void
+    public static function filter(string $tag, \Closure $filter): void
     {
         static::block(
             $tag,
             null,
             function (array $nodes, array $vars) use ($filter) {
                 foreach ($nodes as $node) {
-                    return Tinker::peel(Reflector::evaluate($filter, array_merge([Letterpress::process($node['nodes'], $vars)], Letterpress::evaluate('['.$node['code'].']', $vars))));
+                    return Tinker::peel(Reflector::evaluate($filter, array_merge([Letterpress::process($node['nodes'], $vars)], Letterpress::evaluate('[' . $node['code'] . ']', $vars))));
                 }
                 return '';
-            }
+            },
         );
     }
 
@@ -318,19 +319,19 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  \Closure $test function($condition_evaluated_value) { ... }
      * @return void
      */
-    public static function if(string $tag, \Closure $test) : void
+    public static function if(string $tag, \Closure $test): void
     {
         static::block(
             $tag,
             [$tag => ["else{$tag}", 'else'], "else{$tag}" => ["else{$tag}", 'else'], 'else' => []],
             function (array $nodes, array $vars) use ($test) {
                 foreach ($nodes as $node) {
-                    if ($node['tag'] === 'else' || Tinker::peel(Reflector::evaluate($test, Letterpress::evaluate('['.$node['code'].']', $vars)))) {
+                    if ($node['tag'] === 'else' || Tinker::peel(Reflector::evaluate($test, Letterpress::evaluate('[' . $node['code'] . ']', $vars)))) {
                         return Letterpress::process($node['nodes'], $vars);
                     }
                 }
                 return '';
-            }
+            },
         );
 
         static::block(
@@ -338,12 +339,12 @@ class Letterpress implements Renderable, \JsonSerializable
             ["{$tag}not" => ["else{$tag}not", 'else'], "else{$tag}not" => ["else{$tag}not", 'else'], 'else' => []],
             function (array $nodes, array $vars) use ($test) {
                 foreach ($nodes as $node) {
-                    if ($node['tag'] === 'else' || !Tinker::peel(Reflector::evaluate($test, Letterpress::evaluate('['.$node['code'].']', $vars)))) {
+                    if ($node['tag'] === 'else' || !Tinker::peel(Reflector::evaluate($test, Letterpress::evaluate('[' . $node['code'] . ']', $vars)))) {
                         return Letterpress::process($node['nodes'], $vars);
                     }
                 }
                 return '';
-            }
+            },
         );
     }
 
@@ -358,13 +359,13 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  \Closure $callback `function(arg1, arg2, ...) : string { ... }`
      * @return void
      */
-    public static function function(string $tag, \Closure $callback) : void
+    public static function function(string $tag, \Closure $callback): void
     {
         static::embed(
             $tag,
             function (array $node, array $vars) use ($callback) {
-                return Tinker::peel(Reflector::evaluate($callback, Letterpress::evaluate('['.$node['code'].']', $vars)));
-            }
+                return Tinker::peel(Reflector::evaluate($callback, Letterpress::evaluate('[' . $node['code'] . ']', $vars)));
+            },
         );
     }
 
@@ -397,12 +398,12 @@ class Letterpress implements Renderable, \JsonSerializable
                         $vars = Arrays::where($vars, function ($v, $k) { return !Strings::startsWith($k, '__'); });
                         $contents .= Letterpress::process($node['nodes'], $vars);
                     };
-                    if (Letterpress::eval('$looped = false; foreach('.$node['code'].') { $looped = true; $__callback->invoke(compact(array_keys(get_defined_vars()))); }; return $looped;', $vars, false)) {
+                    if (Letterpress::eval('$looped = false; foreach(' . $node['code'] . ') { $looped = true; $__callback->invoke(compact(array_keys(get_defined_vars()))); }; return $looped;', $vars, false)) {
                         return $contents;
                     }
                 }
                 return $contents;
-            }
+            },
         );
 
         // ====================================================================
@@ -422,9 +423,9 @@ class Letterpress implements Renderable, \JsonSerializable
                 return $body;
             }
 
-            $headline = $message !== null ? Strings::indent($message, $comment)."\n" : '' ;
+            $headline = $message !== null ? Strings::indent($message, $comment) . "\n" : '' ;
             if (!$indent) {
-                return $headline.Strings::indent($body, $comment);
+                return $headline . Strings::indent($body, $comment);
             }
 
             $body_lines     = explode("\n", Strings::rtrim($body, "\n", 1));
@@ -437,9 +438,9 @@ class Letterpress implements Renderable, \JsonSerializable
             }
             $indent_depth   = min($indent_depthes ?: [0]);
             $indent_space   = str_repeat(' ', $indent_depth);
-            $commented_body = empty($headline) ? '' : $indent_space.$headline;
+            $commented_body = empty($headline) ? '' : $indent_space . $headline;
             foreach ($body_lines as $line) {
-                $commented_body .= $indent_space.$comment.Strings::lcut($line, $indent_depth)."\n";
+                $commented_body .= $indent_space . $comment . Strings::lcut($line, $indent_depth) . "\n";
             }
             return $commented_body;
         });
@@ -466,7 +467,7 @@ class Letterpress implements Renderable, \JsonSerializable
             if (!$indent) {
                 $uncommented_body = '';
                 foreach (explode("\n", Strings::rtrim($body, "\n", 1)) as $line) {
-                    $uncommented_body .= (Strings::startsWith($line, $comment) ? Strings::ltrim($line, $comment, 1) : $line)."\n";
+                    $uncommented_body .= (Strings::startsWith($line, $comment) ? Strings::ltrim($line, $comment, 1) : $line) . "\n";
                 }
                 return $uncommented_body;
             }
@@ -487,7 +488,7 @@ class Letterpress implements Renderable, \JsonSerializable
                 if (Strings::startsWith($content, $comment)) {
                     $content = Strings::ltrim($content, $comment, 1);
                 }
-                $uncommented_body .= $indent_space.$content."\n";
+                $uncommented_body .= $indent_space . $content . "\n";
             }
             return $uncommented_body;
         });
@@ -500,7 +501,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  array<string, mixed> $vars
      * @return self
      */
-    public function with(array $vars) : self
+    public function with(array $vars): self
     {
         $this->vars = array_merge($this->vars, $vars);
         return $this;
@@ -511,7 +512,7 @@ class Letterpress implements Renderable, \JsonSerializable
      *
      * @return self
      */
-    public function clear() : self
+    public function clear(): self
     {
         $this->vars = [];
         return $this;
@@ -522,7 +523,7 @@ class Letterpress implements Renderable, \JsonSerializable
      *
      * @return string
      */
-    public function render() : string
+    public function render(): string
     {
         if (empty($this->syntax)) {
             return '';
@@ -536,7 +537,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  string            $template
      * @return array<int, mixed> of syntax tree
      */
-    protected function compile(string $template) : array
+    protected function compile(string $template): array
     {
         $this->open_tags = [];
         $root            = ['tag' => '', 'code' => '', 'nodes' => []];
@@ -545,7 +546,7 @@ class Letterpress implements Renderable, \JsonSerializable
             [$root, $leftovers] = $this->parse($leftovers, $root);
         }
         if (!empty($this->open_tags)) {
-            throw new LogicException("Missing close tag {% end".end($this->open_tags)." %}, reached end of template text.");
+            throw new LogicException("Missing close tag {% end" . end($this->open_tags) . " %}, reached end of template text.");
         }
         return $root['nodes'];
     }
@@ -557,7 +558,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  array<string, mixed> $parent    node
      * @return array<int, mixed>    of partial syntax tree
      */
-    protected function parse(string $leftovers, array $parent) : array
+    protected function parse(string $leftovers, array $parent): array
     {
         $prev = null;
         if (!empty($parent['nodes'])) {
@@ -588,12 +589,12 @@ class Letterpress implements Renderable, \JsonSerializable
 
                 // Handle close tag.
                 if (Strings::startsWith($tag, 'end') && !array_key_exists($tag, static::$tag_set)) {
-                    $close_tag = 'end'.array_pop($this->open_tags);
+                    $close_tag = 'end' . array_pop($this->open_tags);
                     if ($tag !== $close_tag) {
                         throw new LogicException(
                             $close_tag === 'end'
-                        ? "Missing open tag {% ".Strings::ltrim($tag, 'end')." %} , {% {$tag} %} found."
-                        : "Missing close tag {% {$close_tag} %}, {% {$tag} %} found."
+                        ? "Missing open tag {% " . Strings::ltrim($tag, 'end') . " %} , {% {$tag} %} found."
+                        : "Missing close tag {% {$close_tag} %}, {% {$tag} %} found.",
                         );
                     }
 
@@ -648,7 +649,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  string $template
      * @return string
      */
-    protected function removeComments(string $template) : string
+    protected function removeComments(string $template): string
     {
         return preg_replace('/([ \f\r\t]*\S*{#--|([ \f\r\t]*|\S+){#-|{#)([\s\S]*)(#}|-#}(\S+?|([ \f\r\t]*\n|[ \f\r\t]*?))|--#}\S*?([ \f\r\t]*\n|[ \f\r\t]*?))/Uu', '', $template);
     }
@@ -659,7 +660,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  string                                                           $leftovers
      * @return array{0: string, 1: string|null, 2: string|null, 3: string|null} [content, tag, code, leftovers]
      */
-    protected function next(string $leftovers) : array
+    protected function next(string $leftovers): array
     {
         if (preg_match('/^(?<content>[\s\S]*)([ \f\r\t]*?\S*?{%--|([ \f\r\t]*?|\S+?){%-|{%)[\s]*(?<tag>[^\s\-}]+?)(?<code>[\s\S]*)(%}|-%}(\S+?|([ \f\r\t]*\n|[ \f\r\t]*?))|--%}\S*?([ \f\r\t]*\n|[ \f\r\t]*?))(?<leftovers>[\s\S]*)$/Uu', $leftovers, $matches)) {
             return [$matches['content'], $matches['tag'], trim($matches['code']), $matches['leftovers']];
@@ -674,7 +675,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  array<string, mixed> $vars  of current context
      * @return string               of partial result text
      */
-    public static function process(array $nodes, array $vars) : string
+    public static function process(array $nodes, array $vars): string
     {
         $contents = '';
         $family   = [];
@@ -746,17 +747,17 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param  bool                 $alone_var_without_tinker (default: true)
      * @return array<string, mixed>
      */
-    public static function optimizeVars(string $code, array $vars, bool $alone_var_without_tinker = true) : array
+    public static function optimizeVars(string $code, array $vars, bool $alone_var_without_tinker = true): array
     {
         if (preg_match_all('/(\$(?<accompanies>[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)(?=->|\[))|(\$(?<alones>[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*))/u', $code, $matches)) {
             foreach (Arrays::compact($matches['alones']) as $name) {
                 $vars[$name] = $alone_var_without_tinker
                     ? (isset($vars[$name]) ? Tinker::peel($vars[$name]) : null)
-                    : Tinker::with(isset($vars[$name]) ? $vars[$name] : null)
+                    : Tinker::with($vars[$name] ?? null)
                 ;
             }
             foreach (Arrays::compact($matches['accompanies']) as $name) {
-                $vars[$name] = Tinker::with(isset($vars[$name]) ? $vars[$name] : null) ;
+                $vars[$name] = Tinker::with($vars[$name] ?? null) ;
             }
         }
         return $vars;
@@ -770,7 +771,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @return string
      * @throws LogicException              when placeholder format is invalid.
      */
-    public static function expandVars(string $template, $vars) : string
+    public static function expandVars(string $template, $vars): string
     {
         return preg_replace_callback('/([ \f\r\t]*?\S*?{(?<so1>[{!])--|([ \f\r\t]*?|\S+?){(?<so2>[{!])-|{(?<so3>[{!]))(?<code>[\s\S]*)((?<sc1>[!}])}|-(?<sc2>[!}])}(\S+?|([ \f\r\t]*\n|[ \f\r\t]*?))|--(?<sc3>[!}])}\S*?([ \f\r\t]*\n|[ \f\r\t]*?))/Uu', function ($matches) use ($vars) {
             $sanitise_open  = $matches['so1'] ?: $matches['so2'] ?: $matches['so3'];
@@ -819,7 +820,7 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * {@inheritDoc}
      */
-    public function jsonSerialize() : mixed
+    public function jsonSerialize(): mixed
     {
         return Json::serialize($this->vars);
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Pagination;
@@ -18,7 +19,8 @@ use Rebet\Tools\Support\Getsetable;
  */
 class Pager
 {
-    use Configurable, Getsetable;
+    use Configurable;
+    use Getsetable;
 
     /**
      * {@inheritDoc}
@@ -88,7 +90,7 @@ class Pager
      *
      * @return Pager
      */
-    public static function resolve() : self
+    public static function resolve(): self
     {
         $resolver = static::config('resolver');
         return $resolver(new static());
@@ -155,7 +157,7 @@ class Pager
      *
      * @return boolean
      */
-    public function useCursor() : bool
+    public function useCursor(): bool
     {
         return !empty($this->cursor);
     }
@@ -166,7 +168,7 @@ class Pager
      * @param  int   $step (default: 1)
      * @return Pager
      */
-    public function next(int $step = 1) : self
+    public function next(int $step = 1): self
     {
         $pager = clone $this;
         return $pager->page($pager->page + $step);
@@ -178,7 +180,7 @@ class Pager
      * @param  int   $step (default: 1)
      * @return Pager
      */
-    public function prev(int $step = 1) : self
+    public function prev(int $step = 1): self
     {
         $pager = clone $this;
         return $pager->page($pager->page - $step);
@@ -190,7 +192,7 @@ class Pager
      * @param  Pager|null $pager
      * @return boolean
      */
-    public function verify(Pager|null $pager) : bool
+    public function verify(Pager|null $pager): bool
     {
         return
                $pager !== null

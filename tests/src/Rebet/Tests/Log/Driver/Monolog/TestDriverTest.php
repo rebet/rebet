@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Log\Driver\Monolog;
 
 use Monolog\Handler\TestHandler;
@@ -10,7 +11,7 @@ use Rebet\Tools\DateTime\DateTime;
 
 class TestDriverTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
@@ -42,11 +43,11 @@ class TestDriverTest extends RebetTestCase
         $driver->log(LogLevel::INFO, 'Line 2');
         $this->assertSame(
             <<<EOS
-            2010-10-20 10:20:30.123456 rebet/{$process_id} [DEBUG] Line 1
-            2010-10-20 10:20:30.123456 rebet/{$process_id} [INFO] Line 2
+                2010-10-20 10:20:30.123456 rebet/{$process_id} [DEBUG] Line 1
+                2010-10-20 10:20:30.123456 rebet/{$process_id} [INFO] Line 2
 
-            EOS,
-            $driver->formatted()
+                EOS,
+            $driver->formatted(),
         );
     }
 
@@ -59,11 +60,11 @@ class TestDriverTest extends RebetTestCase
         $driver->log(LogLevel::INFO, 'Line 2');
         $this->assertSame(
             <<<EOS
-            2010-10-20 10:20:30.123456 web/{$process_id} [DEBUG] Line 1
-            2010-10-20 10:20:30.123456 web/{$process_id} [INFO] Line 2
+                2010-10-20 10:20:30.123456 web/{$process_id} [DEBUG] Line 1
+                2010-10-20 10:20:30.123456 web/{$process_id} [INFO] Line 2
 
-            EOS,
-            $driver->formatted()
+                EOS,
+            $driver->formatted(),
         );
     }
 }

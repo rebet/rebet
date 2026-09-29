@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Reflection;
 
 use Rebet\Tests\RebetTestCase;
@@ -12,7 +13,7 @@ class DescribableTest extends RebetTestCase
     public $dest_b;
     public $dest_array;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->src      = new DescribableTest_MockA();

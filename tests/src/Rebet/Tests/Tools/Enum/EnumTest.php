@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Enum;
 
 use Rebet\Application\App;
@@ -13,7 +14,7 @@ class EnumTest extends RebetTestCase
     private $male;
     private $female;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         App::setLocale('ja');
@@ -123,7 +124,7 @@ class EnumTest extends RebetTestCase
                 Gender::MALE(),
                 Gender::FEMALE(),
             ],
-            Gender::lists()
+            Gender::lists(),
         );
 
         $this->assertSame(
@@ -132,7 +133,7 @@ class EnumTest extends RebetTestCase
                 EnumTest_AcceptStatus::ACCEPTED(),
                 EnumTest_AcceptStatus::REJECTED(),
             ],
-            EnumTest_AcceptStatus::lists()
+            EnumTest_AcceptStatus::lists(),
         );
     }
 
@@ -143,7 +144,7 @@ class EnumTest extends RebetTestCase
                 1 => Gender::MALE(),
                 2 => Gender::FEMALE(),
             ],
-            Gender::maps()
+            Gender::maps(),
         );
 
         $this->assertSame(
@@ -151,7 +152,7 @@ class EnumTest extends RebetTestCase
                 'Male'   => Gender::MALE(),
                 'Female' => Gender::FEMALE(),
             ],
-            Gender::maps('label')
+            Gender::maps('label'),
         );
 
         $this->assertSame(
@@ -159,7 +160,7 @@ class EnumTest extends RebetTestCase
                 '男性' => Gender::MALE(),
                 '女性' => Gender::FEMALE(),
             ],
-            Gender::maps('label', true)
+            Gender::maps('label', true),
         );
 
         $this->assertSame(
@@ -167,7 +168,7 @@ class EnumTest extends RebetTestCase
                 'Männlich' => Gender::MALE(),
                 'Weiblich' => Gender::FEMALE(),
             ],
-            Gender::maps('label', true, 'de')
+            Gender::maps('label', true, 'de'),
         );
 
         $this->assertSame(
@@ -176,7 +177,7 @@ class EnumTest extends RebetTestCase
                 'A' => EnumTest_AcceptStatus::ACCEPTED(),
                 'R' => EnumTest_AcceptStatus::REJECTED(),
             ],
-            EnumTest_AcceptStatus::maps()
+            EnumTest_AcceptStatus::maps(),
         );
     }
 
@@ -269,44 +270,44 @@ class EnumTest extends RebetTestCase
     {
         $this->assertSame(
             [1, 2],
-            Gender::listOf('value')
+            Gender::listOf('value'),
         );
 
         $this->assertSame(
             [2],
             Gender::listOf('value', function ($enum) {
                 return $enum->label === 'Female';
-            })
+            }),
         );
 
         $this->assertSame(
             ['MALE', 'FEMALE'],
-            Gender::listOf('name')
+            Gender::listOf('name'),
         );
 
         $this->assertSame(
             ['Male', 'Female'],
-            Gender::listOf('label')
+            Gender::listOf('label'),
         );
 
         $this->assertSame(
             ['男性', '女性'],
-            Gender::listOf('label', null, true)
+            Gender::listOf('label', null, true),
         );
 
         $this->assertSame(
             ['Männlich', 'Weiblich'],
-            Gender::listOf('label', null, true, 'de')
+            Gender::listOf('label', null, true, 'de'),
         );
 
         $this->assertSame(
             ['W', 'A', 'R'],
-            EnumTest_AcceptStatus::listOf('value')
+            EnumTest_AcceptStatus::listOf('value'),
         );
 
         $this->assertSame(
             ['orange', 'green', 'red'],
-            EnumTest_AcceptStatus::listOf('color')
+            EnumTest_AcceptStatus::listOf('color'),
         );
     }
 
@@ -322,19 +323,19 @@ class EnumTest extends RebetTestCase
     {
         $this->assertSame(
             [1, 2],
-            Gender::values()
+            Gender::values(),
         );
 
         $this->assertSame(
             [2],
             Gender::values(function ($enum) {
                 return $enum->label === 'Female';
-            })
+            }),
         );
 
         $this->assertSame(
             ['W', 'A', 'R'],
-            EnumTest_AcceptStatus::values()
+            EnumTest_AcceptStatus::values(),
         );
     }
 
@@ -342,29 +343,29 @@ class EnumTest extends RebetTestCase
     {
         $this->assertSame(
             ['Male', 'Female'],
-            Gender::labels()
+            Gender::labels(),
         );
 
         $this->assertSame(
             ['男性', '女性'],
-            Gender::labels(null, true)
+            Gender::labels(null, true),
         );
 
         $this->assertSame(
             ['Männlich', 'Weiblich'],
-            Gender::labels(null, true, 'de')
+            Gender::labels(null, true, 'de'),
         );
 
         $this->assertSame(
             ['Male'],
             Gender::labels(function ($enum) {
                 return $enum->value === 1;
-            })
+            }),
         );
 
         $this->assertSame(
             ['待機中', '受理', '却下'],
-            EnumTest_AcceptStatus::labels()
+            EnumTest_AcceptStatus::labels(),
         );
     }
 
@@ -372,12 +373,12 @@ class EnumTest extends RebetTestCase
     {
         $this->assertSame(
             ['MALE', 'FEMALE'],
-            Gender::names()
+            Gender::names(),
         );
 
         $this->assertSame(
             ['WAITING', 'ACCEPTED', 'REJECTED'],
-            EnumTest_AcceptStatus::names()
+            EnumTest_AcceptStatus::names(),
         );
     }
 
@@ -409,21 +410,21 @@ class EnumTest extends RebetTestCase
                 EnumTest_AcceptStatus::ACCEPTED(),
                 EnumTest_AcceptStatus::REJECTED(),
             ],
-            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::WAITING(), ['role' => 'operator'])
+            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::WAITING(), ['role' => 'operator']),
         );
 
         $this->assertSame(
             [
                 EnumTest_AcceptStatus::ACCEPTED(),
             ],
-            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'operator'])
+            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'operator']),
         );
 
         $this->assertSame(
             [
                 EnumTest_AcceptStatus::REJECTED(),
             ],
-            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::REJECTED(), ['role' => 'operator'])
+            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::REJECTED(), ['role' => 'operator']),
         );
 
         $this->assertSame(
@@ -432,7 +433,7 @@ class EnumTest extends RebetTestCase
                 EnumTest_AcceptStatus::ACCEPTED(),
                 EnumTest_AcceptStatus::REJECTED(),
             ],
-            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::WAITING(), ['role' => 'admin'])
+            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::WAITING(), ['role' => 'admin']),
         );
 
         $this->assertSame(
@@ -441,7 +442,7 @@ class EnumTest extends RebetTestCase
                 EnumTest_AcceptStatus::ACCEPTED(),
                 EnumTest_AcceptStatus::REJECTED(),
             ],
-            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin'])
+            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin']),
         );
 
         $this->assertSame(
@@ -450,7 +451,7 @@ class EnumTest extends RebetTestCase
                 EnumTest_AcceptStatus::ACCEPTED(),
                 EnumTest_AcceptStatus::REJECTED(),
             ],
-            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::REJECTED(), ['role' => 'admin'])
+            EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::REJECTED(), ['role' => 'admin']),
         );
     }
 
@@ -458,32 +459,32 @@ class EnumTest extends RebetTestCase
     {
         $this->assertSame(
             ['W', 'A', 'R'],
-            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::WAITING(), ['role' => 'operator'])
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::WAITING(), ['role' => 'operator']),
         );
 
         $this->assertSame(
             ['A'],
-            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'operator'])
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'operator']),
         );
 
         $this->assertSame(
             ['R'],
-            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::REJECTED(), ['role' => 'operator'])
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::REJECTED(), ['role' => 'operator']),
         );
 
         $this->assertSame(
             ['W', 'A', 'R'],
-            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::WAITING(), ['role' => 'admin'])
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::WAITING(), ['role' => 'admin']),
         );
 
         $this->assertSame(
             ['W', 'A', 'R'],
-            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin'])
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin']),
         );
 
         $this->assertSame(
             ['W', 'A', 'R'],
-            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::REJECTED(), ['role' => 'admin'])
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::REJECTED(), ['role' => 'admin']),
         );
     }
 
@@ -499,17 +500,17 @@ class EnumTest extends RebetTestCase
     {
         $this->assertSame(
             ['W', 'A', 'R'],
-            EnumTest_AcceptStatus::nextValues(EnumTest_AcceptStatus::WAITING(), ['role' => 'operator'])
+            EnumTest_AcceptStatus::nextValues(EnumTest_AcceptStatus::WAITING(), ['role' => 'operator']),
         );
 
         $this->assertSame(
             ['A'],
-            EnumTest_AcceptStatus::nextValues(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'operator'])
+            EnumTest_AcceptStatus::nextValues(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'operator']),
         );
 
         $this->assertSame(
             ['W', 'A', 'R'],
-            EnumTest_AcceptStatus::nextValues(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin'])
+            EnumTest_AcceptStatus::nextValues(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin']),
         );
     }
 
@@ -517,26 +518,26 @@ class EnumTest extends RebetTestCase
     {
         $this->assertSame(
             ['待機中', '受理', '却下'],
-            EnumTest_AcceptStatus::nextLabels(EnumTest_AcceptStatus::WAITING(), ['role' => 'operator'])
+            EnumTest_AcceptStatus::nextLabels(EnumTest_AcceptStatus::WAITING(), ['role' => 'operator']),
         );
 
         $this->assertSame(
             ['受理'],
-            EnumTest_AcceptStatus::nextLabels(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'operator'])
+            EnumTest_AcceptStatus::nextLabels(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'operator']),
         );
 
         $this->assertSame(
             ['待機中', '受理', '却下'],
-            EnumTest_AcceptStatus::nextLabels(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin'])
+            EnumTest_AcceptStatus::nextLabels(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin']),
         );
     }
 }
 
 class EnumTest_AcceptStatus extends Enum
 {
-    const WAITING  = ['W', '待機中', 'orange', 'far fa-clock'];
-    const ACCEPTED = ['A', '受理', 'green', 'fas fa-check-circle'];
-    const REJECTED = ['R', '却下', 'red', 'fas fa-times-circle'];
+    public const WAITING  = ['W', '待機中', 'orange', 'far fa-clock'];
+    public const ACCEPTED = ['A', '受理', 'green', 'fas fa-check-circle'];
+    public const REJECTED = ['R', '却下', 'red', 'fas fa-times-circle'];
 
     public $color;
     public $icon;
@@ -548,7 +549,7 @@ class EnumTest_AcceptStatus extends Enum
         $this->icon  = $icon;
     }
 
-    public static function nexts($current, array|null $context = null) : array
+    public static function nexts($current, array|null $context = null): array
     {
         switch ($context['role']) {
             case 'operator':
@@ -567,13 +568,13 @@ class EnumTest_AcceptStatus extends Enum
 }
 class EnumTest_Ratio extends Enum
 {
-    const FULL    = [1.0, '100%'];
-    const HARF    = [0.5, '50%'];
-    const QUARTER = [0.25, '25%'];
+    public const FULL    = [1.0, '100%'];
+    public const HARF    = [0.5, '50%'];
+    public const QUARTER = [0.25, '25%'];
 }
 class EnumTest_Code extends Enum
 {
-    const NO_1 = ['01', 'No. 1'];
-    const NO_2 = ['02', 'No. 2'];
-    const NO_3 = ['03', 'No. 3'];
+    public const NO_1 = ['01', 'No. 1'];
+    public const NO_2 = ['02', 'No. 2'];
+    public const NO_3 = ['03', 'No. 3'];
 }

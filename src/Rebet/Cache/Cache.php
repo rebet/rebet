@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Cache;
@@ -93,16 +94,14 @@ class Cache
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Crear the All Cache store instance.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function clear(): void
     {
         static::$stores = [];
     }
@@ -113,9 +112,9 @@ class Cache
      * @param  string $name when the null given return the default cache store (default: null)
      * @return Store
      */
-    public static function store(string|null $name = null) : Store
+    public static function store(string|null $name = null): Store
     {
-        $name = $name ?? static::config('default_store');
+        $name ??= static::config('default_store');
         return static::$stores[$name]
             ?? static::$stores[$name] = new Store($name, static::configInstantiate("stores.{$name}.adapter"))
         ;

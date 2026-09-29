@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Filesystem;
@@ -79,7 +80,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function driver() : FilesystemOperator
+    public function driver(): FilesystemOperator
     {
         return $this->driver;
     }
@@ -87,7 +88,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function adapter() : FilesystemAdapter
+    public function adapter(): FilesystemAdapter
     {
         return $this->adapter;
     }
@@ -95,7 +96,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function exists(string $path) : bool
+    public function exists(string $path): bool
     {
         return $this->driver->has($path);
     }
@@ -103,7 +104,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function isFile(string $path) : bool
+    public function isFile(string $path): bool
     {
         return $this->driver->fileExists($path);
     }
@@ -111,7 +112,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function isDirectory(string $path) : bool
+    public function isDirectory(string $path): bool
     {
         return $this->driver->directoryExists($path);
     }
@@ -119,7 +120,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function path(string $path = '/') : string
+    public function path(string $path = '/'): string
     {
         $prefixer = Reflector::get($this->adapter, 'prefixer', null, true);
         if ($prefixer === null) {
@@ -134,7 +135,7 @@ class BuiltinFilesystem implements Filesystem
      * @param  \Exception          $e
      * @return FilesystemException
      */
-    protected function convertException(\Exception $e) : FilesystemException
+    protected function convertException(\Exception $e): FilesystemException
     {
         return $e instanceof FilesystemException ? $e : new FilesystemException($e->getMessage(), $e) ;
     }
@@ -146,7 +147,7 @@ class BuiltinFilesystem implements Filesystem
      * @return void
      * @throws FileNotFoundException
      */
-    protected function assertExists(string $path) : void
+    protected function assertExists(string $path): void
     {
         if (!$this->exists($path)) {
             throw new FileNotFoundException("File not found at path: {$path}");
@@ -156,7 +157,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function get(string $path) : string
+    public function get(string $path): string
     {
         if (!$this->driver->fileExists($path)) {
             throw new FileNotFoundException("File not found at path: {$path}");
@@ -171,7 +172,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function put(string $path, $contents, $options = []) : string
+    public function put(string $path, $contents, $options = []): string
     {
         $options = is_string($options) ? ['visibility' => $options] : (array) $options ;
         $stream  = null;
@@ -204,7 +205,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function putFile(string $path, $file, $options = []) : string
+    public function putFile(string $path, $file, $options = []): string
     {
         return $this->put($path, is_string($file) ? new \SplFileInfo($file) : $file, $options);
     }
@@ -212,7 +213,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function getVisibility(string $path) : string
+    public function getVisibility(string $path): string
     {
         try {
             return $this->driver->visibility($path);
@@ -224,7 +225,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function setVisibility(string $path, string $visibility) : Filesystem
+    public function setVisibility(string $path, string $visibility): Filesystem
     {
         $this->assertExists($path);
         try {
@@ -238,25 +239,25 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function prepend(string $path, string $data, string $separator = "\n") : Filesystem
+    public function prepend(string $path, string $data, string $separator = "\n"): Filesystem
     {
-        $this->exists($path) ? $this->put($path, $data.$separator.$this->get($path)) : $this->put($path, $data) ;
+        $this->exists($path) ? $this->put($path, $data . $separator . $this->get($path)) : $this->put($path, $data) ;
         return $this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function append(string $path, string $data, string $separator = "\n") : Filesystem
+    public function append(string $path, string $data, string $separator = "\n"): Filesystem
     {
-        $this->exists($path) ? $this->put($path, $this->get($path).$separator.$data) : $this->put($path, $data) ;
+        $this->exists($path) ? $this->put($path, $this->get($path) . $separator . $data) : $this->put($path, $data) ;
         return $this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function delete(string ...$paths) : Filesystem
+    public function delete(string ...$paths): Filesystem
     {
         foreach ($paths as $path) {
             try {
@@ -275,7 +276,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function clean(string $directory = '/') : Filesystem
+    public function clean(string $directory = '/'): Filesystem
     {
         return $this->delete(...$this->ls($directory));
     }
@@ -283,7 +284,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function copy(string $from, string $to, bool $replace = false) : Filesystem
+    public function copy(string $from, string $to, bool $replace = false): Filesystem
     {
         $this->assertExists($from);
         try {
@@ -295,7 +296,7 @@ class BuiltinFilesystem implements Filesystem
                     throw new FilesystemException("Can not copy from `{$from}` to `{$to}`. `{$to}` directory already exists.");
                 }
                 foreach ($this->ls($from, '*', null, true) as $content) {
-                    $path = $to.'/'.Strings::ltrim($content, Strings::ltrim($from, '/'));
+                    $path = $to . '/' . Strings::ltrim($content, Strings::ltrim($from, '/'));
                     if ($this->isDirectory($content)) {
                         $this->mkdir($path);
                     } else {
@@ -317,7 +318,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function move(string $from, string $to, bool $replace = false) : Filesystem
+    public function move(string $from, string $to, bool $replace = false): Filesystem
     {
         $this->assertExists($from);
         try {
@@ -336,7 +337,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function size(string $path) : int
+    public function size(string $path): int
     {
         $this->assertExists($path);
         try {
@@ -349,7 +350,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function metadata(string $path) : array
+    public function metadata(string $path): array
     {
         $this->assertExists($path);
         try {
@@ -368,7 +369,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function mimeType(string $path) : string|null
+    public function mimeType(string $path): string|null
     {
         $this->assertExists($path);
         try {
@@ -384,7 +385,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function lastModified(string $path) : DateTime
+    public function lastModified(string $path): DateTime
     {
         $this->assertExists($path);
         try {
@@ -397,7 +398,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function url(string $path) : string
+    public function url(string $path): string
     {
         if ($this->getVisibility($path) !== Filesystem::VISIBILITY_PUBLIC) {
             throw new FileNotFoundException("{$path} is not public.");
@@ -409,7 +410,7 @@ class BuiltinFilesystem implements Filesystem
         }
         if ($adapter instanceof PublicUrlGenerator) {
             $url = $this->config['url'] ?? null;
-            return $url ? Path::normalize($url.'/'.$path) : $this->driver->publicUrl($path);
+            return $url ? Path::normalize($url . '/' . $path) : $this->driver->publicUrl($path);
         }
         if ($adapter instanceof LocalFilesystemAdapter) {
             $url = $this->config['url'] ?? null;
@@ -434,7 +435,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function ls(string|null $directory = null, $pattern = '*', string|null $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
+    public function ls(string|null $directory = null, $pattern = '*', string|null $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD): array
     {
         try {
             $contents = [];
@@ -451,7 +452,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function files(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
+    public function files(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD): array
     {
         return $this->ls($directory, $pattern, 'file', $recursive, $matching_mode);
     }
@@ -459,7 +460,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function directories(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
+    public function directories(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD): array
     {
         return $this->ls($directory, $pattern, 'dir', $recursive, $matching_mode);
     }
@@ -473,7 +474,7 @@ class BuiltinFilesystem implements Filesystem
      * @param  string                                        $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
      * @return array<int, string>                            of matching paths
      */
-    protected function filter(array $lists, string|null $type = null, $pattern = '*', string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
+    protected function filter(array $lists, string|null $type = null, $pattern = '*', string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD): array
     {
         return Tinker::with($lists, true)
             ->where(function ($content) use ($type) { return $type === null ? true : $content['type'] === $type; })
@@ -489,7 +490,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function mkdir(string $path, array $config = []) : Filesystem
+    public function mkdir(string $path, array $config = []): Filesystem
     {
         try {
             $this->driver->createDirectory($path, $config);

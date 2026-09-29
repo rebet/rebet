@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Different;
 
 use Rebet\Routing\Attribute\Channel;

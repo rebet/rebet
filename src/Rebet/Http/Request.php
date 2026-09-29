@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http;
@@ -66,7 +67,7 @@ class Request extends SymfonyRequest
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         static::$current = null;
     }
@@ -76,7 +77,7 @@ class Request extends SymfonyRequest
      *
      * @return Request|null
      */
-    public static function current() : Request|null
+    public static function current(): Request|null
     {
         return static::$current;
     }
@@ -90,7 +91,7 @@ class Request extends SymfonyRequest
      * @param  bool                                                                                                  $accept_undefined (default: false)
      * @return ValidData
      */
-    public function validate(string $crud, $rules, string $fallback_url, bool $accept_undefined = false) : ValidData
+    public function validate(string $crud, $rules, string $fallback_url, bool $accept_undefined = false): ValidData
     {
         $validator  = new Validator($this->all());
         $valid_data = $validator->validate($crud, $rules, $accept_undefined);
@@ -149,7 +150,7 @@ class Request extends SymfonyRequest
      * @param array<string, mixed>     $server     The SERVER parameters
      * @param string|resource|null     $content    The raw body data
      */
-    public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null) : void
+    public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null): void
     {
         parent::initialize($query, $request, $attributes, $cookies, $files, $server, $content);
         $this->files = new FileBag($this->files->all());
@@ -165,7 +166,7 @@ class Request extends SymfonyRequest
      * @param array<int|string, mixed>|null $files      The FILES parameters
      * @param array<string, mixed>|null     $server     The SERVER parameters
      */
-    public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null) : static
+    public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null): static
     {
         $duplicate = parent::duplicate($query, $request, $attributes, $cookies, $files, $server);
         if ($files !== null) {
@@ -182,7 +183,7 @@ class Request extends SymfonyRequest
      * @deprecated Not unspported in Rebet.
      * @throws \BadMethodCallException when the method was called.
      */
-    public function getSession() : SessionInterface
+    public function getSession(): SessionInterface
     {
         throw new \BadMethodCallException("Request::getSession() method is unspported in Rebet. You can use Request::session() method to get the session instead.");
     }
@@ -195,7 +196,7 @@ class Request extends SymfonyRequest
      * @deprecated Not unspported in Rebet.
      * @throws \BadMethodCallException when the method was called.
      */
-    public function setSession(SessionInterface $session) : void
+    public function setSession(SessionInterface $session): void
     {
         throw new \BadMethodCallException("Request::setSession() method is unspported in Rebet. You can use Request::session() method to set the session instead.");
     }
@@ -208,7 +209,7 @@ class Request extends SymfonyRequest
      * @deprecated Not unspported in Rebet.
      * @throws \BadMethodCallException when the method was called.
      */
-    public function setSessionFactory(callable $factory) : void
+    public function setSessionFactory(callable $factory): void
     {
         throw new \BadMethodCallException("Request::setSessionFactory() method is unspported in Rebet. You can use Request::session() method to set the session factory instead.");
     }
@@ -256,7 +257,7 @@ class Request extends SymfonyRequest
      * @param  bool   $withoutPrefix (default: false)
      * @return string
      */
-    public function getRequestPath(bool $withoutPrefix = false) : string
+    public function getRequestPath(bool $withoutPrefix = false): string
     {
         $request_path = Strings::latrim($this->getRequestUri(), '?');
         return $withoutPrefix ? Strings::ltrim($request_path, $this->getRoutePrefix(), 1) : $request_path ;
@@ -269,7 +270,7 @@ class Request extends SymfonyRequest
      * @return string
      * @throws LogicException
      */
-    public function getRoutePrefix() : string
+    public function getRoutePrefix(): string
     {
         if (!$this->route) {
             return Router::getPrefixFrom($this->getRequestPath()) ?? '';
@@ -282,7 +283,7 @@ class Request extends SymfonyRequest
      *
      * @return UserAgent
      */
-    public function getUserAgent() : UserAgent
+    public function getUserAgent(): UserAgent
     {
         return UserAgent::valueOf($this->headers->get('User-Agent')) ;
     }
@@ -294,7 +295,7 @@ class Request extends SymfonyRequest
      * @param  string $name
      * @return self
      */
-    public function saveAs(string $name) : self
+    public function saveAs(string $name): self
     {
         $this->session()->flash()->set("_request_{$name}", [
             'uri'   => $this->getRequestUri(),
@@ -309,7 +310,7 @@ class Request extends SymfonyRequest
      * @param  string  $name
      * @return boolean
      */
-    public function isSaved(string $name) : bool
+    public function isSaved(string $name): bool
     {
         return $this->session()->flash()->has("_request_{$name}") ;
     }
@@ -323,11 +324,11 @@ class Request extends SymfonyRequest
      * @param  array<string, string|array<int, string>> $headers
      * @return RedirectResponse|null
      */
-    public function replay(string $name, array $append_query = [], int $status = 302, array $headers = []) : RedirectResponse|null
+    public function replay(string $name, array $append_query = [], int $status = 302, array $headers = []): RedirectResponse|null
     {
         if ($this->isSaved($name)) {
             $saved = $this->session()->flash()->get("_request_{$name}");
-            return Responder::redirect('@'.$saved['uri'], $append_query, $status, $headers, $this)->with($saved['input'] ?? []);
+            return Responder::redirect('@' . $saved['uri'], $append_query, $status, $headers, $this)->with($saved['input'] ?? []);
         }
         return null;
     }
@@ -338,7 +339,7 @@ class Request extends SymfonyRequest
      * @see RestoreRedirectInput middleware
      * @return self
      */
-    public function restoreInheritData() : self
+    public function restoreInheritData(): self
     {
         $request_path = $this->getRequestPath(true);
         $session      = $this->session();
@@ -353,7 +354,7 @@ class Request extends SymfonyRequest
      * @param  string|array<int, string> $wildcard of request path (default: '*')
      * @return self
      */
-    public function inheritInputTo($wildcard = '*') : self
+    public function inheritInputTo($wildcard = '*'): self
     {
         $this->session()->saveInheritData('input', $this->input(), $wildcard);
         return $this;
@@ -364,7 +365,7 @@ class Request extends SymfonyRequest
      *
      * @return bool
      */
-    public function expectsJson() : bool
+    public function expectsJson(): bool
     {
         return ($this->isAjax() && ! $this->isPjax() && $this->acceptsAnyContentType()) || $this->wantsJson();
     }
@@ -432,7 +433,7 @@ class Request extends SymfonyRequest
      * @param  boolean                   $replace (default: true)
      * @return self
      */
-    public function setHeader(string $key, $values, bool $replace = true) : self
+    public function setHeader(string $key, $values, bool $replace = true): self
     {
         $this->headers->set($key, $values, $replace);
         return $this;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests;
 
 use Rebet\Database\Dao;
@@ -15,25 +16,25 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
 {
     use DatabaseTestHelper;
 
-    public static function tearDownAfterClass() : void
+    public static function tearDownAfterClass(): void
     {
         static::tearDownDatabase();
         parent::tearDownAfterClass();
     }
 
-    protected static function setUpStatic() : void
+    protected static function setUpStatic(): void
     {
         parent::setUpStatic();
         Config::application([
             Dao::class => [
                 'default_db' => 'sqlite',
                 'dbs='       => [
-                    'sqlite' => [
+                    'sqlite'  => [
                         'dsn'   => 'sqlite:/tmp/sqlite/rebet.db',
                         'debug' => true,
                     ],
 
-                    'mysql' => [
+                    'mysql'   => [
                         'dsn'      => 'mysql:host=mysql;dbname=rebet;charset=utf8mb4',
                         'user'     => 'rebet',
                         'password' => 'rebet',
@@ -49,7 +50,7 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'debug'    => true,
                     ],
 
-                    'pgsql' => [
+                    'pgsql'   => [
                         'dsn'      => "pgsql:host=pgsql;dbname=rebet;options='--client_encoding=UTF8'",
                         'user'     => 'rebet',
                         'password' => 'rebet',
@@ -64,7 +65,7 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
         static::setUpDatabase();
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         self::setUpStatic();
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -18,9 +19,7 @@ class Json
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get the json serialize value.
@@ -38,7 +37,7 @@ class Json
             case is_array($value):
                 return array_map(function ($v) { return Json::serialize($v); }, $value);
             case $value instanceof stdClass:
-                return array_map(function ($v) { return Json::serialize($v); }, (array)$value);
+                return array_map(function ($v) { return Json::serialize($v); }, (array) $value);
             case is_object($value) && method_exists($value, 'toArray'):
                 return array_map(function ($v) { return Json::serialize($v); }, $value->toArray());
             case is_iterable($value):
@@ -55,7 +54,7 @@ class Json
      * @param  mixed  ...$values
      * @return string
      */
-    public static function digest(string $algorithm, ...$values) : string
+    public static function digest(string $algorithm, ...$values): string
     {
         return hash($algorithm, json_encode(static::serialize($values)));
     }

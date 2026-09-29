@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing;
@@ -54,7 +55,7 @@ class Router
      *
      * @return string
      */
-    public static function getCurrentChannel() : string
+    public static function getCurrentChannel(): string
     {
         return self::config('current_channel');
     }
@@ -64,7 +65,7 @@ class Router
      *
      * @param string $current_channel
      */
-    public static function setCurrentChannel(string $current_channel) : void
+    public static function setCurrentChannel(string $current_channel): void
     {
         self::setConfig(['current_channel' => $current_channel]);
     }
@@ -123,7 +124,7 @@ class Router
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         static::$routing_tree  = [];
         static::$current       = null;
@@ -143,7 +144,7 @@ class Router
      * @param  callable|string $action
      * @return Route
      */
-    public static function get(string $uri, $action) : Route
+    public static function get(string $uri, $action): Route
     {
         return static::match(['GET', 'HEAD'], $uri, $action);
     }
@@ -157,7 +158,7 @@ class Router
      * @param  callable|string $action
      * @return Route
      */
-    public static function post(string $uri, $action) : Route
+    public static function post(string $uri, $action): Route
     {
         return static::match('POST', $uri, $action);
     }
@@ -171,7 +172,7 @@ class Router
      * @param  callable|string $action
      * @return Route
      */
-    public static function put(string $uri, $action) : Route
+    public static function put(string $uri, $action): Route
     {
         return static::match('PUT', $uri, $action);
     }
@@ -185,7 +186,7 @@ class Router
      * @param  callable|string $action
      * @return Route
      */
-    public static function patch(string $uri, $action) : Route
+    public static function patch(string $uri, $action): Route
     {
         return static::match('PATCH', $uri, $action);
     }
@@ -199,7 +200,7 @@ class Router
      * @param  callable|string $action
      * @return Route
      */
-    public static function delete(string $uri, $action) : Route
+    public static function delete(string $uri, $action): Route
     {
         return static::match('DELETE', $uri, $action);
     }
@@ -213,7 +214,7 @@ class Router
      * @param  callable|string $action
      * @return Route
      */
-    public static function options(string $uri, $action) : Route
+    public static function options(string $uri, $action): Route
     {
         return static::match('OPTIONS', $uri, $action);
     }
@@ -227,7 +228,7 @@ class Router
      * @param  callable|string $action
      * @return Route
      */
-    public static function any(string $uri, $action) : Route
+    public static function any(string $uri, $action): Route
     {
         return static::match([], $uri, $action);
     }
@@ -243,10 +244,10 @@ class Router
      * @param  string|callable           $action  can be use @ namespace alias
      * @return Route
      */
-    public static function match($methods, string $uri, $action) : Route
+    public static function match($methods, string $uri, $action): Route
     {
         $route   = null;
-        $methods = array_map('strtoupper', (array)$methods);
+        $methods = array_map('strtoupper', (array) $methods);
         if (is_string($action) && Strings::contains($action, '::')) {
             $route = new MethodRoute($methods, $uri, $action);
         } elseif (is_callable($action)) {
@@ -271,7 +272,7 @@ class Router
      * @param  string $controller
      * @return Route
      */
-    public static function controller(string $uri, string $controller) : Route
+    public static function controller(string $uri, string $controller): Route
     {
         return static::addRoute(new ControllerRoute($uri, $controller));
     }
@@ -288,7 +289,7 @@ class Router
      * @param  integer              $status      (deafult: 302)
      * @return Route
      */
-    public static function redirect(string $uri, string $destination, array $query = [], int $status = 302) : Route
+    public static function redirect(string $uri, string $destination, array $query = [], int $status = 302): Route
     {
         return static::addRoute(new RedirectRoute($uri, $destination, $query, $status));
     }
@@ -303,7 +304,7 @@ class Router
      * @param  array<string, mixed> $args (default: [])
      * @return Route
      */
-    public static function view(string $uri, string $name, array $args = []) : Route
+    public static function view(string $uri, string $name, array $args = []): Route
     {
         return static::addRoute(new ViewRoute($uri, $name, $args));
     }
@@ -315,13 +316,13 @@ class Router
      * @param  Route $route
      * @return Route given route
      */
-    protected static function addRoute(Route $route) : Route
+    protected static function addRoute(Route $route): Route
     {
         if (!static::$rules) {
             throw new LogicException("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
         static::applyRulesTo($route);
-        self::digging(static::$routing_tree, explode('/', Strings::latrim($route->prefix.$route->uri, '{')), $route);
+        self::digging(static::$routing_tree, explode('/', Strings::latrim($route->prefix . $route->uri, '{')), $route);
         return $route;
     }
 
@@ -333,7 +334,7 @@ class Router
      * @param  Route                $route
      * @return void
      */
-    private static function digging(array &$tree, array $nests, Route $route) : void
+    private static function digging(array &$tree, array $nests, Route $route): void
     {
         if (empty($nests)) {
             if (!isset($tree[':routes:'])) {
@@ -360,7 +361,7 @@ class Router
      * @param  mixed $route Route object or instantiatable setting that can generate route
      * @return Route
      */
-    public static function default($route) : Route
+    public static function default($route): Route
     {
         if (!static::$rules) {
             throw new LogicException("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
@@ -377,7 +378,7 @@ class Router
      * @param  Route $route
      * @return void
      */
-    protected static function applyRulesTo(Route &$route) : void
+    protected static function applyRulesTo(Route &$route): void
     {
         $route->prefix = static::$rules->prefix;
 
@@ -396,15 +397,15 @@ class Router
      * @param  Request  $request
      * @return Response
      */
-    public static function handle(Request $request) : Response
+    public static function handle(Request $request): Response
     {
         $route = null;
         try {
             $route            = static::findRoute($request);
             static::$current  = $route;
             static::$pipeline = (new Pipeline())->through(array_merge(
-                static::config('middlewares.'.static::getCurrentChannel(), false, []),
-                $route->middlewares()
+                static::config('middlewares.' . static::getCurrentChannel(), false, []),
+                $route->middlewares(),
             ))->then($route);
             return static::$pipeline->send($request);
         } catch (\Throwable $e) {
@@ -419,7 +420,7 @@ class Router
      * @param  \Throwable $e
      * @return Response
      */
-    protected static function handleFallback(Request $request, \Throwable $e) : Response
+    protected static function handleFallback(Request $request, \Throwable $e): Response
     {
         if (empty(static::$fallback)) {
             return static::handleDefaultFallback($request, $e);
@@ -450,7 +451,7 @@ class Router
      * @param  \Throwable $e
      * @return Response
      */
-    protected static function handleDefaultFallback(Request $request, \Throwable $e) : Response
+    protected static function handleDefaultFallback(Request $request, \Throwable $e): Response
     {
         $fallback = static::config('default_fallback_handler', false);
         if ($fallback) {
@@ -466,7 +467,7 @@ class Router
      * @param  Request $request
      * @return Route
      */
-    protected static function findRoute(Request $request) : Route
+    protected static function findRoute(Request $request): Route
     {
         $request_uri  = $request->getRequestPath();
         $paths        = explode('/', $request_uri);
@@ -516,7 +517,7 @@ class Router
      * @param  Response $response
      * @return void
      */
-    public static function terminate(Request $request, Response $response) : void
+    public static function terminate(Request $request, Response $response): void
     {
         if (static::$pipeline !== null) {
             static::$pipeline->invoke('terminate', $request, $response);
@@ -532,7 +533,7 @@ class Router
      *
      * @return Route|null
      */
-    public static function current() : Route|null
+    public static function current(): Route|null
     {
         return static::$current;
     }
@@ -543,7 +544,7 @@ class Router
      * @param  string      $request_path
      * @return string|null
      */
-    public static function getPrefixFrom(string $request_path) : string|null
+    public static function getPrefixFrom(string $request_path): string|null
     {
         foreach (static::$prefixes as $prefix) {
             if (Strings::startsWith($request_path, "{$prefix}/") || $request_path === $prefix) {
@@ -559,7 +560,7 @@ class Router
      * @param  string $prefix
      * @return string return the given prefix as it is.
      */
-    public static function activatePrefix(string $prefix) : string
+    public static function activatePrefix(string $prefix): string
     {
         if (empty($prefix)) {
             return $prefix;
@@ -623,7 +624,7 @@ class Router
      *
      * @return boolean
      */
-    protected function skip() : bool
+    protected function skip(): bool
     {
         return $this->channel !== static::getCurrentChannel();
     }
@@ -634,7 +635,7 @@ class Router
      * @param  string $channel
      * @return static
      */
-    public static function rules(string $channel) : static
+    public static function rules(string $channel): static
     {
         return new static($channel);
     }
@@ -646,7 +647,7 @@ class Router
      * @param  string $prefix
      * @return self
      */
-    public function prefix(string $prefix) : self
+    public function prefix(string $prefix): self
     {
         $this->prefix = static::activatePrefix(Path::normalize($prefix));
         return $this;
@@ -658,7 +659,7 @@ class Router
      * @param  string ...$middlewares
      * @return self
      */
-    public function middlewares(...$middlewares) : self
+    public function middlewares(...$middlewares): self
     {
         $this->middlewares = $middlewares;
         return $this;
@@ -670,7 +671,7 @@ class Router
      * @param  string ...$roles
      * @return self
      */
-    public function roles(...$roles) : self
+    public function roles(...$roles): self
     {
         $this->roles = $roles;
         return $this;
@@ -682,7 +683,7 @@ class Router
      * @param  string $name of guard
      * @return self
      */
-    public function guard(string $name) : self
+    public function guard(string $name): self
     {
         $this->guard = $name;
         return $this;
@@ -694,7 +695,7 @@ class Router
      * @param  callable $callback function():void
      * @return self
      */
-    public function routing(callable $callback) : self
+    public function routing(callable $callback): self
     {
         if ($this->skip()) {
             return $this;
@@ -713,7 +714,7 @@ class Router
      * @param  callable $action function(Request $request, ?Route $route, \Throwable $e) { ... }
      * @return self
      */
-    public function fallback(callable $action) : self
+    public function fallback(callable $action): self
     {
         if ($this->skip()) {
             return $this;

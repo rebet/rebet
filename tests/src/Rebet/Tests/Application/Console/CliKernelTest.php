@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\Console;
 
 use Rebet\Application\App;
@@ -19,7 +20,7 @@ class CliKernelTest extends RebetTestCase
     /** @var BufferedOutput */
     protected $output;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         // Avoid Symfony\Component\Console\Terminal shelling out to `stty` for terminal dimensions
@@ -37,7 +38,7 @@ class CliKernelTest extends RebetTestCase
         $this->kernel->assistant()->setAutoExit(false);
     }
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         // bootstrap() -> HandleExceptions pushes another error/exception handler onto the global
         // stack on top of the one from the ambient AppWebKernel bootstrap; pop this test's layer

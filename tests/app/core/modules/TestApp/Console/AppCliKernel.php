@@ -15,7 +15,7 @@ use Rebet\Application\Console\CliKernel;
  */
 class AppCliKernel extends CliKernel
 {
-    public function bootstrap() : void
+    public function bootstrap(): void
     {
         parent::bootstrap();
     }
@@ -23,7 +23,7 @@ class AppCliKernel extends CliKernel
     /**
      * {@inheritDoc}
      */
-    protected function bootstrappers() : array
+    protected function bootstrappers(): array
     {
         return [
             LoadEnvironmentVariables::class,
@@ -35,7 +35,7 @@ class AppCliKernel extends CliKernel
         ];
     }
 
-    public function exceptionHandler() : AppCliExceptionHandler
+    public function exceptionHandler(): AppCliExceptionHandler
     {
         return new AppCliExceptionHandler($this->output);
     }

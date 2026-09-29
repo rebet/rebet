@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\DateTime;
@@ -28,13 +29,13 @@ class DayOfWeek extends Enum
 {
     protected const TRANSLATION_GROUP = 'datetime';
 
-    const SUNDAY    = [0, 'Sunday'   , 'Sun', 'Su'];
-    const MONDAY    = [1, 'Monday'   , 'Mon', 'Mo'];
-    const TUESDAY   = [2, 'Tuesday'  , 'Tue', 'Tu'];
-    const WEDNESDAY = [3, 'Wednesday', 'Wed', 'We'];
-    const THURSDAY  = [4, 'Thursday' , 'Thu', 'Th'];
-    const FRIDAY    = [5, 'Friday'   , 'Fri', 'Fr'];
-    const SATURDAY  = [6, 'Saturday' , 'Sat', 'Sa'];
+    public const SUNDAY    = [0, 'Sunday', 'Sun', 'Su'];
+    public const MONDAY    = [1, 'Monday', 'Mon', 'Mo'];
+    public const TUESDAY   = [2, 'Tuesday', 'Tue', 'Tu'];
+    public const WEDNESDAY = [3, 'Wednesday', 'Wed', 'We'];
+    public const THURSDAY  = [4, 'Thursday', 'Thu', 'Th'];
+    public const FRIDAY    = [5, 'Friday', 'Fri', 'Fr'];
+    public const SATURDAY  = [6, 'Saturday', 'Sat', 'Sa'];
 
     /**
      * @var string of short day of week label
@@ -66,7 +67,7 @@ class DayOfWeek extends Enum
      *
      * @return boolean
      */
-    public function isWeekends() : bool
+    public function isWeekends(): bool
     {
         return $this->in(static::SUNDAY(), static::SATURDAY());
     }
@@ -76,7 +77,7 @@ class DayOfWeek extends Enum
      *
      * @return boolean
      */
-    public function isWeekdays() : bool
+    public function isWeekdays(): bool
     {
         return !$this->isWeekends();
     }
@@ -86,7 +87,7 @@ class DayOfWeek extends Enum
      *
      * @return boolean
      */
-    public function isSunday() : bool
+    public function isSunday(): bool
     {
         return $this->equals(static::SUNDAY()) ;
     }
@@ -96,7 +97,7 @@ class DayOfWeek extends Enum
      *
      * @return boolean
      */
-    public function isMonday() : bool
+    public function isMonday(): bool
     {
         return $this->equals(static::MONDAY()) ;
     }
@@ -106,7 +107,7 @@ class DayOfWeek extends Enum
      *
      * @return boolean
      */
-    public function isTuesday() : bool
+    public function isTuesday(): bool
     {
         return $this->equals(static::TUESDAY()) ;
     }
@@ -116,7 +117,7 @@ class DayOfWeek extends Enum
      *
      * @return boolean
      */
-    public function isWednesday() : bool
+    public function isWednesday(): bool
     {
         return $this->equals(static::WEDNESDAY()) ;
     }
@@ -126,7 +127,7 @@ class DayOfWeek extends Enum
      *
      * @return boolean
      */
-    public function isThursday() : bool
+    public function isThursday(): bool
     {
         return $this->equals(static::THURSDAY()) ;
     }
@@ -136,7 +137,7 @@ class DayOfWeek extends Enum
      *
      * @return boolean
      */
-    public function isFriday() : bool
+    public function isFriday(): bool
     {
         return $this->equals(static::FRIDAY()) ;
     }
@@ -146,7 +147,7 @@ class DayOfWeek extends Enum
      *
      * @return boolean
      */
-    public function isSaturday() : bool
+    public function isSaturday(): bool
     {
         return $this->equals(static::SATURDAY()) ;
     }
@@ -155,4 +156,4 @@ class DayOfWeek extends Enum
 // ---------------------------------------------------------
 // Add library default translation resource
 // ---------------------------------------------------------
-Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__.'/i18n'), 'datetime');
+Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__ . '/i18n'), 'datetime');

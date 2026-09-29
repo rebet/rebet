@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Validation;
@@ -22,7 +23,8 @@ use Rebet\Tools\Utility\Arrays;
 #[\AllowDynamicProperties]
 class ValidData implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
-    use Arrayable, Describable;
+    use Arrayable;
+    use Describable;
 
     /**
      * Valid data.
@@ -46,7 +48,7 @@ class ValidData implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
      *
      * @return array<int|string, mixed>
      */
-    protected function &container() : array
+    protected function &container(): array
     {
         return $this->data;
     }

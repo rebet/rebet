@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Cache\Adapter\Symfony;
@@ -39,11 +40,11 @@ class ApcuAdapter extends AbstractSymfonyAdapter
             new SymfonyApcuAdapter(
                 $namespace,
                 Unit::of(Unit::TIME)->convert($default_lifetime)->toInt(),
-                $version
+                $version,
             ),
             $taggable,
             $tags_pool,
-            $known_tag_versions_ttl
+            $known_tag_versions_ttl,
         );
     }
 

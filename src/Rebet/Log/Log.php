@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Log;
@@ -81,14 +82,14 @@ class Log
                         'level'    => LogLevel::DEBUG,
                     ],
                 ],
-                'test' => [
+                'test'   => [
                     'driver' => [
                         '@factory' => TestDriver::class,
                         'level'    => LogLevel::DEBUG,
                     ],
                 ],
             ],
-            'fallback_log' => defined('STDERR') ? STDERR : 'php://stderr',
+            'fallback_log'     => defined('STDERR') ? STDERR : 'php://stderr',
         ];
     }
 
@@ -102,16 +103,14 @@ class Log
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Reset the all channels.
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         static::$channels = [];
     }
@@ -122,7 +121,7 @@ class Log
      * @param  bool|null $is_unittest (default: null for get unittest mode or not)
      * @return bool
      */
-    public static function unittest(bool|null $is_unittest = null) : bool
+    public static function unittest(bool|null $is_unittest = null): bool
     {
         if ($is_unittest === null) {
             return static::config('unittest');
@@ -137,7 +136,7 @@ class Log
      * @param  string|null $channel name that configured in 'Log.channels'. (default: null for depend on configuration 'default_channel')
      * @return string
      */
-    protected static function adoptChannel(string|null $channel = null) : string
+    protected static function adoptChannel(string|null $channel = null): string
     {
         switch (true) {
             case static::unittest(): return static::config('unittest_channel');
@@ -151,7 +150,7 @@ class Log
      * @param  string $channel when the null given return the default channel logger (default: null)
      * @return Logger
      */
-    public static function channel(string|null $channel = null) : Logger
+    public static function channel(string|null $channel = null): Logger
     {
         $channel = static::adoptChannel($channel);
         if ($logger = static::$channels[$channel] ?? null) {
@@ -176,7 +175,7 @@ class Log
      * @param  string ...$channels
      * @return Logger
      */
-    public static function stack(string ...$channels) : Logger
+    public static function stack(string ...$channels): Logger
     {
         return new Logger(new StackDriver($channels));
     }
@@ -186,7 +185,7 @@ class Log
      *
      * @return Logger
      */
-    protected static function fallbackLogger() : Logger
+    protected static function fallbackLogger(): Logger
     {
         $handler = new StreamHandler(static::config('fallback_log', false, 'php://stderr'));
         $handler->setFormatter(new TextFormatter());
@@ -202,7 +201,7 @@ class Log
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public static function emergency($message, array $context = [], $exception = null) : void
+    public static function emergency($message, array $context = [], $exception = null): void
     {
         static::log(LogLevel::EMERGENCY, $message, $context, $exception);
     }
@@ -219,7 +218,7 @@ class Log
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public static function alert($message, array $context = [], $exception = null) : void
+    public static function alert($message, array $context = [], $exception = null): void
     {
         static::log(LogLevel::ALERT, $message, $context, $exception);
     }
@@ -235,7 +234,7 @@ class Log
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public static function critical($message, array $context = [], $exception = null) : void
+    public static function critical($message, array $context = [], $exception = null): void
     {
         static::log(LogLevel::CRITICAL, $message, $context, $exception);
     }
@@ -249,7 +248,7 @@ class Log
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public static function error($message, array $context = [], $exception = null) : void
+    public static function error($message, array $context = [], $exception = null): void
     {
         static::log(LogLevel::ERROR, $message, $context, $exception);
     }
@@ -266,7 +265,7 @@ class Log
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public static function warning($message, array $context = [], $exception = null) : void
+    public static function warning($message, array $context = [], $exception = null): void
     {
         static::log(LogLevel::WARNING, $message, $context, $exception);
     }
@@ -280,7 +279,7 @@ class Log
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public static function notice($message, array $context = [], $exception = null) : void
+    public static function notice($message, array $context = [], $exception = null): void
     {
         static::log(LogLevel::NOTICE, $message, $context, $exception);
     }
@@ -296,7 +295,7 @@ class Log
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public static function info($message, array $context = [], $exception = null) : void
+    public static function info($message, array $context = [], $exception = null): void
     {
         static::log(LogLevel::INFO, $message, $context, $exception);
     }
@@ -310,7 +309,7 @@ class Log
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public static function debug($message, array $context = [], $exception = null) : void
+    public static function debug($message, array $context = [], $exception = null): void
     {
         static::log(LogLevel::DEBUG, $message, $context, $exception);
     }
@@ -322,12 +321,12 @@ class Log
      * @param  int    $decimals (default: 2)
      * @return void
      */
-    public static function memory(string $message = '', int $decimals = 2) : void
+    public static function memory(string $message = '', int $decimals = 2): void
     {
         $current = number_format(memory_get_usage() / 1048576, $decimals);
         $peak    = number_format(memory_get_peak_usage() / 1048576, $decimals);
         $message = empty($message) ? "" : "{$message} : " ;
-        $message = $message."Memory {$current} MB / Peak Memory {$peak} MB";
+        $message = $message . "Memory {$current} MB / Peak Memory {$peak} MB";
         static::log(LogLevel::DEBUG, $message);
     }
 
@@ -340,7 +339,7 @@ class Log
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public static function log(string $level, $message, array $context = [], $exception = null) : void
+    public static function log(string $level, $message, array $context = [], $exception = null): void
     {
         static::channel()->log($level, $message, $context, $exception);
     }

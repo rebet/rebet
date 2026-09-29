@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -18,7 +19,7 @@ class JsonTest extends RebetTestCase
         $this->assertSame($expect, Json::serialize($value));
     }
 
-    public static function dataSerializes() : array
+    public static function dataSerializes(): array
     {
         return [
             [null, null],

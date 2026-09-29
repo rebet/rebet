@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Pagination;
@@ -177,7 +178,7 @@ class Paginator extends ResultSet
      * @param  string|null $anchor    (default: null)
      * @return self
      */
-    public function action(string $action, string $page_name = 'page', string|null $anchor = null) : self
+    public function action(string $action, string $page_name = 'page', string|null $anchor = null): self
     {
         $this->action    = $action;
         $this->page_name = $page_name;
@@ -192,7 +193,7 @@ class Paginator extends ResultSet
      * @param  array<string, mixed>|null $queries
      * @return self
      */
-    public function with(array|null $queries) : self
+    public function with(array|null $queries): self
     {
         $this->queries = $queries === null ? [] : array_merge($this->queries, $queries) ;
         return $this;
@@ -203,7 +204,7 @@ class Paginator extends ResultSet
      *
      * @return int
      */
-    public function count() : int
+    public function count(): int
     {
         return Arrays::count($this->items);
     }
@@ -213,7 +214,7 @@ class Paginator extends ResultSet
      *
      * @return int|null
      */
-    public function total() : int|null
+    public function total(): int|null
     {
         return $this->total;
     }
@@ -223,7 +224,7 @@ class Paginator extends ResultSet
      *
      * @return boolean
      */
-    public function hasPages() : bool
+    public function hasPages(): bool
     {
         return $this->page !== 1 || $this->next_page_count !== 0 ;
     }
@@ -233,7 +234,7 @@ class Paginator extends ResultSet
      *
      * @return int
      */
-    public function page() : int
+    public function page(): int
     {
         return $this->page;
     }
@@ -244,7 +245,7 @@ class Paginator extends ResultSet
      *
      * @return int
      */
-    public function prevPage() : int
+    public function prevPage(): int
     {
         return $this->hasPrev() ? $this->page() - 1 : $this->page() ;
     }
@@ -255,7 +256,7 @@ class Paginator extends ResultSet
      *
      * @return int
      */
-    public function nextPage() : int
+    public function nextPage(): int
     {
         return $this->hasNext() ? $this->page() + 1 : $this->page() ;
     }
@@ -272,13 +273,13 @@ class Paginator extends ResultSet
      * @param  int         $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
-    public function pageUrl(int $page, int $encoding = PHP_QUERY_RFC1738) : string|null
+    public function pageUrl(int $page, int $encoding = PHP_QUERY_RFC1738): string|null
     {
         if (empty($this->action)) {
             return null;
         }
         $anchor = $this->anchor ? "#{$this->anchor}" : '' ;
-        return "{$this->action}?". Arrays::toQuery(array_merge($this->queries, [$this->page_name => $page]), $encoding).$anchor;
+        return "{$this->action}?" . Arrays::toQuery(array_merge($this->queries, [$this->page_name => $page]), $encoding) . $anchor;
     }
 
     /**
@@ -288,7 +289,7 @@ class Paginator extends ResultSet
      * @param  int         $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
-    public function firstPageUrl(int $encoding = PHP_QUERY_RFC1738) : string|null
+    public function firstPageUrl(int $encoding = PHP_QUERY_RFC1738): string|null
     {
         return $this->pageUrl(1, $encoding) ;
     }
@@ -302,7 +303,7 @@ class Paginator extends ResultSet
      * @param  int         $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
-    public function prevPageUrl(int $encoding = PHP_QUERY_RFC1738) : string|null
+    public function prevPageUrl(int $encoding = PHP_QUERY_RFC1738): string|null
     {
         return $this->hasPrev() ? $this->pageUrl($this->page - 1, $encoding) : null ;
     }
@@ -316,7 +317,7 @@ class Paginator extends ResultSet
      * @param  int         $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
-    public function nextPageUrl(int $encoding = PHP_QUERY_RFC1738) : string|null
+    public function nextPageUrl(int $encoding = PHP_QUERY_RFC1738): string|null
     {
         return $this->hasNext() ? $this->pageUrl($this->page + 1, $encoding) : null ;
     }
@@ -330,7 +331,7 @@ class Paginator extends ResultSet
      * @param  int         $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
-    public function lastPageUrl(int $encoding = PHP_QUERY_RFC1738) : string|null
+    public function lastPageUrl(int $encoding = PHP_QUERY_RFC1738): string|null
     {
         return $this->hasLastPage() ? $this->pageUrl($this->last_page, $encoding) : null ;
     }
@@ -340,7 +341,7 @@ class Paginator extends ResultSet
      *
      * @return int
      */
-    public function pageSize() : int
+    public function pageSize(): int
     {
         return $this->page_size;
     }
@@ -350,7 +351,7 @@ class Paginator extends ResultSet
      *
      * @return bool
      */
-    public function onFirstPage() : bool
+    public function onFirstPage(): bool
     {
         return $this->page === 1;
     }
@@ -360,7 +361,7 @@ class Paginator extends ResultSet
      *
      * @return bool
      */
-    public function onLastPage() : bool
+    public function onLastPage(): bool
     {
         return !$this->hasNext();
     }
@@ -370,7 +371,7 @@ class Paginator extends ResultSet
      *
      * @return int
      */
-    public function nextPageCount() : int
+    public function nextPageCount(): int
     {
         return $this->next_page_count;
     }
@@ -380,7 +381,7 @@ class Paginator extends ResultSet
      *
      * @return integer|null
      */
-    public function lastPage() : int|null
+    public function lastPage(): int|null
     {
         return $this->last_page;
     }
@@ -390,7 +391,7 @@ class Paginator extends ResultSet
      *
      * @return integer|null
      */
-    public function from() : int|null
+    public function from(): int|null
     {
         return $this->from;
     }
@@ -400,7 +401,7 @@ class Paginator extends ResultSet
      *
      * @return integer|null
      */
-    public function to() : int|null
+    public function to(): int|null
     {
         return $this->to;
     }
@@ -410,7 +411,7 @@ class Paginator extends ResultSet
      *
      * @return int
      */
-    public function eachSide() : int
+    public function eachSide(): int
     {
         return $this->each_side;
     }
@@ -420,7 +421,7 @@ class Paginator extends ResultSet
      *
      * @return bool
      */
-    public function hasNext() : bool
+    public function hasNext(): bool
     {
         return $this->next_page_count !== 0;
     }
@@ -430,7 +431,7 @@ class Paginator extends ResultSet
      *
      * @return bool
      */
-    public function hasPrev() : bool
+    public function hasPrev(): bool
     {
         return $this->page > 1;
     }
@@ -440,7 +441,7 @@ class Paginator extends ResultSet
      *
      * @return bool
      */
-    public function hasTotal() : bool
+    public function hasTotal(): bool
     {
         return $this->total !== null;
     }
@@ -450,7 +451,7 @@ class Paginator extends ResultSet
      *
      * @return bool
      */
-    public function hasLastPage() : bool
+    public function hasLastPage(): bool
     {
         return $this->last_page !== null;
     }
@@ -460,7 +461,7 @@ class Paginator extends ResultSet
      *
      * @return int
      */
-    public function startOfFocusPage() : int
+    public function startOfFocusPage(): int
     {
         return $this->start_of_focus_page;
     }
@@ -470,7 +471,7 @@ class Paginator extends ResultSet
      *
      * @return int
      */
-    public function endOfFocusPage() : int
+    public function endOfFocusPage(): int
     {
         return $this->end_of_focus_page;
     }
@@ -480,7 +481,7 @@ class Paginator extends ResultSet
      *
      * @return array<int, int>
      */
-    public function focusPages() : array
+    public function focusPages(): array
     {
         $list = [];
         for ($i = $this->start_of_focus_page ; $i <= $this->end_of_focus_page ; $i++) {
@@ -492,7 +493,7 @@ class Paginator extends ResultSet
     /**
      * {@inheritDoc}
      */
-    public function jsonSerialize() : mixed
+    public function jsonSerialize(): mixed
     {
         $page_urls = [];
         foreach ($this->focusPages() as $page) {

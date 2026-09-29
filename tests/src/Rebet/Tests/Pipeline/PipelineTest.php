@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Pipeline;
 
 use Rebet\Pipeline\Pipeline;
@@ -9,7 +10,7 @@ class PipelineTest extends RebetTestCase
 {
     private $pipeline;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->pipeline = new Pipeline();
@@ -28,7 +29,7 @@ class PipelineTest extends RebetTestCase
         $this->pipeline->through([
             PipelineTest_Wrapper::class,
             function ($input, $next) {
-                return $next($input.'!');
+                return $next($input . '!');
             },
         ])->then(function ($input) {
             return $input;
@@ -53,8 +54,8 @@ class PipelineTest extends RebetTestCase
             new PipelineTest_Wrapper(),
             [PipelineTest_Wrapper::class, '[', ']'],
             function ($input, $next) {
-                return $next($input.'!');
-            }
+                return $next($input . '!');
+            },
         )->then(function ($input) {
             return $input;
         });
@@ -79,8 +80,8 @@ class PipelineTest extends RebetTestCase
             new PipelineTest_Wrapper(),
             [PipelineTest_Wrapper::class, '[', ']'],
             function ($input, $next) {
-                return $next($input.'!');
-            }
+                return $next($input . '!');
+            },
         )->then(function ($input) {
             return $input;
         });
@@ -89,7 +90,7 @@ class PipelineTest extends RebetTestCase
             '[terminate](terminate)',
             function () {
                 $this->pipeline->invoke('terminate');
-            }
+            },
         );
 
         $output = $this->pipeline->send('onion');
@@ -119,23 +120,23 @@ class PipelineTest_Wrapper
 
     public function after($input, $next)
     {
-        return $this->open.$next($input).$this->close;
+        return $this->open . $next($input) . $this->close;
     }
 
     public function before($input, $next)
     {
-        return $next($this->open.$input.$this->close);
+        return $next($this->open . $input . $this->close);
     }
 
     public function both($input, $next)
     {
-        $output = $next($this->open.$input.$this->close);
-        return $this->open.$output.$this->close;
+        $output = $next($this->open . $input . $this->close);
+        return $this->open . $output . $this->close;
     }
 
     public function terminate()
     {
-        echo $this->open.'terminate'.$this->close;
+        echo $this->open . 'terminate' . $this->close;
     }
 
     public function set($open, $close)

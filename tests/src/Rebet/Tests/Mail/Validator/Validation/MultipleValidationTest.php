@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Mail\Validator\Validation;
 
 use Egulias\EmailValidator\Validation\DNSCheckValidation;
@@ -14,7 +15,7 @@ class MultipleValidationTest extends RebetTestCase
         $this->assertInstanceOf(MultipleValidation::class, new MultipleValidation(
             new LooseRFCValidation(),
             new SpoofCheckValidation(),
-            new DNSCheckValidation()
+            new DNSCheckValidation(),
         ));
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Validation;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -21,7 +22,7 @@ class ValidatorTest extends RebetTestCase
 {
     private $root;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2010-01-23 12:34:56');
@@ -46,7 +47,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertInstanceOf(Validator::class, new Validator([]));
     }
 
-    public static function dataValidationInvoke() : array
+    public static function dataValidationInvoke(): array
     {
         self::setUpStatic();
 
@@ -55,19 +56,19 @@ class ValidatorTest extends RebetTestCase
         // NOTE: UploadedFile::getMimeType() detects the mime type from the real file contents (not from
         //       the client declared name/mime type), so FileType* validation fixtures must point to real
         //       files whose actual contents match the type under test.
-        $fixture_dir = sys_get_temp_dir().'/rebet_ValidatorTest_'.getmypid();
+        $fixture_dir = sys_get_temp_dir() . '/rebet_ValidatorTest_' . getmypid();
         if (!file_exists($fixture_dir)) {
-            mkdir($fixture_dir, 0777, true);
+            mkdir($fixture_dir, 0o777, true);
         }
-        $csv_path = $fixture_dir.'/foo.csv';
+        $csv_path = $fixture_dir . '/foo.csv';
         file_put_contents($csv_path, "id,name,email,age,city\n1,John Smith,john@example.com,32,New York\n2,Jane Doe,jane@example.com,28,Boston\n3,Bob Johnson,bob@example.com,45,Chicago\n");
-        $xml_path = $fixture_dir.'/foo.xml';
+        $xml_path = $fixture_dir . '/foo.xml';
         file_put_contents($xml_path, '<?xml version="1.0"?><root><a>1</a></root>');
-        $bmp_path = $fixture_dir.'/foo.bmp';
+        $bmp_path = $fixture_dir . '/foo.bmp';
         $bmp_im   = imagecreatetruecolor(2, 2);
         imagebmp($bmp_im, $bmp_path);
         imagedestroy($bmp_im);
-        $zip_path    = $fixture_dir.'/foo.zip';
+        $zip_path    = $fixture_dir . '/foo.zip';
         $zip_archive = new \ZipArchive();
         $zip_archive->open($zip_path, \ZipArchive::CREATE);
         $zip_archive->addFromString('a.txt', 'hello');
@@ -104,37 +105,37 @@ class ValidatorTest extends RebetTestCase
             [['target' => 1   ], ['C', Valid::REQUIRED], true ],
             [['target' => null], ['C', Valid::REQUIRED], false],
             // Valid::REQUIRED_IF
-            [['target' => 1   , 'foo' => 1], ['C', Valid::REQUIRED_IF, 'foo', 1], true ],
+            [['target' => 1, 'foo' => 1], ['C', Valid::REQUIRED_IF, 'foo', 1], true ],
             [['target' => null, 'foo' => 1], ['C', Valid::REQUIRED_IF, 'foo', 1], false],
             [['target' => null, 'foo' => 2], ['C', Valid::REQUIRED_IF, 'foo', 1], true ],
             // Valid::REQUIRED_UNLESS
-            [['target' => 1   , 'foo' => 2], ['C', Valid::REQUIRED_UNLESS, 'foo', 1], true ],
+            [['target' => 1, 'foo' => 2], ['C', Valid::REQUIRED_UNLESS, 'foo', 1], true ],
             [['target' => null, 'foo' => 2], ['C', Valid::REQUIRED_UNLESS, 'foo', 1], false],
             [['target' => null, 'foo' => 1], ['C', Valid::REQUIRED_UNLESS, 'foo', 1], true ],
             // Valid::REQUIRED_WITH
-            [['target' => 1   , 'foo' => 1   ], ['C', Valid::REQUIRED_WITH, 'foo'], true ],
+            [['target' => 1, 'foo' => 1   ], ['C', Valid::REQUIRED_WITH, 'foo'], true ],
             [['target' => null, 'foo' => 1   ], ['C', Valid::REQUIRED_WITH, 'foo'], false],
             [['target' => null, 'foo' => null], ['C', Valid::REQUIRED_WITH, 'foo'], true ],
             // Valid::REQUIRED_WITHOUT
-            [['target' => 1   , 'foo' => null], ['C', Valid::REQUIRED_WITHOUT, 'foo'], true ],
+            [['target' => 1, 'foo' => null], ['C', Valid::REQUIRED_WITHOUT, 'foo'], true ],
             [['target' => null, 'foo' => null], ['C', Valid::REQUIRED_WITHOUT, 'foo'], false],
             [['target' => null, 'foo' => 1   ], ['C', Valid::REQUIRED_WITHOUT, 'foo'], true ],
             // Valid::BLANK_IF
             [['target' => null, 'foo' => 1], ['C', Valid::BLANK_IF, 'foo', 1], true ],
-            [['target' => 1   , 'foo' => 1], ['C', Valid::BLANK_IF, 'foo', 1], false],
-            [['target' => 1   , 'foo' => 2], ['C', Valid::BLANK_IF, 'foo', 1], true ],
+            [['target' => 1, 'foo' => 1], ['C', Valid::BLANK_IF, 'foo', 1], false],
+            [['target' => 1, 'foo' => 2], ['C', Valid::BLANK_IF, 'foo', 1], true ],
             // Valid::BLANK_UNLESS
             [['target' => null, 'foo' => 2], ['C', Valid::BLANK_UNLESS, 'foo', 1], true ],
-            [['target' => 1   , 'foo' => 2], ['C', Valid::BLANK_UNLESS, 'foo', 1], false],
-            [['target' => 1   , 'foo' => 1], ['C', Valid::BLANK_UNLESS, 'foo', 1], true ],
+            [['target' => 1, 'foo' => 2], ['C', Valid::BLANK_UNLESS, 'foo', 1], false],
+            [['target' => 1, 'foo' => 1], ['C', Valid::BLANK_UNLESS, 'foo', 1], true ],
             // Valid::BLANK_WITH
             [['target' => null, 'foo' => 1   ], ['C', Valid::BLANK_WITH, 'foo'], true ],
-            [['target' => 1   , 'foo' => 1   ], ['C', Valid::BLANK_WITH, 'foo'], false],
-            [['target' => 1   , 'foo' => null], ['C', Valid::BLANK_WITH, 'foo'], true ],
+            [['target' => 1, 'foo' => 1   ], ['C', Valid::BLANK_WITH, 'foo'], false],
+            [['target' => 1, 'foo' => null], ['C', Valid::BLANK_WITH, 'foo'], true ],
             // Valid::BLANK_WITHOUT
             [['target' => null, 'foo' => null], ['C', Valid::BLANK_WITHOUT, 'foo'], true ],
-            [['target' => 1   , 'foo' => null], ['C', Valid::BLANK_WITHOUT, 'foo'], false],
-            [['target' => 1   , 'foo' => 1   ], ['C', Valid::BLANK_WITHOUT, 'foo'], true ],
+            [['target' => 1, 'foo' => null], ['C', Valid::BLANK_WITHOUT, 'foo'], false],
+            [['target' => 1, 'foo' => 1   ], ['C', Valid::BLANK_WITHOUT, 'foo'], true ],
             // Valid::SAME_AS
             [['target' => 1], ['C', Valid::SAME_AS, 1], true ],
             [['target' => 1], ['C', Valid::SAME_AS, 2], false],
@@ -256,7 +257,7 @@ class ValidatorTest extends RebetTestCase
             [['target' => '1'], ['C', Valid::ACCEPTED], true ],
             [['target' => '' ], ['C', Valid::ACCEPTED], false],
             // Valid::CORRELATED_REQUIRED
-            [['target' => '', 'foo' => 1 , 'bar' => ''], ['C', Valid::CORRELATED_REQUIRED, ['foo', 'bar'], 1], true ],
+            [['target' => '', 'foo' => 1, 'bar' => ''], ['C', Valid::CORRELATED_REQUIRED, ['foo', 'bar'], 1], true ],
             [['target' => '', 'foo' => '', 'bar' => ''], ['C', Valid::CORRELATED_REQUIRED, ['foo', 'bar'], 1], false],
             // Valid::CORRELATED_UNIQUE
             [['target' => '', 'foo' => 1, 'bar' => 2], ['C', Valid::CORRELATED_UNIQUE, ['foo', 'bar']], true ],
@@ -413,7 +414,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => 'foo']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule' => [
+                'rule'  => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::ALPHA],
                 ],
@@ -429,7 +430,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => '2001-01-01']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule' => [
+                'rule'    => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::DATETIME],
                 ],
@@ -446,7 +447,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => 'fooo-01-01']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule' => [
+                'rule'    => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::DATETIME],
                 ],
@@ -461,7 +462,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => '2001-01-01']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule' => [
+                'rule'    => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::DATETIME],
                 ],
@@ -478,7 +479,7 @@ class ValidatorTest extends RebetTestCase
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'rule' => [
-                    ['C', Valid::NUMBER.'?'],
+                    ['C', Valid::NUMBER . '?'],
                 ],
             ],
         ]);
@@ -491,7 +492,7 @@ class ValidatorTest extends RebetTestCase
         $rule = [
             'foo' => [
                 'rule' => [
-                    ['C', Valid::NUMBER.'?', 'then' => [
+                    ['C', Valid::NUMBER . '?', 'then' => [
                         ['C', Valid::NUMBER_GREATER_THAN, 100],
                     ], 'else' => [
                         ['C', Valid::REGEX, '/^[A-Z]+$/'],
@@ -782,10 +783,10 @@ class ValidatorTest extends RebetTestCase
                 'label' => 'Shipping',
                 'rule'  => [
                     ['CU', Valid::REQUIRED],
-                    ['CU', Valid::MAX_COUNT.'!', 3],
+                    ['CU', Valid::MAX_COUNT . '!', 3],
                 ],
                 'nests' => [
-                    'zip' => [
+                    'zip'     => [
                         'rule' => [
                             ['CU', Valid::REQUIRED],
                         ],
@@ -809,7 +810,7 @@ class ValidatorTest extends RebetTestCase
             'shipping_addresses.0.address' => [
                 "The Shipping Address field is required.",
             ],
-            'shipping_addresses.1.zip' => [
+            'shipping_addresses.1.zip'     => [
                 "The Shipping Zip field is required.",
             ],
         ], $validator->errors());
@@ -818,31 +819,31 @@ class ValidatorTest extends RebetTestCase
     public function test_validate_crud()
     {
         $rule = [
-            'foo' => ['rule' => [['C' , 'Ng']]],
-            'bar' => ['rule' => [[ 'U', 'Ng']]],
-            'baz' => ['rule' => [['CU', 'Ng']]],
-            'qux' => ['rule' => [['C' , 'Ok:?',
+            'foo'     => ['rule' => [['C', 'Ng']]],
+            'bar'     => ['rule' => [[ 'U', 'Ng']]],
+            'baz'     => ['rule' => [['CU', 'Ng']]],
+            'qux'     => ['rule' => [['C', 'Ok:?',
                 'then' => [['C', 'Ng', '@C ok then C ng'], ['U', 'Ng', '@C ok then U ng']],
                 'else' => [['C', 'Ng', '@C ok else C ng'], ['U', 'Ng', '@C ok else U ng']],
             ]]],
-            'quxx' => ['rule' => [['U' , 'Ok:?',
+            'quxx'    => ['rule' => [['U', 'Ok:?',
                 'then' => [['C', 'Ng', '@U ok then C ng'], ['U', 'Ng', '@U ok then U ng']],
                 'else' => [['C', 'Ng', '@U ok else C ng'], ['U', 'Ng', '@U ok else U ng']],
             ]]],
-            'parent' => [
+            'parent'  => [
                 'rule' => [['C', 'Ng']],
                 'nest' => [
-                    'foo' => ['rule' => [['C' , 'Ng']]],
-                    'bar' => ['rule' => [[ 'U', 'Ng']]],
-                    'baz' => ['rule' => [['CU', 'Ng']]],
-                    'qux' => ['rule' => [['C' , 'Ok:?',
+                    'foo'      => ['rule' => [['C', 'Ng']]],
+                    'bar'      => ['rule' => [[ 'U', 'Ng']]],
+                    'baz'      => ['rule' => [['CU', 'Ng']]],
+                    'qux'      => ['rule' => [['C', 'Ok:?',
                         'then' => [['C', 'Ng', '@C ok then C ng'], ['U', 'Ng', '@C ok then U ng']],
                         'else' => [['C', 'Ng', '@C ok else C ng'], ['U', 'Ng', '@C ok else U ng']],
                     ]]],
                     'children' => [
                         'rule'  => [['U', 'Ng']],
                         'nests' => [
-                            'foo' => ['rule' => [['C' , 'Ng']]],
+                            'foo' => ['rule' => [['C', 'Ng']]],
                             'bar' => ['rule' => [[ 'U', 'Ng']]],
                             'baz' => ['rule' => [['CU', 'Ng']]],
                         ],
@@ -852,16 +853,16 @@ class ValidatorTest extends RebetTestCase
             'parents' => [
                 'rule'  => [['U', 'Ng']],
                 'nests' => [
-                    'foo'  => ['rule' => [['C' , 'Ng']]],
-                    'bar'  => ['rule' => [[ 'U', 'Ng']]],
-                    'baz'  => ['rule' => [['CU', 'Ng']]],
-                    'quxx' => ['rule' => [[ 'U' , 'Ok:?',
+                    'foo'   => ['rule' => [['C', 'Ng']]],
+                    'bar'   => ['rule' => [[ 'U', 'Ng']]],
+                    'baz'   => ['rule' => [['CU', 'Ng']]],
+                    'quxx'  => ['rule' => [[ 'U', 'Ok:?',
                         'then' => [['C', 'Ng', '@U ok then C ng'], ['U', 'Ng', '@U ok then U ng']],
                         'else' => [['C', 'Ng', '@U ok else C ng'], ['U', 'Ng', '@U ok else U ng']],
                     ]]],
                     'child' => [
                         'nest' => [
-                            'foo' => ['rule' => [['C' , 'Ng']]],
+                            'foo' => ['rule' => [['C', 'Ng']]],
                             'bar' => ['rule' => [[ 'U', 'Ng']]],
                             'baz' => ['rule' => [['CU', 'Ng']]],
                         ],
@@ -870,12 +871,12 @@ class ValidatorTest extends RebetTestCase
             ],
         ];
         $data = [
-            'foo'    => 'foo',
-            'bar'    => 'bar',
-            'baz'    => 'baz',
-            'qux'    => 'qux',
-            'quxx'   => 'quxx',
-            'parent' => [
+            'foo'     => 'foo',
+            'bar'     => 'bar',
+            'baz'     => 'baz',
+            'qux'     => 'qux',
+            'quxx'    => 'quxx',
+            'parent'  => [
                 'foo'      => 'foo',
                 'bar'      => 'bar',
                 'baz'      => 'baz',
@@ -903,9 +904,9 @@ class ValidatorTest extends RebetTestCase
         $valid_data = $validator->validate('C', $rule);
         $this->assertNull($valid_data);
         $this->assertSame([
-            'foo' => ["The Foo is NG."],
-            'baz' => ["The Baz is NG."],
-            'qux' => ["C ok then C ng"],
+            'foo'                   => ["The Foo is NG."],
+            'baz'                   => ["The Baz is NG."],
+            'qux'                   => ["C ok then C ng"],
 
             'parent'                => ["The Parent is NG."],
             'parent.foo'            => ["The Parent Foo is NG."],
@@ -914,19 +915,19 @@ class ValidatorTest extends RebetTestCase
             'parent.children.0.foo' => ["The Parent Children Foo is NG."],
             'parent.children.0.baz' => ["The Parent Children Baz is NG."],
 
-            'parents.0.foo'       => ["The Parents Foo is NG."],
-            'parents.0.baz'       => ["The Parents Baz is NG."],
-            'parents.0.child.foo' => ["The Parents Child Foo is NG."],
-            'parents.0.child.baz' => ["The Parents Child Baz is NG."],
+            'parents.0.foo'         => ["The Parents Foo is NG."],
+            'parents.0.baz'         => ["The Parents Baz is NG."],
+            'parents.0.child.foo'   => ["The Parents Child Foo is NG."],
+            'parents.0.child.baz'   => ["The Parents Child Baz is NG."],
         ], $validator->errors());
 
         $validator  = new Validator($data);
         $valid_data = $validator->validate('U', $rule);
         $this->assertNull($valid_data);
         $this->assertSame([
-            'bar'  => ["The Bar is NG."],
-            'baz'  => ["The Baz is NG."],
-            'quxx' => ["U ok then U ng"],
+            'bar'                   => ["The Bar is NG."],
+            'baz'                   => ["The Baz is NG."],
+            'quxx'                  => ["U ok then U ng"],
 
             'parent.bar'            => ["The Parent Bar is NG."],
             'parent.baz'            => ["The Parent Baz is NG."],
@@ -934,12 +935,12 @@ class ValidatorTest extends RebetTestCase
             'parent.children.0.bar' => ["The Parent Children Bar is NG."],
             'parent.children.0.baz' => ["The Parent Children Baz is NG."],
 
-            'parents'             => ["The Parents is NG."],
-            'parents.0.bar'       => ["The Parents Bar is NG."],
-            'parents.0.baz'       => ["The Parents Baz is NG."],
-            'parents.0.quxx'      => ["U ok then U ng"],
-            'parents.0.child.bar' => ["The Parents Child Bar is NG."],
-            'parents.0.child.baz' => ["The Parents Child Baz is NG."],
+            'parents'               => ["The Parents is NG."],
+            'parents.0.bar'         => ["The Parents Bar is NG."],
+            'parents.0.baz'         => ["The Parents Baz is NG."],
+            'parents.0.quxx'        => ["U ok then U ng"],
+            'parents.0.child.bar'   => ["The Parents Child Bar is NG."],
+            'parents.0.child.baz'   => ["The Parents Child Baz is NG."],
         ], $validator->errors());
     }
 

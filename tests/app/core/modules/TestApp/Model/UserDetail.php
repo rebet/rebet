@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Model;
 
 use Rebet\Database\Attribute\PrimaryKey;
@@ -24,27 +25,27 @@ class UserDetail extends Presentation
     public DateTime|null $updated_at;
     public $article_count;
 
-    public function age() : int|null
+    public function age(): int|null
     {
         return $this->birthday ? Date::valueOf($this->birthday)->age() : null ;
     }
 
-    public function user(bool $for_update = false) : User
+    public function user(bool $for_update = false): User
     {
         return $this->hasOne(User::class, [], $for_update);
     }
 
-    public function bank(bool $for_update = false) : Bank|null
+    public function bank(bool $for_update = false): Bank|null
     {
         return $this->hasOne(Bank::class, [], $for_update);
     }
 
-    public function articles($conditions = [], bool $for_update = false) : array
+    public function articles($conditions = [], bool $for_update = false): array
     {
         return $this->hasMany(Article::class, [], $conditions, null, null, $for_update);
     }
 
-    protected static function ransack(Ransack $ransack) : Query|null
+    protected static function ransack(Ransack $ransack): Query|null
     {
         if (Utils::isBlank($ransack->value())) {
             return null;
@@ -57,17 +58,17 @@ class UserDetail extends Presentation
         return parent::ransack($ransack);
     }
 
-    protected static function buildSelectAllSql(Database $db) : Query
+    protected static function buildSelectAllSql(Database $db): Query
     {
         return $db->sql(
             <<<EOS
-            SELECT
-                U.*,
-                (SELECT COUNT(*) FROM articles AS A WHERE A.user_id = U.user_id) AS article_count
-            FROM
-                users AS U
-                LEFT OUTER JOIN bank AS B
-            EOS
+                SELECT
+                    U.*,
+                    (SELECT COUNT(*) FROM articles AS A WHERE A.user_id = U.user_id) AS article_count
+                FROM
+                    users AS U
+                    LEFT OUTER JOIN bank AS B
+                EOS,
         );
     }
 }

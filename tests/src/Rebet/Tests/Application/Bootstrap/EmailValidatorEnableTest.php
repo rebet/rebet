@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\Bootstrap;
 
 use Rebet\Application\Bootstrap\EmailValidatorEnable;
@@ -13,7 +14,7 @@ class EmailValidatorEnableTest extends RebetTestCase
     private $validator_backup;
     private $original_validator_backup;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         // App::init() (triggered by parent::setUp()) already runs this same bootstrapper via the
@@ -24,7 +25,7 @@ class EmailValidatorEnableTest extends RebetTestCase
         $this->original_validator_backup = Reflector::get(EmailValidator::class, 'original_validator', null, true);
     }
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         $address_class = Address::class;
         Reflector::set($address_class, 'validator', $this->validator_backup, true);

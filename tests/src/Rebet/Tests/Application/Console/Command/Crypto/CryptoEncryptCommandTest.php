@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\Console\Command\Crypto;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -10,9 +11,9 @@ use Rebet\Tools\Utility\Strings;
 
 class CryptoEncryptCommandTest extends RebetConsoleTestCase
 {
-    const AVIRABLE_COMMANDS = [CryptoEncryptCommand::class];
+    public const AVIRABLE_COMMANDS = [CryptoEncryptCommand::class];
 
-    public static function dataExecutes() : array
+    public static function dataExecutes(): array
     {
         return [
             ['This is pen'],
@@ -37,7 +38,7 @@ class CryptoEncryptCommandTest extends RebetConsoleTestCase
             $options['--secret-key'] ?? null,
             null,
             $options['--hmac-secret-key'] ?? null,
-            $options['--hmac-algorithm'] ?? null
+            $options['--hmac-algorithm'] ?? null,
         );
         $this->assertSame($plain, $decrypted);
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command\Crypto;
@@ -19,16 +20,16 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class CryptoDecryptCommand extends Command
 {
-    const NAME        = 'crypto:decrypt';
-    const DESCRIPTION = 'Decrypt the given encrypted text';
-    const ARGUMENTS   = [
+    public const NAME        = 'crypto:decrypt';
+    public const DESCRIPTION = 'Decrypt the given encrypted text';
+    public const ARGUMENTS   = [
         ['encrypted', InputArgument::REQUIRED, 'Encrypted text (that Securities::encrypt()/CryptoEncryptCommand outputs) that you want to decrypt'],
     ];
-    const OPTIONS = [
-        ['secret-key'     , 'sk', InputOption::VALUE_OPTIONAL, 'Secret key'],
-        ['cipher'         , 'c', InputOption::VALUE_OPTIONAL, 'Cipher'],
+    public const OPTIONS = [
+        ['secret-key', 'sk', InputOption::VALUE_OPTIONAL, 'Secret key'],
+        ['cipher', 'c', InputOption::VALUE_OPTIONAL, 'Cipher'],
         ['hmac-secret-key', 'hsk', InputOption::VALUE_OPTIONAL, 'HMAC secret key'],
-        ['hmac-algorithm' , 'ha', InputOption::VALUE_OPTIONAL, 'HMAC algorithm'],
+        ['hmac-algorithm', 'ha', InputOption::VALUE_OPTIONAL, 'HMAC algorithm'],
     ];
 
     /**
@@ -41,7 +42,7 @@ class CryptoDecryptCommand extends Command
             $this->option('secret-key'),
             $this->option('cipher'),
             $this->option('hmac-secret-key'),
-            $this->option('hmac-algorithm')
+            $this->option('hmac-algorithm'),
         );
 
         if ($decrypted === null) {
@@ -49,6 +50,6 @@ class CryptoDecryptCommand extends Command
             return 1;
         }
 
-        $this->writeln('<info>Decrypted:</info> '. $decrypted);
+        $this->writeln('<info>Decrypted:</info> ' . $decrypted);
     }
 }

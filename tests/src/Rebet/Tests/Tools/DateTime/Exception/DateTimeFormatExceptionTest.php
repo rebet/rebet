@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\DateTime\Exception;
 
 use Rebet\Tests\RebetTestCase;

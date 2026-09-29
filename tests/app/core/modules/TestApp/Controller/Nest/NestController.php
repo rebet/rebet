@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Controller\Nest;
 
 use Rebet\Routing\Attribute\Channel;

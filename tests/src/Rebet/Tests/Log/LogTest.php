@@ -1,8 +1,8 @@
 <?php
+
 namespace Rebet\Tests\Log;
 
 use Rebet\Log\Driver\Monolog\StderrDriver;
-
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Driver\NullDriver;
 use Rebet\Log\Log;
@@ -13,7 +13,7 @@ use Rebet\Tools\DateTime\DateTime;
 
 class LogTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
@@ -21,13 +21,13 @@ class LogTest extends RebetTestCase
             Log::class => [
                 'unittest' => false,
                 'channels' => [
-                    'test' => [
+                    'test'           => [
                         'driver' => [
                             '@factory' => TestDriver::class,
                             'level'    => LogLevel::WARNING,
                         ],
                     ],
-                    'stderr' => [
+                    'stderr'         => [
                         'driver' => [
                             '@factory' => StderrDriver::class,
                             'level'    => LogLevel::DEBUG,
@@ -60,7 +60,7 @@ class LogTest extends RebetTestCase
             ],
             function () {
                 $this->assertInstanceOf(NullDriver::class, Log::channel('nothing')->driver());
-            }
+            },
         );
         $this->assertStderrContainsAll(
             [
@@ -69,7 +69,7 @@ class LogTest extends RebetTestCase
             ],
             function () {
                 $this->assertInstanceOf(NullDriver::class, Log::channel('missing_driver')->driver());
-            }
+            },
         );
     }
 
@@ -80,18 +80,18 @@ class LogTest extends RebetTestCase
             "2010-10-20 10:20:30.040050 [stderr.ERROR] {$process_id} Somthing error happened.\n",
             function () {
                 Log::stack('test', 'stderr')->error('Somthing error happened.');
-            }
+            },
         );
         $this->assertSame(
             "2010-10-20 10:20:30.040050 test/{$process_id} [ERROR] Somthing error happened.\n",
-            Log::channel('test')->driver()->formatted()
+            Log::channel('test')->driver()->formatted(),
         );
 
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.040050 [stderr.INFO] {$process_id} Somthing infomation.\n",
             function () {
                 Log::stack('test', 'stderr')->info('Somthing infomation.');
-            }
+            },
         );
         $this->assertFalse(Log::channel('test')->driver()->hasInfoRecords());
     }

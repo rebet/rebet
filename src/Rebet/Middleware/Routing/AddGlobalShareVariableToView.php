@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Middleware\Routing;
@@ -24,7 +25,7 @@ class AddGlobalShareVariableToView
      * @param  \Closure $next
      * @return Response
      */
-    public function handle(Request $request, \Closure $next) : Response
+    public function handle(Request $request, \Closure $next): Response
     {
         View::share([
             'request' => $request,

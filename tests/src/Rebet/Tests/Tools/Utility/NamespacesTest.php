@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use Rebet\Tests\RebetTestCase;
@@ -7,7 +8,7 @@ use Rebet\Tools\Utility\Namespaces;
 
 class NamespacesTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         Config::application([

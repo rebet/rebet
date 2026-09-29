@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Middleware\Routing;
 
 use Rebet\Http\Cookie\Cookie;
@@ -32,7 +33,7 @@ class AddQueuedCookiesToResponseTest extends RebetTestCase
                 new Cookie('key', 'value'),
                 new Cookie('test', 'unit'),
             ],
-            $response->headers->getCookies()
+            $response->headers->getCookies(),
         );
     }
 }

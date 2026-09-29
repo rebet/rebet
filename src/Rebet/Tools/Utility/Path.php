@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -18,9 +19,7 @@ class Path
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Normalize the given path.
@@ -28,7 +27,7 @@ class Path
      * @param  string $path
      * @return string
      */
-    public static function normalize(string $path) : string
+    public static function normalize(string $path): string
     {
         $protocol     = '';
         $drive        = '';
@@ -36,12 +35,12 @@ class Path
         $is_relatable = true;
         if (Strings::contains($convert_path, '://')) {
             [$protocol, $convert_path] = \explode('://', $convert_path);
-            $protocol                  = $protocol.'://';
+            $protocol                  = $protocol . '://';
             $is_relatable              = false;
         }
         if (Strings::contains($convert_path, ':/')) {
             [$drive, $convert_path] = \explode(':/', $convert_path);
-            $drive                  = $drive.':/';
+            $drive                  = $drive . ':/';
             $is_relatable           = false;
         }
 
@@ -77,6 +76,6 @@ class Path
                 }
             }
         }
-        return $protocol.$drive.$realpath;
+        return $protocol . $drive . $realpath;
     }
 }

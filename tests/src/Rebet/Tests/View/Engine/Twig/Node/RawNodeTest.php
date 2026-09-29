@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\View\Engine\Twig\Node;
 
 use Rebet\Tests\RebetTestCase;
@@ -12,7 +13,7 @@ class RawNodeTest extends RebetTestCase
     protected $env;
     protected $compiler;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->env      = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock());

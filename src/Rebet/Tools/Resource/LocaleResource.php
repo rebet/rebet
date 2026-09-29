@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Resource;
@@ -40,9 +41,9 @@ class LocaleResource
      * @return array<string, mixed>
      * @throws LogicException
      */
-    public static function load($loading_path, string $locale, string $base_name, string $suffix = 'php', array $option = []) : array
+    public static function load($loading_path, string $locale, string $base_name, string $suffix = 'php', array $option = []): array
     {
-        $loading_path = (array)$loading_path;
+        $loading_path = (array) $loading_path;
 
         $resource = [];
         foreach ($loading_path as $path) {

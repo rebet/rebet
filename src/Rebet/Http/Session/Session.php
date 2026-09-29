@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http\Session;
@@ -68,7 +69,7 @@ class Session implements SessionInterface
     /**
      * Reset the current (latest instantiate) session instance and clear its storage.
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         if (self::$current) {
             self::$current->storage->clear();
@@ -79,7 +80,7 @@ class Session implements SessionInterface
     /**
      * Get the current (latest instantiate) session instance.
      */
-    public static function current() : self|null
+    public static function current(): self|null
     {
         return self::$current;
     }
@@ -90,7 +91,7 @@ class Session implements SessionInterface
      * @param  string $name
      * @return bool
      */
-    public function has(string $name) : bool
+    public function has(string $name): bool
     {
         return $this->attribute()->has($name);
     }
@@ -102,7 +103,7 @@ class Session implements SessionInterface
      * @param  mixed  $default
      * @return mixed
      */
-    public function get(string $name, mixed $default = null) : mixed
+    public function get(string $name, mixed $default = null): mixed
     {
         return $this->attribute()->get($name, $default);
     }
@@ -114,7 +115,7 @@ class Session implements SessionInterface
      * @param  mixed  $value
      * @return void
      */
-    public function set(string $name, mixed $value) : void
+    public function set(string $name, mixed $value): void
     {
         $this->attribute()->set($name, $value);
     }
@@ -124,7 +125,7 @@ class Session implements SessionInterface
      *
      * @return array<string, mixed>
      */
-    public function all() : array
+    public function all(): array
     {
         return $this->attribute()->all();
     }
@@ -135,7 +136,7 @@ class Session implements SessionInterface
      * @param  array<string, mixed> $attributes
      * @return void
      */
-    public function replace(array $attributes) : void
+    public function replace(array $attributes): void
     {
         $this->attribute()->initialize($attributes);
     }
@@ -146,7 +147,7 @@ class Session implements SessionInterface
      * @param  string $name
      * @return mixed
      */
-    public function remove(string $name) : mixed
+    public function remove(string $name): mixed
     {
         return $this->attribute()->remove($name);
     }
@@ -156,7 +157,7 @@ class Session implements SessionInterface
      *
      * @return void
      */
-    public function clear() : void
+    public function clear(): void
     {
         $this->storage->clear();
     }
@@ -166,7 +167,7 @@ class Session implements SessionInterface
      *
      * @return AttributeBag
      */
-    public function attribute() : AttributeBag
+    public function attribute(): AttributeBag
     {
         $bag = $this->storage->getBag('attributes');
         if (!$bag instanceof AttributeBag) {
@@ -180,7 +181,7 @@ class Session implements SessionInterface
      *
      * @return FlashBag
      */
-    public function flash() : FlashBag
+    public function flash(): FlashBag
     {
         $bag = $this->storage->getBag('flashes');
         if (!$bag instanceof FlashBag) {
@@ -194,7 +195,7 @@ class Session implements SessionInterface
      *
      * @return MetadataBag
      */
-    public function meta() : MetadataBag
+    public function meta(): MetadataBag
     {
         return $this->getMetadataBag();
     }
@@ -202,7 +203,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
-    public function getMetadataBag() : MetadataBag
+    public function getMetadataBag(): MetadataBag
     {
         $bag = $this->storage->getMetadataBag();
         if (!$bag instanceof MetadataBag) {
@@ -214,7 +215,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
-    public function registerBag(SessionBagInterface $bag) : void
+    public function registerBag(SessionBagInterface $bag): void
     {
         $this->storage->registerBag($bag);
     }
@@ -222,7 +223,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
-    public function getBag(string $name) : SessionBagInterface
+    public function getBag(string $name): SessionBagInterface
     {
         return $this->storage->getBag($name);
     }
@@ -232,7 +233,7 @@ class Session implements SessionInterface
      *
      * @return boolean
      */
-    public function start() : bool
+    public function start(): bool
     {
         return $this->storage->start();
     }
@@ -242,7 +243,7 @@ class Session implements SessionInterface
      *
      * @return boolean
      */
-    public function isStarted() : bool
+    public function isStarted(): bool
     {
         return $this->storage->isStarted();
     }
@@ -260,7 +261,7 @@ class Session implements SessionInterface
      *
      * @return bool True if session invalidated, false if error
      */
-    public function invalidate(int|null $lifetime = null) : bool
+    public function invalidate(int|null $lifetime = null): bool
     {
         $this->storage->clear();
         return $this->migrate(true, $lifetime);
@@ -278,7 +279,7 @@ class Session implements SessionInterface
      *
      * @return bool True if session migrated, false if error
      */
-    public function migrate(bool $destroy = false, int|null $lifetime = null) : bool
+    public function migrate(bool $destroy = false, int|null $lifetime = null): bool
     {
         return $this->storage->regenerate($destroy, $lifetime);
     }
@@ -292,7 +293,7 @@ class Session implements SessionInterface
      *
      * @return void
      */
-    public function save() : void
+    public function save(): void
     {
         $this->storage->save();
     }
@@ -300,7 +301,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
-    public function getId() : string
+    public function getId(): string
     {
         return $this->storage->getId();
     }
@@ -308,7 +309,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
-    public function setId(string $id) : void
+    public function setId(string $id): void
     {
         if ($this->storage->getId() !== $id) {
             $this->storage->setId($id);
@@ -318,7 +319,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
-    public function getName() : string
+    public function getName(): string
     {
         return $this->storage->getName();
     }
@@ -326,7 +327,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
-    public function setName(string $name) : void
+    public function setName(string $name): void
     {
         $this->storage->setName($name);
     }
@@ -353,7 +354,7 @@ class Session implements SessionInterface
      * @param  mixed       ...$scopes
      * @return string|null
      */
-    public function token(...$scopes) : string|null
+    public function token(...$scopes): string|null
     {
         $key = static::createTokenKey(...$scopes);
         return empty($scopes) ? $this->attribute()->get($key) : $this->flash()->peek($key);
@@ -366,7 +367,7 @@ class Session implements SessionInterface
      * @param  mixed  ...$scopes
      * @return string of generated token
      */
-    public function generateToken(...$scopes) : string
+    public function generateToken(...$scopes): string
     {
         $token = Securities::randomCode(40);
         $key   = static::createTokenKey(...$scopes);
@@ -380,7 +381,7 @@ class Session implements SessionInterface
      *
      * @return string
      */
-    public function initReusableToken() : string
+    public function initReusableToken(): string
     {
         $token = $this->token();
         if (empty($token)) {
@@ -397,7 +398,7 @@ class Session implements SessionInterface
      * @param  mixed       ...$scopes
      * @return bool
      */
-    public function verifyToken(string|null $token, ...$scopes) : bool
+    public function verifyToken(string|null $token, ...$scopes): bool
     {
         $key    = static::createTokenKey(...$scopes);
         $expect = empty($scopes) ? $this->attribute()->get($key) : $this->flash()->get($key);
@@ -411,7 +412,7 @@ class Session implements SessionInterface
      * @return string
      * @throws LogicException when token scope contains ':'.
      */
-    public static function createTokenKey(...$scopes) : string
+    public static function createTokenKey(...$scopes): string
     {
         if (empty($scopes)) {
             return '_token';
@@ -421,7 +422,7 @@ class Session implements SessionInterface
                 throw new LogicException("Invalid token scope name '{$scope}' found. Token scope can not contains ':'.");
             }
         }
-        return '_token:'.implode(':', $scopes);
+        return '_token:' . implode(':', $scopes);
     }
 
     /**
@@ -431,7 +432,7 @@ class Session implements SessionInterface
      * @return array<int, string>
      * @throws LogicException     when invalid token key was given.
      */
-    public static function analyzeTokenScope(string $key) : array
+    public static function analyzeTokenScope(string $key): array
     {
         if (!Strings::startsWith($key, '_token')) {
             throw new LogicException("Invalid token key '{$key}' was given. Token key must be starts with '_token'.");
@@ -448,12 +449,12 @@ class Session implements SessionInterface
      * @param  string|array<int, string> $wildcard of request path without route prefix (default: '*')
      * @return self
      */
-    public function saveInheritData(string $name, $data, $wildcard = '*') : self
+    public function saveInheritData(string $name, $data, $wildcard = '*'): self
     {
         $flash = $this->flash();
         $flash->set("_inherit_{$name}", array_merge(
             $flash->peek("_inherit_{$name}", []),
-            [[(array)$wildcard, $data]]
+            [[(array) $wildcard, $data]],
         ));
         return $this;
     }
@@ -467,7 +468,7 @@ class Session implements SessionInterface
      * @param  mixed        $default      (default: [])
      * @return array<mixed>
      */
-    public function loadInheritData(string $name, string $request_path, $default = []) : array
+    public function loadInheritData(string $name, string $request_path, $default = []): array
     {
         $flash   = $this->flash();
         $inherit = [];

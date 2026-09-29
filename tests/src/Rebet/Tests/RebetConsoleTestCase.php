@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests;
 
 use Rebet\Console\Testable\ConsoleTestHelper;
@@ -12,9 +13,9 @@ abstract class RebetConsoleTestCase extends RebetTestCase
 {
     use ConsoleTestHelper;
 
-    const AVIRABLE_COMMANDS = [];
+    public const AVIRABLE_COMMANDS = [];
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
         $this->setUpConsole(...static::AVIRABLE_COMMANDS);

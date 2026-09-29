@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Attribute;
@@ -34,7 +35,7 @@ class AttributedMethod
      * @param  string|object|\ReflectionClass|null $class
      * @return AttributedMethod
      */
-    public static function of($method, $class = null) : AttributedMethod
+    public static function of($method, $class = null): AttributedMethod
     {
         if (is_string($method)) {
             $method = new \ReflectionMethod($class, $method);
@@ -59,9 +60,9 @@ class AttributedMethod
      *
      * @return array<object> Attribute
      */
-    public function attributes() : array
+    public function attributes(): array
     {
-        return array_map(fn (\ReflectionAttribute $a) => $a->newInstance(), $this->method->getAttributes());
+        return array_map(fn(\ReflectionAttribute $a) => $a->newInstance(), $this->method->getAttributes());
     }
 
     /**
@@ -76,8 +77,8 @@ class AttributedMethod
     public function attribute(string $attribute, bool $check_declaring_class = true)
     {
         $attributes = $this->method->getAttributes($attribute);
-        return !empty($attributes) ? $attributes[0]->newInstance() :
-               ($check_declaring_class ? $this->attributed_class->attribute($attribute) : null)
+        return !empty($attributes) ? $attributes[0]->newInstance()
+               : ($check_declaring_class ? $this->attributed_class->attribute($attribute) : null)
         ;
     }
 
@@ -86,7 +87,7 @@ class AttributedMethod
      *
      * @return AttributedClass
      */
-    public function declaringClass() : AttributedClass
+    public function declaringClass(): AttributedClass
     {
         return $this->attributed_class;
     }
@@ -96,7 +97,7 @@ class AttributedMethod
      *
      * @return \ReflectionMethod
      */
-    public function reflector() : \ReflectionMethod
+    public function reflector(): \ReflectionMethod
     {
         return $this->method;
     }

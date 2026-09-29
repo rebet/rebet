@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http;
@@ -94,34 +95,32 @@ class HttpStatus
     /**
      * 1xx (Informational) class
      */
-    const INFORMATIONAL = 1;
+    public const INFORMATIONAL = 1;
 
     /**
      * 2xx (Successful) class
      */
-    const SUCCESSFUL = 2;
+    public const SUCCESSFUL = 2;
 
     /**
      * 3xx (Redirection) class
      */
-    const REDIRECTION = 3;
+    public const REDIRECTION = 3;
 
     /**
      * 4xx (Client Error) class
      */
-    const CLIENT_ERROR = 4;
+    public const CLIENT_ERROR = 4;
 
     /**
      * 5xx (Server Error) class
      */
-    const SERVER_ERROR = 5;
+    public const SERVER_ERROR = 5;
 
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get the Reason-Phrase of given status code.
@@ -129,7 +128,7 @@ class HttpStatus
      * @param  integer     $status
      * @return string|null return null when not exists status was given
      */
-    public static function reasonPhraseOf(int $status) : string|null
+    public static function reasonPhraseOf(int $status): string|null
     {
         return static::config("reason_phrases")[$status] ?? null ;
     }
@@ -140,7 +139,7 @@ class HttpStatus
      * @param  integer $status
      * @return boolean
      */
-    public static function exists(int $status) : bool
+    public static function exists(int $status): bool
     {
         return static::reasonPhraseOf($status) !== null ;
     }
@@ -151,12 +150,12 @@ class HttpStatus
      * @param  int      $status
      * @return int|null return null when not exists status was given
      */
-    public static function classOf(int $status) : int|null
+    public static function classOf(int $status): int|null
     {
         if (!static::exists($status)) {
             return null;
         }
-        return (int)($status / 100);
+        return (int) ($status / 100);
     }
 
     /**
@@ -165,7 +164,7 @@ class HttpStatus
      * @param  integer $status
      * @return boolean
      */
-    public static function isInformational(int $status) : bool
+    public static function isInformational(int $status): bool
     {
         return static::classOf($status) === static::INFORMATIONAL;
     }
@@ -176,7 +175,7 @@ class HttpStatus
      * @param  integer $status
      * @return boolean
      */
-    public static function isSuccessful(int $status) : bool
+    public static function isSuccessful(int $status): bool
     {
         return static::classOf($status) === static::SUCCESSFUL;
     }
@@ -187,7 +186,7 @@ class HttpStatus
      * @param  integer $status
      * @return boolean
      */
-    public static function isRedirection(int $status) : bool
+    public static function isRedirection(int $status): bool
     {
         return static::classOf($status) === static::REDIRECTION;
     }
@@ -198,7 +197,7 @@ class HttpStatus
      * @param  integer $status
      * @return boolean
      */
-    public static function isClientError(int $status) : bool
+    public static function isClientError(int $status): bool
     {
         return static::classOf($status) === static::CLIENT_ERROR;
     }
@@ -209,7 +208,7 @@ class HttpStatus
      * @param  integer $status
      * @return boolean
      */
-    public static function isServerError(int $status) : bool
+    public static function isServerError(int $status): bool
     {
         return static::classOf($status) === static::SERVER_ERROR;
     }
@@ -224,7 +223,7 @@ class HttpStatus
      * @return void
      * @throws HttpException of given HTTP status code.
      */
-    public static function abort(int $status, string|null $detail = null, string|null $title = null, \Throwable|null $previous = null) : void
+    public static function abort(int $status, string|null $detail = null, string|null $title = null, \Throwable|null $previous = null): void
     {
         throw new HttpException($status, $detail, $title, $previous);
     }

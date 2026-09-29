@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App;
@@ -22,7 +23,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function env(string|null $relative_path = null) : string
+    public function env(string|null $relative_path = null): string
     {
         return parent::env($relative_path);
     }
@@ -35,7 +36,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function configs(string|null $relative_path = null) : string
+    public function configs(string|null $relative_path = null): string
     {
         return parent::configs($relative_path);
     }
@@ -48,7 +49,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function resources(string|null $relative_path = null) : string
+    public function resources(string|null $relative_path = null): string
     {
         return parent::resources($relative_path);
     }
@@ -61,7 +62,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function routes(string|null $relative_path = null) : string
+    public function routes(string|null $relative_path = null): string
     {
         return parent::routes($relative_path);
     }
@@ -74,7 +75,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function views(string|null $relative_path = null) : string
+    public function views(string|null $relative_path = null): string
     {
         return parent::views($relative_path);
     }
@@ -87,7 +88,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function public(string|null $relative_path = null) : string
+    public function public(string|null $relative_path = null): string
     {
         return parent::public($relative_path);
     }
@@ -100,7 +101,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function cache(string|null $relative_path = null) : string
+    public function cache(string|null $relative_path = null): string
     {
         return parent::cache($relative_path);
     }
@@ -113,7 +114,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function logs(string|null $relative_path = null) : string
+    public function logs(string|null $relative_path = null): string
     {
         return parent::logs($relative_path);
     }
@@ -126,7 +127,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function storage(string|null $relative_path = null) : string
+    public function storage(string|null $relative_path = null): string
     {
         return parent::storage($relative_path);
     }
@@ -139,7 +140,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function privateStorage(string|null $relative_path = null) : string
+    public function privateStorage(string|null $relative_path = null): string
     {
         return parent::privateStorage($relative_path);
     }
@@ -152,7 +153,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function publicStorage(string|null $relative_path = null) : string
+    public function publicStorage(string|null $relative_path = null): string
     {
         return parent::publicStorage($relative_path);
     }
@@ -164,7 +165,7 @@ class AppStructure extends Structure
      * @return string
      */
     #[Override]
-    public function storageUrl() : string
+    public function storageUrl(): string
     {
         return parent::storageUrl();
     }

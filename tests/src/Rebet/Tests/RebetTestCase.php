@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests;
 
 use org\bovigo\vfs\vfsStream;
@@ -26,19 +27,19 @@ abstract class RebetTestCase extends TestCase
 {
     use TestHelper;
 
-    public static function setUpBeforeClass() : void
+    public static function setUpBeforeClass(): void
     {
-        static::setUpWorkingDir((new AppStructure(__DIR__.'/../../../'))->path('/work'));
+        static::setUpWorkingDir((new AppStructure(__DIR__ . '/../../../'))->path('/work'));
     }
 
-    protected static function setUpStatic() : void
+    protected static function setUpStatic(): void
     {
         App::reset();
         System::testing(true);
-        App::init(new AppWebKernel(new AppStructure(__DIR__.'/../../../app')));
+        App::init(new AppWebKernel(new AppStructure(__DIR__ . '/../../../app')));
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         self::setUpStatic();
     }
@@ -47,7 +48,7 @@ abstract class RebetTestCase extends TestCase
 
     // protected function assertPostConditions() {}
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         restore_error_handler();     // @todo Move to Responsible for error handler registration and restore (HandleExceptions::class).
         restore_exception_handler(); // @todo Move to Responsible for error handler registration and restore (HandleExceptions::class).
@@ -55,18 +56,18 @@ abstract class RebetTestCase extends TestCase
 
     // protected function onNotSuccessfulTest(Throwable $t) {}
 
-    public static function tearDownAfterClass() : void
+    public static function tearDownAfterClass(): void
     {
         static::tearDownWorkingDir();
         // echo static::memory();
     }
 
-    protected function vfs(array $structure) : vfsStreamDirectory
+    protected function vfs(array $structure): vfsStreamDirectory
     {
         return vfsStream::setup('root', null, $structure);
     }
 
-    protected function _randomCode(int $min_length, int|null $max_length = null, string $chars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") : string
+    protected function _randomCode(int $min_length, int|null $max_length = null, string $chars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"): string
     {
         if ($max_length == null) {
             $max_length = $min_length;
@@ -74,7 +75,7 @@ abstract class RebetTestCase extends TestCase
         return Securities::randomCode(mt_rand($min_length, $max_length), $chars);
     }
 
-    protected function createRequestMock($path, $roles = null, $channel = 'web', $guard = 'web', $method = 'GET', $prefix = '', $route = null) : Request
+    protected function createRequestMock($path, $roles = null, $channel = 'web', $guard = 'web', $method = 'GET', $prefix = '', $route = null): Request
     {
         Auth::reset();
         Router::setCurrentChannel($channel);
@@ -87,12 +88,12 @@ abstract class RebetTestCase extends TestCase
         if ($guard) {
             $request->route->guard($guard);
         }
-        $request->route->roles(...((array)$roles));
+        $request->route->roles(...((array) $roles));
         $request->route->prefix = $prefix;
         return $request;
     }
 
-    protected function createJsonRequestMock($path, $roles = null, $channel = 'api', $method = 'GET', $prefix = '') : Request
+    protected function createJsonRequestMock($path, $roles = null, $channel = 'api', $method = 'GET', $prefix = ''): Request
     {
         Auth::reset();
         Router::setCurrentChannel($channel);
@@ -103,7 +104,7 @@ abstract class RebetTestCase extends TestCase
         $request->headers->set('Accept', '*/*');
         $request->session($session);
         $request->route = new ClosureRoute([], $path, function () use ($channel) { return $channel === 'api' ? ['OK'] : 'OK' ; });
-        $request->route->roles(...((array)$roles));
+        $request->route->roles(...((array) $roles));
         $request->route->prefix = $prefix;
         return $request;
     }
@@ -116,14 +117,14 @@ abstract class RebetTestCase extends TestCase
         return $stub;
     }
 
-    protected function signin(Request $request = null, string $signin_id = 'user@rebet.local', string $password = 'user', string $fallback = '/user/signin', string $goto = '/') : Request
+    protected function signin(Request $request = null, string $signin_id = 'user@rebet.local', string $password = 'user', string $fallback = '/user/signin', string $goto = '/'): Request
     {
-        $request = $request ?? $this->createRequestMock('/');
+        $request ??= $this->createRequestMock('/');
         Auth::signin($request, Auth::attempt($request, $signin_id, $password), $fallback, $goto);
         return $request;
     }
 
-    protected function signout(Request $request = null) : void
+    protected function signout(Request $request = null): void
     {
         Auth::signout($request ?? $this->createRequestMock('/'));
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http\Session\Storage;
@@ -31,7 +32,7 @@ class ArraySessionStorage extends MockArraySessionStorage
     /**
      * {@inheritdoc}
      */
-    public function regenerate(bool $destroy = false, int|null $lifetime = null) : bool
+    public function regenerate(bool $destroy = false, int|null $lifetime = null): bool
     {
         if (!$this->started) {
             $this->start();

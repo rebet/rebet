@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Auth;
 
 use Rebet\Auth\Auth;
@@ -17,7 +18,7 @@ class AuthUserTest extends RebetTestCase
     private $array_user_source;
     private $object_user_source;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->signout();

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Routing\Route;
 
 use Rebet\Http\Response\BasicResponse;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
@@ -63,6 +64,6 @@ class RedirectRoute extends ClosureRoute
      */
     public function __toString()
     {
-        return parent::__toString()." redirect to {$this->destination} (status: {$this->status})";
+        return parent::__toString() . " redirect to {$this->destination} (status: {$this->status})";
     }
 }

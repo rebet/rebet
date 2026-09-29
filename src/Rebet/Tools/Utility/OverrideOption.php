@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -38,9 +39,7 @@ class OverrideOption
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Divides the specified key string into pure key names and options.
@@ -48,7 +47,7 @@ class OverrideOption
      * @param  string|int                           $key
      * @return array{0: string|int, 1: string|null} [string|int $key, string|null $option]
      */
-    public static function split($key) : array
+    public static function split($key): array
     {
         if (!is_string($key)) {
             return [$key, null];

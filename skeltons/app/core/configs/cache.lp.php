@@ -69,7 +69,7 @@ return [
         |  - @see Rebet\Cache\Adapter\Symfony\RedisAdapter
         |  - and also you can use any cache adapter that implemented Rebet\Cache\Adapter\Adapter.
         */
-        'stores' => [
+        'stores'        => [
             //{%-- if $cache == 'apcu' -%}
             /*
             |--------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ return [
             | If you want to use this adapter then you have to install and enabled APCu extension.
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
-            'apcu' => [
+            'apcu'      => [
                 'adapter' => [
                     '@factory' => ApcuAdapter::class,
                     // --- You can change only what you need for these default options ---
@@ -101,7 +101,7 @@ return [
             | A cache store based on a file system.
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
-            'file' => [
+            'file'      => [
                 'adapter' => [
                     '@factory' => FilesystemAdapter::class,
                     // --- You can change only what you need for these default options ---
@@ -133,7 +133,7 @@ return [
                         'local'      => 'memcached://memcached:11211',
                         'production' => ['memcached://localhost:11211', /* Secondary DSN if exists */],
                     ]),
-                    'options' => [
+                    'options'  => [
                         'username' => Env::promise('MEMCACHED_USERNAME'),
                         'password' => Env::promise('MEMCACHED_PASSWORD'),
                         // --- You can set any other options supported by Symfony\Component\Cache\Adapter\MemcachedAdapter::createConnection() ---
@@ -160,7 +160,7 @@ return [
             | A cache store based on a database.
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
-            'database' => [
+            'database'  => [
                 'adapter' => [
                     '@factory' => PdoAdapter::class,
                     // --- You can change only what you need for these default options ---
@@ -196,7 +196,7 @@ return [
             |  - redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
-            'redis' => [
+            'redis'     => [
                 'adapter' => [
                     '@factory' => RedisAdapter::class,
                     'dsn'      => App::when([
@@ -229,7 +229,7 @@ return [
             | This adapter is primarily intended for testing use.
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
-            'array' => [
+            'array'     => [
                 'adapter' => [
                     '@factory' => ArrayAdapter::class,
                     // --- You can change only what you need for these default options ---

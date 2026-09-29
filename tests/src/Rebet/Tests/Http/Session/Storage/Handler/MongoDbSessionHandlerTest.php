@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Http\Session\Storage\Handler;
 
 use Rebet\Http\Session\Storage\Handler\MongoDbSessionHandler;
@@ -6,7 +7,7 @@ use Rebet\Tests\RebetTestCase;
 
 class MongoDbSessionHandlerTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         if (!class_exists('MongoDB\Client')) {

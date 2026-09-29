@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Config;
 
 use Rebet\Tests\RebetTestCase;
@@ -9,7 +10,7 @@ class ConfigPromiseTest extends RebetTestCase
     private $promise_once;
     private $promise_every;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         \putenv('PROMISE_TEST=');
@@ -21,7 +22,7 @@ class ConfigPromiseTest extends RebetTestCase
         }, false);
     }
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         \putenv('PROMISE_TEST=');
         parent::tearDown();

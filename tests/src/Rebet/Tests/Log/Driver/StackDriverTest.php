@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Log\Driver;
 
 use Psr\Log\LoggerInterface;
@@ -13,7 +14,7 @@ use Rebet\Tools\DateTime\DateTime;
 
 class StackDriverTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
@@ -30,7 +31,7 @@ class StackDriverTest extends RebetTestCase
             Log::class => [
                 'unittest' => false,
                 'channels' => [
-                    'test' => [
+                    'test'   => [
                         'driver' => [
                             '@factory' => TestDriver::class,
                             'level'    => LogLevel::WARNING,
@@ -53,18 +54,18 @@ class StackDriverTest extends RebetTestCase
             "2010-10-20 10:20:30.123456 [stderr.ERROR] {$process_id} Somthing error happened.\n",
             function () use ($stack) {
                 $stack->error('Somthing error happened.');
-            }
+            },
         );
         $this->assertSame(
             "2010-10-20 10:20:30.123456 test/{$process_id} [ERROR] Somthing error happened.\n",
-            Log::channel('test')->driver()->formatted()
+            Log::channel('test')->driver()->formatted(),
         );
 
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [stderr.INFO] {$process_id} Somthing infomation.\n",
             function () use ($stack) {
                 $stack->info('Somthing infomation.');
-            }
+            },
         );
         $this->assertFalse(Log::channel('test')->driver()->hasInfoRecords());
     }
@@ -75,7 +76,7 @@ class StackDriverTest extends RebetTestCase
             Log::class => [
                 'unittest' => false,
                 'channels' => [
-                    'test' => [
+                    'test'   => [
                         'driver' => [
                             '@factory' => TestDriver::class,
                             'level'    => LogLevel::WARNING,
@@ -99,18 +100,18 @@ class StackDriverTest extends RebetTestCase
             "2010-10-20 10:20:30.123456 [foo.ERROR] {$process_id} Somthing error happened.\n",
             function () use ($stack) {
                 $stack->error('Somthing error happened.');
-            }
+            },
         );
         $this->assertSame(
             "2010-10-20 10:20:30.123456 foo/{$process_id} [ERROR] Somthing error happened.\n",
-            Log::channel('test')->driver()->formatted()
+            Log::channel('test')->driver()->formatted(),
         );
 
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [foo.INFO] {$process_id} Somthing infomation.\n",
             function () use ($stack) {
                 $stack->info('Somthing infomation.');
-            }
+            },
         );
         $this->assertFalse(Log::channel('test')->driver()->hasInfoRecords());
     }
@@ -121,7 +122,7 @@ class StackDriverTest extends RebetTestCase
             Log::class => [
                 'unittest' => false,
                 'channels' => [
-                    'test' => [
+                    'test'   => [
                         'driver' => [
                             '@factory' => TestDriver::class,
                             'level'    => LogLevel::WARNING,
@@ -145,18 +146,18 @@ class StackDriverTest extends RebetTestCase
             "2010-10-20 10:20:30.123456 [stderr.ERROR] {$process_id} Somthing error happened.\n",
             function () use ($stack) {
                 $stack->error('Somthing error happened.');
-            }
+            },
         );
         $this->assertSame(
             "2010-10-20 10:20:30.123456 test/{$process_id} [ERROR] Somthing error happened.\n",
-            Log::channel('test')->driver()->formatted()
+            Log::channel('test')->driver()->formatted(),
         );
 
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [stderr.INFO] {$process_id} Somthing infomation.\n",
             function () use ($stack) {
                 $stack->info('Somthing infomation.');
-            }
+            },
         );
         $this->assertFalse(Log::channel('test')->driver()->hasInfoRecords());
 
@@ -164,19 +165,19 @@ class StackDriverTest extends RebetTestCase
             "2010-10-20 10:20:30.123456 [foo.ERROR] {$process_id} Somthing error happened.\n",
             function () use ($stack_foo) {
                 $stack_foo->error('Somthing error happened.');
-            }
+            },
         );
         $this->assertSame(
-            "2010-10-20 10:20:30.123456 test/{$process_id} [ERROR] Somthing error happened.\n".
-            "2010-10-20 10:20:30.123456 foo/{$process_id} [ERROR] Somthing error happened.\n",
-            Log::channel('test')->driver()->formatted()
+            "2010-10-20 10:20:30.123456 test/{$process_id} [ERROR] Somthing error happened.\n"
+            . "2010-10-20 10:20:30.123456 foo/{$process_id} [ERROR] Somthing error happened.\n",
+            Log::channel('test')->driver()->formatted(),
         );
 
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [foo.INFO] {$process_id} Somthing infomation.\n",
             function () use ($stack_foo) {
                 $stack_foo->info('Somthing infomation.');
-            }
+            },
         );
         $this->assertFalse(Log::channel('test')->driver()->hasInfoRecords());
 

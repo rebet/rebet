@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Console\Command;
 
 use Rebet\Console\Command\Command;
@@ -12,16 +13,16 @@ class CommandTest extends RebetTestCase
     /** @var Command */
     protected $hello;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->hello = new class() extends Command {
-            const NAME        = 'Hello';
-            const DESCRIPTION = 'Say Hello.';
-            const ARGUMENTS   = [
+        $this->hello = new class extends Command {
+            public const NAME        = 'Hello';
+            public const DESCRIPTION = 'Say Hello.';
+            public const ARGUMENTS   = [
                 ['to', InputArgument::OPTIONAL, 'Say hello to someone.'],
             ];
-            const OPTIONS = [
+            public const OPTIONS = [
                 ['meeting-time', 'mt', InputArgument::OPTIONAL, 'Meeting time of morning, noon or evening.'],
                 ['command', 'c', InputArgument::OPTIONAL, 'Command to display', 'comment'],
             ];
@@ -53,7 +54,7 @@ class CommandTest extends RebetTestCase
 
         $status = $tester->execute([]);
         $this->assertSame(0, $status);
-        $this->assertSame("Hello.".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Hello." . PHP_EOL, $tester->getDisplay());
         $this->assertSame(['to' => null], $this->hello->arguments());
         $this->assertSame(true, $this->hello->hasArgument('to'));
         $this->assertSame(false, $this->hello->hasArgument('invalid'));
@@ -66,7 +67,7 @@ class CommandTest extends RebetTestCase
 
         $status = $tester->execute(['to' => 'John']);
         $this->assertSame(0, $status);
-        $this->assertSame("Hello John.".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Hello John." . PHP_EOL, $tester->getDisplay());
         $this->assertSame(['to' => 'John'], $this->hello->arguments());
         $this->assertSame(true, $this->hello->hasArgument('to'));
         $this->assertSame('John', $this->hello->argument('to'));
@@ -74,14 +75,14 @@ class CommandTest extends RebetTestCase
 
         $status = $tester->execute(['to' => 'John', '--meeting-time' => 'morning']);
         $this->assertSame(0, $status);
-        $this->assertSame("Good morning John.".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Good morning John." . PHP_EOL, $tester->getDisplay());
         $this->assertSame(['to' => 'John'], $this->hello->arguments());
         $this->assertSame(['meeting-time' => 'morning', 'command' => 'comment'], $this->hello->options());
         $this->assertSame('morning', $this->hello->option('meeting-time'));
 
         $status = $tester->execute(['to' => 'John', '-mt' => 'noon']);
         $this->assertSame(0, $status);
-        $this->assertSame("Good after noon John.".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Good after noon John." . PHP_EOL, $tester->getDisplay());
         $this->assertSame(['to' => 'John'], $this->hello->arguments());
         $this->assertSame(['meeting-time' => 'noon', 'command' => 'comment'], $this->hello->options());
 
@@ -91,35 +92,35 @@ class CommandTest extends RebetTestCase
 
         $status = $tester->execute(['-c' => 'writeln']);
         $this->assertSame(0, $status);
-        $this->assertSame("Hello.".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Hello." . PHP_EOL, $tester->getDisplay());
 
         $status = $tester->execute(['-c' => 'info']);
         $this->assertSame(0, $status);
-        $this->assertSame("Hello.".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Hello." . PHP_EOL, $tester->getDisplay());
 
         $status = $tester->execute(['-c' => 'comment']);
         $this->assertSame(0, $status);
-        $this->assertSame("Hello.".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Hello." . PHP_EOL, $tester->getDisplay());
 
         $status = $tester->execute(['-c' => 'question']);
         $this->assertSame(0, $status);
-        $this->assertSame("Hello.".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Hello." . PHP_EOL, $tester->getDisplay());
 
         $status = $tester->execute(['-c' => 'error']);
         $this->assertSame(0, $status);
-        $this->assertSame("Hello.".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Hello." . PHP_EOL, $tester->getDisplay());
 
         $status = $tester->execute(['-c' => 'warning']);
         $this->assertSame(0, $status);
-        $this->assertSame("Hello.".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Hello." . PHP_EOL, $tester->getDisplay());
     }
 
     public function test_choice_viaOption()
     {
-        $choice = new class() extends Command {
-            const NAME        = 'Choice';
-            const DESCRIPTION = 'Choice test command.';
-            const OPTIONS     = [
+        $choice = new class extends Command {
+            public const NAME        = 'Choice';
+            public const DESCRIPTION = 'Choice test command.';
+            public const OPTIONS     = [
                 ['fruit', 'f', InputOption::VALUE_OPTIONAL, 'Favorite fruit.'],
             ];
 
@@ -133,21 +134,21 @@ class CommandTest extends RebetTestCase
         // The option value matches a choice key (this used to be rejected, only labels/values matched).
         $status = $tester->execute(['--fruit' => 'banana']);
         $this->assertSame(0, $status);
-        $this->assertSame("Favorite fruit : banana (via option)\nbanana".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Favorite fruit : banana (via option)\nbanana" . PHP_EOL, $tester->getDisplay());
 
         // The option value matches a choice value (label), which already worked before the fix.
         // (viaOption() returns the matched answer verbatim, so a label match yields the label as-is.)
         $status = $tester->execute(['--fruit' => 'Apple']);
         $this->assertSame(0, $status);
-        $this->assertSame("Favorite fruit : Apple (via option)\nApple".PHP_EOL, $tester->getDisplay());
+        $this->assertSame("Favorite fruit : Apple (via option)\nApple" . PHP_EOL, $tester->getDisplay());
     }
 
     public function test_option_aliases()
     {
-        $aliased = new class() extends Command {
-            const NAME        = 'Aliased';
-            const DESCRIPTION = 'Option alias test command.';
-            const OPTIONS     = [
+        $aliased = new class extends Command {
+            public const NAME        = 'Aliased';
+            public const DESCRIPTION = 'Option alias test command.';
+            public const OPTIONS     = [
                 [['long-name', 'ln'], 'x', InputOption::VALUE_OPTIONAL, 'A value option with a long alias.'],
                 [['dry-run', 'dr'], null, InputOption::VALUE_NONE, 'A flag option with a long alias.'],
             ];

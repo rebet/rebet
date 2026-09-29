@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Mail;
@@ -68,11 +69,11 @@ class Email extends SymfonyEmail
     public static function defaultConfig()
     {
         return [
-            'default_mailer' => 'main',
-            'mailers'        => [
-                'main' => [
-                    'transport' => [
-                        '@factory'   => Transport::class."::fromDsn",
+            'default_mailer'      => 'main',
+            'mailers'             => [
+                'main'     => [
+                    'transport'  => [
+                        '@factory'   => Transport::class . "::fromDsn",
                         'dsn'        => Env::get('MAILER_DSN', 'null://null'),
                         'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
                         'client'     => null, // Instantiable class name of HttpClientInterface implementation, or null to disable.
@@ -82,7 +83,7 @@ class Email extends SymfonyEmail
                     'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
                 ],
                 'unittest' => [
-                    'transport' => [
+                    'transport'  => [
                         '@factory'   => InMemoryTransport::class,
                         'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
                         'logger'     => null, // Instantiable class name of LoggerInterface implementation [ex: Log::channel('test')->driver()] or null to disable.
@@ -91,11 +92,11 @@ class Email extends SymfonyEmail
                     'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
                 ],
             ],
-            'encodes' => [
+            'encodes'             => [
                 'header' => 'base64', // 'quoted-printable', 'base64'
                 'body'   => 'base64', // 'quoted-printable', 'base64', '8bit'
             ],
-            'html2text_generator' => fn (string $body) => (new Html2Text($body, ['width' => 0]))->getText(),
+            'html2text_generator' => fn(string $body) => (new Html2Text($body, ['width' => 0]))->getText(),
         ];
     }
 
@@ -136,9 +137,9 @@ class Email extends SymfonyEmail
      * @return Mailer
      * @throws ConfigNotDefineException
      */
-    public static function mailer(string|null $mailer = null) : Mailer
+    public static function mailer(string|null $mailer = null): Mailer
     {
-        $mailer = $mailer ?? static::config('default_mailer');
+        $mailer ??= static::config('default_mailer');
 
         if (isset(static::$mailers[$mailer])) {
             return static::$mailers[$mailer];
@@ -162,7 +163,7 @@ class Email extends SymfonyEmail
      * @return TransportInterface
      * @throws ConfigNotDefineException
      */
-    public static function transport(string|null $mailer = null) : TransportInterface
+    public static function transport(string|null $mailer = null): TransportInterface
     {
         return Reflector::get(static::mailer($mailer), 'transport', accessible: true);
     }
@@ -172,7 +173,7 @@ class Email extends SymfonyEmail
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         static::$mailers = [];
     }
@@ -183,9 +184,9 @@ class Email extends SymfonyEmail
      * @param  callable|null $generator (default: null to use 'Email.html2text_generator' config)
      * @return static
      */
-    public function generateTextBodyFromHtml(callable|null $generator = null) : static
+    public function generateTextBodyFromHtml(callable|null $generator = null): static
     {
-        $generator = $generator ?? static::config('html2text_generator', false, null);
+        $generator ??= static::config('html2text_generator', false, null);
         return $this->text(Reflector::evaluate($generator, [$this->getHtmlBody()]));
     }
 
@@ -197,7 +198,7 @@ class Email extends SymfonyEmail
      * @return $this
      */
     #[Override]
-    public function text($body, string $charset = 'utf-8') : static
+    public function text($body, string $charset = 'utf-8'): static
     {
         $this->cachedBody = null;
         return parent::text($body, $charset);
@@ -211,7 +212,7 @@ class Email extends SymfonyEmail
      * @return $this
      */
     #[Override]
-    public function html($body, string $charset = 'utf-8') : static
+    public function html($body, string $charset = 'utf-8'): static
     {
         $this->cachedBody = null;
         return parent::html($body, $charset);
@@ -224,7 +225,7 @@ class Email extends SymfonyEmail
      * @return $this
      */
     #[Override]
-    public function addPart(DataPart $part) : static
+    public function addPart(DataPart $part): static
     {
         $this->cachedBody = null;
         return parent::addPart($part);
@@ -236,7 +237,7 @@ class Email extends SymfonyEmail
      * @return AbstractPart
      */
     #[Override]
-    public function getBody() : AbstractPart
+    public function getBody(): AbstractPart
     {
         if (null !== $body = Message::getBody()) {
             return $body;
@@ -268,7 +269,7 @@ class Email extends SymfonyEmail
      * @return AbstractPart
      * @throws LogicException if this email has neither a text/HTML body nor any attachments
      */
-    protected function generateBody() : AbstractPart
+    protected function generateBody(): AbstractPart
     {
         if (null !== $this->cachedBody) {
             return $this->cachedBody;
@@ -309,7 +310,7 @@ class Email extends SymfonyEmail
      * @return void
      * @throws LogicException if this email has neither a text/HTML body nor any attachments
      */
-    protected function ensureBodyValid() : void
+    protected function ensureBodyValid(): void
     {
         if (null === $this->getTextBody() && null === $this->getHtmlBody() && !$this->getAttachments() && null === Message::getBody()) {
             throw new LogicException('A message must have a text or an HTML part or attachments.');
@@ -323,7 +324,7 @@ class Email extends SymfonyEmail
      *
      * @return array{0: TextPart|null, 1: array<int, DataPart>, 2: array<int, DataPart>} [$htmlPart, $otherParts, $relatedParts]
      */
-    protected function prepareParts() : array|null
+    protected function prepareParts(): array|null
     {
         $names    = [];
         $htmlPart = null;
@@ -338,7 +339,7 @@ class Email extends SymfonyEmail
             ];
             $tmpMatches = [];
             foreach ($regexes as $regex) {
-                preg_match_all('/'.$regex.'/i', $html, $tmpMatches);
+                preg_match_all('/' . $regex . '/i', $html, $tmpMatches);
                 $names = array_merge($names, $tmpMatches[2], $tmpMatches[3]);
             }
             $names = array_filter(array_unique($names));
@@ -355,7 +356,7 @@ class Email extends SymfonyEmail
                 }
 
                 if ($name !== $part->getContentId()) {
-                    $html = str_replace('cid:'.$name, 'cid:'.$part->getContentId(), $html);
+                    $html = str_replace('cid:' . $name, 'cid:' . $part->getContentId(), $html);
                 }
                 $relatedParts[$name] = $part;
                 $part->setName($part->getName() ?? $part->getContentId())->asInline();
@@ -381,7 +382,7 @@ class Email extends SymfonyEmail
      * @return Headers
      */
     #[Override]
-    public function getPreparedHeaders() : Headers
+    public function getPreparedHeaders(): Headers
     {
         $this->prepareHeaders();
         return parent::getPreparedHeaders();
@@ -393,7 +394,7 @@ class Email extends SymfonyEmail
      *
      * @return void
      */
-    protected function prepareHeaders() : void
+    protected function prepareHeaders(): void
     {
         if ($this->getDate() === null) {
             $this->date(DateTime::now());
@@ -412,7 +413,7 @@ class Email extends SymfonyEmail
      *
      * @return static a clone of this email, with encoded headers
      */
-    public function build() : static
+    public function build(): static
     {
         $this->prepareHeaders();
         $email = clone $this;
@@ -436,8 +437,8 @@ class Email extends SymfonyEmail
                     break;
                 case $header instanceof MailboxListHeader:
                     $header->setAddresses(array_map(
-                        fn (Address $origin) => static::needEncode($origin->getName()) ? new Address($origin->getAddress(), static::encode($origin->getName(), $header, $encode)) : $origin,
-                        $header->getAddresses()
+                        fn(Address $origin) => static::needEncode($origin->getName()) ? new Address($origin->getAddress(), static::encode($origin->getName(), $header, $encode)) : $origin,
+                        $header->getAddresses(),
                     ));
                     break;
                 default:
@@ -455,9 +456,9 @@ class Email extends SymfonyEmail
      * @param  string $body value of the header to check
      * @return bool
      */
-    protected static function needEncode(string $body) : bool
+    protected static function needEncode(string $body): bool
     {
-        return !preg_match('/^'.AbstractHeader::PHRASE_PATTERN.'$/D', $body);
+        return !preg_match('/^' . AbstractHeader::PHRASE_PATTERN . '$/D', $body);
     }
 
     /**
@@ -475,14 +476,14 @@ class Email extends SymfonyEmail
      * @param  'B'|'Q'         $encode used to word-encode $body ('B' or 'Q')
      * @return string          encoded as "=?charset?encoding?...?=" (one or more, separated by a single space)
      */
-    protected static function encode(string $body, HeaderInterface $header, string $encode) : string
+    protected static function encode(string $body, HeaderInterface $header, string $encode): string
     {
         $charset = $header->getCharset() ?? 'utf-8';
 
         $old = mb_internal_encoding();
         mb_internal_encoding($charset);
         try {
-            return mb_encode_mimeheader($body, $charset, $encode, '', \strlen($header->getName().': '));
+            return mb_encode_mimeheader($body, $charset, $encode, '', \strlen($header->getName() . ': '));
         } finally {
             mb_internal_encoding($old);
         }
@@ -496,7 +497,7 @@ class Email extends SymfonyEmail
      * @return static
      * @throws ConfigNotDefineException
      */
-    public function send(string|null $mailer = null, Envelope|null $envelope = null) : static
+    public function send(string|null $mailer = null, Envelope|null $envelope = null): static
     {
         static::mailer($mailer)->send($this->build(), $envelope);
         return $this;

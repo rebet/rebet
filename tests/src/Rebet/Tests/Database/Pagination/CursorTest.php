@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database\Pagination;
 
 use Rebet\Database\Pagination\Cursor;
@@ -21,7 +22,7 @@ class CursorTest extends RebetTestCase
 
         $this->assertEquals(
             new Cursor($pager, ['created_at' => $now, 'user_id' => 123], $pager->eachSide()),
-            Cursor::create(['created_at' => 'desc', 'user_id' => 'asc'], $pager, ['created_at' => $now, 'user_id' => 123], $pager->eachSide())
+            Cursor::create(['created_at' => 'desc', 'user_id' => 'asc'], $pager, ['created_at' => $now, 'user_id' => 123], $pager->eachSide()),
         );
     }
 

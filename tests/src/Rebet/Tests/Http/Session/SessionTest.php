@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Http\Session;
 
 use Rebet\Http\Session\Session;
@@ -286,7 +287,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame(40, mb_strlen($token));
         $this->assertSame(true, $session->verifyToken($token)); // 1st time check
         $this->assertSame(true, $session->verifyToken($token)); // 2nd time check
-        $this->assertSame(false, $session->verifyToken('incorrect'.$token));
+        $this->assertSame(false, $session->verifyToken('incorrect' . $token));
 
         $this->assertSame(null, $session->token('user', 'edit'));
         $onetime_token = $session->generateToken('user', 'edit');
@@ -297,7 +298,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame(false, $session->verifyToken($onetime_token, 'user', 'edit')); // 2nd time check
 
         $onetime_token = $session->generateToken('user', 'edit');
-        $this->assertSame(false, $session->verifyToken('incorrect'.$onetime_token, 'user', 'edit')); // 1st time check
+        $this->assertSame(false, $session->verifyToken('incorrect' . $onetime_token, 'user', 'edit')); // 1st time check
         $this->assertSame(false, $session->verifyToken($onetime_token, 'user', 'edit'));             // 2nd time check
 
         $ot1 = $session->generateToken('article', 'edit', 1);
@@ -346,7 +347,7 @@ class SessionTest extends RebetTestCase
                 [['/user/*'], ['c' => 'C']],
                 [['/blog/register', '/blog/copy'], ['d' => 'D']],
             ],
-            $session->flash()->peek('_inherit_input')
+            $session->flash()->peek('_inherit_input'),
         );
 
         $this->assertSame([], $session->loadInheritData('invalid', '/'));
@@ -356,7 +357,7 @@ class SessionTest extends RebetTestCase
                 'a' => 'A',
                 'b' => 'B',
             ],
-            $session->loadInheritData('input', '/')
+            $session->loadInheritData('input', '/'),
         );
         $this->assertSame(null, $session->flash()->peek('_inherit_input'));
 
@@ -367,7 +368,7 @@ class SessionTest extends RebetTestCase
                 'b' => 'b',
                 'c' => 'C',
             ],
-            $session->loadInheritData('input', '/user/edit')
+            $session->loadInheritData('input', '/user/edit'),
         );
         $this->assertSame(null, $session->flash()->peek('_inherit_input'));
 
@@ -378,7 +379,7 @@ class SessionTest extends RebetTestCase
                 'b' => 'B',
                 'c' => 'C',
             ],
-            $session->loadInheritData('input', '/user/register')
+            $session->loadInheritData('input', '/user/register'),
         );
         $this->assertSame(null, $session->flash()->peek('_inherit_input'));
 
@@ -389,7 +390,7 @@ class SessionTest extends RebetTestCase
                 'b' => 'B',
                 'd' => 'D',
             ],
-            $session->loadInheritData('input', '/blog/register')
+            $session->loadInheritData('input', '/blog/register'),
         );
         $this->assertSame(null, $session->flash()->peek('_inherit_input'));
     }

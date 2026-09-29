@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\DateTime;
@@ -40,7 +41,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function modify(string $modify) : static
+    public function modify(string $modify): static
     {
         $date = parent::modify($modify);
         return $date->format('H:i:s.u') === '00:00:00.000000' ? $date : $date->startsOfDay() ;
@@ -49,7 +50,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function setTime($hour, $minute, $second = 0, $microseconds = 0) : static
+    public function setTime($hour, $minute, $second = 0, $microseconds = 0): static
     {
         return parent::setTime($hour, $minute, $second, $microseconds)->startsOfDay();
     }
@@ -57,7 +58,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function setTimestamp($unixtimestamp) : static
+    public function setTimestamp($unixtimestamp): static
     {
         return parent::setTimestamp($unixtimestamp)->startsOfDay();
     }
@@ -65,7 +66,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function setTimezone($timezone) : static
+    public function setTimezone($timezone): static
     {
         return parent::setTimezone($timezone)->startsOfDay();
     }
@@ -73,7 +74,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function add($interval) : static
+    public function add($interval): static
     {
         return parent::add($interval)->startsOfDay();
     }
@@ -81,7 +82,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function sub($interval) : static
+    public function sub($interval): static
     {
         return parent::sub($interval)->startsOfDay();
     }
@@ -89,7 +90,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function toDate() : Date
+    public function toDate(): Date
     {
         return $this;
     }
@@ -97,7 +98,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function toDateTime() : DateTime
+    public function toDateTime(): DateTime
     {
         return new DateTime($this);
     }

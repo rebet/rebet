@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http\Exception;
@@ -33,7 +34,7 @@ class TokenMismatchException extends RuntimeException implements ProblemResponda
     /**
      * {@inheritDoc}
      */
-    public function problem() : ProblemResponse
+    public function problem(): ProblemResponse
     {
         return Responder::problem(400)->detail(Translator::get('message.http.400.detail') ?? $this->getMessage());
     }

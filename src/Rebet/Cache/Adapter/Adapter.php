@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Cache\Adapter;
@@ -22,7 +23,7 @@ interface Adapter extends CacheItemPoolInterface
      *
      * @return bool
      */
-    public function taggable() : bool;
+    public function taggable(): bool;
 
     /**
      * Persists a cache item immediately with tags.
@@ -53,7 +54,7 @@ interface Adapter extends CacheItemPoolInterface
      * @return bool
      * @throws UnsupportedTaggingException when the adapter does not support tag
      */
-    public function clearByTags(array $tags) : bool ;
+    public function clearByTags(array $tags): bool ;
 
     /**
      * Execute pruning (deletion) of all expired cache items.
@@ -61,5 +62,5 @@ interface Adapter extends CacheItemPoolInterface
      *
      * @return bool
      */
-    public function prune() : bool;
+    public function prune(): bool;
 }

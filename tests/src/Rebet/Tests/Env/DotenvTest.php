@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Env;
 
 use Dotenv\Exception\InvalidPathException;
@@ -10,7 +11,7 @@ use Rebet\Tests\RebetTestCase;
 
 class DotenvTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
     }

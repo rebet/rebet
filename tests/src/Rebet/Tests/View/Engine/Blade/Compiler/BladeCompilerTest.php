@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\View\Engine\Blade\Compiler;
 
 use Rebet\Application\App;
@@ -16,7 +17,7 @@ class BladeCompilerTest extends RebetTestCase
      */
     private $compiler;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         Config::application([

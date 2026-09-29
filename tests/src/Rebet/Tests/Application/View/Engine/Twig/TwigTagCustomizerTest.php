@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\View\Engine\Twig;
 
 use Rebet\Application\App;
@@ -10,7 +11,7 @@ use Rebet\View\View;
 
 class TwigTagCustomizerTest extends EngineCustomizerTestCase
 {
-    protected function createEngine() : Engine
+    protected function createEngine(): Engine
     {
         Config::application([
             View::class => [

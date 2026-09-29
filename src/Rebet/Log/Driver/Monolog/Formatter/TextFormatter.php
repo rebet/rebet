@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Log\Driver\Monolog\Formatter;
@@ -30,12 +31,12 @@ class TextFormatter implements FormatterInterface
             'default_stringifier' => function ($val, array $masks, string $masked_label) { return Strings::stringify($val, $masks, $masked_label); },
             'stringifiers'        => [
                 '{datetime}'  => function ($val, array $masks, string $masked_label) { return $val->format('Y-m-d H:i:s.u'); },
-                '{context}'   => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n====== [  CONTEXT  ] ======\n".Strings::indent(Strings::stringify($val, $masks, $masked_label), "== ") ; },
-                '{extra}'     => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n------ [   EXTRA   ] ------\n".Strings::indent(Strings::stringify($val, $masks, $masked_label), "-- ") ; },
-                '{exception}' => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n****** [ EXCEPTION ] ******\n".Strings::indent("{$val}", "** ") ; },
+                '{context}'   => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n====== [  CONTEXT  ] ======\n" . Strings::indent(Strings::stringify($val, $masks, $masked_label), "== ") ; },
+                '{extra}'     => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n------ [   EXTRA   ] ------\n" . Strings::indent(Strings::stringify($val, $masks, $masked_label), "-- ") ; },
+                '{exception}' => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n****** [ EXCEPTION ] ******\n" . Strings::indent("{$val}", "** ") ; },
             ],
-            'masks'        => [],
-            'masked_label' => '********',
+            'masks'               => [],
+            'masked_label'        => '********',
         ];
     }
 
@@ -68,7 +69,7 @@ class TextFormatter implements FormatterInterface
      * @param  mixed  $val
      * @return string
      */
-    protected function stringify(string $key, $val) : string
+    protected function stringify(string $key, $val): string
     {
         return Reflector::evaluate($this->stringifiers[$key] ?? static::config('default_stringifier'), [$val, static::config('masks', false, []), static::config('masked_label')], true);
     }
@@ -83,7 +84,7 @@ class TextFormatter implements FormatterInterface
         $exception    = Reflector::remove($record_array, 'context.exception');
 
         foreach (Arrays::sortKeys($record_array['extra'] ?? [], SORT_DESC, Callbacks::compareLength()) as $var => $val) {
-            $key = '{extra.'.$var.'}';
+            $key = '{extra.' . $var . '}';
             if (false !== strpos($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);
                 unset($record_array['extra'][$var]);
@@ -91,7 +92,7 @@ class TextFormatter implements FormatterInterface
         }
 
         foreach (Arrays::sortKeys($record_array['context'] ?? [], SORT_DESC, Callbacks::compareLength()) as $var => $val) {
-            $key = '{context.'.$var.'}';
+            $key = '{context.' . $var . '}';
             if (false !== strpos($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);
                 unset($record_array['context'][$var]);
@@ -99,7 +100,7 @@ class TextFormatter implements FormatterInterface
         }
 
         foreach (Arrays::sortKeys($record_array, SORT_DESC, Callbacks::compareLength()) as $var => $val) {
-            $key = '{'.$var.'}';
+            $key = '{' . $var . '}';
             if (false !== strpos($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);
             }
@@ -120,7 +121,7 @@ class TextFormatter implements FormatterInterface
     /**
      * {@inheritDoc}
      */
-    public function formatBatch(array $records) : string
+    public function formatBatch(array $records): string
     {
         $message = '';
         foreach ($records as $record) {

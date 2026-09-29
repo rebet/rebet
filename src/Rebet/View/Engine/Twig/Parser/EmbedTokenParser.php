@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\View\Engine\Twig\Parser;
@@ -159,7 +160,7 @@ class EmbedTokenParser extends AbstractTokenParser
      * @return array<int|string, \Twig\Node\Expression\AbstractExpression>
      * @throws SyntaxError
      */
-    public function parseArguments(array|null $separators, bool $allow_arrow = false) : array
+    public function parseArguments(array|null $separators, bool $allow_arrow = false): array
     {
         $args     = [];
         $stream   = $this->parser->getStream();
@@ -176,7 +177,7 @@ class EmbedTokenParser extends AbstractTokenParser
                 throw new SyntaxError(
                     "Too many code arguments. The code tag '{$this->tag}' takes no arguments.",
                     $this->parser->getCurrentToken()->getLine(),
-                    $stream->getSourceContext()
+                    $stream->getSourceContext(),
                 );
             }
 
@@ -185,16 +186,16 @@ class EmbedTokenParser extends AbstractTokenParser
                     throw new SyntaxError(
                         "Too many code arguments. The code tag '{$this->tag}' takes only one argument.",
                         $this->parser->getCurrentToken()->getLine(),
-                        $stream->getSourceContext()
+                        $stream->getSourceContext(),
                     );
                 }
 
                 $candidates = Arrays::toArray($separators[$i++] ?? $variadic);
                 if ($candidates === null) {
                     throw new SyntaxError(
-                        "Too many code arguments. The code tag '{$this->tag}' takes up to ".(count($separators) + 1)." arguments.",
+                        "Too many code arguments. The code tag '{$this->tag}' takes up to " . (count($separators) + 1) . " arguments.",
                         $this->parser->getCurrentToken()->getLine(),
-                        $stream->getSourceContext()
+                        $stream->getSourceContext(),
                     );
                 }
 
@@ -217,9 +218,9 @@ class EmbedTokenParser extends AbstractTokenParser
                     $stream->next();
                 } elseif (!$allow_empty) {
                     throw new SyntaxError(
-                        Translator::ordinalize($i, 'en')." and ".Translator::ordinalize($i + 1, 'en')." arguments of the code tag '{$this->tag}' must be separated by '".implode("' or '", $candidates)."'.",
+                        Translator::ordinalize($i, 'en') . " and " . Translator::ordinalize($i + 1, 'en') . " arguments of the code tag '{$this->tag}' must be separated by '" . implode("' or '", $candidates) . "'.",
                         $this->parser->getCurrentToken()->getLine(),
-                        $stream->getSourceContext()
+                        $stream->getSourceContext(),
                     );
                 }
             }
@@ -231,7 +232,7 @@ class EmbedTokenParser extends AbstractTokenParser
                     throw new SyntaxError(
                         sprintf('A parameter name must be a string, "%s" given.', \get_class($value)),
                         $token->getLine(),
-                        $stream->getSourceContext()
+                        $stream->getSourceContext(),
                     );
                 }
                 $name  = $value->getAttribute('name');

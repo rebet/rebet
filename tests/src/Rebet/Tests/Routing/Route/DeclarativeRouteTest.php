@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Routing\Route;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -23,7 +24,7 @@ class DeclarativeRouteTest extends RebetTestCase
         $this->assertSame('ClosureRoute: [GET|HEAD] /path where {"id":"\/[0-9]+\/"}', $route->__toString());
     }
 
-    public static function dataDefaultViews() : array
+    public static function dataDefaultViews(): array
     {
         return [
             ['/path', '/path'],

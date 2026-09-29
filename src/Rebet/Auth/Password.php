@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth;
@@ -32,9 +33,7 @@ class Password
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Generate password hash from given plain password using password_hash() php function.
@@ -44,13 +43,13 @@ class Password
      * @param  array<string, mixed>|null $options   (default: depend on configure)
      * @return string|null
      */
-    public static function hash(string|null $password, $algorithm = null, array|null $options = null) : string|null
+    public static function hash(string|null $password, $algorithm = null, array|null $options = null): string|null
     {
         if ($password === null) {
             return null;
         }
-        $algorithm = $algorithm ?? static::config('algorithm');
-        $options   = $options ?? static::config('options', false, []);
+        $algorithm ??= static::config('algorithm');
+        $options ??= static::config('options', false, []);
         return password_hash($password, $algorithm, $options);
     }
 
@@ -61,7 +60,7 @@ class Password
      * @param  string|null $hash
      * @return boolean
      */
-    public static function verify(string|null $password, string|null $hash) : bool
+    public static function verify(string|null $password, string|null $hash): bool
     {
         return ($password === null || $hash === null) ? false : password_verify($password, $hash) ;
     }
@@ -74,13 +73,13 @@ class Password
      * @param  array<string, mixed>|null $options   (default: depend on configure)
      * @return bool
      */
-    public static function needsRehash(string|null $hash, $algorithm = null, array|null $options = null) : bool
+    public static function needsRehash(string|null $hash, $algorithm = null, array|null $options = null): bool
     {
         if ($hash === null) {
             return false;
         }
-        $algorithm = $algorithm ?? static::config('algorithm');
-        $options   = $options ?? static::config('options', false, []);
+        $algorithm ??= static::config('algorithm');
+        $options ??= static::config('options', false, []);
         return password_needs_rehash($hash, $algorithm, $options);
     }
 }

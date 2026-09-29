@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Log\Driver\Monolog;
@@ -118,7 +119,7 @@ class TestDriver extends MonologDriver
      *
      * @return string
      */
-    public function formatted() : string
+    public function formatted(): string
     {
         $log = "";
         foreach ($this->handler->getRecords() as $record) {

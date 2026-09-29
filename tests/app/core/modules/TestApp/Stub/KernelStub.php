@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Stub;
 
 use Rebet\Application\ExceptionHandler;
@@ -17,7 +18,7 @@ class KernelStub extends Kernel
         $this->result        = $result;
     }
 
-    protected function bootstrappers() : array
+    protected function bootstrappers(): array
     {
         return $this->bootstrappers;
     }
@@ -32,21 +33,17 @@ class KernelStub extends Kernel
         return $this->result;
     }
 
-    public function terminate() : void
-    {
-    }
+    public function terminate(): void {}
 
-    public function exceptionHandler() : ExceptionHandler
+    public function exceptionHandler(): ExceptionHandler
     {
         return new ExceptionHandler();
     }
 
-    public function fallback(\Throwable $e) : int
+    public function fallback(\Throwable $e): int
     {
         return 1;
     }
 
-    public function report(\Throwable $e) : void
-    {
-    }
+    public function report(\Throwable $e): void {}
 }

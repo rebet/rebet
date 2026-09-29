@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -7,7 +8,7 @@ use Rebet\Tools\Utility\OverrideOption;
 
 class OverrideOptionTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
     }
@@ -18,7 +19,7 @@ class OverrideOptionTest extends RebetTestCase
         $this->assertSame($expect, OverrideOption::split($value));
     }
 
-    public static function dataSplits() : array
+    public static function dataSplits(): array
     {
         return [
             ['', ['', null]],

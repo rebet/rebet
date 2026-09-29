@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Mail\Validator\Warning;
@@ -15,7 +16,7 @@ use Egulias\EmailValidator\Warning\Warning;
  */
 class ConsecutiveDotWarning extends Warning
 {
-    const CODE = 132;
+    public const CODE = 132;
 
     public function __construct()
     {

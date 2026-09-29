@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Routing\Route;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -28,7 +29,7 @@ class ConventionalRouteTest extends RebetTestCase
             'aliases'                    => [
                 '/howto' => '/misc/howto',
             ],
-            'accessible' => true,
+            'accessible'                 => true,
         ]);
         $this->assertSame(Namespaces::resolve('@app'), Reflector::get($route, 'namespace', null, true));
         $this->assertSame('admin', Reflector::get($route, 'default_part_of_controller', null, true));
@@ -47,7 +48,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertNull($route->terminate($request, Responder::toResponse('test')));
     }
 
-    public static function dataRoutings() : array
+    public static function dataRoutings(): array
     {
         return [
             ['Top: index', '/'],
@@ -179,7 +180,7 @@ class ConventionalRouteTest extends RebetTestCase
         $route->match($request);
     }
 
-    public static function dataDefaultViews() : array
+    public static function dataDefaultViews(): array
     {
         return [
             ['/test/public-call', '/test/public-call'],
@@ -197,7 +198,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertSame($expect, $route->defaultView());
     }
 
-    public static function dataGetControllerNames() : array
+    public static function dataGetControllerNames(): array
     {
         return [
             [TestController::class, '/test/public-call'],
@@ -217,7 +218,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertSame($expect, $route->getControllerName($with_namespace));
     }
 
-    public static function dataGetActionNames() : array
+    public static function dataGetActionNames(): array
     {
         return [
             ['publicCall', '/test/public-call'],
@@ -236,7 +237,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertSame($expect, $route->getActionName());
     }
 
-    public static function dataGetAliasNames() : array
+    public static function dataGetAliasNames(): array
     {
         return [
             [null, '/test/public-call'],

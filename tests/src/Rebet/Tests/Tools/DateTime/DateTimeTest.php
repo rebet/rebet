@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\DateTime;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -16,7 +17,7 @@ use Rebet\Tools\Utility\Strings;
 
 class DateTimeTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30');
@@ -164,8 +165,8 @@ class DateTimeTest extends RebetTestCase
         for ($i = 0; $i < 100; $i++) {
             $microtime = microtime(true);
             $date      = new DateTime($microtime);
-            $this->assertStringStartsWith((string)$microtime, $date->format('U.u'));
-            $this->assertEquals(floatval((string)$microtime), $date->getMicroTimestamp());
+            $this->assertStringStartsWith((string) $microtime, $date->format('U.u'));
+            $this->assertEquals(floatval((string) $microtime), $date->getMicroTimestamp());
         }
     }
 
@@ -999,8 +1000,8 @@ class DateTimeTest extends RebetTestCase
         for ($i = 0; $i < 100; $i++) {
             $microtime = microtime(true);
             $date      = new DateTime($microtime);
-            $this->assertStringStartsWith((string)$microtime, $date->format('U.u'));
-            $this->assertEquals(floatval((string)$microtime), $date->getMicroTimestamp());
+            $this->assertStringStartsWith((string) $microtime, $date->format('U.u'));
+            $this->assertEquals(floatval((string) $microtime), $date->getMicroTimestamp());
         }
     }
 
@@ -1040,7 +1041,7 @@ class DateTimeTest extends RebetTestCase
 
         $this->assertSame($millis, $now->convertTo('int'));
 
-        $this->assertEquals(floatval((string)$micro), $now->convertTo('float'));
+        $this->assertEquals(floatval((string) $micro), $now->convertTo('float'));
     }
 
     public function test_format()
@@ -1280,21 +1281,21 @@ class DateTimeTest extends RebetTestCase
     public static function dataXxxxs()
     {
         return [
-            ['2010-10-17', 'Sunday'   , true],
-            ['2010-10-18', 'Monday'   , true],
-            ['2010-10-19', 'Tuesday'  , true],
+            ['2010-10-17', 'Sunday', true],
+            ['2010-10-18', 'Monday', true],
+            ['2010-10-19', 'Tuesday', true],
             ['2010-10-20', 'Wednesday', true],
-            ['2010-10-21', 'Thursday' , true],
-            ['2010-10-22', 'Friday'   , true],
-            ['2010-10-23', 'Saturday' , true],
+            ['2010-10-21', 'Thursday', true],
+            ['2010-10-22', 'Friday', true],
+            ['2010-10-23', 'Saturday', true],
 
-            ['2010-10-18', 'Sunday'   , false],
-            ['2010-10-19', 'Monday'   , false],
-            ['2010-10-20', 'Tuesday'  , false],
+            ['2010-10-18', 'Sunday', false],
+            ['2010-10-19', 'Monday', false],
+            ['2010-10-20', 'Tuesday', false],
             ['2010-10-21', 'Wednesday', false],
-            ['2010-10-22', 'Thursday' , false],
-            ['2010-10-23', 'Friday'   , false],
-            ['2010-10-17', 'Saturday' , false],
+            ['2010-10-22', 'Thursday', false],
+            ['2010-10-23', 'Friday', false],
+            ['2010-10-17', 'Saturday', false],
 
             ['2010-10-17', 'Weekends', true ],
             ['2010-10-18', 'Weekends', false],

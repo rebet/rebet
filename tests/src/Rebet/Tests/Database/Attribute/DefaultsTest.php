@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database\Attribute;
 
 use Rebet\Attribute\AttributedClass;

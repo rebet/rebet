@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Compiler;
@@ -27,7 +28,7 @@ interface Compiler
      * @param  Driver $driver
      * @return self
      */
-    public static function of(Driver $driver) : self;
+    public static function of(Driver $driver): self;
 
     /**
      * Compile the given SQL template and params to PDO spec (and return result adjust callback closure).
@@ -39,7 +40,7 @@ interface Compiler
      * @param  Cursor|null                      $cursor   (default: null)
      * @return Query                            of full SQL sentence
      */
-    public function compile(string $sql, OrderBy|null $order_by = null, $params = [], Pager|null $pager = null, Cursor|null $cursor = null) : Query;
+    public function compile(string $sql, OrderBy|null $order_by = null, $params = [], Pager|null $pager = null, Cursor|null $cursor = null): Query;
 
     /**
      * Process a statement containing a result set and create a paginator object.
@@ -53,7 +54,7 @@ interface Compiler
      * @param  string       $class    (default: 'stdClass')
      * @return Paginator
      */
-    public function paging(Statement $stmt, OrderBy|null $order_by, Pager $pager, Cursor|null $cursor = null, int|null $total = null, string $class = 'stdClass') : Paginator;
+    public function paging(Statement $stmt, OrderBy|null $order_by, Pager $pager, Cursor|null $cursor = null, int|null $total = null, string $class = 'stdClass'): Paginator;
 
     /**
      * Convert given parameter(key and value) to PDO spec.
@@ -62,5 +63,5 @@ interface Compiler
      * @param  mixed  $value
      * @return Query  of PDO spec placeholder SQL sentence
      */
-    public function convertParam(string $key, $value) : Query;
+    public function convertParam(string $key, $value): Query;
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Routing;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -14,12 +15,12 @@ use Rebet\View\View;
 
 class ViewSelectorTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         Blade::clear();
         Config::application([
-            View::class => [
+            View::class  => [
                 'engine' => Blade::class,
             ],
             Blade::class => [
@@ -35,7 +36,7 @@ class ViewSelectorTest extends RebetTestCase
         $this->assertInstanceOf(ViewSelector::class, new ViewSelector());
     }
 
-    public static function dataViewDirectoryChangers() : array
+    public static function dataViewDirectoryChangers(): array
     {
         return [
             ["Hello, Bob.\nTest for directory change type view selector.", 'en', '/welcome/Bob'],
@@ -52,7 +53,7 @@ class ViewSelectorTest extends RebetTestCase
             ViewSelector::class => [
                 'changer' => function ($view_name, $request, $user) {
                     $locale = App::getLocale();
-                    return ["{$locale}/{$view_name}", Strings::latrim($locale, '_').'/'.$view_name, App::getFallbackLocale().'/'.$view_name, ];
+                    return ["{$locale}/{$view_name}", Strings::latrim($locale, '_') . '/' . $view_name, App::getFallbackLocale() . '/' . $view_name, ];
                 },
             ],
         ]);
@@ -65,7 +66,7 @@ class ViewSelectorTest extends RebetTestCase
         $this->assertSame($expect, $response->getContent());
     }
 
-    public static function dataViewFilenameChangers() : array
+    public static function dataViewFilenameChangers(): array
     {
         return [
             ["Hello, Bob for Mobile.\nTest for file name change type view selector.", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1", '/welcome/Bob'],

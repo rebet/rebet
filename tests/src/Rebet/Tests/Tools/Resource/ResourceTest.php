@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Resource;
 
 use Rebet\Application\App;
@@ -10,7 +11,7 @@ class ResourceTest extends RebetTestCase
 {
     private $resources;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->resources = App::structure()->resources('/adhoc/Tools/Resource/Resource');
@@ -22,14 +23,14 @@ class ResourceTest extends RebetTestCase
             [
                 'int'    => 1,
                 'string' => 'a',
-                'array'  => [1 , 2 , 3],
+                'array'  => [1, 2, 3],
                 'map'    => [
                     'int'    => 1,
                     'string' => 'a',
-                    'array'  => [1 , 2 , 3],
+                    'array'  => [1, 2, 3],
                 ],
             ],
-            Resource::load('php', $this->resources.'/test.php')
+            Resource::load('php', $this->resources . '/test.php'),
         );
 
         $this->assertSame(
@@ -43,7 +44,7 @@ class ResourceTest extends RebetTestCase
                     'string' => 'b',
                 ],
             ],
-            Resource::load('ini', $this->resources.'/test.ini')
+            Resource::load('ini', $this->resources . '/test.ini'),
         );
 
         $this->assertSame(
@@ -52,21 +53,21 @@ class ResourceTest extends RebetTestCase
                 'string' => 'b',
                 'bool'   => true,
             ],
-            Resource::load('ini', $this->resources.'/test.ini', ['process_sections' => false])
+            Resource::load('ini', $this->resources . '/test.ini', ['process_sections' => false]),
         );
 
         $this->assertSame(
             [
                 'int'    => 1,
                 'string' => 'a',
-                'array'  => [1 , 2 , 3],
+                'array'  => [1, 2, 3],
                 'map'    => [
                     'int'    => 1,
                     'string' => 'a',
-                    'array'  => [1 , 2 , 3],
+                    'array'  => [1, 2, 3],
                 ],
             ],
-            Resource::load('json', $this->resources.'/test.json')
+            Resource::load('json', $this->resources . '/test.json'),
         );
 
         $this->assertSame(
@@ -76,7 +77,7 @@ class ResourceTest extends RebetTestCase
                 '3rd',
                 '4th',
             ],
-            Resource::load('txt', $this->resources.'/test.txt')
+            Resource::load('txt', $this->resources . '/test.txt'),
         );
     }
 
@@ -85,11 +86,11 @@ class ResourceTest extends RebetTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Unsupported file type [yaml]. Please set loader to Rebet\Tools\Resource\Resource class.");
 
-        Resource::load('yaml', $this->resources.'/test.yaml');
+        Resource::load('yaml', $this->resources . '/test.yaml');
     }
 
     public function test_load_notfound()
     {
-        $this->assertNull(Resource::load('php', $this->resources.'/notfound.php'));
+        $this->assertNull(Resource::load('php', $this->resources . '/notfound.php'));
     }
 }

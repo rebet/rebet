@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth\Guard;
@@ -69,7 +70,7 @@ abstract class Guard
      *
      * @return AuthProvider
      */
-    public function provider() : AuthProvider
+    public function provider(): AuthProvider
     {
         return $this->provider;
     }
@@ -79,7 +80,7 @@ abstract class Guard
      *
      * @return AuthUser
      */
-    public function user() : AuthUser
+    public function user(): AuthUser
     {
         return $this->user ?? $this->user = AuthUser::guest()->guest($this) ;
     }
@@ -89,5 +90,5 @@ abstract class Guard
      *
      * @return Response|null response of fallback when authenticate failed
      */
-    abstract public function authenticate() : Response|null;
+    abstract public function authenticate(): Response|null;
 }

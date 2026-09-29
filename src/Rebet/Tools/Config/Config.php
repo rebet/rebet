@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Config;
@@ -51,9 +52,7 @@ class Config
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Configuration setting
@@ -97,7 +96,7 @@ class Config
      * @param  string      ...$layers list of Layer::* (default: all layers)
      * @return void
      */
-    public static function reset(string|null $section = null, string ...$layers) : void
+    public static function reset(string|null $section = null, string ...$layers): void
     {
         $layers = empty($layers) ? [Layer::LIBRARY, Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] : $layers ;
         if ($section === null) {
@@ -121,7 +120,7 @@ class Config
      *
      * @return string
      */
-    public static function dump(string ...$sections) : string
+    public static function dump(string ...$sections): string
     {
         static::all(); // Load the library configuration via ConfigReferrer by call all() method once.
         return Strings::stringify(static::all(...$sections));
@@ -138,7 +137,7 @@ class Config
      * @param  string               ...$sections (default: all)
      * @return array<string, mixed>
      */
-    public static function all(string ...$sections) : array
+    public static function all(string ...$sections): array
     {
         $target = empty($sections) ? static::$compiled : [] ;
         foreach ($sections as $section) {
@@ -154,7 +153,7 @@ class Config
      * @param  string $section
      * @return void
      */
-    protected static function compile(string $section) : void
+    protected static function compile(string $section): void
     {
         $compiled = static::$config[Layer::LIBRARY][$section] ?? [];
         foreach ([Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
@@ -174,7 +173,7 @@ class Config
                             }, false);
                         }
                         return null;
-                    }
+                    },
                 );
             }
         }
@@ -190,14 +189,14 @@ class Config
      * @param  array<string, array<string, mixed>> $config
      * @return void
      */
-    protected static function put(string $layer, array $config) : void
+    protected static function put(string $layer, array $config): void
     {
         foreach (\array_keys($config) as $section) {
             static::$config[$layer][$section] = Arrays::override(
                 static::$config[$layer][$section] ?? [],
                 $config[$section],
                 static::getLibraryConfigOverrideOptions($section),
-                OverrideOption::PREPEND
+                OverrideOption::PREPEND,
             );
             static::loadLibraryConfig($section);
             static::compile($section);
@@ -226,7 +225,7 @@ class Config
      * @param  array<string, array<string, mixed>> $config
      * @return void
      */
-    public static function framework(array $config) : void
+    public static function framework(array $config): void
     {
         self::put(Layer::FRAMEWORK, $config);
     }
@@ -253,7 +252,7 @@ class Config
      * @param  array<string, array<string, mixed>> $config
      * @return void
      */
-    public static function application(array $config) : void
+    public static function application(array $config): void
     {
         self::put(Layer::APPLICATION, $config);
     }
@@ -280,7 +279,7 @@ class Config
      * @param  array<string, array<string, mixed>> $config
      * @return void
      */
-    public static function runtime(array $config) : void
+    public static function runtime(array $config): void
     {
         self::put(Layer::RUNTIME, $config);
     }
@@ -295,7 +294,7 @@ class Config
      * @return bool
      * @throws LogicException
      */
-    protected static function isDefine(array $config, string $section, string|null $key) : bool
+    protected static function isDefine(array $config, string $section, string|null $key): bool
     {
         if (Utils::isBlank($key)) {
             return isset($config[$section]);
@@ -310,7 +309,7 @@ class Config
      * @return void
      * @throws LogicException
      */
-    protected static function validateKey(string|null $key) : void
+    protected static function validateKey(string|null $key): void
     {
         if (Utils::isBlank($key)) {
             return;
@@ -344,7 +343,7 @@ class Config
         static::setup($section);
         $value = Reflector::get(static::$compiled[$section] ?? null, $key);
         if ($required && Utils::isBlank($value)) {
-            throw new ConfigNotDefineException("Required config {$section}".($key ? ".{$key}" : "")." is blank or not define.");
+            throw new ConfigNotDefineException("Required config {$section}" . ($key ? ".{$key}" : "") . " is blank or not define.");
         }
         return $value ?? $default;
     }
@@ -355,7 +354,7 @@ class Config
      * @param  string $section
      * @return void
      */
-    protected static function loadLibraryConfig(string $section) : void
+    protected static function loadLibraryConfig(string $section): void
     {
         if (isset(static::$config[Layer::LIBRARY][$section])) {
             return;
@@ -369,7 +368,7 @@ class Config
      * @param  string               $section
      * @return array<string, mixed>
      */
-    protected static function getLibraryConfigOverrideOptions(string $section) : array
+    protected static function getLibraryConfigOverrideOptions(string $section): array
     {
         return method_exists($section, 'defaultConfigOverrideOptions') ? $section::defaultConfigOverrideOptions() : [] ;
     }
@@ -392,7 +391,7 @@ class Config
     {
         if ($required) {
             if (!static::has($section, $key)) {
-                throw new ConfigNotDefineException("Unable to instantiate '{$key}' in ". Arrays::last(explode('\\', $section)) .". Undefined configure '{$section}.{$key}'.");
+                throw new ConfigNotDefineException("Unable to instantiate '{$key}' in " . Arrays::last(explode('\\', $section)) . ". Undefined configure '{$section}.{$key}'.");
             }
         }
         $config = self::get($section, $key, $required, $default);
@@ -421,7 +420,7 @@ class Config
      * @return bool
      * @throws LogicException
      */
-    public static function has(string $section, string $key) : bool
+    public static function has(string $section, string $key): bool
     {
         static::validateKey($key);
         static::setup($section);
@@ -434,7 +433,7 @@ class Config
      * @param  string $section
      * @return void
      */
-    protected static function setup(string $section) : void
+    protected static function setup(string $section): void
     {
         if (!isset(static::$config[Layer::LIBRARY][$section])) {
             static::loadLibraryConfig($section);
@@ -461,7 +460,7 @@ class Config
      * @param  mixed          $default when the referral configuration value is blank (default: null)
      * @return ConfigReferrer
      */
-    public static function refer(string $section, string|null $key = null, $default = null) : ConfigReferrer
+    public static function refer(string $section, string|null $key = null, $default = null): ConfigReferrer
     {
         static::validateKey($key);
         return new ConfigReferrer($section, $key, $default);
@@ -474,7 +473,7 @@ class Config
      * @param  bool          $only_once (default: true)
      * @return ConfigPromise
      */
-    public static function promise(\Closure $promise, bool $only_once = true) : ConfigPromise
+    public static function promise(\Closure $promise, bool $only_once = true): ConfigPromise
     {
         return new ConfigPromise($promise, $only_once);
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -24,13 +25,13 @@ class Securities
     public static function defaultConfig()
     {
         return [
-            'hash' => [
+            'hash'   => [
                 'salt'       => Env::promise('DEFAULT_HASH_SALT', null, false),
                 'pepper'     => Env::promise('DEFAULT_HASH_PEPPER', null, false),
                 'algorithm'  => 'SHA256',
                 'stretching' => 1,
             ],
-            'hmac' => [
+            'hmac'   => [
                 'secret_key' => Env::promise('DEFAULT_HMAC_SECRET_KEY', null, false),
                 'algorithm'  => 'SHA256',
             ],
@@ -44,9 +45,7 @@ class Securities
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Create a random code.
@@ -59,7 +58,7 @@ class Securities
      * @param  string $chars  (default: 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890)
      * @return string
      */
-    public static function randomCode(int $length, string $chars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") : string
+    public static function randomCode(int $length, string $chars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"): string
     {
         $res = "";
         for ($i = 0; $i < $length; $i++) {
@@ -83,15 +82,15 @@ class Securities
      * @param  int|null    $stretching (default: depend on configure)
      * @return string
      */
-    public static function hash(string $text, string|null $salt = null, string|null $pepper = null, string|null $algorithm = null, int|null $stretching = null) : string
+    public static function hash(string $text, string|null $salt = null, string|null $pepper = null, string|null $algorithm = null, int|null $stretching = null): string
     {
-        $salt       = $salt ?? static::config('hash.salt') ;
-        $pepper     = $pepper ?? static::config('hash.pepper') ;
-        $algorithm  = $algorithm ?? static::config('hash.algorithm') ;
-        $stretching = $stretching ?? static::config('hash.stretching') ;
+        $salt ??= static::config('hash.salt') ;
+        $pepper ??= static::config('hash.pepper') ;
+        $algorithm ??= static::config('hash.algorithm') ;
+        $stretching ??= static::config('hash.stretching') ;
 
         for ($i = 0 ; $i < $stretching ; $i++) {
-            $text = hash($algorithm, $salt."\0".$text."\0".$pepper);
+            $text = hash($algorithm, $salt . "\0" . $text . "\0" . $pepper);
         }
         return $text;
     }
@@ -109,10 +108,10 @@ class Securities
      * @param  string|null $algorithm  (default: depend on configure)
      * @return string
      */
-    public static function hmac(string $text, string|null $secret_key = null, string|null $algorithm = null) : string
+    public static function hmac(string $text, string|null $secret_key = null, string|null $algorithm = null): string
     {
-        $secret_key = $secret_key ?? static::config('hmac.secret_key') ;
-        $algorithm  = $algorithm ?? static::config('hmac.algorithm') ;
+        $secret_key ??= static::config('hmac.secret_key') ;
+        $algorithm ??= static::config('hmac.algorithm') ;
 
         return hash_hmac($algorithm, $text, $secret_key);
     }
@@ -126,9 +125,9 @@ class Securities
      * @param  string $algorithm (default: depend on configure)
      * @return string
      */
-    public static function randomHash(string|null $algorithm = null) : string
+    public static function randomHash(string|null $algorithm = null): string
     {
-        $algorithm = $algorithm ?? static::config('hash.algorithm') ;
+        $algorithm ??= static::config('hash.algorithm') ;
         return self::hash(date('Y-m-d H:i:s'), self::randomCode(8), self::randomCode(8), $algorithm, 10);
     }
 
@@ -151,13 +150,13 @@ class Securities
      */
     public static function encrypt(string $plain, string|null $secret_key = null, string|null $cipher = null, string|null $hmac_secret_key = null, string|null $hmac_algorithm = null)
     {
-        $secret_key = $secret_key ?? static::config('crypto.secret_key') ;
-        $cipher     = $cipher ?? static::config('crypto.cipher') ;
-        $iv_size    = openssl_cipher_iv_length($cipher);
-        $iv         = random_bytes($iv_size);
-        $encrypted  = openssl_encrypt($plain, $cipher, $secret_key, OPENSSL_RAW_DATA, $iv);
-        $payload    = $iv.$encrypted;
-        return static::hmac($payload, $hmac_secret_key, $hmac_algorithm).$payload;
+        $secret_key ??= static::config('crypto.secret_key') ;
+        $cipher ??= static::config('crypto.cipher') ;
+        $iv_size   = openssl_cipher_iv_length($cipher);
+        $iv        = random_bytes($iv_size);
+        $encrypted = openssl_encrypt($plain, $cipher, $secret_key, OPENSSL_RAW_DATA, $iv);
+        $payload   = $iv . $encrypted;
+        return static::hmac($payload, $hmac_secret_key, $hmac_algorithm) . $payload;
     }
 
     /**
@@ -177,8 +176,8 @@ class Securities
      */
     public static function decrypt(string $encrypted, string|null $secret_key = null, string|null $cipher = null, string|null $hmac_secret_key = null, string|null $hmac_algorithm = null)
     {
-        $secret_key = $secret_key ?? static::config('crypto.secret_key') ;
-        $cipher     = $cipher ?? static::config('crypto.cipher') ;
+        $secret_key ??= static::config('crypto.secret_key') ;
+        $cipher ??= static::config('crypto.cipher') ;
 
         $mac_size = strlen(static::hmac('', $hmac_secret_key, $hmac_algorithm));
         $mac      = substr((string) $encrypted, 0, $mac_size);

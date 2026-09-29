@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database\Compiler;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -14,13 +15,13 @@ use TestApp\Enum\Gender;
 
 class BuiltinCompilerTest extends RebetDatabaseTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2001-02-03 04:05:06');
     }
 
-    public static function dataCompiles() : array
+    public static function dataCompiles(): array
     {
         self::setUpStatic();
         DateTime::setTestNow('2001-02-03 04:05:06');
@@ -435,7 +436,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
         $this->assertTrue(true);
     }
 
-    public static function dataConvertParams() : array
+    public static function dataConvertParams(): array
     {
         return [
             [':key', [':key' => PdoParameter::int(1)], 'key', 1],

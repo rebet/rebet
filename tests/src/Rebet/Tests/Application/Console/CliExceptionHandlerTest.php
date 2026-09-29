@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\Console;
 
 use Rebet\Application\Console\CliExceptionHandler;
@@ -15,14 +16,14 @@ class CliExceptionHandlerTest extends RebetTestCase
     /** @var BufferedOutput */
     public $output;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->output  = new BufferedOutput();
-        $this->handler = new class($this->output) extends CliExceptionHandler {
+        $this->handler = new class ($this->output) extends CliExceptionHandler {
             public $reported_count = 0;
 
-            public function report($input, $result, \Throwable $e) : void
+            public function report($input, $result, \Throwable $e): void
             {
                 $this->reported_count++;
             }

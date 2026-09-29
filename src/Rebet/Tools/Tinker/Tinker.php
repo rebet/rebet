@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Tinker;
@@ -147,18 +148,18 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                         'lcut', 'rcut', 'clip', 'indent', 'ltrim', 'rtrim', 'trim', 'mbtrim', 'startsWith', 'endsWith',
                         'contains', 'match', 'wildmatch', 'split',
                     ],
-                    Arrays::class => [
+                    Arrays::class    => [
                         'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact', 'unique',
                         'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'reduce', 'diff', 'intersect',
                         'every', 'groupBy', 'union', 'min', 'max', 'sort', 'sortBy', 'sortKeys', 'sum', 'avg',
                         'median', 'mode', 'implode', 'toQuery',
                     ],
                 ],
-                'customs' => [
+                'customs'    => [
                     // You can use php built-in functions as filters when the 1st argument is for value.
-                    'nvl'     => function ($value, $default) { return $value ?? $default; },
-                    'default' => function ($value, $default) { return $value ?? $default; },
-                    'escape'  => function (string $value, string $type = 'html') {
+                    'nvl'       => function ($value, $default) { return $value ?? $default; },
+                    'default'   => function ($value, $default) { return $value ?? $default; },
+                    'escape'    => function (string $value, string $type = 'html') {
                         switch ($type) {
                             case 'html': return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
                             case 'url': return urlencode($value);
@@ -204,17 +205,17 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                         $test = is_callable($test) ? call_user_func($test, $value) : $test ;
                         return  (is_bool($test) ? $test : $value === $test) ? $then : ($else ?? $value) ;
                     },
-                    'case'   => function ($value, array $map, $default = null) { return $map[$value] ?? $default ?? $value; },
-                    'length' => function ($value) {
+                    'case'      => function ($value, array $map, $default = null) { return $map[$value] ?? $default ?? $value; },
+                    'length'    => function ($value) {
                         switch (true) {
                             case $value === null:    return null;
-                            case is_numeric($value): return mb_strlen((string)$value);
+                            case is_numeric($value): return mb_strlen((string) $value);
                             case is_string($value):  return mb_strlen($value);
                         }
                         return Arrays::count($value);
                     },
-                    'values' => function (array $value) { return array_values($value); },
-                    'keys'   => function (array $value) { return array_keys($value); },
+                    'values'    => function (array $value) { return array_values($value); },
+                    'keys'      => function (array $value) { return array_keys($value); },
                 ],
             ],
         ];
@@ -279,7 +280,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param  array<mixed> $values
      * @return array<mixed> of Tinker peeled values
      */
-    public static function peelAll(array $values) : array
+    public static function peelAll(array $values): array
     {
         return array_map(function ($v) { return static::peel($v); }, $values);
     }
@@ -310,13 +311,13 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      * @return void
      */
-    protected static function initDelegateFilters() : void
+    protected static function initDelegateFilters(): void
     {
         if (static::$delegate_filters === null) {
             static::$delegate_filters = [];
             foreach (static::config('filter.delegaters', false, []) as $class => $methods) {
                 foreach ($methods as $method_name => $filter_name) {
-                    static::$delegate_filters[$filter_name] = "{$class}::".(is_int($method_name) ? $filter_name : $method_name);
+                    static::$delegate_filters[$filter_name] = "{$class}::" . (is_int($method_name) ? $filter_name : $method_name);
                 }
             }
         }
@@ -325,7 +326,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
             static::$safety_delegate_filters = [];
             foreach (Reflector::get(static::defaultConfig(), 'filter.delegaters', []) as $class => $methods) {
                 foreach ($methods as $method_name => $filter_name) {
-                    static::$safety_delegate_filters[$filter_name] = "{$class}::".(is_int($method_name) ? $filter_name : $method_name);
+                    static::$safety_delegate_filters[$filter_name] = "{$class}::" . (is_int($method_name) ? $filter_name : $method_name);
                 }
             }
         }
@@ -338,7 +339,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param  callable $filter function(mixed $value, ...$args):mixed
      * @return void
      */
-    public static function addFilter(string $name, callable $filter) : void
+    public static function addFilter(string $name, callable $filter): void
     {
         static::setConfig(['filter' => ['customs' => [$name => $filter]]]);
     }
@@ -350,7 +351,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param  boolean $safety (default: false)
      * @return self
      */
-    public static function with($origin, bool $safety = false) : self
+    public static function with($origin, bool $safety = false): self
     {
         return new static(static::peel($origin), null, $safety) ;
     }
@@ -362,7 +363,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param  boolean  $safety  (default: false)
      * @return self
      */
-    public static function promise(\Closure $promise, bool $safety = false) : self
+    public static function promise(\Closure $promise, bool $safety = false): self
     {
         return new static(null, $promise, $safety);
     }
@@ -478,7 +479,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 return self::$null;
             }
             if ($converted === null) {
-                throw (new LogicException("Apply {$name} filter failed. The origin type '".Reflector::getType($origin)."' can not convert to {$type}."))->caused($e);
+                throw (new LogicException("Apply {$name} filter failed. The origin type '" . Reflector::getType($origin) . "' can not convert to {$type}."))->caused($e);
             }
             throw $e;
         }
@@ -526,7 +527,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function offsetSet($offset, $value) : void
+    public function offsetSet($offset, $value): void
     {
         $origin = &$this->origin();
         if (is_array($origin) || is_object($origin)) {
@@ -537,7 +538,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function offsetExists($offset) : bool
+    public function offsetExists($offset): bool
     {
         return Reflector::has($this->origin(), $offset);
     }
@@ -545,7 +546,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function offsetUnset($offset) : void
+    public function offsetUnset($offset): void
     {
         $origin = $this->origin();
         if (is_array($origin) || is_object($origin)) {
@@ -556,7 +557,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function offsetGet($offset) : mixed
+    public function offsetGet($offset): mixed
     {
         return $this->__get($offset);
     }
@@ -564,7 +565,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function count() : int
+    public function count(): int
     {
         return Arrays::count($this->origin());
     }
@@ -572,14 +573,14 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function getIterator() : \Traversable
+    public function getIterator(): \Traversable
     {
         $origin = $this->origin();
         return new \ArrayIterator(array_map(
             function ($value) {
                 return static::with($value);
             },
-            is_object($origin) ? get_object_vars($origin) : (array)$origin
+            is_object($origin) ? get_object_vars($origin) : (array) $origin,
         ));
     }
 
@@ -594,7 +595,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function jsonSerialize() : mixed
+    public function jsonSerialize(): mixed
     {
         return Json::serialize($this->origin());
     }

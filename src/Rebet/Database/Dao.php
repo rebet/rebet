@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database;
@@ -123,9 +124,7 @@ class Dao
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Crear the Database instance.
@@ -134,7 +133,7 @@ class Dao
      * @param  string|null $name (default: null for all clear)
      * @return void
      */
-    public static function clear(string|null $name = null) : void
+    public static function clear(string|null $name = null): void
     {
         if ($name === null) {
             foreach (static::$dbs ?? [] as $db) {
@@ -158,9 +157,9 @@ class Dao
      * @param  bool     $update_current_db (default: true)
      * @return Database
      */
-    public static function db(string|null $name = null, bool $update_current_db = true) : Database
+    public static function db(string|null $name = null, bool $update_current_db = true): Database
     {
-        $name = $name ?? static::config('default_db');
+        $name ??= static::config('default_db');
         if ($db = static::$dbs[$name] ?? null) {
             return $update_current_db ? static::$current = $db : $db ;
         }
@@ -179,7 +178,7 @@ class Dao
             $name,
             $driver,
             static::config("dbs.{$name}.debug", false, false),
-            static::config("dbs.{$name}.log_handler", false, null)
+            static::config("dbs.{$name}.log_handler", false, null),
         );
 
         static::$dbs[$name] = $db;
@@ -194,7 +193,7 @@ class Dao
      *
      * @return Database|null
      */
-    public static function current() : Database|null
+    public static function current(): Database|null
     {
         return static::$current;
     }

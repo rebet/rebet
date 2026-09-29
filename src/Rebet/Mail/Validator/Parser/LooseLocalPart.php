@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Mail\Validator\Parser;
@@ -55,7 +56,7 @@ class LooseLocalPart extends LocalPart
     /**
      * {@inheritDoc}
      */
-    public function parse() : Result
+    public function parse(): Result
     {
         $this->lexer->clearRecorded();
         $this->lexer->startRecording();
@@ -78,8 +79,8 @@ class LooseLocalPart extends LocalPart
             }
 
             if (
-                $this->lexer->current->isA(EmailLexer::S_OPENPARENTHESIS) ||
-                $this->lexer->current->isA(EmailLexer::S_CLOSEPARENTHESIS)
+                $this->lexer->current->isA(EmailLexer::S_OPENPARENTHESIS)
+                || $this->lexer->current->isA(EmailLexer::S_CLOSEPARENTHESIS)
             ) {
                 $commentsResult = $this->parseComments();
 
@@ -90,8 +91,8 @@ class LooseLocalPart extends LocalPart
             }
 
             if (
-                $this->lexer->current->isA(EmailLexer::S_DOT) &&
-                $this->lexer->isNextToken(EmailLexer::S_DOT)
+                $this->lexer->current->isA(EmailLexer::S_DOT)
+                && $this->lexer->isNextToken(EmailLexer::S_DOT)
             ) {
                 if (!in_array(ConsecutiveDot::class, $this->ignores)) {
                     return new InvalidEmail(new ConsecutiveDot(), $this->lexer->current->value);
@@ -99,8 +100,8 @@ class LooseLocalPart extends LocalPart
                 $this->warnings[ConsecutiveDotWarning::CODE] = new ConsecutiveDotWarning();
             }
 
-            if ($this->lexer->current->isA(EmailLexer::S_DOT) &&
-                $this->lexer->isNextToken(EmailLexer::S_AT)
+            if ($this->lexer->current->isA(EmailLexer::S_DOT)
+                && $this->lexer->isNextToken(EmailLexer::S_AT)
             ) {
                 if (!in_array(DotAtEnd::class, $this->ignores)) {
                     return new InvalidEmail(new DotAtEnd(), $this->lexer->current->value);
@@ -140,7 +141,7 @@ class LooseLocalPart extends LocalPart
      *
      * @return string[] $ignores name that subclass of InvalidEmail exception.
      */
-    public function ignores() : array
+    public function ignores(): array
     {
         return $this->ignores;
     }

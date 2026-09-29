@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Template;
@@ -21,5 +22,5 @@ interface Renderable
      *
      * @return string
      */
-    public function render() : string ;
+    public function render(): string ;
 }

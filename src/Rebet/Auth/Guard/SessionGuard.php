@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth\Guard;
@@ -54,7 +55,7 @@ class SessionGuard extends StatefulGuard
      *
      * @return string
      */
-    protected function rememberTokenKey() : string
+    protected function rememberTokenKey(): string
     {
         return "auth:{$this->name}:remember_token";
     }
@@ -64,7 +65,7 @@ class SessionGuard extends StatefulGuard
      *
      * @return string
      */
-    protected function signinIdKey() : string
+    protected function signinIdKey(): string
     {
         return "auth:{$this->name}:signin_id";
     }
@@ -74,7 +75,7 @@ class SessionGuard extends StatefulGuard
      *
      * @return string
      */
-    protected function requestReplayKey() : string
+    protected function requestReplayKey(): string
     {
         return "auth:{$this->name}:guarded_request";
     }
@@ -82,7 +83,7 @@ class SessionGuard extends StatefulGuard
     /**
      * {@inheritDoc}
      */
-    public function signin(AuthUser $user, string $goto = '/', bool $remember = false) : Response
+    public function signin(AuthUser $user, string $goto = '/', bool $remember = false): Response
     {
         if ($user->isGuest()) {
             return $this->fallback();
@@ -109,7 +110,7 @@ class SessionGuard extends StatefulGuard
     /**
      * {@inheritDoc}
      */
-    public function signout(string $goto = '/') : Response
+    public function signout(string $goto = '/'): Response
     {
         if (!$this->user()->isGuest()) {
             if ($this->provider->supportRememberToken()) {
@@ -127,7 +128,7 @@ class SessionGuard extends StatefulGuard
     /**
      * {@inheritDoc}
      */
-    public function authenticate() : Response|null
+    public function authenticate(): Response|null
     {
         $user = $this->provider->findById($this->request->session()->get($this->signinIdKey()));
         if ($user === null && $this->provider->supportRememberToken()) {
@@ -144,7 +145,7 @@ class SessionGuard extends StatefulGuard
      * @return Response
      * @throws AuthenticateException when fallback is undefined.
      */
-    protected function fallback() : Response
+    protected function fallback(): Response
     {
         if (!$this->fallback) {
             throw new AuthenticateException("Authentication failed and specific fallback was not defined.");

@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Stub;
 
 use Rebet\Auth\Attribute\Guard;
@@ -39,14 +40,10 @@ class AttributedStub
     #[Method("HEAD", "OPTION")]
     #[NotRouting]
     #[Where(seq: "[0-9]+", code: "[a-zA-Z]+")]
-    public function attributes()
-    {
-    }
+    public function attributes() {}
 
     /**
      * No Attributes method
      */
-    public function noAttributes()
-    {
-    }
+    public function noAttributes() {}
 }

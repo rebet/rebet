@@ -1,9 +1,9 @@
 <?php
+
 namespace Rebet\Tests\View\Engine\Twig;
 
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
-
 use Rebet\Tools\Config\Config;
 use Rebet\View\Engine\Twig\Twig;
 
@@ -14,7 +14,7 @@ class TwigTest extends RebetTestCase
      */
     private $twig;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->vfs([
@@ -64,9 +64,9 @@ class TwigTest extends RebetTestCase
     {
         $this->assertSame(
             <<<EOS
-            Hello, Samantha.
-            EOS,
-            $this->twig->render('welcome', ['name' => 'Samantha'])
+                Hello, Samantha.
+                EOS,
+            $this->twig->render('welcome', ['name' => 'Samantha']),
         );
     }
 }

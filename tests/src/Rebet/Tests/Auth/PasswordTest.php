@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Auth;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -14,14 +15,14 @@ class PasswordTest extends RebetTestCase
         $this->assertTrue(Password::verify($password, $hash));
     }
 
-    public static function dataPasswords() : array
+    public static function dataPasswords(): array
     {
         return [
             ['password', null, null],
             ['password', PASSWORD_DEFAULT, null],
-            ['漢字かな' , PASSWORD_DEFAULT, ['cost' => 4]],
+            ['漢字かな', PASSWORD_DEFAULT, ['cost' => 4]],
             ['p@ssw0rd', PASSWORD_BCRYPT, null],
-            ['foobar'  , PASSWORD_BCRYPT, ['cost' => 4]],
+            ['foobar', PASSWORD_BCRYPT, ['cost' => 4]],
             ['hogehoge', PASSWORD_BCRYPT, ['cost' => 12]],
         ];
     }

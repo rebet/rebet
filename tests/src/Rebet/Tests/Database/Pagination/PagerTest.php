@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database\Pagination;
 
 use Rebet\Database\Pagination\Pager;

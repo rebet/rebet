@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\DataModel;
@@ -38,7 +39,9 @@ use ReflectionProperty;
 #[\AllowDynamicProperties]
 abstract class DataModel
 {
-    use Populatable, Describable, Getsetable;
+    use Populatable;
+    use Describable;
+    use Getsetable;
 
     /**
      * @var AttributedClass[]
@@ -80,7 +83,7 @@ abstract class DataModel
      * @param  string  $key
      * @return boolean
      */
-    protected function hasEagerLoads(string $key) : bool
+    protected function hasEagerLoads(string $key): bool
     {
         return array_key_exists($key, $this->_eager_loads);
     }
@@ -117,10 +120,10 @@ abstract class DataModel
      * @return void
      * @throws LogicException when give the class name that is not subclass of this class.
      */
-    protected static function mustBeSuperclassOf(string|null $class) : void
+    protected static function mustBeSuperclassOf(string|null $class): void
     {
         if ($class !== null && !is_subclass_of($class, static::class)) {
-            throw new LogicException("Invalid class name given. {$class} is not subclass of ".static::class.".");
+            throw new LogicException("Invalid class name given. {$class} is not subclass of " . static::class . ".");
         }
     }
 
@@ -130,7 +133,7 @@ abstract class DataModel
      * @param  mixed  ...$values
      * @return string
      */
-    protected static function hash(...$values) : string
+    protected static function hash(...$values): string
     {
         return Json::digest('sha256', $values);
     }
@@ -140,7 +143,7 @@ abstract class DataModel
      *
      * @return string
      */
-    public function primaryHash() : string
+    public function primaryHash(): string
     {
         return static::hash(static::class, $this->primaryValues());
     }
@@ -150,7 +153,7 @@ abstract class DataModel
      *
      * @return array<string, mixed> [primary_key => value, ... ]
      */
-    public function primaryValues() : array
+    public function primaryValues(): array
     {
         return $this->pluck(...static::primaryKeys());
     }
@@ -162,7 +165,7 @@ abstract class DataModel
      * @param  array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
      * @return string
      */
-    public function foreignHash(string $class, array $alias = []) : string
+    public function foreignHash(string $class, array $alias = []): string
     {
         return static::hash($class, $this->foreignValues($class, $alias));
     }
@@ -174,7 +177,7 @@ abstract class DataModel
      * @param  array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
      * @return array<string, mixed>  [foreign_key => value, ... ]
      */
-    public function foreignValues(string $class, array $alias = []) : array
+    public function foreignValues(string $class, array $alias = []): array
     {
         $foreigns = [];
         $alias    = array_flip($alias);
@@ -190,7 +193,7 @@ abstract class DataModel
      * @param  string               ...$columns
      * @return array<string, mixed> [column => value, ...]
      */
-    public function pluck(string ...$columns) : array
+    public function pluck(string ...$columns): array
     {
         $pluks = [];
         foreach ($columns as $column) {
@@ -215,7 +218,7 @@ abstract class DataModel
      * @param  DataModel|null $other
      * @return bool
      */
-    public function isSameSourceAs(DataModel|null $other) : bool
+    public function isSameSourceAs(DataModel|null $other): bool
     {
         if (!($other instanceof $this)) {
             return false;
@@ -229,7 +232,7 @@ abstract class DataModel
      * @param  DataModel|null $other
      * @return bool
      */
-    public function isSameAs(DataModel|null $other) : bool
+    public function isSameAs(DataModel|null $other): bool
     {
         if (!($other instanceof $this)) {
             return false;
@@ -277,7 +280,7 @@ abstract class DataModel
      *
      * @return AttributedClass
      */
-    protected static function attributedClass() : AttributedClass
+    protected static function attributedClass(): AttributedClass
     {
         $class = get_called_class();
         if (isset(static::$_attributed_class[$class])) {
@@ -291,7 +294,7 @@ abstract class DataModel
      *
      * @return array<int, string>
      */
-    public static function primaryKeys() : array
+    public static function primaryKeys(): array
     {
         if ($primary_keys = static::meta(__METHOD__)) {
             return $primary_keys;
@@ -322,9 +325,9 @@ abstract class DataModel
      * @param  Database|string|null $db name if you want to access when just once (default: null)
      * @return Database
      */
-    protected static function db($db = null) : Database
+    protected static function db($db = null): Database
     {
-        $db = $db ?? Dao::current() ?? Dao::db() ;
+        $db ??= Dao::current() ?? Dao::db() ;
         return $db instanceof Database ? $db : Dao::db($db, false) ;
     }
 
@@ -335,7 +338,7 @@ abstract class DataModel
      * @param  mixed       $primaries primary key value or array|object of primary keys
      * @return static|null
      */
-    public static function valueOf($primaries) : static|null
+    public static function valueOf($primaries): static|null
     {
         return static::find($primaries);
     }
@@ -348,7 +351,7 @@ abstract class DataModel
      * @param  Database|string|null $db         (default: null)
      * @return static|null
      */
-    public static function find($primaries, bool $for_update = false, $db = null) : static|null
+    public static function find($primaries, bool $for_update = false, $db = null): static|null
     {
         $where            = [];
         $params           = [];
@@ -374,7 +377,7 @@ abstract class DataModel
      * @param  Database|string|null $db         (default: null)
      * @return static|null
      */
-    public static function findBy($ransacks, bool $for_update = false, $db = null) : static|null
+    public static function findBy($ransacks, bool $for_update = false, $db = null): static|null
     {
         $query = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
         return $db->find($query->sql(), null, $query->params(), $for_update, get_called_class());
@@ -390,7 +393,7 @@ abstract class DataModel
      * @param  Database|string|null               $db         (default: null)
      * @return ResultSet
      */
-    public static function select($ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, $db = null) : ResultSet
+    public static function select($ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, $db = null): ResultSet
     {
         $query = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
         return $db->select($query->sql(), $order_by ?? static::defaultOrderBy(), $query->params(), $limit, $for_update, get_called_class());
@@ -406,7 +409,7 @@ abstract class DataModel
      * @param  Database|string|null               $db         (default: null)
      * @return Paginator
      */
-    public static function paginate(Pager $pager, $ransacks = [], $order_by = null, bool $for_update = false, $db = null) : Paginator
+    public static function paginate(Pager $pager, $ransacks = [], $order_by = null, bool $for_update = false, $db = null): Paginator
     {
         $query = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
         return $db->paginate($query->sql(), $order_by ?? static::defaultOrderBy(), $pager, $query->params(), $for_update, get_called_class(), static::buildOptimizedCountSql($db, $ransacks));
@@ -420,7 +423,7 @@ abstract class DataModel
      * @param  array<int|string, mixed> $ransacks condition (default: [])
      * @return Query
      */
-    protected static function buildSelectSql(Database $db, array $ransacks = []) : Query
+    protected static function buildSelectSql(Database $db, array $ransacks = []): Query
     {
         $condition = $db->ransacker()->build($ransacks, static::ransackAliases(), Closure::fromCallable([static::class, 'ransack']));
         return static::buildSelectAllSql($db)->appendWhere($condition->sql(), $condition->params());
@@ -432,7 +435,7 @@ abstract class DataModel
      * @param  Database $db
      * @return Query    of sql
      */
-    abstract protected static function buildSelectAllSql(Database $db) : Query;
+    abstract protected static function buildSelectAllSql(Database $db): Query;
 
     /**
      * Build optimized count SQL using given ransack conditions for paginate.
@@ -441,7 +444,7 @@ abstract class DataModel
      * @param  array<int|string, mixed> $ransacks conditions (default: [])
      * @return string|null
      */
-    protected static function buildOptimizedCountSql(Database $db, array $ransacks = []) : string|null
+    protected static function buildOptimizedCountSql(Database $db, array $ransacks = []): string|null
     {
         return null;
     }
@@ -469,7 +472,7 @@ abstract class DataModel
      * @param  Ransack    $ransack
      * @return Query|null
      */
-    protected static function ransack(Ransack $ransack) : Query|null
+    protected static function ransack(Ransack $ransack): Query|null
     {
         return null;
     }
@@ -480,7 +483,7 @@ abstract class DataModel
      *
      * @return array<string, string|array<int, string>>
      */
-    protected static function ransackAliases() : array
+    protected static function ransackAliases(): array
     {
         return [];
     }
@@ -492,7 +495,7 @@ abstract class DataModel
      *
      * @return array<string, string>
      */
-    protected static function defaultOrderBy() : array
+    protected static function defaultOrderBy(): array
     {
         return array_fill_keys(static::primaryKeys(), 'desc');
     }
@@ -527,7 +530,7 @@ abstract class DataModel
             return $class::find($this->ransacksForBelongsTo($class, $alias), $for_update);
         }
 
-        $cache_key = ($name ?? Reflector::caller()).'_'.Json::digest('sha256', $class, $alias);
+        $cache_key = ($name ?? Reflector::caller()) . '_' . Json::digest('sha256', $class, $alias);
         if ($this->hasEagerLoads($cache_key)) {
             return $this->pullEagerLoads($cache_key);
         }
@@ -535,7 +538,7 @@ abstract class DataModel
         $ransacks = $this->eagerRansack(function (DataModel $dm) use ($class, $alias) { return $dm->ransacksForBelongsTo($class, $alias); });
         $rs       = Arrays::groupBy(
             $class::select($ransacks, [], null, $for_update)->toArray(),
-            function ($v, $k) { return $v->primaryHash(); }
+            function ($v, $k) { return $v->primaryHash(); },
         );
         $eager_group = new ResultSet();
         foreach ($this->_belongs_result_set as $dm) {
@@ -555,7 +558,7 @@ abstract class DataModel
      * @param  \Closure                             $extracter of each ransacks, function(DataModel $dm) :array { ... }
      * @return array<int|string, array<int, mixed>> of each ransack conditions
      */
-    protected function eagerRansack(\Closure $extracter) : array
+    protected function eagerRansack(\Closure $extracter): array
     {
         $this_class = get_class($this);
         $ransacks   = [];
@@ -589,7 +592,7 @@ abstract class DataModel
      * @param  array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
      * @return array<string, mixed>
      */
-    protected function ransacksForBelongsTo(string $class, array $alias = []) : array
+    protected function ransacksForBelongsTo(string $class, array $alias = []): array
     {
         return $this->foreignValues($class, $alias);
     }
@@ -629,7 +632,7 @@ abstract class DataModel
             return $class::find($this->ransacksForHas($alias), $for_update);
         }
 
-        $cache_key = ($name ?? Reflector::caller()).'_'.Json::digest('sha256', $class, $alias);
+        $cache_key = ($name ?? Reflector::caller()) . '_' . Json::digest('sha256', $class, $alias);
         if ($this->hasEagerLoads($cache_key)) {
             return $this->pullEagerLoads($cache_key);
         }
@@ -637,7 +640,7 @@ abstract class DataModel
         $ransacks = $this->eagerRansack(function (DataModel $dm) use ($alias) { return $dm->ransacksForHas($alias); });
         $rs       = Arrays::groupBy(
             $class::select($ransacks, [], null, $for_update)->toArray(),
-            function ($v, $k) use ($alias) { return $v->foreignHash(static::class, $alias); }
+            function ($v, $k) use ($alias) { return $v->foreignHash(static::class, $alias); },
         );
         $eager_group = new ResultSet();
         foreach ($this->_belongs_result_set as $dm) {
@@ -657,7 +660,7 @@ abstract class DataModel
      * @param  array<string, string> $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
      * @return array<string, mixed>
      */
-    protected function ransacksForHas(array $alias = []) : array
+    protected function ransacksForHas(array $alias = []): array
     {
         $conditions = [];
         foreach (static::primaryKeys() as $column) {
@@ -709,13 +712,13 @@ abstract class DataModel
      * @param  string|null                        $name       of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
      * @return array<int, mixed>
      */
-    protected function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true, string|null $name = null) : array
+    protected function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true, string|null $name = null): array
     {
         if (!$eager_load || $this->_belongs_result_set === null) {
             return $class::select(array_merge($ransacks, $this->ransacksForHas($alias)), $order_by, $limit, $for_update)->toArray();
         }
 
-        $cache_key = ($name ?? Reflector::caller()).'_'.Json::digest('sha256', $class, $alias, $ransacks, $order_by, $limit);
+        $cache_key = ($name ?? Reflector::caller()) . '_' . Json::digest('sha256', $class, $alias, $ransacks, $order_by, $limit);
         if ($this->hasEagerLoads($cache_key)) {
             return $this->pullEagerLoads($cache_key);
         }
@@ -723,7 +726,7 @@ abstract class DataModel
         $ransacks = array_merge($ransacks, $this->eagerRansack(function (DataModel $dm) use ($alias) { return $dm->ransacksForHas($alias); }));
         $rs       = Arrays::groupBy(
             $class::select($ransacks, $order_by, null, $for_update)->toArray(),
-            function ($v, $k) use ($alias) { return $v->foreignHash(static::class, $alias); }
+            function ($v, $k) use ($alias) { return $v->foreignHash(static::class, $alias); },
         );
         $eager_group = new ResultSet();
         foreach ($this->_belongs_result_set as $dm) {

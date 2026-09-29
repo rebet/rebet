@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\View\Engine\Blade;
 
 use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
@@ -16,7 +17,7 @@ class BladeTest extends RebetTestCase
      */
     private $blade;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         Config::application([
@@ -66,52 +67,52 @@ class BladeTest extends RebetTestCase
     {
         $this->assertSame(
             <<<EOS
-            Hello, Samantha.
-            EOS,
-            EofLineFeed::TRIM()->process($this->blade->render('welcome', ['name' => 'Samantha']))
+                Hello, Samantha.
+                EOS,
+            EofLineFeed::TRIM()->process($this->blade->render('welcome', ['name' => 'Samantha'])),
         );
     }
 
-    public static function dataBuiltins() : array
+    public static function dataBuiltins(): array
     {
         return [
             [
                 <<<EOS
-                Title:
-                Unit Test
-                Section:
-                    - Main Section
-                    - Sub Section
-                Content:
-                    This is content.
-                EOS,
+                    Title:
+                    Unit Test
+                    Section:
+                        - Main Section
+                        - Sub Section
+                    Content:
+                        This is content.
+                    EOS,
                 'builtin/child',
                 [],
             ],
             [
                 <<<EOS
-                Component Test
-                * Forbidden *
-                -----
-                You are not allowed to access this resource!
-                EOS,
+                    Component Test
+                    * Forbidden *
+                    -----
+                    You are not allowed to access this resource!
+                    EOS,
                 'builtin/component',
                 [],
             ],
             [
                 <<<EOS
-                Component Args Test
-                * Forbidden *
-                -----
-                You are not allowed to access this resource!
-                EOS,
+                    Component Args Test
+                    * Forbidden *
+                    -----
+                    You are not allowed to access this resource!
+                    EOS,
                 'builtin/component-args',
                 [],
             ],
             [
                 <<<EOS
-                var app = [1,2,3];
-                EOS,
+                    var app = [1,2,3];
+                    EOS,
                 'builtin/json',
                 ['array' => [1, 2, 3]],
             ],

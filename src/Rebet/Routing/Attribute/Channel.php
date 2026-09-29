@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Attribute;
@@ -40,7 +41,7 @@ final class Channel
      * @param  string  $channel
      * @return boolean
      */
-    public function allow(string $channel) : bool
+    public function allow(string $channel): bool
     {
         return empty($this->allows) ? true : in_array($channel, $this->allows) ;
     }
@@ -52,7 +53,7 @@ final class Channel
      * @param  string  $channel
      * @return boolean
      */
-    public function reject(string $channel) : bool
+    public function reject(string $channel): bool
     {
         return !$this->allow($channel);
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
@@ -65,7 +66,7 @@ class MethodRoute extends DeclarativeRoute
         try {
             $this->action = new \ReflectionMethod(Namespaces::resolve($action));
         } catch (\ReflectionException $e) {
-            $this->action = new \ReflectionMethod(Namespaces::resolve(static::config('namespace', false, '').'\\'.$action));
+            $this->action = new \ReflectionMethod(Namespaces::resolve(static::config('namespace', false, '') . '\\' . $action));
         }
     }
 
@@ -76,7 +77,7 @@ class MethodRoute extends DeclarativeRoute
      * @return RouteAction
      * @throws RouteNotFoundException
      */
-    protected function createRouteAction(Request $request) : RouteAction
+    protected function createRouteAction(Request $request): RouteAction
     {
         $this->controller = null;
         if (!$this->action->isStatic()) {
@@ -98,7 +99,7 @@ class MethodRoute extends DeclarativeRoute
      * @param  Response $response
      * @return void
      */
-    public function terminate(Request $request, Response $response) : void
+    public function terminate(Request $request, Response $response): void
     {
         if ($this->controller !== null) {
             $this->controller->terminate($request, $response);
@@ -111,7 +112,7 @@ class MethodRoute extends DeclarativeRoute
      * @param  boolean $accessible
      * @return self
      */
-    public function accessible(bool $accessible) : self
+    public function accessible(bool $accessible): self
     {
         $this->accessible = $accessible;
         return $this;

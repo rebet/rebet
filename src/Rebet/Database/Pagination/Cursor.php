@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Pagination;
@@ -29,7 +30,8 @@ use Rebet\Tools\Utility\Utils;
  */
 class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
-    use Configurable, Arrayable;
+    use Configurable;
+    use Arrayable;
 
     /**
      * {@inheritDoc}
@@ -91,7 +93,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      * @return array<string, mixed>
      */
-    protected function &container() : array
+    protected function &container(): array
     {
         return $this->cursor;
     }
@@ -105,7 +107,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param  int                           $next_page_count that confirmed to be exists
      * @return self
      */
-    public static function create($order_by, Pager $pager, $data, int|null $next_page_count) : self
+    public static function create($order_by, Pager $pager, $data, int|null $next_page_count): self
     {
         $cursor = [];
         foreach ($order_by as $col => $order) {
@@ -119,7 +121,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      * @return bool
      */
-    public function expired() : bool
+    public function expired(): bool
     {
         $lifetime = Unit::of(Unit::TIME)->convert(static::config('lifetime', false, 0), 'ms')->toInt();
         if ($lifetime === 0) {
@@ -133,7 +135,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      * @return Pager
      */
-    public function pager() : Pager
+    public function pager(): Pager
     {
         return $this->pager;
     }
@@ -143,7 +145,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      * @return int|null
      */
-    public function nextPageCount() : int|null
+    public function nextPageCount(): int|null
     {
         return $this->next_page_count;
     }
@@ -156,12 +158,12 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param  CursorStorage|null $strage (default: depend on configured)
      * @return self
      */
-    public function save(CursorStorage|null $strage = null) : self
+    public function save(CursorStorage|null $strage = null): self
     {
         if (!$this->pager->useCursor()) {
             return $this;
         }
-        $strage = $strage ?? static::configInstantiate('storage') ;
+        $strage ??= static::configInstantiate('storage') ;
         $strage->save($this->pager->cursor(), $this);
         return $this;
     }
@@ -173,9 +175,9 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param  CursorStorage|null $strage (default: depend on configured)
      * @return self|null
      */
-    public static function load(string $name, CursorStorage|null $strage = null) : self|null
+    public static function load(string $name, CursorStorage|null $strage = null): self|null
     {
-        $strage = $strage ?? static::configInstantiate('storage') ;
+        $strage ??= static::configInstantiate('storage') ;
         $cursor = $strage->load($name);
         return $cursor === null || $cursor->expired() ? null : $cursor ;
     }
@@ -186,9 +188,9 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param string             $name   of cursor
      * @param CursorStorage|null $strage (default: depend on configured)
      */
-    public static function remove(string $name, CursorStorage|null $strage = null) : void
+    public static function remove(string $name, CursorStorage|null $strage = null): void
     {
-        $strage = $strage ?? static::configInstantiate('storage') ;
+        $strage ??= static::configInstantiate('storage') ;
         $strage->remove($name);
     }
 
@@ -197,9 +199,9 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      * @param CursorStorage|null $strage (default: depend on configured)
      */
-    public static function clear(CursorStorage|null $strage = null) : void
+    public static function clear(CursorStorage|null $strage = null): void
     {
-        $strage = $strage ?? static::configInstantiate('storage') ;
+        $strage ??= static::configInstantiate('storage') ;
         $strage->clear();
     }
 
@@ -210,7 +212,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param  Cursor|null $cursor
      * @return boolean
      */
-    public function equals(Cursor|null $cursor) : bool
+    public function equals(Cursor|null $cursor): bool
     {
         return $cursor !== null
             && Utils::equivalent($this->cursor, $cursor->cursor)

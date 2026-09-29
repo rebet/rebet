@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Log\Driver;
@@ -21,14 +22,14 @@ interface NameableDriver extends PsrLogger
      * @param  string $name
      * @return self
      */
-    public function setName(string $name) : self;
+    public function setName(string $name): self;
 
     /**
      * Get a name of this driver.
      *
      * @return string
      */
-    public function getName() : string;
+    public function getName(): string;
 
     /**
      * Return a new cloned instance with the name changed
@@ -36,5 +37,5 @@ interface NameableDriver extends PsrLogger
      * @param  string    $name
      * @return PsrLogger
      */
-    public function withName(string $name) : PsrLogger;
+    public function withName(string $name): PsrLogger;
 }

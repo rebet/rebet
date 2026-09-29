@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Support;
@@ -22,14 +23,14 @@ trait Arrayable
      *
      * @return array
      */
-    abstract protected function &container() : array ;
+    abstract protected function &container(): array ;
 
     /**
      * Get the all items.
      *
      * @return array<int|string, mixed>
      */
-    public function all() : array
+    public function all(): array
     {
         return $this->container();
     }
@@ -39,7 +40,7 @@ trait Arrayable
      *
      * @return boolean
      */
-    public function empty() : bool
+    public function empty(): bool
     {
         return empty($this->container());
     }
@@ -50,7 +51,7 @@ trait Arrayable
      * @param  int|string $key
      * @return boolean
      */
-    public function has($key) : bool
+    public function has($key): bool
     {
         return array_key_exists($key, $this->container());
     }
@@ -58,7 +59,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function count() : int
+    public function count(): int
     {
         return count($this->container());
     }
@@ -66,7 +67,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function getIterator() : \Traversable
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->container());
     }
@@ -74,7 +75,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function offsetSet($offset, $value) : void
+    public function offsetSet($offset, $value): void
     {
         $container = &$this->container();
         if ($offset === null) {
@@ -87,7 +88,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function offsetExists($offset) : bool
+    public function offsetExists($offset): bool
     {
         return isset($this->container()[$offset]);
     }
@@ -95,7 +96,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function offsetUnset($offset) : void
+    public function offsetUnset($offset): void
     {
         unset($this->container()[$offset]);
     }
@@ -103,7 +104,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function offsetGet($offset) : mixed
+    public function offsetGet($offset): mixed
     {
         return $this->container()[$offset] ?? null ;
     }
@@ -113,7 +114,7 @@ trait Arrayable
      *
      * @return array<int|string, mixed>
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         return array_map(function ($value) {
             return is_object($value) && method_exists($value, 'toArray') ? $value->toArray() : $value;
@@ -123,7 +124,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function jsonSerialize() : mixed
+    public function jsonSerialize(): mixed
     {
         return Json::serialize($this->container());
     }

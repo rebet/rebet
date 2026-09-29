@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\View\Engine\Twig\Parser;
 
 use PHPUnit\Framework\Attributes\DataProvider;

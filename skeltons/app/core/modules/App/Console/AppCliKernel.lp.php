@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Console;
@@ -20,7 +21,7 @@ class AppCliKernel extends CliKernel
      * @return array<int, Bootstrapper|class-string<Bootstrapper>|array<int|string, mixed>>
      */
     #[Override]
-    protected function bootstrappers() : array
+    protected function bootstrappers(): array
     {
         return parent::bootstrappers();
     }
@@ -31,7 +32,7 @@ class AppCliKernel extends CliKernel
      * @return AppCliExceptionHandler
      */
     #[Override]
-    public function exceptionHandler() : AppCliExceptionHandler
+    public function exceptionHandler(): AppCliExceptionHandler
     {
         return new AppCliExceptionHandler($this->output);
     }

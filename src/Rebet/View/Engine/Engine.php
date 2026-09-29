@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\View\Engine;
@@ -25,7 +26,7 @@ interface Engine
      *
      * @return array<int, string>
      */
-    public function getPaths() : array;
+    public function getPaths(): array;
 
     /**
      * Prepend template path.
@@ -33,7 +34,7 @@ interface Engine
      * @param  string $path
      * @return Engine
      */
-    public function prependPath(string $path) : Engine;
+    public function prependPath(string $path): Engine;
 
     /**
      * Append template path.
@@ -41,7 +42,7 @@ interface Engine
      * @param  string $path
      * @return Engine
      */
-    public function appendPath(string $path) : Engine;
+    public function appendPath(string $path): Engine;
 
     /**
      * Get the string contents of the view.
@@ -50,7 +51,7 @@ interface Engine
      * @param  array<string, mixed> $data
      * @return string
      */
-    public function render(string $name, array $data = []) : string;
+    public function render(string $name, array $data = []): string;
 
     /**
      * It checks the given name view template exists.
@@ -58,5 +59,5 @@ interface Engine
      * @param  string  $name
      * @return boolean
      */
-    public function exists(string $name) : bool;
+    public function exists(string $name): bool;
 }

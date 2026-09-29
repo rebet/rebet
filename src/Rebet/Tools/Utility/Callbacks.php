@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -24,9 +25,7 @@ class Callbacks
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get the test callback closure.
@@ -36,7 +35,7 @@ class Callbacks
      * @param  mixed           $value
      * @return \Closure        of function($item) : bool { retrun $item->$key $operator $value; }
      */
-    public static function test($key, string $operator, $value) : \Closure
+    public static function test($key, string $operator, $value): \Closure
     {
         return function ($item) use ($key, $operator, $value) {
             $retrieved = Reflector::get($item, $key);
@@ -64,7 +63,7 @@ class Callbacks
      * @param  bool                 $invert (default: false)
      * @return \Closure             of function($a, $b) : int { ... }
      */
-    public static function compare($key = null, bool $invert = false) : \Closure
+    public static function compare($key = null, bool $invert = false): \Closure
     {
         $invert = $invert ? -1 : 1 ;
         return function ($a, $b) use ($key, $invert) {
@@ -81,7 +80,7 @@ class Callbacks
      * @param  callable|string|null $retriever key name (with/without '@') or function($value):mixed.
      * @return \Closure             of function($value) : mixed { ... }
      */
-    public static function retriever($retriever) : \Closure
+    public static function retriever($retriever): \Closure
     {
         if (is_callable($retriever)) {
             return \Closure::fromCallable($retriever);
@@ -99,20 +98,20 @@ class Callbacks
      * @param  bool     $verbose  (default: true)
      * @return string
      */
-    public static function stringify(callable $callback, bool $verbose = true) : string
+    public static function stringify(callable $callback, bool $verbose = true): string
     {
         $reflector = new \ReflectionFunction(\Closure::fromCallable($callback));
         $class     = $reflector->getClosureScopeClass();
-        $function  = $class ? $class->getShortName().'::'.$reflector->getShortName() : $reflector->getShortName() ;
+        $function  = $class ? $class->getShortName() . '::' . $reflector->getShortName() : $reflector->getShortName() ;
         if ($verbose && $class) {
-            $function = $class->getNamespaceName().'\\'.$function;
+            $function = $class->getNamespaceName() . '\\' . $function;
         }
 
         $string     = "{$function}(";
         $parameters = $reflector->getParameters();
         foreach ($parameters as $parameter) {
             $type_hint = null;
-            $name      = '$'.$parameter->getName();
+            $name      = '$' . $parameter->getName();
             $name      = $parameter->isVariadic() ? "...{$name}" : $name ;
             $name      = $parameter->isPassedByReference() ? "&{$name}" : $name ;
 
@@ -121,7 +120,7 @@ class Callbacks
                 $type_hint = $type_hint !== null && $parameter->allowsNull() ? "?{$type_hint}" : $type_hint ;
 
                 try {
-                    $name = $parameter->isOptional() ? "{$name} = ".(Strings::rbtrim($parameter->getDefaultValueConstantName(), '\\') ?? $parameter->getDefaultValue() ?? 'null') : $name ;
+                    $name = $parameter->isOptional() ? "{$name} = " . (Strings::rbtrim($parameter->getDefaultValueConstantName(), '\\') ?? $parameter->getDefaultValue() ?? 'null') : $name ;
                 } catch (\ReflectionException $e) {
                     // It is not possible to get the default value of built-in functions or methods of built-in classes.
                     // Trying to do this will result a ReflectionException being thrown.
@@ -151,7 +150,7 @@ class Callbacks
      *
      * @return \Closure
      */
-    public static function echoBack() : \Closure
+    public static function echoBack(): \Closure
     {
         return static::$cache[__FUNCTION__] ?? static::$cache[__FUNCTION__] = function ($value) { return $value; };
     }
@@ -161,7 +160,7 @@ class Callbacks
      *
      * @return \Closure
      */
-    public static function compareLength() : \Closure
+    public static function compareLength(): \Closure
     {
         return static::$cache[__FUNCTION__] ?? static::$cache[__FUNCTION__] = Callbacks::compare(function ($key) { return $key ? mb_strlen($key) : 0 ; });
     }

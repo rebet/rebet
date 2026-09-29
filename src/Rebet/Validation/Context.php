@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Validation;
@@ -144,9 +145,9 @@ class Context
      * @param  string|null $field (default: current focused field)
      * @return boolean
      */
-    public function hasError(string|null $field = null) : bool
+    public function hasError(string|null $field = null): bool
     {
-        $field = $field ?? "{$this->prefix}{$this->field}" ;
+        $field ??= "{$this->prefix}{$this->field}" ;
         return $field === '*' ? !empty($this->errors) : isset($this->errors[$field]) ;
     }
 
@@ -156,7 +157,7 @@ class Context
      *
      * @return boolean
      */
-    public function isQuiet() : bool
+    public function isQuiet(): bool
     {
         return $this->quiet;
     }
@@ -167,7 +168,7 @@ class Context
      * @param  boolean $quiet
      * @return self
      */
-    public function quiet(bool $quiet) : self
+    public function quiet(bool $quiet): self
     {
         $this->quiet = $quiet;
         return $this;
@@ -179,7 +180,7 @@ class Context
      * @param  string  $field
      * @return boolean
      */
-    public function blank(string $field = null) : bool
+    public function blank(string $field = null): bool
     {
         $value = $field ? $this->value($field) : $this->value ;
         return static::isBlank($value);
@@ -193,7 +194,7 @@ class Context
      * @param  mixed   $value
      * @return boolean
      */
-    public static function isBlank($value) : bool
+    public static function isBlank($value): bool
     {
         return Utils::isBlank($value) ;
     }
@@ -204,7 +205,7 @@ class Context
      * @param  string  $field
      * @return integer
      */
-    public function count(string $field = null) : int
+    public function count(string $field = null): int
     {
         return $this->blank($field) ? 0 : Arrays::count($this->value($field)) ;
     }
@@ -223,15 +224,15 @@ class Context
      * @param  int|string|null      $selector (default: null)
      * @return bool                 false
      */
-    public function appendError(string $key, array $replace = [], int|string|null $selector = null) : bool
+    public function appendError(string $key, array $replace = [], int|string|null $selector = null): bool
     {
         if ($this->isQuiet()) {
             return false;
         }
 
-        $replace['attribute'] = $replace['attribute'] ?? $this->label;
-        $replace['self']      = $replace['self'] ?? $this->value;
-        $replace['selector']  = $selector;
+        $replace['attribute'] ??= $this->label;
+        $replace['self'] ??= $this->value;
+        $replace['selector'] = $selector;
 
         $message = null;
         if (Strings::startsWith($key, '@')) {
@@ -250,7 +251,7 @@ class Context
      * @param  string $field
      * @return self
      */
-    public function initBy(string $field) : self
+    public function initBy(string $field): self
     {
         $this->field = $field;
         $this->value = $this->value($field);
@@ -275,11 +276,11 @@ class Context
      * @param  string $field
      * @return string
      */
-    public function label(string $field) : string
+    public function label(string $field): string
     {
         $label = $this->labelTranslate("{$this->prefix}{$field}");
         if ($label) {
-            return $this->parent ? $this->formatNestedAttributeLabel($label, $this->parent->label)  : $label ;
+            return $this->parent ? $this->formatNestedAttributeLabel($label, $this->parent->label) : $label ;
         }
         $parent = '';
         $rule   = $this->rules;
@@ -290,7 +291,7 @@ class Context
             $rule   = $rule[$parts]['nests'] ?? $rule[$parts]['nest'] ?? [];
         }
 
-        return $this->parent ? $this->formatNestedAttributeLabel($label, $this->parent->label)  : $label ;
+        return $this->parent ? $this->formatNestedAttributeLabel($label, $this->parent->label) : $label ;
     }
 
     /**
@@ -300,7 +301,7 @@ class Context
      * @param  string $parent_label
      * @return string
      */
-    protected function formatNestedAttributeLabel(string $label, string $parent_label) : string
+    protected function formatNestedAttributeLabel(string $label, string $parent_label): string
     {
         if (!$this->nested_attribute_auto_format) {
             return $label;
@@ -315,7 +316,7 @@ class Context
      * @param  string      $key
      * @return string|null
      */
-    protected function message(string $key) : string|null
+    protected function message(string $key): string|null
     {
         $rule = $this->rules;
         if ($this->prefix) {
@@ -341,7 +342,7 @@ class Context
      * @param  string      $field
      * @return string|null
      */
-    protected function labelTranslate(string $field) : string|null
+    protected function labelTranslate(string $field): string|null
     {
         $label = Translator::get("attribute.{$field}", [], null, false);
         if ($label !== null) {
@@ -364,9 +365,9 @@ class Context
      * @param  string|null        $delimiter (default: depend on configure)
      * @return string
      */
-    public function labels(array $fields, string|null $delimiter = null) : string
+    public function labels(array $fields, string|null $delimiter = null): string
     {
-        $delimiter = $delimiter ?? $this->grammar('delimiter', ', ');
+        $delimiter ??= $this->grammar('delimiter', ', ');
         return implode($delimiter, array_map(function ($field) {
             return $this->label($field);
         }, $fields));
@@ -378,7 +379,7 @@ class Context
      * @param  mixed                     $value value or :field_name string or Enum object
      * @return array{0: mixed, 1: mixed} [$value, $label]
      */
-    public function resolve($value) : array
+    public function resolve($value): array
     {
         if (!is_string($value) || !Strings::startsWith($value, ':')) {
             return [
@@ -396,15 +397,15 @@ class Context
      * @param  string|null                                        $nested_field
      * @return array{0: array<int|string, mixed>, 1: string|null} [$list, $label]
      */
-    public function pluckNested(string|null $nested_field) : array
+    public function pluckNested(string|null $nested_field): array
     {
         if ($nested_field) {
             $label = $this->formatNestedAttributeLabel($this->label("{$this->field}.{$nested_field}"), $this->label);
-            $list  = array_map(function ($value) use ($nested_field) { return Reflector::get($value, $nested_field); }, (array)$this->value);
+            $list  = array_map(function ($value) use ($nested_field) { return Reflector::get($value, $nested_field); }, (array) $this->value);
             return [$list, $label];
         }
 
-        return [(array)$this->value, $this->label];
+        return [(array) $this->value, $this->label];
     }
 
     /**
@@ -413,7 +414,7 @@ class Context
      * @param  array<int, string>                                               $fields
      * @return array<string, array{field: string, value: mixed, label: string}> [$field => ['field' => $field, 'value' => $value, 'label' => $label], ...]
      */
-    public function pluckCorrelated(array $fields) : array
+    public function pluckCorrelated(array $fields): array
     {
         $list = [];
         foreach ($fields as $field) {
@@ -433,7 +434,7 @@ class Context
      * @param  integer $num
      * @return string
      */
-    public function ordinalize(int $num) : string
+    public function ordinalize(int $num): string
     {
         return Translator::ordinalize($num);
     }
@@ -455,7 +456,7 @@ class Context
      *
      * @return string
      */
-    public function crud() : string
+    public function crud(): string
     {
         return $this->crud;
     }
@@ -465,7 +466,7 @@ class Context
      *
      * @return self|null
      */
-    public function parent() : self|null
+    public function parent(): self|null
     {
         return $this->parent;
     }
@@ -475,7 +476,7 @@ class Context
      *
      * @return boolean
      */
-    public function hasParent() : bool
+    public function hasParent(): bool
     {
         return !is_null($this->parent);
     }
@@ -486,13 +487,13 @@ class Context
      * @param  string|int|null $key
      * @return self
      */
-    public function nest($key = null) : self
+    public function nest($key = null): self
     {
         $nested               = clone $this;
         $nested->prefix       = "{$this->prefix}{$this->field}.";
         $nested->data         = !is_null($key) ? $this->data[$this->field][$key] : $this->data[$this->field] ;
         $nested->key          = $key;
-        $nested->error_prefix = "{$this->error_prefix}{$this->field}.".(!is_null($key) ? "{$key}." : "");
+        $nested->error_prefix = "{$this->error_prefix}{$this->field}." . (!is_null($key) ? "{$key}." : "");
         $nested->parent       = $this;
         $nested->field        = null;
         $nested->label        = null;
@@ -509,7 +510,7 @@ class Context
      * @param  mixed  $value
      * @return self
      */
-    public function setExtra(string $key, $value) : self
+    public function setExtra(string $key, $value): self
     {
         $this->extra[$this->field][$key] = $value;
         return $this;

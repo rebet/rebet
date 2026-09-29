@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
@@ -34,7 +35,7 @@ class ViewRoute extends ClosureRoute
             $selector = new ViewSelector($request, Auth::user());
             $view     = $selector->view($name, $apply_change);
             if (!$view->exists()) {
-                throw new RouteNotFoundException("View route [{$name}] (possible: ".join(', ', $view->getPossibleNames()).") not found in [ ".(implode(', ', $view->getPaths()))." ]. An exception occurred while processing the view.");
+                throw new RouteNotFoundException("View route [{$name}] (possible: " . join(', ', $view->getPossibleNames()) . ") not found in [ " . (implode(', ', $view->getPaths())) . " ]. An exception occurred while processing the view.");
             }
             return Responder::toResponse($view->with(array_merge($request->input(), $request->attributes->all(), $args)));
         });

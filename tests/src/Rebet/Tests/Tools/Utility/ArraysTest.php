@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use Rebet\Tests\RebetTestCase;
@@ -13,7 +14,7 @@ use TestApp\Stub\ToArrayStub;
 
 class ArraysTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->vfs([
@@ -111,7 +112,7 @@ class ArraysTest extends RebetTestCase
                 35 => ['user_id' => 35, 'name' => 'David'],
                 43 => ['user_id' => 43, 'name' => 'Linda'],
             ],
-            Arrays::pluck($list, null, 'user_id')
+            Arrays::pluck($list, null, 'user_id'),
         );
         $this->assertSame(
             [
@@ -119,7 +120,7 @@ class ArraysTest extends RebetTestCase
                 35 => 'David(35)',
                 43 => 'Linda(43)',
             ],
-            Arrays::pluck($list, function ($i, $key, $row) { return "{$row['name']}({$row['user_id']})"; }, 'user_id')
+            Arrays::pluck($list, function ($i, $key, $row) { return "{$row['name']}({$row['user_id']})"; }, 'user_id'),
         );
     }
 
@@ -135,35 +136,35 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([3], Arrays::override(['a' => 1, 'b' => 2], [3]));
         $this->assertSame(
             ['a' => 3, 'b' => 2],
-            Arrays::override(['a' => 1, 'b' => 2], ['a' => 3])
+            Arrays::override(['a' => 1, 'b' => 2], ['a' => 3]),
         );
         $this->assertSame(
             ['a' => 3, 'b' => 2, 'c' => 3],
-            Arrays::override(['a' => 1, 'b' => 2], ['a' => 3, 'c' => 3])
+            Arrays::override(['a' => 1, 'b' => 2], ['a' => 3, 'c' => 3]),
         );
         $this->assertSame(
             ['a' => 3, 'b' => [2], 'c' => 3],
-            Arrays::override(['a' => [1], 'b' => [2]], ['a' => 3, 'c' => 3])
+            Arrays::override(['a' => [1], 'b' => [2]], ['a' => 3, 'c' => 3]),
         );
         $this->assertSame(
             ['a' => ['A' => 3, 'B' => 2, 'C' => 3], 'b' => 2, 'c' => 3],
-            Arrays::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => ['A' => 3, 'C' => 3], 'c' => 3])
+            Arrays::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => ['A' => 3, 'C' => 3], 'c' => 3]),
         );
         $this->assertSame(
             ['a' => ['A' => ['α' => 1], 'B' => 2, 'C' => 3], 'b' => 2, 'c' => 3],
-            Arrays::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => ['A' => ['α' => 1], 'C' => 3], 'c' => 3])
+            Arrays::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => ['A' => ['α' => 1], 'C' => 3], 'c' => 3]),
         );
         $this->assertSame(
             ['a' => ['A' => 1, 'B' => 2], 'b' => 2, 'c' => 3],
-            Arrays::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => [], 'c' => 3])
+            Arrays::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => [], 'c' => 3]),
         );
         $this->assertSame(
             ['a' => [], 'b' => 2, 'c' => 3],
-            Arrays::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a=' => [], 'c' => 3])
+            Arrays::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a=' => [], 'c' => 3]),
         );
         $this->assertSame(
             ['a' => [['A' => 1], ['B' => 2], ['A' => 3]], 'b' => 2, 'c' => 3],
-            Arrays::override(['a' => [['A' => 1], ['B' => 2]], 'b' => 2], ['a' => [['A' => 3]], 'c' => 3])
+            Arrays::override(['a' => [['A' => 1], ['B' => 2]], 'b' => 2], ['a' => [['A' => 3]], 'c' => 3]),
         );
 
         $this->assertSame(
@@ -179,8 +180,8 @@ class ArraysTest extends RebetTestCase
                 [
                     'map'   => ['a' => ['B' => 'B'], 'c' => 'C'],
                     'array' => ['c'],
-                ]
-            )
+                ],
+            ),
         );
 
         $merged = Arrays::override(new \ArrayObject([1, 2]), [3]);
@@ -232,8 +233,8 @@ class ArraysTest extends RebetTestCase
                 [
                     'map'   => ['a' => OverrideOption::REPLACE],
                     'array' => OverrideOption::REPLACE,
-                ]
-            )
+                ],
+            ),
         );
     }
 
@@ -252,8 +253,8 @@ class ArraysTest extends RebetTestCase
                 [
                     'map'    => ['a=' => ['B' => 'B'], 'c' => 'C'],
                     'array+' => ['c'],
-                ]
-            )
+                ],
+            ),
         );
     }
 
@@ -271,8 +272,8 @@ class ArraysTest extends RebetTestCase
                     'array' => ['c'],
                 ],
                 [],
-                OverrideOption::PREPEND
-            )
+                OverrideOption::PREPEND,
+            ),
         );
 
         $this->assertSame(
@@ -287,8 +288,8 @@ class ArraysTest extends RebetTestCase
                     'array<' => ['c'],
                 ],
                 [],
-                OverrideOption::PREPEND
-            )
+                OverrideOption::PREPEND,
+            ),
         );
 
         $this->assertSame(
@@ -303,8 +304,8 @@ class ArraysTest extends RebetTestCase
                     'array>' => ['c'],
                 ],
                 [],
-                OverrideOption::PREPEND
-            )
+                OverrideOption::PREPEND,
+            ),
         );
 
         $this->assertSame(
@@ -319,8 +320,8 @@ class ArraysTest extends RebetTestCase
                     'array=' => ['c'],
                 ],
                 [],
-                OverrideOption::PREPEND
-            )
+                OverrideOption::PREPEND,
+            ),
         );
 
         $this->assertSame(
@@ -335,8 +336,8 @@ class ArraysTest extends RebetTestCase
                     'array+' => ['c'],
                 ],
                 [],
-                OverrideOption::PREPEND
-            )
+                OverrideOption::PREPEND,
+            ),
         );
 
         $this->assertSame(
@@ -351,8 +352,8 @@ class ArraysTest extends RebetTestCase
                     'array' => ['c'],
                 ],
                 ['array' => OverrideOption::APPEND],
-                OverrideOption::PREPEND
-            )
+                OverrideOption::PREPEND,
+            ),
         );
 
         $this->assertSame(
@@ -367,8 +368,8 @@ class ArraysTest extends RebetTestCase
                     'array+' => ['c'],
                 ],
                 ['array' => OverrideOption::APPEND],
-                OverrideOption::PREPEND
-            )
+                OverrideOption::PREPEND,
+            ),
         );
     }
 
@@ -386,8 +387,8 @@ class ArraysTest extends RebetTestCase
                     'array' => ['c'],
                 ],
                 [],
-                OverrideOption::REPLACE
-            )
+                OverrideOption::REPLACE,
+            ),
         );
     }
 
@@ -405,8 +406,8 @@ class ArraysTest extends RebetTestCase
                     'array' => ['c'],
                 ],
                 [],
-                OverrideOption::MERGE
-            )
+                OverrideOption::MERGE,
+            ),
         );
 
         $this->assertSame(
@@ -421,8 +422,8 @@ class ArraysTest extends RebetTestCase
                     'array' => ['c'],
                 ],
                 [],
-                OverrideOption::MERGE
-            )
+                OverrideOption::MERGE,
+            ),
         );
 
         $this->assertSame(
@@ -437,8 +438,8 @@ class ArraysTest extends RebetTestCase
                     'array' => ['c'],
                 ],
                 [],
-                OverrideOption::MERGE
-            )
+                OverrideOption::MERGE,
+            ),
         );
     }
 
@@ -489,7 +490,7 @@ class ArraysTest extends RebetTestCase
                     ],
                 ],
                 ['foo' => ['*' => ['r' => OverrideOption::REPLACE, 'm' => OverrideOption::MERGE, 'p' => OverrideOption::PREPEND]]],
-            )
+            ),
         );
     }
 
@@ -499,7 +500,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([], Arrays::duplicate([]));
         $this->assertSame([], Arrays::duplicate([1, 2, 3]));
         $this->assertSame([1, 3, 'a'], Arrays::duplicate(
-            [1, 2, 3, '1', 3, 'a', 'b', 'c', 'a', 'a', 'B']
+            [1, 2, 3, '1', 3, 'a', 'b', 'c', 'a', 'a', 'B'],
         ));
     }
 
@@ -510,7 +511,7 @@ class ArraysTest extends RebetTestCase
 
         $this->assertEquals(
             Arrays::shuffle(range(0, 100, 10), 1234),
-            Arrays::shuffle(range(0, 100, 10), 1234)
+            Arrays::shuffle(range(0, 100, 10), 1234),
         );
     }
 
@@ -691,17 +692,17 @@ class ArraysTest extends RebetTestCase
         // Single dimension
         $this->assertSame(
             [[1, 'a'], [1, 'b'], [1, 'c']],
-            Arrays::crossJoin([1], ['a', 'b', 'c'])
+            Arrays::crossJoin([1], ['a', 'b', 'c']),
         );
         // Square matrix
         $this->assertSame(
             [[1, 'a'], [1, 'b'], [2, 'a'], [2, 'b']],
-            Arrays::crossJoin([1, 2], ['a', 'b'])
+            Arrays::crossJoin([1, 2], ['a', 'b']),
         );
         // Rectangular matrix
         $this->assertSame(
             [[1, 'a'], [1, 'b'], [1, 'c'], [2, 'a'], [2, 'b'], [2, 'c']],
-            Arrays::crossJoin([1, 2], ['a', 'b', 'c'])
+            Arrays::crossJoin([1, 2], ['a', 'b', 'c']),
         );
         // 3D matrix
         $this->assertSame(
@@ -711,7 +712,7 @@ class ArraysTest extends RebetTestCase
                 [2, 'a', 'I'], [2, 'a', 'II'], [2, 'a', 'III'],
                 [2, 'b', 'I'], [2, 'b', 'II'], [2, 'b', 'III'],
             ],
-            Arrays::crossJoin([1, 2], ['a', 'b'], ['I', 'II', 'III'])
+            Arrays::crossJoin([1, 2], ['a', 'b'], ['I', 'II', 'III']),
         );
         // With 1 empty dimension
         $this->assertEmpty(Arrays::crossJoin([], ['a', 'b'], ['I', 'II', 'III']));
@@ -1044,10 +1045,10 @@ class ArraysTest extends RebetTestCase
     public function test_groupByObjects()
     {
         $data = [
-            10 => $user_1 = (object)['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
-            20 => $user_2 = (object)['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
-            30 => $user_3 = (object)['user' => 3, 'skilllevel' => 2, 'roles' => ['Role_1'          ]],
-            40 => $user_4 = (object)['user' => 4, 'skilllevel' => 2, 'roles' => ['Role_2'          ]],
+            10 => $user_1 = (object) ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
+            20 => $user_2 = (object) ['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
+            30 => $user_3 = (object) ['user' => 3, 'skilllevel' => 2, 'roles' => ['Role_1'          ]],
+            40 => $user_4 = (object) ['user' => 4, 'skilllevel' => 2, 'roles' => ['Role_2'          ]],
         ];
 
         $result = Arrays::groupBy($data, ['skilllevel', 'roles'], true);
@@ -1144,7 +1145,7 @@ class ArraysTest extends RebetTestCase
 
         $this->assertEquals(
             [4 => -5, 3 => -4, 1 => -3, 2 => -2, 0 => -1, 5 => 0, 8 => 1, 9 => 2, 7 => 3, 10 => 4, 6 => 5],
-            Arrays::sort([-1, -3, -2, -4, -5, 0, 5, 3, 1, 2, 4])
+            Arrays::sort([-1, -3, -2, -4, -5, 0, 5, 3, 1, 2, 4]),
         );
 
         $this->assertEquals([2 => 'foo', 1 => 'bar-10', 0 => 'bar-1'], Arrays::sort(['bar-1', 'bar-10', 'foo']));

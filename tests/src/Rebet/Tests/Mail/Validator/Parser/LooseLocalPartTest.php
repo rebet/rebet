@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Mail\Validator\Parser;
 
 use Egulias\EmailValidator\EmailLexer;
@@ -26,7 +27,7 @@ class LooseLocalPartTest extends RebetTestCase
         $this->assertSame([DotAtEnd::class, DotAtStart::class], (new LooseLocalPart(new EmailLexer(), [DotAtEnd::class, DotAtStart::class]))->ignores());
     }
 
-    public static function dataParses() : array
+    public static function dataParses(): array
     {
         return [
             [

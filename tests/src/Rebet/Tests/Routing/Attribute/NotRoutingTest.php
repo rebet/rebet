@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Routing\Attribute;
 
 use Rebet\Attribute\AttributedClass;

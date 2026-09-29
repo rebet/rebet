@@ -40,7 +40,7 @@ return [
     | This section defines Log settings.
     | You may change these defaults as required.
     */
-    Log::class => [
+    Log::class           => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Unit Test Mode
@@ -90,14 +90,14 @@ return [
         | - Rebet\Log\Driver\Monolog\TestDriver::class    (extends MonologDriver)
         | - and also you can use any log driver that implemented Psr\Log\LoggerInterface.
         */
-        'channels' => [
+        'channels'        => [
             /*
             |--------------------------------------------------------------------------------------
             | WEB Channel
             |--------------------------------------------------------------------------------------
             | Logger setting for 'web' channel that default of web application using WebKernel.
             */
-            'web' => [
+            'web'     => [
                 'driver' => [
                     '@factory' => StackDriver::class,
                     'channels' => ['app'],
@@ -111,7 +111,7 @@ return [
             |--------------------------------------------------------------------------------------
             | Logger setting for 'api' channel that default of API application using ApiKernel.
             */
-            'api' => [
+            'api'     => [
                 'driver' => [
                     '@factory' => StackDriver::class,
                     'channels' => ['app'],
@@ -126,7 +126,7 @@ return [
             | Logger setting for 'cli' channel that default of Command Line Interface application
             | using CliKernel.
             */
-            'cli' => [
+            'cli'     => [
                 'driver' => [
                     '@factory' => StackDriver::class,
                     'channels' => ['command'],
@@ -140,10 +140,10 @@ return [
             |--------------------------------------------------------------------------------------
             | Logger setting for 'app' channel that default of using FileDriver.
             */
-            'app' => [
+            'app'     => [
                 'driver' => [
-                    '@factory' => FileDriver::class,
-                    'level'    => App::when([
+                    '@factory'             => FileDriver::class,
+                    'level'                => App::when([
                         'local'   => LogLevel::DEBUG,
                         'default' => LogLevel::ERROR,
                     ]),
@@ -346,7 +346,7 @@ return [
         | If you want to be masking some properties like 'password' in context/extra on log message,
         | you can do that by these properties write here.
         */
-        'masks' => ['password', 'password_confirm'],
+        'masks'        => ['password', 'password_confirm'],
 
 
         /*

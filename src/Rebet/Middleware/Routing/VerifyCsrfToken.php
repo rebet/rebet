@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Middleware\Routing;
@@ -62,7 +63,7 @@ class VerifyCsrfToken
      * @param  \Closure $next
      * @return Response
      */
-    public function handle(Request $request, \Closure $next) : Response
+    public function handle(Request $request, \Closure $next): Response
     {
         $request->session()->initReusableToken();
 
@@ -86,7 +87,7 @@ class VerifyCsrfToken
      * @param  Request $request
      * @return boolean
      */
-    protected function verifyToken(Request $request) : bool
+    protected function verifyToken(Request $request): bool
     {
         // Determine if the HTTP request uses a ‘read’ verb.
         if (in_array($request->getMethod(), ['HEAD', 'GET', 'OPTIONS'])) {
@@ -113,7 +114,7 @@ class VerifyCsrfToken
      * @param  Request                          $request
      * @return array{0: string, 1: string|null} [key, value]
      */
-    protected function getTokenFrom(Request $request) : array
+    protected function getTokenFrom(Request $request): array
     {
         $token = $request->input('_token')
               ?: $request->getHeader('X-CSRF-TOKEN')

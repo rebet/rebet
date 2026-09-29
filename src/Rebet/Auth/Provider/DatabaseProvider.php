@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth\Provider;
@@ -94,7 +95,7 @@ class DatabaseProvider extends AuthProvider
         int|null $expired_remember_token_clean_rate = 100,
         array $precondition = [],
         array $alises = [],
-        string|null $db = null
+        string|null $db = null,
     ) {
         $this->entity                            = $entity;
         $this->signin_id_name                    = $signin_id_name;
@@ -109,7 +110,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function findById($id) : AuthUser|null
+    public function findById($id): AuthUser|null
     {
         if ($id === null) {
             return null;
@@ -123,7 +124,7 @@ class DatabaseProvider extends AuthProvider
      *
      * @param array<string, mixed>|null $precondition for ransack conditions (default: depend on constructor)
      */
-    public function findByToken(string|null $token, array|null $precondition = null) : AuthUser|null
+    public function findByToken(string|null $token, array|null $precondition = null): AuthUser|null
     {
         if ($token === null) {
             return null;
@@ -137,7 +138,7 @@ class DatabaseProvider extends AuthProvider
      *
      * @param array<string, mixed>|null $precondition for ransack conditions (default: depend on constructor)
      */
-    protected function findBySigninId($signin_id, array|null $precondition = null) : AuthUser|null
+    protected function findBySigninId($signin_id, array|null $precondition = null): AuthUser|null
     {
         if ($signin_id === null) {
             return null;
@@ -149,7 +150,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function supportRememberToken() : bool
+    public function supportRememberToken(): bool
     {
         return true;
     }
@@ -157,7 +158,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function findByRememberToken(string|null $token) : AuthUser|null
+    public function findByRememberToken(string|null $token): AuthUser|null
     {
         if ($token === null) {
             return null;
@@ -169,7 +170,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function issuingRememberToken($id, int $remember_days) : string|null
+    public function issuingRememberToken($id, int $remember_days): string|null
     {
         $now                      = DateTime::now();
         $remember_token           = new RememberToken();
@@ -187,7 +188,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function removeRememberToken(string|null $token) : void
+    public function removeRememberToken(string|null $token): void
     {
         RememberToken::deleteBy(['provider' => $this->name, 'remember_token' => $this->hashToken($token)], $this->db);
         if ($this->expired_remember_token_clean_rate && random_int(1, $this->expired_remember_token_clean_rate) === 1) {
@@ -198,13 +199,13 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function rehashPassword($id, string $new_hash) : void
+    public function rehashPassword($id, string $new_hash): void
     {
         $this->entity::updateBy(
             [$this->password_name => $new_hash],
-            array_combine($this->entity::primaryKeys(), (array)$id),
+            array_combine($this->entity::primaryKeys(), (array) $id),
             null,
-            $this->db
+            $this->db,
         );
     }
 }

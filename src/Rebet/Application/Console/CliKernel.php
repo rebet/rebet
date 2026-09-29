@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\Console;
@@ -95,7 +96,7 @@ class CliKernel extends Kernel
      * {@inheritDoc}
      * @return array<int, Bootstrapper|class-string<Bootstrapper>|array<int|string, mixed>>
      */
-    protected function bootstrappers() : array
+    protected function bootstrappers(): array
     {
         return static::config('bootstrappers');
     }
@@ -105,7 +106,7 @@ class CliKernel extends Kernel
      *
      * @return Assistant
      */
-    public function assistant() : Assistant
+    public function assistant(): Assistant
     {
         return $this->assistant;
     }
@@ -115,7 +116,7 @@ class CliKernel extends Kernel
      *
      * @return void
      */
-    public function bootstrap() : void
+    public function bootstrap(): void
     {
         parent::bootstrap();
         $this->assistant = new Assistant();
@@ -127,11 +128,11 @@ class CliKernel extends Kernel
      * @param  InputInterface|null $input (default: null for ArgvInput())
      * @return int
      */
-    public function handle($input = null) : int
+    public function handle($input = null): int
     {
         return $this->result = $this->assistant()->run(
             $this->input = $input ?? new ArgvInput(),
-            $this->output
+            $this->output,
         );
     }
 
@@ -142,11 +143,11 @@ class CliKernel extends Kernel
      * @param  array<string, mixed> $parameters (default: [])
      * @return int
      */
-    public function call(string $action, array $parameters = []) : int
+    public function call(string $action, array $parameters = []): int
     {
         return $this->result = $this->assistant()->run(
             $this->input = new ArrayInput(array_merge($parameters, ['command' => $action])),
-            $this->output
+            $this->output,
         );
     }
 
@@ -155,7 +156,7 @@ class CliKernel extends Kernel
      *
      * @return void
      */
-    public function terminate() : void
+    public function terminate(): void
     {
         // Currently nothing to do.
     }
@@ -165,7 +166,7 @@ class CliKernel extends Kernel
      *
      * @return CliExceptionHandler
      */
-    public function exceptionHandler() : CliExceptionHandler
+    public function exceptionHandler(): CliExceptionHandler
     {
         return new CliExceptionHandler($this->output);
     }
@@ -173,7 +174,7 @@ class CliKernel extends Kernel
     /**
      * {@inheritDoc}
      */
-    public function fallback(\Throwable $e) : int
+    public function fallback(\Throwable $e): int
     {
         return $this->result = $this->exceptionHandler()->handle($this->input ?? $this->input = new ArgvInput(), $e);
     }
@@ -181,7 +182,7 @@ class CliKernel extends Kernel
     /**
      * {@inheritDoc}
      */
-    public function report(\Throwable $e) : void
+    public function report(\Throwable $e): void
     {
         $this->exceptionHandler()->report($this->input ?? $this->input = new ArgvInput(), $this->result, $e);
     }

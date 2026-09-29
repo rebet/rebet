@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Cache\Adapter\Symfony;
 
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;

@@ -45,7 +45,7 @@ return [
     | This section defines settings for date/time formatting and parsing.
     | You may change these defaults as required.
     */
-    DateTime::class => [
+    DateTime::class       => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default Format / Timezone
@@ -120,7 +120,7 @@ return [
     | This section defines settings for arbitrary precision decimal calculation.
     | You may change these defaults as required.
     */
-    Decimal::class => [
+    Decimal::class        => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Scale Mode / Options
@@ -151,7 +151,7 @@ return [
     | This section defines the unit conversion factors and formatting options used by Unit.
     | You may change these defaults as required, or add your own units/prefixes.
     */
-    Unit::class => [
+    Unit::class           => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Unit Factors
@@ -183,7 +183,7 @@ return [
             | Default Configuration: @see Rebet\Tools\Math\Unit::defaultConfig()
             | Base Symbol: '' (empty string) is the base prefix, and its factor is always 1.
             */
-            UNIT::SI_PREFIX => [
+            UNIT::SI_PREFIX        => [
                 // ex) 'M' => ['1e6', true ], // mega
             ],
 
@@ -198,7 +198,7 @@ return [
             | Default Configuration: @see Rebet\Tools\Math\Unit::defaultConfig()
             | Base Symbol: '' (empty string) is the base prefix, and its factor is always 1.
             */
-            UNIT::BINARY_PREFIX => [
+            UNIT::BINARY_PREFIX    => [
                 // ex) 'Mi' => [bcpow('2', '20'), true], // mebi
             ],
 
@@ -213,7 +213,7 @@ return [
             | Default Configuration: @see Rebet\Tools\Math\Unit::defaultConfig()
             | Base Symbol: '' (empty string) is the base prefix, and its factor is always 1.
             */
-            UNIT::STORAGE_PREFIX => [
+            UNIT::STORAGE_PREFIX   => [
                 // ex) 'M' => [bcpow('2', '20'), true], // mega
             ],
 
@@ -229,7 +229,7 @@ return [
             | Default Configuration: @see Rebet\Tools\Math\Unit::defaultConfig()
             | Base Symbol: 's' (Second) is the base unit, and its factor is always 1.
             */
-            UNIT::TIME => [
+            UNIT::TIME             => [
                 // ex) 'd' => ['86400', true ], // Day
             ],
 
@@ -245,7 +245,7 @@ return [
             | Default Configuration: @see Rebet\Tools\Math\Unit::defaultConfig()
             | Base Symbol: 'm' (Meter) is the base unit, and its factor is always 1.
             */
-            UNIT::LENGTH => [
+            UNIT::LENGTH           => [
                 // ex) 'cm' => ['1e-2', true ], // centimetre
             ],
 
@@ -261,7 +261,7 @@ return [
             | Default Configuration: @see Rebet\Tools\Math\Unit::defaultConfig()
             | Base Symbol: 'kg' (Kilogram) is the base unit, and its factor is always 1.
             */
-            UNIT::MASS => [
+            UNIT::MASS             => [
                 // ex) 'g' => ['1e-3', true ], // gram
             ],
 
@@ -293,7 +293,7 @@ return [
             | Default Configuration: @see Rebet\Tools\Math\Unit::defaultConfig()
             | Base Symbol: 'K' (Kelvin) is the base unit, and its factor is always 1.
             */
-            UNIT::TEMPERATURE => [
+            UNIT::TEMPERATURE      => [
                 // ex) 'MK' => ['1e6', true ], // megakelvin
                 // ex) '°C' => [[              // Celsius
                 //         'from_base' => fn (Decimal $value) => $value->sub('273.15'),
@@ -328,7 +328,7 @@ return [
     | This section defines the loaders used by `Resource::load()` to read a resource file
     | depending on its file extension.
     */
-    Resource::class => [
+    Resource::class       => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Resource Loaders
@@ -375,7 +375,7 @@ return [
     | This section defines the emulators used by System to intercept/emulate PHP built-in functions
     | (that touch global/external state) so they can be controlled/asserted in tests.
     */
-    System::class => [
+    System::class         => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Function Emulators
@@ -405,7 +405,7 @@ return [
     | This section defines the filters usable via Tinker's `_()`/`__call()` (ex: `$value->upper()`).
     | You may add your own filters as required.
     */
-    Tinker::class => [
+    Tinker::class         => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Delegate Filters
@@ -450,7 +450,7 @@ return [
             |     sqrt, mod, powmod, floor, round, ceil, dump, invoke, equals, sameAs, nnvl,
             |     nbvl, nevl, when, case, length, values, keys
             */
-            'customs' => [
+            'customs'    => [
                 // --- You can add/modify only what you need ---
             ],
         ],
@@ -478,7 +478,7 @@ return [
     | This section defines settings for message translation.
     | You may change these defaults as required.
     */
-    Translator::class => [
+    Translator::class     => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Dictionary
@@ -487,8 +487,8 @@ return [
         | 'resource_adder' defines how a library's own translation resource is added into it (ex:
         | called from `Translator::addLibraryResource()`).
         */
-        'dictionary'     => FileDictionary::class,
-        'resource_adder' => [
+        'dictionary'      => FileDictionary::class,
+        'resource_adder'  => [
             FileDictionary::class => function (FileDictionary $dictionary, ...$args) { $dictionary->addLibraryResource(...$args); },
         ],
 
@@ -514,7 +514,7 @@ return [
         | Here you may define, per locale, how a number is converted to its ordinal (ex: 1st, 2nd,
         | 3rd) form used by `Translator::ordinalize()`.
         */
-        'ordinalize' => [
+        'ordinalize'      => [
             // --- You can add/override only what you need for these default ordinalizes ---
             // 'en' => function (int $num) {
             //     return in_array($num % 100, [11, 12, 13]) ? $num.'th' : $num.(['th', 'st', 'nd', 'rd'][$num % 10] ?? 'th');
@@ -530,7 +530,7 @@ return [
     | This section defines the `@` namespace aliases resolved by `Namespaces::alias()` (ex: used as
     | the 'namespace' option of ConventionalRoute/MethodRoute, like '@controller').
     */
-    Namespaces::class => [
+    Namespaces::class     => [
         'aliases' => [
             '@controller' => 'App\\Controller',
         ],
@@ -544,7 +544,7 @@ return [
     | This section defines settings for hashing and symmetric-key encryption/decryption.
     | Change the secret values via `.env` for each environment, never commit real secrets here.
     */
-    Securities::class => [
+    Securities::class     => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Hash Settings

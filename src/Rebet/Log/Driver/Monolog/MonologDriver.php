@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Log\Driver\Monolog;
@@ -66,7 +67,7 @@ class MonologDriver extends MonologLogger implements NameableDriver // @phpstan-
     /**
      * {@inheritDoc}
      */
-    public function setName(string $name) : self
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
@@ -78,7 +79,7 @@ class MonologDriver extends MonologLogger implements NameableDriver // @phpstan-
      * Override for use Rebet DateTime class (which is testable via DateTime::setTestNow())
      * as the source of the record 'datetime' attribute creation.
      */
-    public function addRecord(int|Level $level, string $message, array $context = [], JsonSerializableDateTimeImmutable|null $datetime = null) : bool
+    public function addRecord(int|Level $level, string $message, array $context = [], JsonSerializableDateTimeImmutable|null $datetime = null): bool
     {
         if ($datetime === null) {
             $datetime = new JsonSerializableDateTimeImmutable($this->microsecondTimestamps, $this->timezone);

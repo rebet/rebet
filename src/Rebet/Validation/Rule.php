@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Validation;
@@ -18,7 +19,7 @@ abstract class Rule
      *
      * @return array<string, mixed>
      */
-    abstract public function rules() : array;
+    abstract public function rules(): array;
 
     /**
      * Check the rule has custom validation of given name.
@@ -26,7 +27,7 @@ abstract class Rule
      * @param  string $name
      * @return bool
      */
-    public function hasCustomValidation(string $name) : bool
+    public function hasCustomValidation(string $name): bool
     {
         return method_exists($this, "validation{$name}");
     }
@@ -39,7 +40,7 @@ abstract class Rule
      * @param  mixed   ...$args
      * @return bool
      */
-    public function validate(string $name, Context $context, ...$args) : bool
+    public function validate(string $name, Context $context, ...$args): bool
     {
         $method = "validation{$name}";
         return $this->$method($context, ...$args);
@@ -51,7 +52,7 @@ abstract class Rule
      *
      * @return bool|null
      */
-    public function nestedAttributeAutoFormat() : bool|null
+    public function nestedAttributeAutoFormat(): bool|null
     {
         return null;
     }

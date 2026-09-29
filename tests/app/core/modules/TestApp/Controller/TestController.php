@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Controller;
 
 use Rebet\Auth\Attribute\Guard;
@@ -28,19 +29,19 @@ class TestController extends Controller
     public $after_count     = 0;
     public $terminate_count = 0;
 
-    public function before(Request $request) : Request
+    public function before(Request $request): Request
     {
         $this->before_count++;
         return $request;
     }
 
-    public function after(Request $request, Response $response) : Response
+    public function after(Request $request, Response $response): Response
     {
         $this->after_count++;
         return $response;
     }
 
-    public function terminate(Request $request, Response $response) : void
+    public function terminate(Request $request, Response $response): void
     {
         $this->terminate_count++;
     }

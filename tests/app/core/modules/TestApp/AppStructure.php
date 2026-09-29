@@ -7,6 +7,4 @@ use Rebet\Application\Structure;
 /**
  * AppStructure For Unit Tests
  */
-class AppStructure extends Structure
-{
-}
+class AppStructure extends Structure {}

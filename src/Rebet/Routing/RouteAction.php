@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing;
@@ -69,7 +70,7 @@ class RouteAction
      * @param  Request  $request
      * @return Response
      */
-    public function invoke(Request $request) : Response
+    public function invoke(Request $request): Response
     {
         if ($this->instance && method_exists($this->instance, 'before')) {
             $request = $this->instance->before($request);
@@ -92,7 +93,7 @@ class RouteAction
             }
             $converted = Reflector::convert($origin, $type);
             if ($origin !== null && $converted === null) {
-                throw new RouteNotFoundException("{$this->route} not found. Routing parameter {$name}(=".Strings::stringify($origin).") can not convert to {$type}.");
+                throw new RouteNotFoundException("{$this->route} not found. Routing parameter {$name}(=" . Strings::stringify($origin) . ") can not convert to {$type}.");
             }
             $args[$name] = $converted;
         }
@@ -107,7 +108,7 @@ class RouteAction
      *
      * @return boolean
      */
-    protected function isFunction() : bool
+    protected function isFunction(): bool
     {
         return $this->reflector instanceof \ReflectionFunction;
     }
@@ -117,7 +118,7 @@ class RouteAction
      *
      * @return boolean
      */
-    protected function isMethod() : bool
+    protected function isMethod(): bool
     {
         return $this->reflector instanceof \ReflectionMethod;
     }
@@ -127,7 +128,7 @@ class RouteAction
      *
      * @return AttributedMethod|null
      */
-    public function getAttributedMethod() : AttributedMethod|null
+    public function getAttributedMethod(): AttributedMethod|null
     {
         return $this->attributed_method;
     }

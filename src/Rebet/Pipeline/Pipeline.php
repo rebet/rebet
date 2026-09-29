@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Pipeline;
@@ -85,7 +86,7 @@ class Pipeline
      * @param  array|mixed $pipes
      * @return $this
      */
-    public function through($pipes) : self
+    public function through($pipes): self
     {
         $this->pipes = is_array($pipes) ? $pipes : func_get_args();
         return $this;
@@ -97,7 +98,7 @@ class Pipeline
      * @param  string $method
      * @return $this
      */
-    public function via($method) : self
+    public function via($method): self
     {
         $this->method = $method;
         return $this;
@@ -116,7 +117,7 @@ class Pipeline
         $this->pipeline    = array_reduce(
             array_reverse($this->pipes),
             $this->carry(),
-            $this->prepareDestination($destination)
+            $this->prepareDestination($destination),
         );
         return $this;
     }
@@ -126,7 +127,7 @@ class Pipeline
      *
      * @return callable|null
      */
-    public function getDestination() : callable|null
+    public function getDestination(): callable|null
     {
         return $this->destination;
     }
@@ -138,7 +139,7 @@ class Pipeline
      * @param  mixed  $args
      * @return $this
      */
-    public function invoke(string $method, ...$args) : self
+    public function invoke(string $method, ...$args): self
     {
         foreach ($this->real_pipes as $pipe) {
             if (method_exists($pipe, $method)) {
@@ -154,7 +155,7 @@ class Pipeline
      * @param  callable $destination
      * @return \Closure
      */
-    protected function prepareDestination(callable $destination) : \Closure
+    protected function prepareDestination(callable $destination): \Closure
     {
         return function ($passable) use ($destination) {
             return $destination($passable);
@@ -166,7 +167,7 @@ class Pipeline
      *
      * @return \Closure
      */
-    protected function carry() : \Closure
+    protected function carry(): \Closure
     {
         return function ($stack, $pipe) {
             $pipe               = \is_callable($pipe) ? $pipe : Reflector::instantiate($pipe) ;

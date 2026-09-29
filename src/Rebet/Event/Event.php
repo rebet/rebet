@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Event;
@@ -51,13 +52,13 @@ class Event
      *
      * @return EventDispatcherInterface
      */
-    public static function psrDispatcher() : EventDispatcherInterface
+    public static function psrDispatcher(): EventDispatcherInterface
     {
         if (static::$psr_adapter !== null) {
             return static::$psr_adapter;
         }
 
-        return static::$psr_adapter = new class() implements EventDispatcherInterface {
+        return static::$psr_adapter = new class implements EventDispatcherInterface {
             public function dispatch(object $event)
             {
                 Event::dispatch($event);
@@ -69,16 +70,14 @@ class Event
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Reset the compiled listeners.
      *
      * @return void
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         Config::reset(static::class);
         static::$listeners = null;
@@ -91,7 +90,7 @@ class Event
      * @param  mixed $listeners
      * @return void
      */
-    public static function listen($listeners) : void
+    public static function listen($listeners): void
     {
         $listeners = is_array($listeners) ? $listeners : func_get_args() ;
         static::setConfig(['listeners>' => $listeners]);
@@ -109,7 +108,7 @@ class Event
      * @param  mixed $event
      * @return void
      */
-    public static function dispatch($event) : void
+    public static function dispatch($event): void
     {
         static::compile();
         foreach (static::$listeners as $listen => $listeners) {
@@ -131,7 +130,7 @@ class Event
      *
      * @return void
      */
-    protected static function compile() : void
+    protected static function compile(): void
     {
         if (static::$listeners !== null) {
             return;
@@ -150,14 +149,14 @@ class Event
      * @param  mixed                           $listener
      * @return array{0: string|null, 1: mixed} [event, listener]
      */
-    protected static function resolve($listener) : array
+    protected static function resolve($listener): array
     {
         if (is_callable($listener)) {
             return [Reflector::getParameterTypeHintOf($listener, 0), $listener];
         }
         $listener = Reflector::instantiate($listener);
         if (!method_exists($listener, 'handle')) {
-            throw new LogicException("Event listener ".get_class($listener)." must have 'handle' method or callable.");
+            throw new LogicException("Event listener " . get_class($listener) . " must have 'handle' method or callable.");
         }
         $method = new \ReflectionMethod($listener, 'handle');
         return [Reflector::getTypeHint($method->getParameters()[0]), $listener];

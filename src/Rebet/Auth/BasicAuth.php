@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth;
@@ -22,9 +23,7 @@ class BasicAuth
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Provides simple BASIC authentication.
@@ -36,7 +35,7 @@ class BasicAuth
      * @param  string               $charset     Character encoding (default: UTF-8)
      * @return string
      */
-    public static function authenticate(array $auth_list, \Closure|null $to_hash = null, string $realm = "Enter your ID and PASSWORD.", string $failed_text = "Authenticate Failed.", string $charset = 'UTF-8') : string
+    public static function authenticate(array $auth_list, \Closure|null $to_hash = null, string $realm = "Enter your ID and PASSWORD.", string $failed_text = "Authenticate Failed.", string $charset = 'UTF-8'): string
     {
         if (empty($to_hash)) {
             $to_hash = function ($password) {
@@ -52,8 +51,8 @@ class BasicAuth
         }
 
         System::header('HTTP/1.0 401 Unauthorized');
-        System::header('WWW-Authenticate: Basic realm="'.$realm.'"');
-        System::header('Content-type: text/html; charset='.$charset);
+        System::header('WWW-Authenticate: Basic realm="' . $realm . '"');
+        System::header('Content-type: text/html; charset=' . $charset);
 
         throw new AuthenticateException($failed_text);
     }

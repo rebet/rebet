@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database;
@@ -47,7 +48,7 @@ class Expression
      * @param  mixed[] ...$values
      * @return self
      */
-    public static function of(string $expression, ...$values) : self
+    public static function of(string $expression, ...$values): self
     {
         return new static($expression, ...$values);
     }
@@ -59,7 +60,7 @@ class Expression
      * @param  string $placeholder name
      * @return Query
      */
-    public function compile(Driver $driver, string $placeholder) : Query
+    public function compile(Driver $driver, string $placeholder): Query
     {
         $placeholder = Strings::startsWith($placeholder, ':') ? $placeholder : ":{$placeholder}" ;
         $expression  = $this->expression;

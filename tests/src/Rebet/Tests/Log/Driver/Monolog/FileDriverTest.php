@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Log\Driver\Monolog;
 
 use Monolog\Handler\RotatingFileHandler;
@@ -10,7 +11,7 @@ use Rebet\Tools\DateTime\DateTime;
 
 class FileDriverTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->vfs([
@@ -30,7 +31,7 @@ class FileDriverTest extends RebetTestCase
         $this->assertInstanceOf(RotatingFileHandler::class, $handlers[0] ?? null);
 
 
-        $driver = new FileDriver(LogLevel::DEBUG, 'vfs://root/logs/unittest.log', '{filename}_{date}', 'Ym', 12, 0664, false, true);
+        $driver = new FileDriver(LogLevel::DEBUG, 'vfs://root/logs/unittest.log', '{filename}_{date}', 'Ym', 12, 0o664, false, true);
         $this->assertInstanceOf(FileDriver::class, $driver);
 
         $handlers = $driver->getHandlers();
@@ -41,6 +42,6 @@ class FileDriverTest extends RebetTestCase
         $driver->debug('TEST');
 
         $process_id = getmypid();
-        $this->assertStringContainsString(" rebet/{$process_id} [DEBUG] TEST", file_get_contents('vfs://root/logs/unittest_'.$today->format('Ym').'.log'));
+        $this->assertStringContainsString(" rebet/{$process_id} [DEBUG] TEST", file_get_contents('vfs://root/logs/unittest_' . $today->format('Ym') . '.log'));
     }
 }

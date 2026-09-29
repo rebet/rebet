@@ -1,4 +1,5 @@
 <?php
+
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\DateTime\DayOfWeek;
 use Rebet\Tools\DateTime\Month;
@@ -17,7 +18,7 @@ use Rebet\Tools\DateTime\Month;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 return [
-    Month::class => [
+    Month::class     => [
         'label'       => [null, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
         'label_short' => [null, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     ],
@@ -26,13 +27,13 @@ return [
         'label_short' => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
         'label_min'   => ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
     ],
-    '@meridiem' => function (DateTime $datetime, bool $uppercase) {
+    '@meridiem'      => function (DateTime $datetime, bool $uppercase) {
         return $datetime->getHour() < 12
                 ? ($uppercase ? 'AM' : 'am')
                 : ($uppercase ? 'PM' : 'pm')
         ;
     },
-    '@formats' => [
+    '@formats'       => [
         '@t'   => 'h:i @A',
         '@tt'  => 'h:i:s @A',
         '@ttt' => 'h:i:s.u @A',

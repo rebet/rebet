@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http\Session\Storage\Bag;
@@ -52,7 +53,7 @@ class FlashBag implements SessionBagInterface
     /**
      * {@inheritdoc}
      */
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -62,7 +63,7 @@ class FlashBag implements SessionBagInterface
      *
      * @param array<string, mixed> $attributes
      */
-    public function initialize(array &$attributes) : void
+    public function initialize(array &$attributes): void
     {
         $this->attributes = &$attributes;
     }
@@ -70,7 +71,7 @@ class FlashBag implements SessionBagInterface
     /**
      * {@inheritdoc}
      */
-    public function getStorageKey() : string
+    public function getStorageKey(): string
     {
         return $this->storage_key;
     }
@@ -78,7 +79,7 @@ class FlashBag implements SessionBagInterface
     /**
      * {@inheritdoc}
      */
-    public function clear() : mixed
+    public function clear(): mixed
     {
         $value            = $this->attributes;
         $this->attributes = [];
@@ -91,7 +92,7 @@ class FlashBag implements SessionBagInterface
      * @param  string  $name You can use dot notation.
      * @return boolean
      */
-    public function has(string $name) : bool
+    public function has(string $name): bool
     {
         return Reflector::has($this->attributes, $name);
     }
@@ -127,7 +128,7 @@ class FlashBag implements SessionBagInterface
      * @param  mixed  $value
      * @return void
      */
-    public function set(string $name, $value) : void
+    public function set(string $name, $value): void
     {
         Reflector::set($this->attributes, $name, $value);
     }
@@ -137,7 +138,7 @@ class FlashBag implements SessionBagInterface
      *
      * @return array<string, mixed>
      */
-    public function peekAll() : array
+    public function peekAll(): array
     {
         return $this->attributes;
     }
@@ -147,7 +148,7 @@ class FlashBag implements SessionBagInterface
      *
      * @return array<string, mixed>
      */
-    public function all() : array
+    public function all(): array
     {
         return $this->clear();
     }

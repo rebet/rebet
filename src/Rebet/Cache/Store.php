@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Cache;
@@ -51,7 +52,7 @@ class Store
      *
      * @return string
      */
-    public function name() : string
+    public function name(): string
     {
         return $this->name;
     }
@@ -61,7 +62,7 @@ class Store
      *
      * @return Adapter
      */
-    public function adapter() : Adapter
+    public function adapter(): Adapter
     {
         return $this->adapter;
     }
@@ -71,7 +72,7 @@ class Store
      *
      * @return bool
      */
-    public function flush() : bool
+    public function flush(): bool
     {
         return $this->adapter->clear();
     }
@@ -83,7 +84,7 @@ class Store
      * @param  int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
      * @return void
      */
-    public static function setExpireTo(CacheItemInterface &$item, $expire) : void
+    public static function setExpireTo(CacheItemInterface &$item, $expire): void
     {
         if ($expire instanceof DateTimeInterface) {
             $item->expiresAt($expire);
@@ -151,7 +152,7 @@ class Store
      * @param  int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
      * @return bool
      */
-    public function put(array $values, $expire) : bool
+    public function put(array $values, $expire): bool
     {
         $ok = true;
         foreach ($this->adapter->getItems(array_keys($values)) as $item) {
@@ -168,7 +169,7 @@ class Store
      * @param  string $key
      * @return bool
      */
-    public function has(string $key) : bool
+    public function has(string $key): bool
     {
         return $this->adapter->getItem($key)->isHit();
     }
@@ -196,7 +197,7 @@ class Store
      * @param  string ...$keys
      * @return bool
      */
-    public function delete(string ...$keys) : bool
+    public function delete(string ...$keys): bool
     {
         return $this->adapter->deleteItems($keys);
     }
@@ -208,7 +209,7 @@ class Store
      * @return TagSet
      * @throws CacheException when the adapter does not support tagging.
      */
-    public function tags(string ...$tags) : TagSet
+    public function tags(string ...$tags): TagSet
     {
         return new TagSet($this->adapter, $tags);
     }
@@ -219,7 +220,7 @@ class Store
      *
      * @return bool
      */
-    public function prune() : bool
+    public function prune(): bool
     {
         return $this->adapter->prune();
     }

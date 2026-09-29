@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\Console\Command\Project;
 
 use Rebet\Application\Console\Command\Project\ProjectInitCommand;
@@ -6,7 +7,7 @@ use Rebet\Tests\RebetConsoleTestCase;
 
 class ProjectInitCommandTest extends RebetConsoleTestCase
 {
-    const AVIRABLE_COMMANDS = [[ProjectInitCommand::class, __DIR__.'/../../../../../../../../skeltons']];
+    public const AVIRABLE_COMMANDS = [[ProjectInitCommand::class, __DIR__ . '/../../../../../../../../skeltons']];
 
     public function test_execute()
     {
@@ -50,8 +51,8 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(0, $status);
 
             $display = $tester->getDisplay();
-            $this->assertStringContainsString('locale => '.locale_get_default().',', $display);
-            $this->assertStringContainsString('timezone => '.(date_default_timezone_get() ?: 'UTC').',', $display);
+            $this->assertStringContainsString('locale => ' . locale_get_default() . ',', $display);
+            $this->assertStringContainsString('timezone => ' . (date_default_timezone_get() ?: 'UTC') . ',', $display);
             $this->assertStringContainsString('domain => localhost,', $display);
             $this->assertStringContainsString('view => twig,', $display);
 
@@ -83,7 +84,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(1, $status);
             $this->assertStringContainsString(
                 'Invalid value `oracle` given via `--database`. Choices are: `sqlite`, `mysql`, `mariadb`, `pgsql`.',
-                $tester->getDisplay()
+                $tester->getDisplay(),
             );
         });
     }
@@ -97,7 +98,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(1, $status);
             $this->assertStringContainsString(
                 'Invalid value `oracle` given via `--cache`. Choices are: `apcu`, `file`, `memcached`, `redis`.',
-                $tester->getDisplay()
+                $tester->getDisplay(),
             );
         });
     }
@@ -110,7 +111,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(1, $status);
             $this->assertStringContainsString(
                 '`--auth` without a database requires `--auth-name`, `--auth-email` and `--auth-password` when running with `--no-interaction`.',
-                $tester->getDisplay()
+                $tester->getDisplay(),
             );
         });
     }
@@ -178,7 +179,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(1, $status);
             $this->assertStringContainsString(
                 "This directory seems to already be initialized (`{$work_dir}/tests` already exists).",
-                $tester->getDisplay()
+                $tester->getDisplay(),
             );
 
             // Nothing else was written.
@@ -191,7 +192,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         // An `app/` directory that only has `vendor/` (eg. from a devcontainer running
         // `composer install` ahead of time) must not be treated as already initialized.
         $this->runInFreshWorkDir('project_init_app_vendor_only', function (string $work_dir) {
-            mkdir("{$work_dir}/app/vendor", 0755, true);
+            mkdir("{$work_dir}/app/vendor", 0o755, true);
 
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--dry-run' => true], ['interactive' => false]);
@@ -204,7 +205,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     {
         // But if `app/` has anything else besides `vendor/`, it is still considered initialized.
         $this->runInFreshWorkDir('project_init_app_vendor_and_more', function (string $work_dir) {
-            mkdir("{$work_dir}/app/vendor", 0755, true);
+            mkdir("{$work_dir}/app/vendor", 0o755, true);
             touch("{$work_dir}/app/other-file.txt");
 
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
@@ -212,7 +213,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(1, $status);
             $this->assertStringContainsString(
                 "This directory seems to already be initialized (`{$work_dir}/app` already exists).",
-                $tester->getDisplay()
+                $tester->getDisplay(),
             );
         });
     }
@@ -229,7 +230,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(1, $status);
             $this->assertStringContainsString(
                 "This directory does not seem to be a Composer project (`{$work_dir}/composer.json` not found).",
-                $tester->getDisplay()
+                $tester->getDisplay(),
             );
         } finally {
             chdir($cwd);
@@ -254,7 +255,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             // COMPOSER_REQUIRE_DEV's 'always' group is applied unconditionally.
             $this->assertStringContainsString(
                 'composer require --dev friendsofphp/php-cs-fixer phpstan/phpstan phpunit/phpunit psy/psysh',
-                $display
+                $display,
             );
         });
     }
@@ -329,7 +330,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(1, $status);
             $this->assertStringContainsString(
                 'Invalid value `database` given via `--session`. Choices are: `native`, `memcached`, `redis`, `mongodb`.',
-                $tester->getDisplay()
+                $tester->getDisplay(),
             );
         });
     }
@@ -352,7 +353,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(1, $status);
             $this->assertStringContainsString(
                 'Invalid value `oracle` given via `--session`. Choices are: `native`, `memcached`, `redis`, `mongodb`.',
-                $tester->getDisplay()
+                $tester->getDisplay(),
             );
         });
     }
@@ -364,11 +365,11 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
      * @param  string[] $review_answers
      * @return string[]
      */
-    protected function minimalInteractiveInputs(array $review_answers) : array
+    protected function minimalInteractiveInputs(array $review_answers): array
     {
         return array_merge(
             ['', '', '', '', 'n', 'n', '', 'n', '', '', ''], // defaults through nginx ports
-            $review_answers
+            $review_answers,
         );
     }
 

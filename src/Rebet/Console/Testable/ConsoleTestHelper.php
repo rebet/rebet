@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Console\Testable;
@@ -35,7 +36,7 @@ trait ConsoleTestHelper // @phpstan-ignore trait.unused
      * @param  string|array<mixed>|callable|Command ...$commands
      * @return void
      */
-    protected function setUpConsole(mixed ...$commands) : void
+    protected function setUpConsole(mixed ...$commands): void
     {
         $this->app = new Application();
         foreach ($commands as $command) {
@@ -49,7 +50,7 @@ trait ConsoleTestHelper // @phpstan-ignore trait.unused
      * @param  string        $command
      * @return CommandTester
      */
-    protected function getCommandTester(string $command) : CommandTester
+    protected function getCommandTester(string $command): CommandTester
     {
         return new CommandTester($this->app->find($command));
     }

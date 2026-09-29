@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Config;
 
 use Rebet\Tests\RebetTestCase;
@@ -11,13 +12,13 @@ use Rebet\Tools\Exception\LogicException;
 
 class ConfigTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         \putenv('PROMISE_TEST=');
     }
 
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         \putenv('PROMISE_TEST=');
         parent::tearDown();
@@ -41,7 +42,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'map.b'));
 
         Config::framework([
-            ConfigTest_Mock::class => [
+            ConfigTest_Mock::class       => [
                 'driver' => 'sqlite',
             ],
             ConfigTest_MockOption::class => [
@@ -87,7 +88,7 @@ class ConfigTest extends RebetTestCase
                 'database' => null,
                 'user'     => null,
             ],
-            Config::get(ConfigTest_Mock::class)
+            Config::get(ConfigTest_Mock::class),
         );
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('localhost', Config::get(ConfigTest_Mock::class, 'host'));
@@ -104,7 +105,7 @@ class ConfigTest extends RebetTestCase
                 'port'     => 3307,
                 'database' => 'rebet_db',
             ],
-            'global' => [
+            'global'               => [
                 'lang' => 'en_us',
             ],
         ]);
@@ -117,7 +118,7 @@ class ConfigTest extends RebetTestCase
                 'database' => 'rebet_db',
                 'user'     => null,
             ],
-            Config::get(ConfigTest_Mock::class)
+            Config::get(ConfigTest_Mock::class),
         );
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('192.168.1.1', Config::get(ConfigTest_Mock::class, 'host'));
@@ -135,7 +136,7 @@ class ConfigTest extends RebetTestCase
                 'database' => 'rebet_sample',
                 'user'     => 'rebet_user',
             ],
-            'global' => [
+            'global'               => [
                 'lang' => 'ja_JP',
             ],
         ]);
@@ -148,7 +149,7 @@ class ConfigTest extends RebetTestCase
                 'database' => 'rebet_sample',
                 'user'     => 'rebet_user',
             ],
-            Config::get(ConfigTest_Mock::class)
+            Config::get(ConfigTest_Mock::class),
         );
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('192.168.1.1', Config::get(ConfigTest_Mock::class, 'host'));
@@ -164,7 +165,7 @@ class ConfigTest extends RebetTestCase
             ConfigTest_Mock::class => [
                 'database' => null,
             ],
-            'global' => [
+            'global'               => [
                 'lang' => 'en_us',
             ],
         ]);
@@ -176,7 +177,7 @@ class ConfigTest extends RebetTestCase
                 'database' => null,
                 'user'     => 'rebet_user',
             ],
-            Config::get(ConfigTest_Mock::class)
+            Config::get(ConfigTest_Mock::class),
         );
         $this->assertSame('en_us', Config::get('global', 'lang'));
         $this->assertSame('refer_database', Config::get(ConfigTest_MockRefer::class, 'database'));
@@ -257,7 +258,7 @@ class ConfigTest extends RebetTestCase
                     'array' => ['a', 'b'],
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
 
         Config::framework([
@@ -280,30 +281,30 @@ class ConfigTest extends RebetTestCase
                     'array' => ['cc', 'a', 'b'],
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
         $this->assertSame(
             ['a' => 'A', 'b' => 'b', 'c' => 'C'],
-            Config::get(ConfigTest_MockOption::class, 'map')
+            Config::get(ConfigTest_MockOption::class, 'map'),
         );
         $this->assertSame(
             ['c', 'a', 'b'],
-            Config::get(ConfigTest_MockOption::class, 'array')
+            Config::get(ConfigTest_MockOption::class, 'array'),
         );
         $this->assertSame(
             [
                 'map'   => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
                 'array' => ['cc', 'a', 'b'],
             ],
-            Config::get(ConfigTest_MockOption::class, 'parent')
+            Config::get(ConfigTest_MockOption::class, 'parent'),
         );
         $this->assertSame(
             ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
-            Config::get(ConfigTest_MockOption::class, 'parent.map')
+            Config::get(ConfigTest_MockOption::class, 'parent.map'),
         );
         $this->assertSame(
             ['cc', 'a', 'b'],
-            Config::get(ConfigTest_MockOption::class, 'parent.array')
+            Config::get(ConfigTest_MockOption::class, 'parent.array'),
         );
         $this->assertSame('aa', Config::get(ConfigTest_MockOption::class, 'parent.map.a'));
         $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'parent.map.b'));
@@ -321,7 +322,7 @@ class ConfigTest extends RebetTestCase
                     'array' => ['a', 'b'],
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
 
         Config::framework([
@@ -344,30 +345,30 @@ class ConfigTest extends RebetTestCase
                     'array' => ['cc', 'a', 'b'],
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
         $this->assertSame(
             ['a' => 'A', 'c' => 'C'],
-            Config::get(ConfigTest_MockOption::class, 'map')
+            Config::get(ConfigTest_MockOption::class, 'map'),
         );
         $this->assertSame(
             ['c', 'a', 'b'],
-            Config::get(ConfigTest_MockOption::class, 'array')
+            Config::get(ConfigTest_MockOption::class, 'array'),
         );
         $this->assertSame(
             [
                 'map'   => ['a' => 'aa', 'c' => 'cc'],
                 'array' => ['cc', 'a', 'b'],
             ],
-            Config::get(ConfigTest_MockOption::class, 'parent')
+            Config::get(ConfigTest_MockOption::class, 'parent'),
         );
         $this->assertSame(
             ['a' => 'aa', 'c' => 'cc'],
-            Config::get(ConfigTest_MockOption::class, 'parent.map')
+            Config::get(ConfigTest_MockOption::class, 'parent.map'),
         );
         $this->assertSame(
             ['cc', 'a', 'b'],
-            Config::get(ConfigTest_MockOption::class, 'parent.array')
+            Config::get(ConfigTest_MockOption::class, 'parent.array'),
         );
         $this->assertSame('aa', Config::get(ConfigTest_MockOption::class, 'parent.map.a'));
         $this->assertNull(Config::get(ConfigTest_MockOption::class, 'parent.map.b', false));
@@ -385,7 +386,7 @@ class ConfigTest extends RebetTestCase
                     'array' => ['a', 'b'],
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
 
         Config::framework([
@@ -408,30 +409,30 @@ class ConfigTest extends RebetTestCase
                     'array' => ['cc'],
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
         $this->assertSame(
             ['a' => 'A', 'b' => 'b', 'c' => 'C'],
-            Config::get(ConfigTest_MockOption::class, 'map')
+            Config::get(ConfigTest_MockOption::class, 'map'),
         );
         $this->assertSame(
             ['c'],
-            Config::get(ConfigTest_MockOption::class, 'array')
+            Config::get(ConfigTest_MockOption::class, 'array'),
         );
         $this->assertSame(
             [
                 'map'   => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
                 'array' => ['cc'],
             ],
-            Config::get(ConfigTest_MockOption::class, 'parent')
+            Config::get(ConfigTest_MockOption::class, 'parent'),
         );
         $this->assertSame(
             ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
-            Config::get(ConfigTest_MockOption::class, 'parent.map')
+            Config::get(ConfigTest_MockOption::class, 'parent.map'),
         );
         $this->assertSame(
             ['cc'],
-            Config::get(ConfigTest_MockOption::class, 'parent.array')
+            Config::get(ConfigTest_MockOption::class, 'parent.array'),
         );
         $this->assertSame('aa', Config::get(ConfigTest_MockOption::class, 'parent.map.a'));
         $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'parent.map.b'));
@@ -449,7 +450,7 @@ class ConfigTest extends RebetTestCase
                     'array' => ['a', 'b'],
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
 
         Config::framework([
@@ -472,30 +473,30 @@ class ConfigTest extends RebetTestCase
                     'array' => ['cc'],
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
         $this->assertSame(
             ['a' => 'A', 'b' => 'b', 'c' => 'C'],
-            Config::get(ConfigTest_MockOption::class, 'map')
+            Config::get(ConfigTest_MockOption::class, 'map'),
         );
         $this->assertSame(
             ['c', 'a', 'b'],
-            Config::get(ConfigTest_MockOption::class, 'array')
+            Config::get(ConfigTest_MockOption::class, 'array'),
         );
         $this->assertSame(
             [
                 'map'   => ['a' => 'aa', 'c' => 'cc'],
                 'array' => ['cc'],
             ],
-            Config::get(ConfigTest_MockOption::class, 'parent')
+            Config::get(ConfigTest_MockOption::class, 'parent'),
         );
         $this->assertSame(
             ['a' => 'aa', 'c' => 'cc'],
-            Config::get(ConfigTest_MockOption::class, 'parent.map')
+            Config::get(ConfigTest_MockOption::class, 'parent.map'),
         );
         $this->assertSame(
             ['cc'],
-            Config::get(ConfigTest_MockOption::class, 'parent.array')
+            Config::get(ConfigTest_MockOption::class, 'parent.array'),
         );
         $this->assertSame('aa', Config::get(ConfigTest_MockOption::class, 'parent.map.a'));
         $this->assertNull(Config::get(ConfigTest_MockOption::class, 'parent.map.b', false));
@@ -513,7 +514,7 @@ class ConfigTest extends RebetTestCase
                     'array' => ['a', 'b'],
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
 
         Config::framework([
@@ -536,30 +537,30 @@ class ConfigTest extends RebetTestCase
                     'array' => ['cc', 'a', 'b'],
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
         $this->assertSame(
             ['a' => 'A', 'b' => 'b', 'c' => 'C'],
-            Config::get(ConfigTest_MockOption::class, 'map')
+            Config::get(ConfigTest_MockOption::class, 'map'),
         );
         $this->assertSame(
             ['c', 'a', 'b'],
-            Config::get(ConfigTest_MockOption::class, 'array')
+            Config::get(ConfigTest_MockOption::class, 'array'),
         );
         $this->assertSame(
             [
                 'map'   => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
                 'array' => ['cc', 'a', 'b'],
             ],
-            Config::get(ConfigTest_MockOption::class, 'parent')
+            Config::get(ConfigTest_MockOption::class, 'parent'),
         );
         $this->assertSame(
             ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
-            Config::get(ConfigTest_MockOption::class, 'parent.map')
+            Config::get(ConfigTest_MockOption::class, 'parent.map'),
         );
         $this->assertSame(
             ['cc', 'a', 'b'],
-            Config::get(ConfigTest_MockOption::class, 'parent.array')
+            Config::get(ConfigTest_MockOption::class, 'parent.array'),
         );
         $this->assertSame('aa', Config::get(ConfigTest_MockOption::class, 'parent.map.a'));
         $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'parent.map.b'));
@@ -577,7 +578,7 @@ class ConfigTest extends RebetTestCase
                     'array' => ['a', 'b'],
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
 
         Config::framework([
@@ -621,15 +622,15 @@ class ConfigTest extends RebetTestCase
                     'new'   => 'NEW',
                 ],
             ],
-            Config::get(ConfigTest_MockOption::class)
+            Config::get(ConfigTest_MockOption::class),
         );
         $this->assertSame(
             ['a' => 'A', 'c' => 'C', 'd' => 'D'],
-            Config::get(ConfigTest_MockOption::class, 'map')
+            Config::get(ConfigTest_MockOption::class, 'map'),
         );
         $this->assertSame(
             ['d', 'e'],
-            Config::get(ConfigTest_MockOption::class, 'array')
+            Config::get(ConfigTest_MockOption::class, 'array'),
         );
         $this->assertSame(
             [
@@ -637,19 +638,19 @@ class ConfigTest extends RebetTestCase
                 'array' => ['d', 'a', 'b', 'cc'],
                 'new'   => 'NEW',
             ],
-            Config::get(ConfigTest_MockOption::class, 'parent')
+            Config::get(ConfigTest_MockOption::class, 'parent'),
         );
         $this->assertSame(
             ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
-            Config::get(ConfigTest_MockOption::class, 'parent.map')
+            Config::get(ConfigTest_MockOption::class, 'parent.map'),
         );
         $this->assertSame(
             ['d', 'a', 'b', 'cc'],
-            Config::get(ConfigTest_MockOption::class, 'parent.array')
+            Config::get(ConfigTest_MockOption::class, 'parent.array'),
         );
         $this->assertSame(
             'NEW',
-            Config::get(ConfigTest_MockOption::class, 'parent.new')
+            Config::get(ConfigTest_MockOption::class, 'parent.new'),
         );
         $this->assertSame('aa', Config::get(ConfigTest_MockOption::class, 'parent.map.a'));
         $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'parent.map.b'));
@@ -668,7 +669,7 @@ class ConfigTest extends RebetTestCase
 
         $this->assertSame(
             '2010-01-23',
-            $config[DateTime::class]['test_now']
+            $config[DateTime::class]['test_now'],
         );
     }
 
@@ -889,6 +890,6 @@ class ConfigTest_MockInstantiate
 
     public static function build($value)
     {
-        return new static($value.' via build()');
+        return new static($value . ' via build()');
     }
 }

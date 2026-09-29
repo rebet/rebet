@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Auth\Provider;
 
 use Rebet\Auth\Password;
@@ -17,13 +18,13 @@ class ArrayProviderTest extends RebetTestCase
     private $provider_exclude_resigned;
     private $provider_with_aliases;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->users = [
-            ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'       , 'signin_id' => 'admin'       , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => Securities::hmac('api-1'), 'resigned_at' => null], // password: admin
-            ['user_id' => 2, 'role' => 'user' , 'name' => 'User'        , 'signin_id' => 'user'        , 'email' => 'user@rebet.local'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => Securities::hmac('api-2'), 'resigned_at' => null], // password: user
-            ['user_id' => 3, 'role' => 'user' , 'name' => 'Resignd User', 'signin_id' => 'user.resignd', 'email' => 'user.resignd@rebet.local' , 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => Securities::hmac('api-3'), 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
+            ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin', 'signin_id' => 'admin', 'email' => 'admin@rebet.local', 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => Securities::hmac('api-1'), 'resigned_at' => null], // password: admin
+            ['user_id' => 2, 'role' => 'user', 'name' => 'User', 'signin_id' => 'user', 'email' => 'user@rebet.local', 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => Securities::hmac('api-2'), 'resigned_at' => null], // password: user
+            ['user_id' => 3, 'role' => 'user', 'name' => 'Resignd User', 'signin_id' => 'user.resignd', 'email' => 'user.resignd@rebet.local', 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => Securities::hmac('api-3'), 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
         ];
 
         $this->provider                  = new ArrayProvider($this->users);
@@ -74,7 +75,7 @@ class ArrayProviderTest extends RebetTestCase
         $this->assertNull($user);
 
         foreach ($this->users as $expect_user) {
-            $token = "api-".$expect_user['user_id'];
+            $token = "api-" . $expect_user['user_id'];
 
             $user = $this->provider->findByToken($token);
             $this->assertSame($expect_user, $user->raw());

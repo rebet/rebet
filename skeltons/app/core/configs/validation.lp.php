@@ -108,7 +108,7 @@ return [
     | This section defines settings for the validation process itself.
     | You may change these defaults as required.
     */
-    Validator::class => [
+    Validator::class          => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Validations

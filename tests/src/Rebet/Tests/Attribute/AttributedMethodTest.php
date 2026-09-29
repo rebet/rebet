@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Attribute;
 
 use Rebet\Attribute\AttributedClass;
@@ -92,12 +93,8 @@ class AttributedMethodTest extends RebetTestCase
 class AttributedMethodTest_Mock
 {
     #[Where(id: "[0-9]+")]
-    public function foo($id)
-    {
-    }
+    public function foo($id) {}
 
     #[Channel("api")]
-    public function bar()
-    {
-    }
+    public function bar() {}
 }

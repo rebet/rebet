@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Template;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -14,12 +15,12 @@ use Rebet\Tools\Utility\Strings;
 
 class LetterpressTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
     }
 
-    public static function dataCompiles() : array
+    public static function dataCompiles(): array
     {
         return [
             [
@@ -297,7 +298,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame($expect, $this->inspect(new Letterpress($template), 'syntax'));
     }
 
-    public static function dataEvaluates() : array
+    public static function dataEvaluates(): array
     {
         return [
             ['$a', [
@@ -348,20 +349,20 @@ class LetterpressTest extends RebetTestCase
     {
         $this->expectOutputString(
             <<<EOS
-            [0] a = [1,2,3]
-            [0] b = b
-            [0] i = 0
-            [0] v = 1
-            [1] a = [1,2,3]
-            [1] b = b
-            [1] i = 1
-            [1] v = 2
-            [2] a = [1,2,3]
-            [2] b = b
-            [2] i = 2
-            [2] v = 3
+                [0] a = [1,2,3]
+                [0] b = b
+                [0] i = 0
+                [0] v = 1
+                [1] a = [1,2,3]
+                [1] b = b
+                [1] i = 1
+                [1] v = 2
+                [2] a = [1,2,3]
+                [2] b = b
+                [2] i = 2
+                [2] v = 3
 
-            EOS
+                EOS,
         );
         Letterpress::eval(
             'foreach($a as $i => $v) { $__callback->invoke($i, compact(array_keys(get_defined_vars()))); }',
@@ -375,11 +376,11 @@ class LetterpressTest extends RebetTestCase
                     }
                 },
             ],
-            false
+            false,
         );
     }
 
-    public static function dataExpandVars() : array
+    public static function dataExpandVars(): array
     {
         return [
             ['', '', []],
@@ -433,7 +434,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame($expect, Letterpress::expandVars($template, $vars));
     }
 
-    public static function dataRenders() : array
+    public static function dataRenders(): array
     {
         return [
             [
@@ -835,330 +836,330 @@ class LetterpressTest extends RebetTestCase
             // commentif
             [
                 <<<EOS
-                                //{%-- commentif true -%}
-                                line 1
-                                //{%-- endcommentif -%}
-                EOS,
+                                    //{%-- commentif true -%}
+                                    line 1
+                                    //{%-- endcommentif -%}
+                    EOS,
                 [],
                 <<<EOS
-                                // line 1
+                                    // line 1
 
-                EOS
+                    EOS,
             ],
             [
                 <<<EOS
-                                //{%-- commentif false -%}
-                                line 1
-                                //{%-- endcommentif -%}
-                EOS,
+                                    //{%-- commentif false -%}
+                                    line 1
+                                    //{%-- endcommentif -%}
+                    EOS,
                 [],
                 <<<EOS
-                                line 1
+                                    line 1
 
-                EOS
+                    EOS,
             ],
             [
                 <<<EOS
-                                //{%-- commentif true -%}
-                                line 1
-                                    indented line 2
+                                    //{%-- commentif true -%}
+                                    line 1
+                                        indented line 2
 
-                                line 4
-                                //{%-- endcommentif -%}
-                EOS,
+                                    line 4
+                                    //{%-- endcommentif -%}
+                    EOS,
                 [],
                 <<<EOS
-                                // line 1
-                                //     indented line 2
-                                // 
-                                // line 4
+                                    // line 1
+                                    //     indented line 2
+                                    // 
+                                    // line 4
 
-                EOS
+                    EOS,
             ],
             // commentif
             [
                 <<<EOS
-                                //{%-- commentif true -%}
-                                line 1
-                                    indented line 2
+                                    //{%-- commentif true -%}
+                                    line 1
+                                        indented line 2
 
-                            line 4
-                                //{%-- endcommentif -%}
-                EOS,
+                                line 4
+                                    //{%-- endcommentif -%}
+                    EOS,
                 [],
                 <<<EOS
-                            //     line 1
-                            //         indented line 2
-                            // 
-                            // line 4
-
-                EOS
-            ],
-            [
-                <<<EOS
-                                //{%-- commentif false -%}
-                                line 1
-                                    indented line 2
-
-                                line 4
-                                //{%-- endcommentif -%}
-                EOS,
-                [],
-                <<<EOS
-                                line 1
-                                    indented line 2
-
-                                line 4
-
-                EOS
-            ],
-            [
-                <<<EOS
-                                //{%-- commentif true, '# ' -%}
-                                line 1
-                                    indented line 2
-
-                                line 4
-                                //{%-- endcommentif -%}
-                EOS,
-                [],
-                <<<EOS
-                                # line 1
-                                #     indented line 2
-                                # 
-                                # line 4
-
-                EOS
-            ],
-            [
-                <<<EOS
-                                //{%-- commentif true, '# ', '--- Something headline comment here ---' -%}
-                                line 1
-                                    indented line 2
-
-                                line 4
-                                //{%-- endcommentif -%}
-                EOS,
-                [],
-                <<<EOS
-                                # --- Something headline comment here ---
-                                # line 1
-                                #     indented line 2
-                                # 
-                                # line 4
-
-                EOS
-            ],
-            [
-                <<<EOS
-                                //{%-- commentif false, '# ', '--- Something headline comment here ---' -%}
-                                line 1
-                                    indented line 2
-
-                                line 4
-                                //{%-- endcommentif -%}
-                EOS,
-                [],
-                <<<EOS
-                                line 1
-                                    indented line 2
-
-                                line 4
-
-                EOS
-            ],
-            [
-                <<<EOS
-                                //{%-- commentif true, 'indent' => false -%}
-                                line 1
-                                    indented line 2
-
-                                line 4
-                                //{%-- endcommentif -%}
-                EOS,
-                [],
-                <<<EOS
-                //                 line 1
-                //                     indented line 2
-                // 
-                //                 line 4
-
-                EOS
-            ],
-            [
-                <<<EOS
-                                //{%-- commentif true, '# ', '--- Something headline comment here ---', false -%}
-                                line 1
-                                    indented line 2
-
-                                line 4
-                                //{%-- endcommentif -%}
-                EOS,
-                [],
-                <<<EOS
-                # --- Something headline comment here ---
-                #                 line 1
-                #                     indented line 2
-                # 
-                #                 line 4
-
-                EOS
-            ],
-            [
-                <<<EOS
-                                //{%-- commentif \$use_db->not() -%}
-                                line 1
-                                    indented line 2
-
-                                line 4
-                                //{%-- endcommentif -%}
-                EOS,
-                ['use_db' => false],
-                <<<EOS
-                                // line 1
-                                //     indented line 2
+                                //     line 1
+                                //         indented line 2
                                 // 
                                 // line 4
 
-                EOS
+                    EOS,
             ],
             [
                 <<<EOS
-                                //{%-- commentif \$use_db->not() -%}
-                                line 1
-                                    indented line 2
+                                    //{%-- commentif false -%}
+                                    line 1
+                                        indented line 2
 
-                                line 4
-                                //{%-- endcommentif -%}
-                EOS,
+                                    line 4
+                                    //{%-- endcommentif -%}
+                    EOS,
+                [],
+                <<<EOS
+                                    line 1
+                                        indented line 2
+
+                                    line 4
+
+                    EOS,
+            ],
+            [
+                <<<EOS
+                                    //{%-- commentif true, '# ' -%}
+                                    line 1
+                                        indented line 2
+
+                                    line 4
+                                    //{%-- endcommentif -%}
+                    EOS,
+                [],
+                <<<EOS
+                                    # line 1
+                                    #     indented line 2
+                                    # 
+                                    # line 4
+
+                    EOS,
+            ],
+            [
+                <<<EOS
+                                    //{%-- commentif true, '# ', '--- Something headline comment here ---' -%}
+                                    line 1
+                                        indented line 2
+
+                                    line 4
+                                    //{%-- endcommentif -%}
+                    EOS,
+                [],
+                <<<EOS
+                                    # --- Something headline comment here ---
+                                    # line 1
+                                    #     indented line 2
+                                    # 
+                                    # line 4
+
+                    EOS,
+            ],
+            [
+                <<<EOS
+                                    //{%-- commentif false, '# ', '--- Something headline comment here ---' -%}
+                                    line 1
+                                        indented line 2
+
+                                    line 4
+                                    //{%-- endcommentif -%}
+                    EOS,
+                [],
+                <<<EOS
+                                    line 1
+                                        indented line 2
+
+                                    line 4
+
+                    EOS,
+            ],
+            [
+                <<<EOS
+                                    //{%-- commentif true, 'indent' => false -%}
+                                    line 1
+                                        indented line 2
+
+                                    line 4
+                                    //{%-- endcommentif -%}
+                    EOS,
+                [],
+                <<<EOS
+                    //                 line 1
+                    //                     indented line 2
+                    // 
+                    //                 line 4
+
+                    EOS,
+            ],
+            [
+                <<<EOS
+                                    //{%-- commentif true, '# ', '--- Something headline comment here ---', false -%}
+                                    line 1
+                                        indented line 2
+
+                                    line 4
+                                    //{%-- endcommentif -%}
+                    EOS,
+                [],
+                <<<EOS
+                    # --- Something headline comment here ---
+                    #                 line 1
+                    #                     indented line 2
+                    # 
+                    #                 line 4
+
+                    EOS,
+            ],
+            [
+                <<<EOS
+                                    //{%-- commentif \$use_db->not() -%}
+                                    line 1
+                                        indented line 2
+
+                                    line 4
+                                    //{%-- endcommentif -%}
+                    EOS,
+                ['use_db' => false],
+                <<<EOS
+                                    // line 1
+                                    //     indented line 2
+                                    // 
+                                    // line 4
+
+                    EOS,
+            ],
+            [
+                <<<EOS
+                                    //{%-- commentif \$use_db->not() -%}
+                                    line 1
+                                        indented line 2
+
+                                    line 4
+                                    //{%-- endcommentif -%}
+                    EOS,
                 ['use_db' => true],
                 <<<EOS
-                                line 1
-                                    indented line 2
+                                    line 1
+                                        indented line 2
 
-                                line 4
+                                    line 4
 
-                EOS
+                    EOS,
             ],
             [
                 <<<EOS
-                                //{%-- commentif !\$use_db -%}
-                                line 1
-                                //{%-- endcommentif -%}
-                EOS,
+                                    //{%-- commentif !\$use_db -%}
+                                    line 1
+                                    //{%-- endcommentif -%}
+                    EOS,
                 ['use_db' => true],
                 <<<EOS
-                                line 1
+                                    line 1
 
-                EOS
+                    EOS,
             ],
             [
                 <<<EOS
-                                //{%-- commentif \$foo || \$bar -%}
-                                line 1
-                                //{%-- endcommentif -%}
-                EOS,
+                                    //{%-- commentif \$foo || \$bar -%}
+                                    line 1
+                                    //{%-- endcommentif -%}
+                    EOS,
                 ['foo' => false, 'bar' => false],
                 <<<EOS
-                                line 1
+                                    line 1
 
-                EOS
+                    EOS,
             ],
 
             // uncommentif
             [
                 <<<EOS
-                                //{%-- uncommentif true -%}
-                                // line 1
-                                //{%-- enduncommentif -%}
-                EOS,
+                                    //{%-- uncommentif true -%}
+                                    // line 1
+                                    //{%-- enduncommentif -%}
+                    EOS,
                 [],
                 <<<EOS
-                                line 1
+                                    line 1
 
-                EOS
+                    EOS,
             ],
             [
                 <<<EOS
-                                //{%-- uncommentif false -%}
-                                // line 1
-                                //{%-- enduncommentif -%}
-                EOS,
+                                    //{%-- uncommentif false -%}
+                                    // line 1
+                                    //{%-- enduncommentif -%}
+                    EOS,
                 [],
                 "",
             ],
             [
                 <<<EOS
-                                //{%-- uncommentif true -%}
-                                // line 1
-                                //     indented line 2
-                                // line 4
-                                //{%-- enduncommentif -%}
-                EOS,
+                                    //{%-- uncommentif true -%}
+                                    // line 1
+                                    //     indented line 2
+                                    // line 4
+                                    //{%-- enduncommentif -%}
+                    EOS,
                 [],
                 <<<EOS
-                                line 1
-                                    indented line 2
-                                line 4
+                                    line 1
+                                        indented line 2
+                                    line 4
 
-                EOS
+                    EOS,
             ],
             [
                 <<<EOS
-                                //{%-- uncommentif true, '# ' -%}
-                                # line 1
-                                //{%-- enduncommentif -%}
-                EOS,
+                                    //{%-- uncommentif true, '# ' -%}
+                                    # line 1
+                                    //{%-- enduncommentif -%}
+                    EOS,
                 [],
                 <<<EOS
-                                line 1
+                                    line 1
 
-                EOS
+                    EOS,
             ],
             [
                 <<<EOS
-                                //{%-- uncommentif false, 'keep_body' => true -%}
-                                // line 1
-                                //{%-- enduncommentif -%}
-                EOS,
+                                    //{%-- uncommentif false, 'keep_body' => true -%}
+                                    // line 1
+                                    //{%-- enduncommentif -%}
+                    EOS,
                 [],
                 <<<EOS
-                                // line 1
+                                    // line 1
 
-                EOS
+                    EOS,
             ],
             [
                 // `keep_body` only affects the (non-matching) else branch, so a matching condition
                 // still uncomments as usual.
                 <<<EOS
-                                //{%-- uncommentif true, 'keep_body' => true -%}
-                                // line 1
-                                //{%-- enduncommentif -%}
-                EOS,
+                                    //{%-- uncommentif true, 'keep_body' => true -%}
+                                    // line 1
+                                    //{%-- enduncommentif -%}
+                    EOS,
                 [],
                 <<<EOS
-                                line 1
+                                    line 1
 
-                EOS
+                    EOS,
             ],
             [
                 <<<EOS
-                                //{%-- uncommentif \$use_db->not() -%}
-                                // line 1
-                                //{%-- enduncommentif -%}
-                EOS,
+                                    //{%-- uncommentif \$use_db->not() -%}
+                                    // line 1
+                                    //{%-- enduncommentif -%}
+                    EOS,
                 ['use_db' => false],
                 <<<EOS
-                                line 1
+                                    line 1
 
-                EOS
+                    EOS,
             ],
             [
                 <<<EOS
-                                //{%-- uncommentif \$use_db->not() -%}
-                                // line 1
-                                //{%-- enduncommentif -%}
-                EOS,
+                                    //{%-- uncommentif \$use_db->not() -%}
+                                    // line 1
+                                    //{%-- enduncommentif -%}
+                    EOS,
                 ['use_db' => true],
                 "",
             ],
@@ -1182,7 +1183,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertFalse(Letterpress::defined('nothing'));
     }
 
-    public static function dataTemplateFiles() : array
+    public static function dataTemplateFiles(): array
     {
         return [
             ['application.lp.php', true, 'application.php'],
@@ -1322,7 +1323,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertFalse(Letterpress::defined('hello'));
 
         Letterpress::embed('hello', function (array $node, array $vars) {
-            return trim("'Hello ".Letterpress::evaluate($node['code'], $vars))."'";
+            return trim("'Hello " . Letterpress::evaluate($node['code'], $vars)) . "'";
         });
 
         $this->assertTrue(Letterpress::defined('hello'));
@@ -1347,7 +1348,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertFalse(Letterpress::defined('hello'));
 
         Letterpress::function('hello', function (string $name = '') {
-            return trim("'Hello {$name}")."'";
+            return trim("'Hello {$name}") . "'";
         });
 
         $this->assertTrue(Letterpress::defined('hello'));
@@ -1360,7 +1361,7 @@ class LetterpressTest extends RebetTestCase
 
 
         Letterpress::function('welcome', function () {
-            return "Welcome ".(Auth::user()->isGuest() ? 'to Rebet' : Auth::user()->name)."!";
+            return "Welcome " . (Auth::user()->isGuest() ? 'to Rebet' : Auth::user()->name) . "!";
         });
         $this->signout();
         $this->assertSame("Welcome to Rebet!", Letterpress::of('{% welcome %}')->render());

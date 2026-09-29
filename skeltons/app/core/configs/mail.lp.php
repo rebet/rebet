@@ -38,7 +38,7 @@ return [
     | This section defines mail sending settings.
     | You may change these defaults as required.
     */
-    Email::class => [
+    Email::class              => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default Mailer
@@ -68,7 +68,7 @@ return [
         |  - @see Rebet\Mail\Transport\FailoverTransport : Always uses the first available transport,
         |    falling over to the next one only when the current transport becomes unavailable.
         */
-        'mailers' => [
+        'mailers'        => [
             /*
             |------------------------------------------------------------------------------------
             | Main Mailer
@@ -77,7 +77,7 @@ return [
             */
             'main' => [
                 'transport' => [
-                    '@factory' => Transport::class."::fromDsn",
+                    '@factory' => Transport::class . "::fromDsn",
                     'dsn'      => Env::get('MAILER_DSN', 'null://null'),
                     // --- You can change only what you need for these default options for Transport::fromDsn() ---
                     // 'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
@@ -159,7 +159,7 @@ return [
     | @see Rebet\Application\Bootstrap\EmailValidatorEnable bootstrapper, which is included in the
     | default bootstrap list of WebKernel/CliKernel, so you don't usually need to call it yourself.
     */
-    EmailValidator::class => [
+    EmailValidator::class     => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Email Validation Rule

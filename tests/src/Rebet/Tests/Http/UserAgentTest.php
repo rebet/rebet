@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Http;
 
 use DeviceDetector\DeviceDetector;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -11,7 +12,7 @@ use TestApp\Enum\Gender;
 
 class CallbacksTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
     }
@@ -23,88 +24,88 @@ class CallbacksTest extends RebetTestCase
         $this->assertTrue($test($item) === $result);
     }
 
-    public static function dataTests() : array
+    public static function dataTests(): array
     {
         $map    = ['age' => 17];
-        $object = (object)['age' => 17];
+        $object = (object) ['age' => 17];
         return [
-            [null, null, '===', null , true],
+            [null, null, '===', null, true],
 
-            [123, null, '===', 123  , true],
+            [123, null, '===', 123, true],
             [123, null, '===', '123', false],
-            [123, null, '===', 456  , false],
-            ['b', null, '===', 'a'  , false],
-            ['b', null, '===', 'b'  , true],
-            ['b', null, '===', 'c'  , false],
+            [123, null, '===', 456, false],
+            ['b', null, '===', 'a', false],
+            ['b', null, '===', 'b', true],
+            ['b', null, '===', 'c', false],
 
-            [123, null, '!==', 123  , false],
+            [123, null, '!==', 123, false],
             [123, null, '!==', '123', true],
-            [123, null, '!==', 456  , true],
-            ['b', null, '!==', 'a'  , true],
-            ['b', null, '!==', 'b'  , false],
-            ['b', null, '!==', 'c'  , true],
+            [123, null, '!==', 456, true],
+            ['b', null, '!==', 'a', true],
+            ['b', null, '!==', 'b', false],
+            ['b', null, '!==', 'c', true],
 
-            [123, null, '==' , 123  , true],
-            [123, null, '==' , '123', true],
-            [123, null, '==' , 456  , false],
-            ['b', null, '==' , 'a'  , false],
-            ['b', null, '==' , 'b'  , true],
-            ['b', null, '==' , 'c'  , false],
+            [123, null, '==', 123, true],
+            [123, null, '==', '123', true],
+            [123, null, '==', 456, false],
+            ['b', null, '==', 'a', false],
+            ['b', null, '==', 'b', true],
+            ['b', null, '==', 'c', false],
 
-            [123, null, '='  , 123  , true],
-            [123, null, '='  , '123', true],
-            [123, null, '='  , 456  , false],
-            ['b', null, '='  , 'a'  , false],
-            ['b', null, '='  , 'b'  , true],
-            ['b', null, '='  , 'c'  , false],
+            [123, null, '=', 123, true],
+            [123, null, '=', '123', true],
+            [123, null, '=', 456, false],
+            ['b', null, '=', 'a', false],
+            ['b', null, '=', 'b', true],
+            ['b', null, '=', 'c', false],
 
-            [123, null, '!=' , 123  , false],
-            [123, null, '!=' , '123', false],
-            [123, null, '!=' , 456  , true],
-            ['b', null, '!=' , 'a'  , true],
-            ['b', null, '!=' , 'b'  , false],
-            ['b', null, '!=' , 'c'  , true],
+            [123, null, '!=', 123, false],
+            [123, null, '!=', '123', false],
+            [123, null, '!=', 456, true],
+            ['b', null, '!=', 'a', true],
+            ['b', null, '!=', 'b', false],
+            ['b', null, '!=', 'c', true],
 
-            [123, null, '<>' , 123  , false],
-            [123, null, '<>' , '123', false],
-            [123, null, '<>' , 456  , true],
-            ['b', null, '<>' , 'a'  , true],
-            ['b', null, '<>' , 'b'  , false],
-            ['b', null, '<>' , 'c'  , true],
+            [123, null, '<>', 123, false],
+            [123, null, '<>', '123', false],
+            [123, null, '<>', 456, true],
+            ['b', null, '<>', 'a', true],
+            ['b', null, '<>', 'b', false],
+            ['b', null, '<>', 'c', true],
 
-            [123, null, '<' , 122  , false],
-            [123, null, '<' , 123  , false],
-            [123, null, '<' , 124  , true],
-            ['b', null, '<' , 'a'  , false],
-            ['b', null, '<' , 'b'  , false],
-            ['b', null, '<' , 'c'  , true],
+            [123, null, '<', 122, false],
+            [123, null, '<', 123, false],
+            [123, null, '<', 124, true],
+            ['b', null, '<', 'a', false],
+            ['b', null, '<', 'b', false],
+            ['b', null, '<', 'c', true],
 
-            [123, null, '<=' , 122  , false],
-            [123, null, '<=' , 123  , true],
-            [123, null, '<=' , 124  , true],
-            ['b', null, '<=' , 'a'  , false],
-            ['b', null, '<=' , 'b'  , true],
-            ['b', null, '<=' , 'c'  , true],
+            [123, null, '<=', 122, false],
+            [123, null, '<=', 123, true],
+            [123, null, '<=', 124, true],
+            ['b', null, '<=', 'a', false],
+            ['b', null, '<=', 'b', true],
+            ['b', null, '<=', 'c', true],
 
-            [123, null, '>' , 122  , true],
-            [123, null, '>' , 123  , false],
-            [123, null, '>' , 124  , false],
-            ['b', null, '>' , 'a'  , true],
-            ['b', null, '>' , 'b'  , false],
-            ['b', null, '>' , 'c'  , false],
+            [123, null, '>', 122, true],
+            [123, null, '>', 123, false],
+            [123, null, '>', 124, false],
+            ['b', null, '>', 'a', true],
+            ['b', null, '>', 'b', false],
+            ['b', null, '>', 'c', false],
 
-            [123, null, '>=' , 122  , true],
-            [123, null, '>=' , 123  , true],
-            [123, null, '>=' , 124  , false],
-            ['b', null, '>=' , 'a'  , true],
-            ['b', null, '>=' , 'b'  , true],
-            ['b', null, '>=' , 'c'  , false],
+            [123, null, '>=', 122, true],
+            [123, null, '>=', 123, true],
+            [123, null, '>=', 124, false],
+            ['b', null, '>=', 'a', true],
+            ['b', null, '>=', 'b', true],
+            ['b', null, '>=', 'c', false],
 
-            [$map, 'age'    , '===', 17  , true],
-            [$map, 'invalid', '===', 17  , false],
+            [$map, 'age', '===', 17, true],
+            [$map, 'invalid', '===', 17, false],
             [$map, 'invalid', '===', null, true],
 
-            [$object, 'age', '===', 17  , true],
+            [$object, 'age', '===', 17, true],
         ];
     }
 
@@ -124,11 +125,11 @@ class CallbacksTest extends RebetTestCase
         $this->assertSame($result, $comparator($a, $b));
     }
 
-    public static function dataCompares() : array
+    public static function dataCompares(): array
     {
         return [
             [null, null, null, false, 0],
-            [null, null, null, true , 0],
+            [null, null, null, true, 0],
 
             [2, 1, null, false,  1],
             [2, 2, null, false,  0],
@@ -154,13 +155,13 @@ class CallbacksTest extends RebetTestCase
             [['a' => 2], ['a' => 2], 'a', true,  0],
             [['a' => 2], ['a' => 3], 'a', true,  1],
 
-            [(object)['a' => 2], (object)['a' => 1], 'a', false,  1],
-            [(object)['a' => 2], (object)['a' => 2], 'a', false,  0],
-            [(object)['a' => 2], (object)['a' => 3], 'a', false, -1],
+            [(object) ['a' => 2], (object) ['a' => 1], 'a', false,  1],
+            [(object) ['a' => 2], (object) ['a' => 2], 'a', false,  0],
+            [(object) ['a' => 2], (object) ['a' => 3], 'a', false, -1],
 
-            [(object)['a' => 2], (object)['a' => 1], 'a', true, -1],
-            [(object)['a' => 2], (object)['a' => 2], 'a', true,  0],
-            [(object)['a' => 2], (object)['a' => 3], 'a', true,  1],
+            [(object) ['a' => 2], (object) ['a' => 1], 'a', true, -1],
+            [(object) ['a' => 2], (object) ['a' => 2], 'a', true,  0],
+            [(object) ['a' => 2], (object) ['a' => 3], 'a', true,  1],
         ];
     }
 
@@ -171,7 +172,7 @@ class CallbacksTest extends RebetTestCase
         $this->assertEquals($except, $retriever($value));
     }
 
-    public static function dataRetrievers() : array
+    public static function dataRetrievers(): array
     {
         return [
             [null, null, null],
@@ -209,30 +210,30 @@ class CallbacksTest extends RebetTestCase
         $this->assertSame($expect, Callbacks::stringify($callable, $verbose));
     }
 
-    public static function dataStringifis() : array
+    public static function dataStringifis(): array
     {
         return [
             ['mb_strlen(string $string, ?string $encoding = null) : int', 'mb_strlen', true ],
             ['mb_strlen($string, $encoding)', 'mb_strlen', false],
 
-            ['Rebet\Tools\Utility\Callbacks::test($key, string $operator, $value) : Closure', Callbacks::class.'::test', true ],
+            ['Rebet\Tools\Utility\Callbacks::test($key, string $operator, $value) : Closure', Callbacks::class . '::test', true ],
             ['Rebet\Tools\Utility\Callbacks::test($key, string $operator, $value) : Closure', [Callbacks::class, 'test'], true ],
-            ['Callbacks::test($key, $operator, $value)', Callbacks::class.'::test', false],
+            ['Callbacks::test($key, $operator, $value)', Callbacks::class . '::test', false],
 
             ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}()', function () {}, true ],
-            ['CallbacksTest::{closure}()'                          , function () {}, false],
+            ['CallbacksTest::{closure}()', function () {}, false],
 
-            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(?int $i = null, string ...$s) : ?int', function (int|null $i = null, string ...$s) : int|null { return $i; }, true ],
-            ['CallbacksTest::{closure}($i, ...$s)'                                                    , function (int|null $i = null, string ...$s) : int|null { return $i; }, false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(?int $i = null, string ...$s) : ?int', function (int|null $i = null, string ...$s): int|null { return $i; }, true ],
+            ['CallbacksTest::{closure}($i, ...$s)', function (int|null $i = null, string ...$s): int|null { return $i; }, false],
 
-            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void', function (int|null $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, true ],
-            ['CallbacksTest::{closure}($i, $j, $k, $l)'                                                                                                    , function (int|null $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void', function (int|null $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION): void {}, true ],
+            ['CallbacksTest::{closure}($i, $j, $k, $l)', function (int|null $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION): void {}, false],
 
-            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(array &$a, string &...$s)', function (array &$a, string &...$s) { }, true ],
-            ['CallbacksTest::{closure}(&$a, &...$s)'                                       , function (array &$a, string &...$s) { }, false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(array &$a, string &...$s)', function (array &$a, string &...$s) {}, true ],
+            ['CallbacksTest::{closure}(&$a, &...$s)', function (array &$a, string &...$s) {}, false],
 
-            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(TestApp\Enum\Gender $g) : Rebet\Tools\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
-            ['CallbacksTest::{closure}($g)'                                                                               , function (Gender $g) : Enum { return $g; } , false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(TestApp\Enum\Gender $g) : Rebet\Tools\Enum\Enum', function (Gender $g): Enum { return $g; }, true ],
+            ['CallbacksTest::{closure}($g)', function (Gender $g): Enum { return $g; }, false],
         ];
     }
 

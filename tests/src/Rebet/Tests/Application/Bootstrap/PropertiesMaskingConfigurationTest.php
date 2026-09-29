@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application\Bootstrap;
 
 use Rebet\Application\App;

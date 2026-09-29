@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\DateTime;
 
 use Rebet\Tests\RebetTestCase;
@@ -7,7 +8,7 @@ use Rebet\Tools\DateTime\DateTime;
 
 class DateTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.123456');

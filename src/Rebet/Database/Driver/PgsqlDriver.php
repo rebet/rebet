@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Driver;
@@ -50,7 +51,7 @@ class PgsqlDriver extends AbstractDriver
     {
         return [
             'options' => [
-                'pdo' => [
+                'pdo'       => [
                     \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
                     \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
                     \PDO::ATTR_EMULATE_PREPARES   => false,
@@ -62,11 +63,11 @@ class PgsqlDriver extends AbstractDriver
             'ransack' => [
                 'value_converters' => [],
                 'predicates'       => [
-                    'matches'     => ["{col} ~ {val}"                           , null , 'OR' ],
-                    'not_matches' => ["{col} !~ {val}"                          , null , 'AND'],
-                    'search'      => ["to_tsvector({col}) @@ to_tsquery({val})" , null , 'OR' ],
+                    'matches'     => ["{col} ~ {val}", null, 'OR' ],
+                    'not_matches' => ["{col} !~ {val}", null, 'AND'],
+                    'search'      => ["to_tsvector({col}) @@ to_tsquery({val})", null, 'OR' ],
                 ],
-                'options' => [
+                'options'          => [
                     'len' => 'LENGTH({col})',
                     'uc'  => 'UPPER({col})',
                     'lc'  => 'LOWER({col})',
@@ -96,7 +97,7 @@ class PgsqlDriver extends AbstractDriver
     /**
      * {@inheritDoc}
      */
-    public function truncate(string $table_name, bool|null $with_vacuum = true) : string
+    public function truncate(string $table_name, bool|null $with_vacuum = true): string
     {
         $quoted_table_name = $this->quoteIdentifier($table_name);
         $this->exec($sql = "TRUNCATE TABLE {$quoted_table_name} RESTART IDENTITY");
@@ -124,7 +125,7 @@ class PgsqlDriver extends AbstractDriver
             case 'bpchar':
             case 'uuid':
             case 'pg_lsn':
-                return (string)$value;
+                return (string) $value;
 
             case 'int2':
             case 'int4':
@@ -168,7 +169,7 @@ class PgsqlDriver extends AbstractDriver
             case 'interval':
             case 'tinterval':
                 // @todo Implements Time and Interval class and incorporate
-                return (string)$value;
+                return (string) $value;
 
             case 'box':
             case 'circle':
@@ -178,17 +179,17 @@ class PgsqlDriver extends AbstractDriver
             case 'point':
             case 'polygon':
                 // @todo Select and incorporate geometry library
-                return (string)$value;
+                return (string) $value;
 
             case 'cidr':     // (IPv4 or IPv6)
             case 'inet':     // (Host address of IPv4 or IPv6)
             case 'macaddr':
             case 'macaddr8':
-                return (string)$value;
+                return (string) $value;
 
             case 'money':
                 // @todo Should we remove the currency unit and return a Decimal class, or should we implement a Money class that extended Decimal
-                return (string)$value;
+                return (string) $value;
 
             case 'bytea':
                 return $value;
@@ -196,10 +197,10 @@ class PgsqlDriver extends AbstractDriver
             case 'tsquery':
             case 'tsvector':
             case 'gtsvector':
-                return (string)$value;
+                return (string) $value;
 
             case 'txid_snapshot':
-                return (string)$value;
+                return (string) $value;
         }
 
         // trigger_error("[".static::SUPPORTED_PDO_DRIVER."] Unknown native type '{$native_type}' found.", E_USER_NOTICE);

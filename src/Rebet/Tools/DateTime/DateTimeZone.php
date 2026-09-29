@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\DateTime;
@@ -38,7 +39,7 @@ class DateTimeZone extends \DateTimeZone implements Convertible
      * @param  string|\DateTimeZone $value
      * @return DateTimeZone
      */
-    public static function valueOf($value) : DateTimeZone
+    public static function valueOf($value): DateTimeZone
     {
         return new DateTimeZone($value);
     }

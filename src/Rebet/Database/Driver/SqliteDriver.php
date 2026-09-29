@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Driver;
@@ -50,7 +51,7 @@ class SqliteDriver extends AbstractDriver
     {
         return [
             'options' => [
-                'pdo' => [
+                'pdo'       => [
                     \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
                     \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
                     \PDO::ATTR_EMULATE_PREPARES   => false,
@@ -62,11 +63,11 @@ class SqliteDriver extends AbstractDriver
             'ransack' => [
                 'value_converters' => [],
                 'predicates'       => [
-                    'matches'     => ["{col} REGEXP {val}"     , null , 'OR' ],
-                    'not_matches' => ["{col} NOT REGEXP {val}" , null , 'AND'],
-                    'search'      => ["{col} MATCH {val}"      , null , 'OR' ],
+                    'matches'     => ["{col} REGEXP {val}", null, 'OR' ],
+                    'not_matches' => ["{col} NOT REGEXP {val}", null, 'AND'],
+                    'search'      => ["{col} MATCH {val}", null, 'OR' ],
                 ],
-                'options' => [
+                'options'          => [
                     'bin' => 'BINARY {col}',
                     'ci'  => '{col} COLLATE nocase',
                     'len' => 'LENGTH({col})',
@@ -93,7 +94,7 @@ class SqliteDriver extends AbstractDriver
     /**
      * {@inheritDoc}
      */
-    public function truncate(string $table_name, bool|null $with_vacuum = true) : string
+    public function truncate(string $table_name, bool|null $with_vacuum = true): string
     {
         $sqls              = [];
         $quoted_table_name = $this->quoteIdentifier($table_name);
@@ -102,13 +103,13 @@ class SqliteDriver extends AbstractDriver
         if ($with_vacuum) {
             $this->exec($sqls[] = "VACUUM");
         }
-        return '/* TRUNCATE Emulate */ '.str_replace(':table_name', "'{$table_name}'", implode('; ', $sqls));
+        return '/* TRUNCATE Emulate */ ' . str_replace(':table_name', "'{$table_name}'", implode('; ', $sqls));
     }
 
     /**
      * {@inheritDoc}
      */
-    public function appendForUpdate(string $sql) : string
+    public function appendForUpdate(string $sql): string
     {
         throw new DatabaseException("SQLite does not support `FOR UPDATE`");
     }
@@ -133,7 +134,7 @@ class SqliteDriver extends AbstractDriver
                 return null;
 
             case 'string':
-                return (string)$value;
+                return (string) $value;
 
             case 'integer':
                 return intval($value) ;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Mail\Validator\Validation;
@@ -68,10 +69,10 @@ class LooseRFCValidation implements EmailValidation
     /**
      * {@inheritDoc}
      */
-    public function isValid($email, EmailLexer $emailLexer) : bool
+    public function isValid($email, EmailLexer $emailLexer): bool
     {
         $parser = new LooseEmailParser($emailLexer, $this->ignores);
-        $result = $parser->parse((string)$email);
+        $result = $parser->parse((string) $email);
         if ($result instanceof InvalidEmail) {
             $this->error = $result;
             return false;
@@ -84,7 +85,7 @@ class LooseRFCValidation implements EmailValidation
     /**
      * {@inheritDoc}
      */
-    public function getError() : InvalidEmail|null
+    public function getError(): InvalidEmail|null
     {
         return $this->error;
     }
@@ -92,7 +93,7 @@ class LooseRFCValidation implements EmailValidation
     /**
      * {@inheritDoc}
      */
-    public function getWarnings() : array
+    public function getWarnings(): array
     {
         return $this->warnings;
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Cache\Adapter\Symfony\Pool;
 
 use Rebet\Cache\Adapter\Symfony\Pool\ArrayPool;
@@ -15,7 +16,7 @@ class ArrayPoolTest extends RebetTestCase
      */
     protected $pools = [];
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->pools[] = new ArrayPool();
@@ -84,7 +85,7 @@ class ArrayPoolTest extends RebetTestCase
     public function test_getItems()
     {
         foreach ($this->pools as $pool) {
-            $values = ['foo' => null , 'bar' => null];
+            $values = ['foo' => null, 'bar' => null];
             $hits   = ['foo' => false, 'bar' => false];
             $keys   = array_keys($values);
             $items  = $pool->getItems($keys);
@@ -93,8 +94,8 @@ class ArrayPoolTest extends RebetTestCase
                 $this->assertInstanceOf(CacheItem::class, $item);
                 $this->assertSame($key, $item->getKey());
                 $this->assertArrayHasKey($key, $values);
-                $this->assertSame($values[$key], $item->get(), 'key='.$item->getKey());
-                $this->assertSame($hits[$key], $item->isHit(), 'key='.$item->getKey());
+                $this->assertSame($values[$key], $item->get(), 'key=' . $item->getKey());
+                $this->assertSame($hits[$key], $item->isHit(), 'key=' . $item->getKey());
             }
 
             $item = $pool->getItem('foo');
@@ -102,7 +103,7 @@ class ArrayPoolTest extends RebetTestCase
             $item->expiresAfter(1);
             $pool->save($item);
 
-            $values = ['foo' => 1   , 'bar' => null];
+            $values = ['foo' => 1, 'bar' => null];
             $hits   = ['foo' => true, 'bar' => false];
             $items  = $pool->getItems($keys);
             // $this->assertSame(2, count($items));
@@ -110,8 +111,8 @@ class ArrayPoolTest extends RebetTestCase
                 $this->assertInstanceOf(CacheItem::class, $item);
                 $this->assertSame($key, $item->getKey());
                 $this->assertArrayHasKey($key, $values);
-                $this->assertSame($values[$key], $item->get(), 'key='.$item->getKey());
-                $this->assertSame($hits[$key], $item->isHit(), 'key='.$item->getKey());
+                $this->assertSame($values[$key], $item->get(), 'key=' . $item->getKey());
+                $this->assertSame($hits[$key], $item->isHit(), 'key=' . $item->getKey());
             }
         }
     }

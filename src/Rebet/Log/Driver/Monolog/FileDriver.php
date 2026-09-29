@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Log\Driver\Monolog;
@@ -54,12 +55,12 @@ class FileDriver extends MonologDriver
         string $filename_format = '{filename}-{date}',
         string $filename_date_format = 'Y-m-d',
         int $max_files = 0,
-        int $file_permission = 0644,
+        int $file_permission = 0o644,
         bool $use_locking = false,
         bool $with_browser_console = false,
         string|null $format = null,
         array $stringifiers = [],
-        bool $bubble = true
+        bool $bubble = true,
     ) {
         $rfh = new RotatingFileHandler($filename, $max_files, $level, $bubble, $file_permission, $use_locking);
         $rfh->setFilenameFormat($filename_format, $filename_date_format);

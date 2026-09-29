@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
@@ -45,7 +46,7 @@ class ClosureRoute extends DeclarativeRoute
      * @return RouteAction
      * @throws RouteNotFoundException
      */
-    protected function createRouteAction(Request $request) : RouteAction
+    protected function createRouteAction(Request $request): RouteAction
     {
         return new RouteAction($this, new \ReflectionFunction($this->action));
     }
@@ -57,7 +58,7 @@ class ClosureRoute extends DeclarativeRoute
      * @param  Response $response
      * @return void
      */
-    public function terminate(Request $request, Response $response) : void
+    public function terminate(Request $request, Response $response): void
     {
         // Do Nothing.
     }

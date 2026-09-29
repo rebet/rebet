@@ -1,4 +1,5 @@
 <?php
+
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\DateTime\DayOfWeek;
 use Rebet\Tools\DateTime\Month;
@@ -17,7 +18,7 @@ use Rebet\Tools\DateTime\Month;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 return [
-    Month::class => [
+    Month::class     => [
         'label'       => [null, '01月', '02月', '03月', '04月', '05月', '06月', '07月', '08月', '09月', '10月', '11月', '12月'],
         'label_short' => [null, '1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
     ],
@@ -26,10 +27,10 @@ return [
         'label_short' => ['日', '月', '火', '水', '木', '金', '土'],
         'label_min'   => ['日', '月', '火', '水', '木', '金', '土'],
     ],
-    '@meridiem' => function (DateTime $datetime, bool $uppercase) {
+    '@meridiem'      => function (DateTime $datetime, bool $uppercase) {
         return $datetime->getHour() < 12 ? '午前' : '午後' ;
     },
-    '@formats' => [
+    '@formats'       => [
         '@t'   => 'H:i',
         '@tt'  => 'H:i:s',
         '@ttt' => 'H:i:s.u',

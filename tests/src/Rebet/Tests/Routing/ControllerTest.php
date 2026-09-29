@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Routing;
 
 use Rebet\Http\Responder;
@@ -12,7 +13,7 @@ class ControllerTest extends RebetTestCase
      */
     private $controller;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->controller = new class extends Controller {

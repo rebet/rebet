@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http\Response;
@@ -31,7 +32,7 @@ class ProblemResponse extends JsonResponse
      *
      * @var string
      */
-    const TYPE_HTTP_STATUS = 'about:blank';
+    public const TYPE_HTTP_STATUS = 'about:blank';
 
     /**
      * This problem type indicates that the fallback error problem like validation error.
@@ -41,7 +42,7 @@ class ProblemResponse extends JsonResponse
      * @see https://github.com/rebet/rebet/blob/master/spec/problem-details/fallback-errors.md
      * @var string
      */
-    const TYPE_FALLBACK_ERRORS = 'https://github.com/rebet/rebet/blob/master/spec/problem-details/fallback-errors.md';
+    public const TYPE_FALLBACK_ERRORS = 'https://github.com/rebet/rebet/blob/master/spec/problem-details/fallback-errors.md';
 
     /**
      * @var array<string, mixed> of problem
@@ -82,7 +83,7 @@ class ProblemResponse extends JsonResponse
      * @param  string $detail message or full transration key
      * @return self
      */
-    public function detail(string $detail) : self
+    public function detail(string $detail): self
     {
         $this->problem['detail'] = Translator::get($detail) ?? $detail;
         $this->setData($this->problem);
@@ -96,7 +97,7 @@ class ProblemResponse extends JsonResponse
      * @param  string $instance what a URI reference that identifies the specific occurrence of the problem.
      * @return self
      */
-    public function instance(string $instance) : self
+    public function instance(string $instance): self
     {
         $this->problem['instance'] = $instance;
         $this->setData($this->problem);
@@ -110,7 +111,7 @@ class ProblemResponse extends JsonResponse
      * @param  mixed                       $value (default: null)
      * @return self
      */
-    public function additional($key, $value = null) : self
+    public function additional($key, $value = null): self
     {
         if ($this->problem['type'] === static::TYPE_HTTP_STATUS) {
             throw new LogicException("The type of 'about:blank' can not contains additional.");

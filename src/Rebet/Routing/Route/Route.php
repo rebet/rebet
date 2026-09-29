@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
@@ -77,7 +78,7 @@ abstract class Route implements \Stringable
      * @param  string|null                  $regex
      * @return self
      */
-    public function where($name, string|null $regex = null) : self
+    public function where($name, string|null $regex = null): self
     {
         foreach (is_array($name) ? $name : [$name => $regex] as $key => $value) {
             $this->wheres[$key] = $value;
@@ -97,7 +98,7 @@ abstract class Route implements \Stringable
      * @return bool
      * @throws RouteNotFoundException
      */
-    public function match(Request $request) : bool
+    public function match(Request $request): bool
     {
         $vars = $this->analyze($request);
         if ($vars === null) {
@@ -120,7 +121,7 @@ abstract class Route implements \Stringable
      * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
-    abstract protected function analyze(Request $request) : array|null;
+    abstract protected function analyze(Request $request): array|null;
 
     /**
      * Returns the route action for processing the request matched.
@@ -132,14 +133,14 @@ abstract class Route implements \Stringable
      * @return RouteAction
      * @throws RouteNotFoundException
      */
-    abstract protected function createRouteAction(Request $request) : RouteAction ;
+    abstract protected function createRouteAction(Request $request): RouteAction ;
 
     /**
      * Return the default view name of this route.
      *
      * @return string
      */
-    abstract public function defaultView() : string ;
+    abstract public function defaultView(): string ;
 
     /**
      * Perform routing processing.
@@ -149,7 +150,7 @@ abstract class Route implements \Stringable
      * @return Response
      * @throws RouteNotFoundException
      */
-    public function handle(Request $request) : Response
+    public function handle(Request $request): Response
     {
         return $this->route_action->invoke($request);
     }
@@ -161,7 +162,7 @@ abstract class Route implements \Stringable
      * @param  Response $response
      * @return void
      */
-    abstract public function terminate(Request $request, Response $response) : void ;
+    abstract public function terminate(Request $request, Response $response): void ;
 
     /**
      * Allow the Pipeline to process the route object.
@@ -179,7 +180,7 @@ abstract class Route implements \Stringable
      *
      * @return AttributedMethod|null
      */
-    public function getAttributedMethod() : AttributedMethod|null
+    public function getAttributedMethod(): AttributedMethod|null
     {
         return $this->route_action ? $this->route_action->getAttributedMethod() : null ;
     }

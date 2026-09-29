@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Config;
@@ -93,7 +94,7 @@ trait Configurable
      *
      * @return array<string, mixed>
      */
-    public static function defaultConfigOverrideOptions() : array
+    public static function defaultConfigOverrideOptions(): array
     {
         return ($parent = get_parent_class(static::class)) && method_exists($parent, 'defaultConfigOverrideOptions') ? $parent::defaultConfigOverrideOptions() : [] ;
     }
@@ -112,7 +113,7 @@ trait Configurable
      * @param  array<string, mixed> $diff  (default: [])
      * @return array<string, mixed>
      */
-    protected static function copyConfigFrom(string $class, array $diff = []) : array
+    protected static function copyConfigFrom(string $class, array $diff = []): array
     {
         return Arrays::override($class::defaultConfig(), $diff, $class::defaultConfigOverrideOptions(), OverrideOption::PREPEND);
     }
@@ -130,7 +131,7 @@ trait Configurable
      * @param  array<string, mixed> $diff  (default: [])
      * @return ConfigPromise
      */
-    protected static function shareConfigWith(string $class, array $diff = []) : ConfigPromise
+    protected static function shareConfigWith(string $class, array $diff = []): ConfigPromise
     {
         return Config::promise(function () use ($class, $diff) {
             return Arrays::override($class::config(), $diff, $class::defaultConfigOverrideOptions(), OverrideOption::PREPEND);
@@ -176,7 +177,7 @@ trait Configurable
      *
      * @param array<string, mixed> $config
      */
-    protected static function setConfig(array $config) : void
+    protected static function setConfig(array $config): void
     {
         Config::runtime([static::class => $config]);
     }
@@ -186,7 +187,7 @@ trait Configurable
      *
      * @param string ...$layers (default: all layers)
      */
-    protected static function clearConfig(string ...$layers) : void
+    protected static function clearConfig(string ...$layers): void
     {
         Config::reset(static::class, ...$layers);
     }

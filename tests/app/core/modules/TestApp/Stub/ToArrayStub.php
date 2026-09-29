@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Stub;
 
 class ToArrayStub
@@ -10,7 +11,7 @@ class ToArrayStub
         $this->array = $array;
     }
 
-    public function toArray() : array
+    public function toArray(): array
     {
         return $this->array;
     }

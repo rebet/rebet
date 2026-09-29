@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Model;
 
 use Rebet\Database\Attribute\Defaults;
@@ -27,22 +28,22 @@ class User extends Entity
     #[Unmap]
     public $unmap;
 
-    public function age() : int|null
+    public function age(): int|null
     {
         return $this->birthday ? Date::valueOf($this->birthday)->age() : null ;
     }
 
-    public function fortune(bool $for_update = false, bool $eager_load = true) : Fortune|null
+    public function fortune(bool $for_update = false, bool $eager_load = true): Fortune|null
     {
         return parent::belongsTo(Fortune::class, [], $for_update, $eager_load);
     }
 
-    public function bank(bool $for_update = false, bool $eager_load = true) : Bank|null
+    public function bank(bool $for_update = false, bool $eager_load = true): Bank|null
     {
         return parent::hasOne(Bank::class, [], $for_update, $eager_load);
     }
 
-    public function articles($ransack = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true) : array
+    public function articles($ransack = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true): array
     {
         return parent::hasMany(Article::class, [], $ransack, $order_by, $limit, $for_update, $eager_load);
     }
@@ -66,7 +67,7 @@ class User extends Entity
     /**
      * Method for unit test
      */
-    public function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true, string|null $name = null) : array
+    public function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true, string|null $name = null): array
     {
         return parent::hasMany($class, $alias, $ransacks, $order_by, $limit, $for_update, $eager_load, $name ?? Reflector::caller());
     }

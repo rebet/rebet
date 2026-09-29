@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database;
@@ -49,7 +50,7 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
      *
      * @return array<int|string, mixed>
      */
-    protected function &container() : array
+    protected function &container(): array
     {
         return $this->items;
     }
@@ -57,7 +58,7 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     /**
      * {@inheritDoc}
      */
-    public function offsetSet($offset, $value) : void
+    public function offsetSet($offset, $value): void
     {
         if ($value instanceof DataModel) {
             $value->belongsResultSet($this);
@@ -74,7 +75,7 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
      *
      * @return self
      */
-    public function reverse() : self
+    public function reverse(): self
     {
         $this->items = array_reverse($this->items);
         return $this;
@@ -87,7 +88,7 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
      * @param  int|string|\Closure|null $key_field   Field name / index / extract function as key of extracted data (It becomes serial number array when blank is specified)
      * @return array<int|string, mixed>
      */
-    public function pluk($value_field, $key_field = null) : array
+    public function pluk($value_field, $key_field = null): array
     {
         return Arrays::pluck($this->items, $value_field, $key_field);
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Reflection;
@@ -24,9 +25,7 @@ class Reflector
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get value from an array or object using "dot" notation.
@@ -97,7 +96,7 @@ class Reflector
      * @param  string $property
      * @return bool
      */
-    protected static function canPropertyAccess($target, string $property) : bool
+    protected static function canPropertyAccess($target, string $property): bool
     {
         return static::reflectProperty($target, $property) !== null;
     }
@@ -115,7 +114,7 @@ class Reflector
      * @param  string                   $property
      * @return \ReflectionProperty|null
      */
-    protected static function reflectProperty($object, string $property) : \ReflectionProperty|null
+    protected static function reflectProperty($object, string $property): \ReflectionProperty|null
     {
         if (!((\is_string($object) && \class_exists($object)) || \is_object($object))) {
             return null;
@@ -151,7 +150,7 @@ class Reflector
      * @param  mixed               $value
      * @return void
      */
-    protected static function setPropertyValue(\ReflectionProperty $rp, $object, $value) : void
+    protected static function setPropertyValue(\ReflectionProperty $rp, $object, $value): void
     {
         if ($rp->isStatic()) {
             $rp->setValue(null, $value);
@@ -173,11 +172,11 @@ class Reflector
         }
 
         if (
-            $object === null ||
-            \is_scalar($object) ||
-            \is_resource($object) ||
-            (is_iterable($object) && !is_array($object) && !($object instanceof \ArrayAccess)) ||
-            $object instanceof Tinker
+            $object === null
+            || \is_scalar($object)
+            || \is_resource($object)
+            || (is_iterable($object) && !is_array($object) && !($object instanceof \ArrayAccess))
+            || $object instanceof Tinker
         ) {
             return $object;
         }
@@ -209,7 +208,7 @@ class Reflector
      * @return void
      * @throws \OutOfBoundsException
      */
-    public static function set(array|object|string &$object, int|string|null $key, mixed $value, bool $accessible = false) : void
+    public static function set(array|object|string &$object, int|string|null $key, mixed $value, bool $accessible = false): void
     {
         while ($object instanceof DotAccessDelegator) {
             $object = $object->get();
@@ -457,7 +456,7 @@ class Reflector
                         return null;
                     }
                     if (is_scalar($value)) {
-                        return (string)$value;
+                        return (string) $value;
                     }
                     if (is_object($value) && method_exists($value, '__toString')) {
                         return $value->__toString();
@@ -468,7 +467,7 @@ class Reflector
                     if (is_object($value) && $value instanceof \JsonSerializable) {
                         $json = $value->jsonSerialize();
                         if (is_scalar($json)) {
-                            return (string)$json;
+                            return (string) $json;
                         }
                         if (Arrays::accessible($json)) {
                             return json_encode(Arrays::toArray($json));
@@ -511,15 +510,15 @@ class Reflector
                         return $convertor($value);
                     }
                     return
-                        static::tryConvertByMember($value, 'convertTo', $type) ??
-                        static::tryConvertByMember($value, "to".ucfirst($type), $type)
+                        static::tryConvertByMember($value, 'convertTo', $type)
+                        ?? static::tryConvertByMember($value, "to" . ucfirst($type), $type)
                     ;
 
                     //---------------------------------------------
                     // To stdClass Object
                     //---------------------------------------------
                 case 'stdClass':
-                    return (object)$value;
+                    return (object) $value;
 
                     //---------------------------------------------
                     // To Other Object
@@ -527,10 +526,10 @@ class Reflector
                 default:
                     $rc = new \ReflectionClass($type);
                     return
-                        static::tryConvertByStatic($type, 'valueOf', $value) ??
-                        static::tryConvertByStatic($type, 'of', $value) ??
-                        static::tryConvertByMember($value, 'convertTo', $type) ??
-                        static::tryConvertByMember($value, "to".$rc->getShortName(), $type)
+                        static::tryConvertByStatic($type, 'valueOf', $value)
+                        ?? static::tryConvertByStatic($type, 'of', $value)
+                        ?? static::tryConvertByMember($value, 'convertTo', $type)
+                        ?? static::tryConvertByMember($value, "to" . $rc->getShortName(), $type)
                     ;
             }
         } catch (\Throwable $e) {
@@ -594,7 +593,7 @@ class Reflector
      * @param  string|null $type  type or class
      * @return boolean
      */
-    public static function typeOf($value, string|null $type) : bool
+    public static function typeOf($value, string|null $type): bool
     {
         if ($type === null || $type === 'mixed') {
             return true;
@@ -619,7 +618,7 @@ class Reflector
      * @param  mixed       $value
      * @return string|null
      */
-    public static function getType($value) : string|null
+    public static function getType($value): string|null
     {
         if ($value === null) {
             return null;
@@ -643,7 +642,7 @@ class Reflector
      * @param  \ReflectionParameter|\ReflectionProperty|null $target
      * @return string|null
      */
-    public static function getTypeHint($target) : string|null
+    public static function getTypeHint($target): string|null
     {
         if ($target === null) {
             return null;
@@ -664,7 +663,7 @@ class Reflector
      * @param  int           $param_index
      * @return string|null
      */
-    public static function getParameterTypeHintOf(callable|null $function, int $param_index) : string|null
+    public static function getParameterTypeHintOf(callable|null $function, int $param_index): string|null
     {
         if ($function === null) {
             return null;
@@ -681,7 +680,7 @@ class Reflector
      * @param  string             $property        name
      * @return string|null
      */
-    public static function getPropertyTypeHintOf($object_or_class, string $property) : string|null
+    public static function getPropertyTypeHintOf($object_or_class, string $property): string|null
     {
         if ($object_or_class === null) {
             return null;
@@ -699,7 +698,7 @@ class Reflector
      * @param  bool                     $type_convert (default: false)
      * @return array<int|string, mixed>
      */
-    public static function toArgs(array $parameters, array $values, bool $type_convert = false) : array
+    public static function toArgs(array $parameters, array $values, bool $type_convert = false): array
     {
         $values = static::toNamedArgs($parameters, $values);
         $args   = [];
@@ -720,7 +719,7 @@ class Reflector
                 $converter = function ($value) use ($type, $name) {
                     $converted = static::convert($value, $type) ;
                     if ($value !== null && $converted === null) {
-                        throw new LogicException("Parameter {$name}(=".Strings::stringify($value).") can not convert to {$type}.");
+                        throw new LogicException("Parameter {$name}(=" . Strings::stringify($value) . ") can not convert to {$type}.");
                     }
                     return $converted;
                 };
@@ -729,7 +728,7 @@ class Reflector
             }
 
             if ($is_variadic) {
-                $args = array_merge($args, array_map($converter, (array)$value));
+                $args = array_merge($args, array_map($converter, (array) $value));
             } else {
                 $args[] = $converter($value);
             }
@@ -746,7 +745,7 @@ class Reflector
      * @return array<int|string, mixed> that named args map
      * @throws LogicException
      */
-    public static function toNamedArgs(array $parameters, array $values) : array
+    public static function toNamedArgs(array $parameters, array $values): array
     {
         if (empty($values)) {
             return [];
@@ -775,7 +774,7 @@ class Reflector
             $name = $parameter->name;
             if (!empty($positional)) {
                 if (array_key_exists($name, $named)) {
-                    throw new LogicException("Named arguments of '{$name}' duplicate to ".Translator::ordinalize($i + 1, 'en')." positional arguments.");
+                    throw new LogicException("Named arguments of '{$name}' duplicate to " . Translator::ordinalize($i + 1, 'en') . " positional arguments.");
                 }
                 if ($parameter->isVariadic()) {
                     $args[$name] = array_merge($values);
@@ -808,11 +807,11 @@ class Reflector
      * @param  array<int|string, mixed> $args       that ordered or named.
      * @return array<int|string, mixed>
      */
-    public static function mergeArgs(array $parameters, array $defaults, array $args) : array
+    public static function mergeArgs(array $parameters, array $defaults, array $args): array
     {
         return array_merge(
             static::toNamedArgs($parameters, $defaults),
-            static::toNamedArgs($parameters, $args)
+            static::toNamedArgs($parameters, $args),
         );
     }
 
@@ -930,7 +929,7 @@ class Reflector
      * @param  string        $trait
      * @return boolean
      */
-    public static function uses($target, string $trait) : bool
+    public static function uses($target, string $trait): bool
     {
         $classes = array_merge([$target], class_parents($target));
         foreach ($classes as $class) {
@@ -946,7 +945,7 @@ class Reflector
      *
      * @return string|null
      */
-    public static function caller() : string|null
+    public static function caller(): string|null
     {
         return debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3)[2]['function'] ?? null ;
     }

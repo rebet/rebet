@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -20,9 +21,7 @@ class Strings
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Trim characters before the leftmost given delimiter string.
@@ -36,7 +35,7 @@ class Strings
      * @param  bool        $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
-    public static function lbtrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
+    public static function lbtrim(string|null $str, string $delimiter, bool $remove_delimiter = true): string|null
     {
         if ($str === null) {
             return null;
@@ -60,7 +59,7 @@ class Strings
      * @param  bool        $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
-    public static function latrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
+    public static function latrim(string|null $str, string $delimiter, bool $remove_delimiter = true): string|null
     {
         if ($str === null) {
             return null;
@@ -84,7 +83,7 @@ class Strings
      * @param  bool        $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
-    public static function rbtrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
+    public static function rbtrim(string|null $str, string $delimiter, bool $remove_delimiter = true): string|null
     {
         if ($str === null) {
             return null;
@@ -108,7 +107,7 @@ class Strings
      * @param  bool        $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
-    public static function ratrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
+    public static function ratrim(string|null $str, string $delimiter, bool $remove_delimiter = true): string|null
     {
         if ($str === null) {
             return null;
@@ -135,10 +134,10 @@ class Strings
      * @param  int|null    $max    (default: null)
      * @return string|null
      */
-    public static function ltrim(string|null $str, string $prefix = ' ', int|null $max = null) : string|null
+    public static function ltrim(string|null $str, string $prefix = ' ', int|null $max = null): string|null
     {
         $repeat = $max === null ? "*" : "{0,{$max}}" ;
-        return $str === null ? null : preg_replace("/\A(".preg_quote($prefix, '/')."){$repeat}/u", '', $str);
+        return $str === null ? null : preg_replace("/\A(" . preg_quote($prefix, '/') . "){$repeat}/u", '', $str);
     }
 
     /**
@@ -156,10 +155,10 @@ class Strings
      * @param  int|null    $max    (default: null)
      * @return string|null
      */
-    public static function rtrim(string|null $str, string $suffix = ' ', int|null $max = null) : string|null
+    public static function rtrim(string|null $str, string $suffix = ' ', int|null $max = null): string|null
     {
         $repeat = $max === null ? "*" : "{0,{$max}}" ;
-        return $str === null ? null : preg_replace("/(".preg_quote($suffix, '/')."){$repeat}\z/u", '', $str);
+        return $str === null ? null : preg_replace("/(" . preg_quote($suffix, '/') . "){$repeat}\z/u", '', $str);
     }
 
     /**
@@ -177,7 +176,7 @@ class Strings
      * @param  int|null    $max      (default: null)
      * @return string|null
      */
-    public static function trim(string|null $str, string $deletion = ' ', int|null $max = null) : string|null
+    public static function trim(string|null $str, string $deletion = ' ', int|null $max = null): string|null
     {
         return static::ltrim(static::rtrim($str, $deletion, $max), $deletion, $max);
     }
@@ -188,7 +187,7 @@ class Strings
      * @param  string|null $str
      * @return string|null
      */
-    public static function mbtrim(string|null $str) : string|null
+    public static function mbtrim(string|null $str): string|null
     {
         return $str === null ? null : preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $str);
     }
@@ -203,9 +202,9 @@ class Strings
      * @param  string      $needle
      * @return bool
      */
-    public static function startsWith(string|null $haystack, string $needle) : bool
+    public static function startsWith(string|null $haystack, string $needle): bool
     {
-        $haystack = $haystack ?? '';
+        $haystack ??= '';
         return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
     }
 
@@ -219,9 +218,9 @@ class Strings
      * @param  string      $needle
      * @return bool
      */
-    public static function endsWith(string|null $haystack, string $needle) : bool
+    public static function endsWith(string|null $haystack, string $needle): bool
     {
-        $haystack = $haystack ?? '';
+        $haystack ??= '';
         return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
     }
 
@@ -237,7 +236,7 @@ class Strings
      * @param  string             $encode (default: 'sjis-win')
      * @return array<int, string> of dependence chars
      */
-    public static function checkDependenceChar(string|null $text, string $encode = 'sjis-win') : array
+    public static function checkDependenceChar(string|null $text, string $encode = 'sjis-win'): array
     {
         if ($text === null) {
             return [];
@@ -260,7 +259,7 @@ class Strings
      * @param  string|null        $string
      * @return array<int, string>
      */
-    public static function toCharArray(string|null $string) : array
+    public static function toCharArray(string|null $string): array
     {
         if ($string === null) {
             return [];
@@ -276,13 +275,13 @@ class Strings
      * @param string      $char   for indent (default: '\t')
      * @param int         $depth  (default: 1)
      */
-    public static function indent(string|null $string, string $char = "\t", int $depth = 1) : string|null
+    public static function indent(string|null $string, string $char = "\t", int $depth = 1): string|null
     {
         if ($string === null) {
             return null;
         }
         $indent  = str_repeat($char, $depth);
-        $indened = (self::startsWith($string, "\n") ? '' : $indent).str_replace("\n", "\n{$indent}", $string);
+        $indened = (self::startsWith($string, "\n") ? '' : $indent) . str_replace("\n", "\n{$indent}", $string);
         return self::endsWith($indened, "\n{$indent}") ? mb_substr($indened, 0, \mb_strlen($indened) - \mb_strlen($indent)) : $indened ;
     }
 
@@ -294,9 +293,9 @@ class Strings
      * @param  int             $at_least (default: null)
      * @return bool
      */
-    public static function contains(string|null $string, $searches, int|null $at_least = null) : bool
+    public static function contains(string|null $string, $searches, int|null $at_least = null): bool
     {
-        $searches = (array)$searches;
+        $searches = (array) $searches;
         if ($string === null || $searches === []) {
             return false;
         }
@@ -323,7 +322,7 @@ class Strings
      * @param  string      $search
      * @return bool
      */
-    protected static function _contains(string|null $string, string $search) : bool
+    protected static function _contains(string|null $string, string $search): bool
     {
         return $search === '' ? true : strpos($string, $search) !== false ;
     }
@@ -336,7 +335,7 @@ class Strings
      * @param  string      $encoding (default: 'UTF-8')
      * @return string|null
      */
-    public static function lcut(string|null $string, int $length, string $encoding = 'UTF-8') : string|null
+    public static function lcut(string|null $string, int $length, string $encoding = 'UTF-8'): string|null
     {
         if ($string === null) {
             return null;
@@ -358,7 +357,7 @@ class Strings
      * @param  string      $encoding (default: 'UTF-8')
      * @return string|null
      */
-    public static function rcut(string|null $string, int $length, string $encoding = 'UTF-8') : string|null
+    public static function rcut(string|null $string, int $length, string $encoding = 'UTF-8'): string|null
     {
         if ($string === null) {
             return null;
@@ -380,7 +379,7 @@ class Strings
      * @param  string      $ellipsis (default: '...')
      * @return string|null
      */
-    public static function clip(string|null $string, int $length, string $ellipsis = '...') : string|null
+    public static function clip(string|null $string, int $length, string $ellipsis = '...'): string|null
     {
         if ($string === null) {
             return null;
@@ -392,7 +391,7 @@ class Strings
         if ($max < 1) {
             throw new LogicException("Invalid clip length and ellipsis. The length must be longer than ellipsis.");
         }
-        return mb_substr($string, 0, $max).$ellipsis;
+        return mb_substr($string, 0, $max) . $ellipsis;
     }
 
     /**
@@ -402,12 +401,12 @@ class Strings
      * @param  string|string[] $patterns
      * @return boolean
      */
-    public static function match(string|null $string, $patterns) : bool
+    public static function match(string|null $string, $patterns): bool
     {
         if ($string === null) {
             return false;
         }
-        $patterns = (array)$patterns;
+        $patterns = (array) $patterns;
         foreach ($patterns as $pattern) {
             if (preg_match($pattern, $string)) {
                 return true;
@@ -423,12 +422,12 @@ class Strings
      * @param  string|string[] $patterns
      * @return boolean
      */
-    public static function wildmatch(string|null $string, $patterns) : bool
+    public static function wildmatch(string|null $string, $patterns): bool
     {
         if ($string === null) {
             return false;
         }
-        $patterns = (array)$patterns;
+        $patterns = (array) $patterns;
         foreach ($patterns as $pattern) {
             if (fnmatch($pattern, $string)) {
                 return true;
@@ -445,7 +444,7 @@ class Strings
      * @param  string             $masked_label (default: '********')
      * @return string
      */
-    public static function stringify($value, array $masks = [], string $masked_label = '********') : string
+    public static function stringify($value, array $masks = [], string $masked_label = '********'): string
     {
         return static::_stringify($value, false, $masks, $masked_label);
     }
@@ -459,22 +458,22 @@ class Strings
      * @param  string             $masked_label (default: '********')
      * @return string
      */
-    protected static function _stringify($value, bool $is_nested, array $masks = [], string $masked_label = '********') : string
+    protected static function _stringify($value, bool $is_nested, array $masks = [], string $masked_label = '********'): string
     {
         if ($value === null) {
             return 'null';
         }
         if (is_string($value)) {
             if ($is_nested && Strings::contains($value, "\n")) {
-                return '"""'."\n".static::indent($value, '    ')."\n".'"""';
+                return '"""' . "\n" . static::indent($value, '    ') . "\n" . '"""';
             }
             return $value;
         }
         if (is_scalar($value)) {
-            return (string)$value;
+            return (string) $value;
         }
         if (is_resource($value)) {
-            return '*'.get_resource_type($value).'*';
+            return '*' . get_resource_type($value) . '*';
         }
         if ($value instanceof \DateTimeInterface) {
             return $value->format(DateTime::config('default_format'));
@@ -483,15 +482,15 @@ class Strings
             $class = get_class($value);
             $value = $value->__toString();
             if (Strings::contains($value, "\n")) {
-                return $class.' : """'."\n".static::indent($value, '    ')."\n".'"""';
+                return $class . ' : """' . "\n" . static::indent($value, '    ') . "\n" . '"""';
             }
-            return $class.' : '.$value;
+            return $class . ' : ' . $value;
         }
         if (is_callable($value)) {
             return Callbacks::stringify($value);
         }
         if (is_object($value) && $value instanceof \JsonSerializable) {
-            return get_class($value)." : ".static::_stringify($value->jsonSerialize(), true, $masks, $masked_label);
+            return get_class($value) . " : " . static::_stringify($value->jsonSerialize(), true, $masks, $masked_label);
         }
         if (is_array($value) && empty($value)) {
             return "[]";
@@ -501,10 +500,10 @@ class Strings
             $count     = 0;
             foreach ($value as $k => $v) {
                 $v = in_array($k, $masks) ? $masked_label : $v ;
-                $describes .= "\n".static::indent("{$k} => ".static::_stringify($v, true, $masks, $masked_label).",", '    ');
+                $describes .= "\n" . static::indent("{$k} => " . static::_stringify($v, true, $masks, $masked_label) . ",", '    ');
                 $count++;
             }
-            return (Reflector::getType($value) ?? 'unkown').":{$count} [".static::rtrim($describes, ',')."\n]";
+            return (Reflector::getType($value) ?? 'unkown') . ":{$count} [" . static::rtrim($describes, ',') . "\n]";
         }
 
         $class = get_class($value);
@@ -517,15 +516,15 @@ class Strings
      * @param  array<int, array<string, mixed>> $trace
      * @return string
      */
-    public static function traceToString(array $trace) : string
+    public static function traceToString(array $trace): string
     {
         $trace = array_reverse($trace);
         array_walk($trace, function (&$value, $key) {
-            $value = "#{$key} ".
-            (empty($value['file']) ? "" : " ".$value['file']."(".$value['line']."): ").
-            (empty($value['class']) ? "" : $value['class']."::").
-            $value['function'].
-            "()"
+            $value = "#{$key} "
+            . (empty($value['file']) ? "" : " " . $value['file'] . "(" . $value['line'] . "): ")
+            . (empty($value['class']) ? "" : $value['class'] . "::")
+            . $value['function']
+            . "()"
             ;
         });
 
@@ -542,7 +541,7 @@ class Strings
      * @param  mixed             $padding   (default: null)
      * @return array<int, mixed>
      */
-    public static function split(string|null $string, string $delimiter, int $size, $padding = null) : array
+    public static function split(string|null $string, string $delimiter, int $size, $padding = null): array
     {
         return array_pad($string === null ? [] : explode($delimiter, $string, $size), $size, $padding);
     }

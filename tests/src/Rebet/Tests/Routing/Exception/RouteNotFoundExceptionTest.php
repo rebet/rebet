@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Routing\Exception;
 
 use Rebet\Application\App;

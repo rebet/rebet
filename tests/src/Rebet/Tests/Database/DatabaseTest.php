@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database;
 
 use PHPUnit\Framework\AssertionFailedError;
@@ -40,46 +41,46 @@ use TestApp\Model\UserWithAnnot;
 
 class DatabaseTest extends RebetDatabaseTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         DateTime::setTestNow('2001-02-03 04:05:06');
         $this->setUpDataSet([
-            'users' => [
-                ['user_id' , 'name'                   , 'gender' , 'birthday'   , 'email'                 , 'role' , 'password'                                                     , 'api_token'                                                        ],
+            'users'    => [
+                ['user_id', 'name', 'gender', 'birthday', 'email', 'role', 'password', 'api_token'                                                        ],
                 // ------- | ------------------------ | -------- | ------------ | ----------------------- | ------ | -------------------------------------------------------------- | ----------------------------------------------------------------- //
-                [        1 , 'Elody Bode III'         ,        2 , '1990-01-08' , 'elody@s1.rebet.local'  , 'user' , '$2y$10$iUQ0l38dqjdf.L7OeNpyNuzmYf5qPzXAUwyKhC3G0oqTuUAO5ouci' , 'fe0c1b9ca200d6e01d96f60bab714cbbaffdf89fed5a946ff1b9f024902d2a26' ], // password-{user_id}, api-{user_id}
-                [        2 , 'Alta Hegmann'           ,        1 , '2003-02-16' , 'alta_h@s2.rebet.local' , 'user' , '$2y$10$xpouw11HAUb3FAEBXYcwm.kcGmF0.FetTqkQQJFiShY2TiVCwEAQW' , '3d9b9b04a60382dd0f0acb2672b3b87acba7e9a9e44c529ba37baebe1cf9a00c' ], // password-{user_id}, api-{user_id}
-                [        3 , 'Damien Kling'           ,        1 , '1992-10-17' , 'damien@s0.rebet.local' , 'user' , '$2y$10$ciYenJCNJh/rKRy9GRNTIO5HQwP0N2t0Hb5db2ESj8Veaty/TjJCe' , 'df38d2697f917ca9460677a98bfbb8baaeabab8e83b9858ea70d6da10b06ad4d' ], // password-{user_id}, api-{user_id}
-                [        4 , 'Odie Kozey'             ,        1 , '2008-03-23' , 'odie.k@s3.rebet.local' , 'user' , '$2y$10$pWHeMjHNHLuNn8bP.icDUOpre4cUN3jsU5QBn0ywNtrS6zraJnBOK' , 'dcad2c94aab836c65f8d6ea4e6c7b0ff0af31d1f7e18785981513d517869085a' ], // password-{user_id}, api-{user_id}
-                [        5 , 'Shea Douglas'           ,        1 , '1988-04-01' , 'shea.d@s4.rebet.local' , 'user' , '$2y$10$Jp.pzsj0ksry3WJwTzCLaeEEPdt22J70y9ewr9RTPSHWhJ2jFhUS.' , 'e99ad6eb30faa7bbd54b491de5ac209e2f05af8bc8b916cdc0424834cc96288b' ], // password-{user_id}, api-{user_id}
-                [        6 , 'Khalil Hickle'          ,        2 , '2013-10-03' , 'khalil@s0.rebet.local' , 'user' , '$2y$10$XgdlquA5FmPwbh30j2oTcO.NhgXjtAFKcOhj2H6kSKjIe4F9JJ5LG' , '0fe8c74777889959cad3c080f5929312ed2c5aea14e5fa50d606f60d063e3d89' ], // password-{user_id}, api-{user_id}
-                [        7 , 'Kali Hilll'             ,        1 , '2016-08-01' , 'kali_h@s8.rebet.local' , 'user' , '$2y$10$FJjEVWe3hIFWVy.MYlzfxeEGJYuiuIb8h7kwhM4ImeYmqItmCJomW' , '9b499adf9898f41058ea761fcb503b0d65171ef0154ae07ed51e51a6a28bb732' ], // password-{user_id}, api-{user_id}
-                [        8 , 'Kari Kub'               ,        2 , '1984-10-21' , 'kari-k@s0.rebet.local' , 'user' , '$2y$10$E92fQoYqHwm8VwuFLFZTSuCl9sJNBArLmqRV1QIJEjJml5GmNHXhS' , '818554e20e03c6899061395f94176490fce8af5d123d1133027abdf1b7506810' ], // password-{user_id}, api-{user_id}
-                [        9 , 'Rodger Weimann'         ,        1 , '1985-03-21' , 'rodger@s3.rebet.local' , 'user' , '$2y$10$2wY95O/0OYcxt0HkWcGTPuIGL6uNfA0YK.t8HNgcT4x6esI5FcYHq' , '6cd6eb512ffd20346a092c6ae7cdfe045567138137639478de68f4057a01c662' ], // password-{user_id}, api-{user_id}
-                [       10 , 'Nicholaus O\'Conner'    ,        1 , '2012-01-29' , 'nichol@s1.rebet.local' , 'user' , '$2y$10$8jVKO61WtOcSrUL3TeitwukVWrsBVzBUu.tsSsbGTervIaczBW8de' , '0d94b59702957a5264bbcc98ba607f3c1cc9b69cb0b885e439e092911603cdcf' ], // password-{user_id}, api-{user_id}
-                [       11 , 'Troy Smitham'           ,        2 , '1996-01-21' , 'troy-s@s1.rebet.local' , 'user' , '$2y$10$NVHzyhTRCvXm/C.HJrcEoujv6CDJ0ebsyv8GaQFTRokS.AwDniATi' , 'a5702cf7884915985d7e2f0ff6b2189d6fbc1c3cbb009789a9234409c8197caa' ], // password-{user_id}, api-{user_id}
-                [       12 , 'Kraig Grant'            ,        2 , '1987-01-06' , 'kraig@s1.rebet.local'  , 'user' , '$2y$10$Xu3RdNmbdSJ2NzZB4Qx6EuSYKy8X3uPowvSXMihxYLDlXVwvRwIJO' , 'c91a7280dd59fe5a7254f0a372d58b9316a6aa8ba107be847e59d3c398ab9ff7' ], // password-{user_id}, api-{user_id}
-                [       13 , 'Demarcus Bashirian Jr.' ,        2 , '2014-12-21' , 'demarc@s2.rebet.local' , 'user' , '$2y$10$YEUk0xFv2MgkWCWc1oRkteSHVGKFN0oC9g5vWzyAYDR.FLOdgbeQu' , '48ed7b40d8911a0869349db79b803c9d49f7f4f691dcdefff777d96a15819fa5' ], // password-{user_id}, api-{user_id}
-                [       14 , 'Percy DuBuque'          ,        2 , '1990-11-25' , 'percy@s1.rebet.local'  , 'user' , '$2y$10$AVEo9P3baFu40KsTrKd4Je.TYA8uIwLyH/8IQRg2K9Lq2wv39wA1y' , 'f84ba2c46d909e3efcc56e453958217769bb3bec2229d9475b1de375de618cd0' ], // password-{user_id}, api-{user_id}
-                [       15 , 'Delpha Weber'           ,        2 , '2006-01-29' , 'delpha@s1.rebet.local' , 'user' , '$2y$10$Frghu40V.AUPpQcMcZnzSe65ehUcDJEmNxjnRo.kJ6hP6jskxAxjy' , '694351210bb4e52a55870c1613c43e3d7dfbb48d711a4e9a425a003d412d9a00' ], // password-{user_id}, api-{user_id}
-                [       16 , 'Marquise Waters'        ,        2 , '1989-08-26' , 'marqui@s8.rebet.local' , 'user' , '$2y$10$yH75mfqKBd7V9trk.v2fXO3EVsEXgNl5sJgOXa8X7zahCTzcaRY1K' , '8c1350328ca2c00f2768511af4c78f69e2869fe5014947b7d563902a80b089e2' ], // password-{user_id}, api-{user_id}
-                [       17 , 'Jade Stroman'           ,        1 , '2013-08-06' , 'jade-s@s8.rebet.local' , 'user' , '$2y$10$L922Bad/3tJy.frg6xAnzO8NRaksCZxLaI5sAcBX9HvEvtdBCxE5a' , '16fcb04f6a880e990f7362aba97e606f4704f45ca059c230196f9cc38ffd357c' ], // password-{user_id}, api-{user_id}
-                [       18 , 'Citlalli Jacobs I'      ,        2 , '1983-02-09' , 'citlal@s2.rebet.local' , 'user' , '$2y$10$8gVp/IFmNO9d01n8JZELx.VNcRW6/QT4vo0dJRmblU4qigHLmjQSy' , '1871973f7139abca2ce7c17028351246f932617a0d3c6ce03da35a5358f024b5' ], // password-{user_id}, api-{user_id}
-                [       19 , 'Dannie Rutherford'      ,        1 , '1982-07-07' , 'dannie@s7.rebet.local' , 'user' , '$2y$10$EmhtQku.OxnPJg5LDZNp3unRUXgKjXCj//6Zr24C57Q.4dxwHoHby' , 'f398c948ca3c1f380ade006887f2ba94abd8625728e963a5a28a3ac794173760' ], // password-{user_id}, api-{user_id}
-                [       20 , 'Dayton Herzog'          ,        2 , '2014-11-24' , 'dayton@s1.rebet.local' , 'user' , '$2y$10$UCzqYzIMlMSPNlyq5DRStOuEZHLP.LHKYmE9xwQasHdR0XGIeM2N2' , '6459389c936e4d04f472ee055f0a7ed51fe9eb35ca1c1bed642b9915cb57bfa4' ], // password-{user_id}, api-{user_id}
-                [       21 , 'Ms. Zoe Hirthe'         ,        2 , '1997-02-27' , 'ms.zo@s2.rebet.local'  , 'user' , '$2y$10$TNKnTMo1sO5UYLZGGoMa0.u1Zbk2WTsa80MS62bx3M5MhaJPbvy5y' , '8b3e651cabb6e681d021739a4a5a233e3dba18bba20ab4a11ccd5b935da8c51b' ], // password-{user_id}, api-{user_id}
-                [       22 , 'Kaleigh Kassulke'       ,        2 , '2011-01-23' , 'kaleig@s1.rebet.local' , 'user' , '$2y$10$AEjrtxBs.d3lO/RuoOK8WuDn44aX29yMJ83fqqZsjfqIrKkICUywy' , '04e6bb083b0abdeab8fb459f061eba53df7cbce820e1105a200509cfbbf6f01a' ], // password-{user_id}, api-{user_id}
-                [       23 , 'Deron Macejkovic'       ,        1 , '2008-06-18' , 'deron@s6.rebet.local'  , 'user' , '$2y$10$RWVIWK.mutTLu94U25xtY.MFbFb1BTsB9df2fmtltaW2cgNMHnDVS' , '452b414155d0e31bdf194f71fcbc34ccafd6b4637600700254025763ad003074' ], // password-{user_id}, api-{user_id}
-                [       24 , 'Mr. Aisha Quigley'      ,        2 , '2007-08-29' , 'mr.ai@s8.rebet.local'  , 'user' , '$2y$10$OnJZPFb/k7SZk299ugInnuqPoNyqtn.5h0vt5gtw4Tiwnud7nXjJm' , 'ea1b3878ccb4b27b08e9d0c178e691266691b46716693b486350d3164810439f' ], // password-{user_id}, api-{user_id}
-                [       25 , 'Eugenia Friesen II'     ,        2 , '1999-12-19' , 'eugeni@s2.rebet.local' , 'user' , '$2y$10$/0fw0.IpdOMyeh/b.c2YNembaKIJBcHoXcp0Y8rVc6IHoWJFVoZDC' , '0a8594dfc13daea1460b0c37eda8d4025356df63033d0bc5656634707dd2214d' ], // password-{user_id}, api-{user_id}
-                [       26 , 'Wyman Jaskolski'        ,        2 , '2010-07-06' , 'wyman@s7.rebet.local'  , 'user' , '$2y$10$Ao9ssqxDJOmZ2TQPjps35.4ggfktcQsHu.fu8VnWlfMprqLuM/Diy' , 'e20e27deed731eb44d77cad4115cf3916d77199a9498f52f58804520f91d99df' ], // password-{user_id}, api-{user_id}
-                [       27 , 'Naomi Batz'             ,        2 , '1980-03-06' , 'naomi@s3.rebet.local'  , 'user' , '$2y$10$B4XoWWna/5VFEjojuaKBfea0l9wmFsgq3rrUIAdSgmwnUxvkYg/L2' , '7756374111f4b2e5fe28749a952780bc02c7c21f15b2b160b1532aaeae2fa9af' ], // password-{user_id}, api-{user_id}
-                [       28 , 'Miss Bud Koepp'         ,        1 , '2014-10-22' , 'missb@s0.rebet.local'  , 'user' , '$2y$10$Sje1S7D8TzWxba1c1Td5HuxgAiGwDRUNS/A30fOABZGGaUtoWvjEi' , '941247c22b8f5edabecd7790af9348710f722cb2af7f92ff4bb1f5691872d277' ], // password-{user_id}, api-{user_id}
-                [       29 , 'Ms. Harmon Blick'       ,        1 , '1987-03-20' , 'ms.ha@s3.rebet.local'  , 'user' , '$2y$10$fKUXisEZUlFFDresjfFpQeSusS5kkgfT82.6mXbRhtnK3hKU7BKTS' , '34c3c930ba2873cf52eebed80548e86240bc26652ec9e9691a2083a019cb0ddf' ], // password-{user_id}, api-{user_id}
-                [       30 , 'Pinkie Kiehn'           ,        1 , '2002-01-06' , 'pinkie@s1.rebet.local' , 'user' , '$2y$10$4.rmfUTMXLiJzf97dbCd.eJvOjHryX/rYadAtl/uaKgQs3u6UJFmy' , '644a3456a000f3dd7b3214a25b1e264282afc71b299e1e221c6001feb85c897d' ], // password-{user_id}, api-{user_id}
-                [       31 , 'Harmony Feil'           ,        2 , '2007-11-03' , 'harmon@s1.rebet.local' , 'user' , '$2y$10$GU25bSnYsfK8qN57ilqFM.fsy50iQoHHj4md3AnuU0t87ZatkF2dG' , '80fb7fddf941d11fea7e48f5877c3e989757d6dbac9f80feff2daef288ce1c56' ], // password-{user_id}, api-{user_id}
-                [       32 , 'River Pagac'            ,        2 , '1980-11-20' , 'river@s1.rebet.local'  , 'user' , '$2y$10$AypirtnvQ7sKQP/UMnONIegts.IpS1cWgHzQKn0Jub.9AAMKs5.w.' , 'd439fcbdaa35e3566d57d379d26c2d062bb1ec53854acc264dbd15335b2e2672' ], // password-{user_id}, api-{user_id}
+                [        1, 'Elody Bode III',        2, '1990-01-08', 'elody@s1.rebet.local', 'user', '$2y$10$iUQ0l38dqjdf.L7OeNpyNuzmYf5qPzXAUwyKhC3G0oqTuUAO5ouci', 'fe0c1b9ca200d6e01d96f60bab714cbbaffdf89fed5a946ff1b9f024902d2a26' ], // password-{user_id}, api-{user_id}
+                [        2, 'Alta Hegmann',        1, '2003-02-16', 'alta_h@s2.rebet.local', 'user', '$2y$10$xpouw11HAUb3FAEBXYcwm.kcGmF0.FetTqkQQJFiShY2TiVCwEAQW', '3d9b9b04a60382dd0f0acb2672b3b87acba7e9a9e44c529ba37baebe1cf9a00c' ], // password-{user_id}, api-{user_id}
+                [        3, 'Damien Kling',        1, '1992-10-17', 'damien@s0.rebet.local', 'user', '$2y$10$ciYenJCNJh/rKRy9GRNTIO5HQwP0N2t0Hb5db2ESj8Veaty/TjJCe', 'df38d2697f917ca9460677a98bfbb8baaeabab8e83b9858ea70d6da10b06ad4d' ], // password-{user_id}, api-{user_id}
+                [        4, 'Odie Kozey',        1, '2008-03-23', 'odie.k@s3.rebet.local', 'user', '$2y$10$pWHeMjHNHLuNn8bP.icDUOpre4cUN3jsU5QBn0ywNtrS6zraJnBOK', 'dcad2c94aab836c65f8d6ea4e6c7b0ff0af31d1f7e18785981513d517869085a' ], // password-{user_id}, api-{user_id}
+                [        5, 'Shea Douglas',        1, '1988-04-01', 'shea.d@s4.rebet.local', 'user', '$2y$10$Jp.pzsj0ksry3WJwTzCLaeEEPdt22J70y9ewr9RTPSHWhJ2jFhUS.', 'e99ad6eb30faa7bbd54b491de5ac209e2f05af8bc8b916cdc0424834cc96288b' ], // password-{user_id}, api-{user_id}
+                [        6, 'Khalil Hickle',        2, '2013-10-03', 'khalil@s0.rebet.local', 'user', '$2y$10$XgdlquA5FmPwbh30j2oTcO.NhgXjtAFKcOhj2H6kSKjIe4F9JJ5LG', '0fe8c74777889959cad3c080f5929312ed2c5aea14e5fa50d606f60d063e3d89' ], // password-{user_id}, api-{user_id}
+                [        7, 'Kali Hilll',        1, '2016-08-01', 'kali_h@s8.rebet.local', 'user', '$2y$10$FJjEVWe3hIFWVy.MYlzfxeEGJYuiuIb8h7kwhM4ImeYmqItmCJomW', '9b499adf9898f41058ea761fcb503b0d65171ef0154ae07ed51e51a6a28bb732' ], // password-{user_id}, api-{user_id}
+                [        8, 'Kari Kub',        2, '1984-10-21', 'kari-k@s0.rebet.local', 'user', '$2y$10$E92fQoYqHwm8VwuFLFZTSuCl9sJNBArLmqRV1QIJEjJml5GmNHXhS', '818554e20e03c6899061395f94176490fce8af5d123d1133027abdf1b7506810' ], // password-{user_id}, api-{user_id}
+                [        9, 'Rodger Weimann',        1, '1985-03-21', 'rodger@s3.rebet.local', 'user', '$2y$10$2wY95O/0OYcxt0HkWcGTPuIGL6uNfA0YK.t8HNgcT4x6esI5FcYHq', '6cd6eb512ffd20346a092c6ae7cdfe045567138137639478de68f4057a01c662' ], // password-{user_id}, api-{user_id}
+                [       10, 'Nicholaus O\'Conner',        1, '2012-01-29', 'nichol@s1.rebet.local', 'user', '$2y$10$8jVKO61WtOcSrUL3TeitwukVWrsBVzBUu.tsSsbGTervIaczBW8de', '0d94b59702957a5264bbcc98ba607f3c1cc9b69cb0b885e439e092911603cdcf' ], // password-{user_id}, api-{user_id}
+                [       11, 'Troy Smitham',        2, '1996-01-21', 'troy-s@s1.rebet.local', 'user', '$2y$10$NVHzyhTRCvXm/C.HJrcEoujv6CDJ0ebsyv8GaQFTRokS.AwDniATi', 'a5702cf7884915985d7e2f0ff6b2189d6fbc1c3cbb009789a9234409c8197caa' ], // password-{user_id}, api-{user_id}
+                [       12, 'Kraig Grant',        2, '1987-01-06', 'kraig@s1.rebet.local', 'user', '$2y$10$Xu3RdNmbdSJ2NzZB4Qx6EuSYKy8X3uPowvSXMihxYLDlXVwvRwIJO', 'c91a7280dd59fe5a7254f0a372d58b9316a6aa8ba107be847e59d3c398ab9ff7' ], // password-{user_id}, api-{user_id}
+                [       13, 'Demarcus Bashirian Jr.',        2, '2014-12-21', 'demarc@s2.rebet.local', 'user', '$2y$10$YEUk0xFv2MgkWCWc1oRkteSHVGKFN0oC9g5vWzyAYDR.FLOdgbeQu', '48ed7b40d8911a0869349db79b803c9d49f7f4f691dcdefff777d96a15819fa5' ], // password-{user_id}, api-{user_id}
+                [       14, 'Percy DuBuque',        2, '1990-11-25', 'percy@s1.rebet.local', 'user', '$2y$10$AVEo9P3baFu40KsTrKd4Je.TYA8uIwLyH/8IQRg2K9Lq2wv39wA1y', 'f84ba2c46d909e3efcc56e453958217769bb3bec2229d9475b1de375de618cd0' ], // password-{user_id}, api-{user_id}
+                [       15, 'Delpha Weber',        2, '2006-01-29', 'delpha@s1.rebet.local', 'user', '$2y$10$Frghu40V.AUPpQcMcZnzSe65ehUcDJEmNxjnRo.kJ6hP6jskxAxjy', '694351210bb4e52a55870c1613c43e3d7dfbb48d711a4e9a425a003d412d9a00' ], // password-{user_id}, api-{user_id}
+                [       16, 'Marquise Waters',        2, '1989-08-26', 'marqui@s8.rebet.local', 'user', '$2y$10$yH75mfqKBd7V9trk.v2fXO3EVsEXgNl5sJgOXa8X7zahCTzcaRY1K', '8c1350328ca2c00f2768511af4c78f69e2869fe5014947b7d563902a80b089e2' ], // password-{user_id}, api-{user_id}
+                [       17, 'Jade Stroman',        1, '2013-08-06', 'jade-s@s8.rebet.local', 'user', '$2y$10$L922Bad/3tJy.frg6xAnzO8NRaksCZxLaI5sAcBX9HvEvtdBCxE5a', '16fcb04f6a880e990f7362aba97e606f4704f45ca059c230196f9cc38ffd357c' ], // password-{user_id}, api-{user_id}
+                [       18, 'Citlalli Jacobs I',        2, '1983-02-09', 'citlal@s2.rebet.local', 'user', '$2y$10$8gVp/IFmNO9d01n8JZELx.VNcRW6/QT4vo0dJRmblU4qigHLmjQSy', '1871973f7139abca2ce7c17028351246f932617a0d3c6ce03da35a5358f024b5' ], // password-{user_id}, api-{user_id}
+                [       19, 'Dannie Rutherford',        1, '1982-07-07', 'dannie@s7.rebet.local', 'user', '$2y$10$EmhtQku.OxnPJg5LDZNp3unRUXgKjXCj//6Zr24C57Q.4dxwHoHby', 'f398c948ca3c1f380ade006887f2ba94abd8625728e963a5a28a3ac794173760' ], // password-{user_id}, api-{user_id}
+                [       20, 'Dayton Herzog',        2, '2014-11-24', 'dayton@s1.rebet.local', 'user', '$2y$10$UCzqYzIMlMSPNlyq5DRStOuEZHLP.LHKYmE9xwQasHdR0XGIeM2N2', '6459389c936e4d04f472ee055f0a7ed51fe9eb35ca1c1bed642b9915cb57bfa4' ], // password-{user_id}, api-{user_id}
+                [       21, 'Ms. Zoe Hirthe',        2, '1997-02-27', 'ms.zo@s2.rebet.local', 'user', '$2y$10$TNKnTMo1sO5UYLZGGoMa0.u1Zbk2WTsa80MS62bx3M5MhaJPbvy5y', '8b3e651cabb6e681d021739a4a5a233e3dba18bba20ab4a11ccd5b935da8c51b' ], // password-{user_id}, api-{user_id}
+                [       22, 'Kaleigh Kassulke',        2, '2011-01-23', 'kaleig@s1.rebet.local', 'user', '$2y$10$AEjrtxBs.d3lO/RuoOK8WuDn44aX29yMJ83fqqZsjfqIrKkICUywy', '04e6bb083b0abdeab8fb459f061eba53df7cbce820e1105a200509cfbbf6f01a' ], // password-{user_id}, api-{user_id}
+                [       23, 'Deron Macejkovic',        1, '2008-06-18', 'deron@s6.rebet.local', 'user', '$2y$10$RWVIWK.mutTLu94U25xtY.MFbFb1BTsB9df2fmtltaW2cgNMHnDVS', '452b414155d0e31bdf194f71fcbc34ccafd6b4637600700254025763ad003074' ], // password-{user_id}, api-{user_id}
+                [       24, 'Mr. Aisha Quigley',        2, '2007-08-29', 'mr.ai@s8.rebet.local', 'user', '$2y$10$OnJZPFb/k7SZk299ugInnuqPoNyqtn.5h0vt5gtw4Tiwnud7nXjJm', 'ea1b3878ccb4b27b08e9d0c178e691266691b46716693b486350d3164810439f' ], // password-{user_id}, api-{user_id}
+                [       25, 'Eugenia Friesen II',        2, '1999-12-19', 'eugeni@s2.rebet.local', 'user', '$2y$10$/0fw0.IpdOMyeh/b.c2YNembaKIJBcHoXcp0Y8rVc6IHoWJFVoZDC', '0a8594dfc13daea1460b0c37eda8d4025356df63033d0bc5656634707dd2214d' ], // password-{user_id}, api-{user_id}
+                [       26, 'Wyman Jaskolski',        2, '2010-07-06', 'wyman@s7.rebet.local', 'user', '$2y$10$Ao9ssqxDJOmZ2TQPjps35.4ggfktcQsHu.fu8VnWlfMprqLuM/Diy', 'e20e27deed731eb44d77cad4115cf3916d77199a9498f52f58804520f91d99df' ], // password-{user_id}, api-{user_id}
+                [       27, 'Naomi Batz',        2, '1980-03-06', 'naomi@s3.rebet.local', 'user', '$2y$10$B4XoWWna/5VFEjojuaKBfea0l9wmFsgq3rrUIAdSgmwnUxvkYg/L2', '7756374111f4b2e5fe28749a952780bc02c7c21f15b2b160b1532aaeae2fa9af' ], // password-{user_id}, api-{user_id}
+                [       28, 'Miss Bud Koepp',        1, '2014-10-22', 'missb@s0.rebet.local', 'user', '$2y$10$Sje1S7D8TzWxba1c1Td5HuxgAiGwDRUNS/A30fOABZGGaUtoWvjEi', '941247c22b8f5edabecd7790af9348710f722cb2af7f92ff4bb1f5691872d277' ], // password-{user_id}, api-{user_id}
+                [       29, 'Ms. Harmon Blick',        1, '1987-03-20', 'ms.ha@s3.rebet.local', 'user', '$2y$10$fKUXisEZUlFFDresjfFpQeSusS5kkgfT82.6mXbRhtnK3hKU7BKTS', '34c3c930ba2873cf52eebed80548e86240bc26652ec9e9691a2083a019cb0ddf' ], // password-{user_id}, api-{user_id}
+                [       30, 'Pinkie Kiehn',        1, '2002-01-06', 'pinkie@s1.rebet.local', 'user', '$2y$10$4.rmfUTMXLiJzf97dbCd.eJvOjHryX/rYadAtl/uaKgQs3u6UJFmy', '644a3456a000f3dd7b3214a25b1e264282afc71b299e1e221c6001feb85c897d' ], // password-{user_id}, api-{user_id}
+                [       31, 'Harmony Feil',        2, '2007-11-03', 'harmon@s1.rebet.local', 'user', '$2y$10$GU25bSnYsfK8qN57ilqFM.fsy50iQoHHj4md3AnuU0t87ZatkF2dG', '80fb7fddf941d11fea7e48f5877c3e989757d6dbac9f80feff2daef288ce1c56' ], // password-{user_id}, api-{user_id}
+                [       32, 'River Pagac',        2, '1980-11-20', 'river@s1.rebet.local', 'user', '$2y$10$AypirtnvQ7sKQP/UMnONIegts.IpS1cWgHzQKn0Jub.9AAMKs5.w.', 'd439fcbdaa35e3566d57d379d26c2d062bb1ec53854acc264dbd15335b2e2672' ], // password-{user_id}, api-{user_id}
             ],
             'articles' => null,
         ]);
@@ -171,7 +172,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                             $es = $query->sql();
                             $ep = $query->params();
                         },
-                        'debug' => true,
+                        'debug'       => true,
                     ],
                 ],
             ],
@@ -365,7 +366,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public static function dataQueries() : array
+    public static function dataQueries(): array
     {
         return [
             [[1], 'user_id', "SELECT * FROM users WHERE user_id = 1"],
@@ -432,483 +433,483 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public static function dataPaginates() : array
+    public static function dataPaginates(): array
     {
         self::setUpStatic();
         return [
             // 7, 13, 20, 28, 6, 17, 10, 22, 26, 23, 4, 31, 24, 15, 2, 30, 25, 21, 11, 3, 14, 1, 16, 5, 29, 12, 9, 8, 18, 19, 32, 27 : birthday DESC
 
             // 7, 28,  17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19 : birthday DESC, gender = 1
-            '01-normal-01' => [[7, 28, 17], null, 1, null, "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::MALE()], Pager::resolve()->size(3)],
-            '01-normal-02' => [[10, 23, 4], null, 1, null, "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::MALE()], Pager::resolve()->size(3)->page(2)],
+            '01-normal-01'                                         => [[7, 28, 17], null, 1, null, "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::MALE()], Pager::resolve()->size(3)],
+            '01-normal-02'                                         => [[10, 23, 4], null, 1, null, "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::MALE()], Pager::resolve()->size(3)->page(2)],
 
             // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 : user_id ASC
-            '02-with_each_side-01' => [[4, 5, 6], null, 3, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(2)->eachSide(2)],
-            '02-with_each_side-02' => [[7, 8, 9], null, 2, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(3)->eachSide(2)],
-            '02-with_each_side-03' => [[7, 8, 9],   32, 8, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(3)->eachSide(2)->needTotal(true)],
+            '02-with_each_side-01'                                 => [[4, 5, 6], null, 3, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(2)->eachSide(2)],
+            '02-with_each_side-02'                                 => [[7, 8, 9], null, 2, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(3)->eachSide(2)],
+            '02-with_each_side-03'                                 => [[7, 8, 9],   32, 8, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(3)->eachSide(2)->needTotal(true)],
 
-            '03-change_size-01' => [[16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], null, 1, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(15)->page(2)->eachSide(2)],
+            '03-change_size-01'                                    => [[16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], null, 1, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(15)->page(2)->eachSide(2)],
 
             //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
-            '04-simple_paging-01' => [
+            '04-simple_paging-01'                                  => [
                 [30, 29, 28], null, 1, null,
                 "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(-1),
             ],
-            '04-simple_paging-02' => [
+            '04-simple_paging-02'                                  => [
                 [30, 29, 28], null, 1, null,
                 "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3),
             ],
-            '04-simple_paging-03' => [
+            '04-simple_paging-03'                                  => [
                 [            23, 19, 17], null, 1, null,
                 "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(2),
             ],
-            '04-simple_paging-04' => [
+            '04-simple_paging-04'                                  => [
                 [                        10, 9, 7], null, 1, null,
                 "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(3),
             ],
-            '04-simple_paging-05' => [
+            '04-simple_paging-05'                                  => [
                 [                                  5, 4, 3], null, 1, null,
                 "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(4),
             ],
-            '04-simple_paging-06' => [
+            '04-simple_paging-06'                                  => [
                 [                                                                                                      12, 11, 8], null, 1, null,
                 "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(10),
             ],
-            '04-simple_paging-07' => [
+            '04-simple_paging-07'                                  => [
                 [                                                                                                                 6, 1], null, 0, null,
                 "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(11),
             ],
-            '04-simple_paging-08' => [
+            '04-simple_paging-08'                                  => [
                 [], null, 0, null,
                 "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(12),
             ],
 
             //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
-            '05-simple_paging_with_cursor-01' => [
+            '05-simple_paging_with_cursor-01'                      => [
                 [30, 29, 28], null, 1,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->size(3)->page(2),
                     ['gender' => 1, 'user_id' => 23],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(1),
                 null,
             ],
-            '05-simple_paging_with_cursor-02' => [
+            '05-simple_paging_with_cursor-02'                      => [
                 [            23, 19, 17], null, 1,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->size(3)->page(3),
                     ['gender' => 1, 'user_id' => 10],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(2),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->size(3)->page(2),
                     ['gender' => 1, 'user_id' => 23],
-                    0
+                    0,
                 ),
             ],
-            '05-simple_paging_with_cursor-03' => [
+            '05-simple_paging_with_cursor-03'                      => [
                 [                                  5, 4, 3], null, 1,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->size(3)->page(5),
                     ['gender' => 1, 'user_id' => 2],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(4),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->size(3)->page(3),
                     ['gender' => 1, 'user_id' => 10],
-                    0
+                    0,
                 ),
             ],
-            '05-simple_paging_with_cursor-04' => [
+            '05-simple_paging_with_cursor-04'                      => [
                 [                                                                                                      12, 11, 8], null, 1,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(10),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->size(3)->page(5),
                     ['gender' => 1, 'user_id' => 2],
-                    0
+                    0,
                 ),
             ],
-            '05-simple_paging_with_cursor-05' => [
+            '05-simple_paging_with_cursor-05'                      => [
                 [                                                                                                                 6, 1], null, 0,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(11),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
-            '05-simple_paging_with_cursor-06' => [
+            '05-simple_paging_with_cursor-06'                      => [
                 [], null, 0,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(12),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
 
             //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
-            '06-simple_paging_with_cursor_backword-01' => [
+            '06-simple_paging_with_cursor_backword-01'             => [
                 [                                                                                                      12, 11, 8], null, 1,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(10),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
-            '06-simple_paging_with_cursor_backword-02' => [
+            '06-simple_paging_with_cursor_backword-02'             => [
                 [                                                                                          15, 14, 13], null, 2,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->size(3)->page(10),
                     ['gender' => 2, 'user_id' => 12],
-                    1
+                    1,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(9),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
-            '06-simple_paging_with_cursor_backword-03' => [
+            '06-simple_paging_with_cursor_backword-03'             => [
                 [            23, 19, 17], null, 9,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->size(3)->page(3),
                     ['gender' => 1, 'user_id' => 10],
-                    8
+                    8,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(2),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->size(3)->page(10),
                     ['gender' => 2, 'user_id' => 12],
-                    1
+                    1,
                 ),
             ],
 
             //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
-            '07-wide_paging_with_cursor-01' => [
+            '07-wide_paging_with_cursor-01'                        => [
                 [30, 29, 28], null, 4,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                     ['gender' => 1, 'user_id' => 23],
-                    3
+                    3,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(1),
                 null,
             ],
-            '07-wide_paging_with_cursor-02' => [
+            '07-wide_paging_with_cursor-02'                        => [
                 [            23, 19, 17], null, 3,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(3),
                     ['gender' => 1, 'user_id' => 10],
-                    2
+                    2,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                     ['gender' => 1, 'user_id' => 23],
-                    3
+                    3,
                 ),
             ],
-            '07-wide_paging_with_cursor-03' => [
+            '07-wide_paging_with_cursor-03'                        => [
                 [                                  5, 4, 3], null, 2,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(5),
                     ['gender' => 1, 'user_id' => 2],
-                    1
+                    1,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(4),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(3),
                     ['gender' => 1, 'user_id' => 10],
-                    2
+                    2,
                 ),
             ],
-            '07-wide_paging_with_cursor-04' => [
+            '07-wide_paging_with_cursor-04'                        => [
                 [                                                                                                      12, 11, 8], null, 1,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(10),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(5),
                     ['gender' => 1, 'user_id' => 2],
-                    2
+                    2,
                 ),
             ],
-            '07-wide_paging_with_cursor-05' => [
+            '07-wide_paging_with_cursor-05'                        => [
                 [                                                                                                                 6, 1], null, 0,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
-            '07-wide_paging_with_cursor-06' => [
+            '07-wide_paging_with_cursor-06'                        => [
                 [], null, 0,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(12),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
 
             //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
-            '08-wide_paging_with_cursor_backword-01' => [
+            '08-wide_paging_with_cursor_backword-01'               => [
                 [                                                                                                      12, 11, 8], null, 1,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(10),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
-            '08-wide_paging_with_cursor_backword-02' => [
+            '08-wide_paging_with_cursor_backword-02'               => [
                 [                                                                                          15, 14, 13], null, 2,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(10),
                     ['gender' => 2, 'user_id' => 12],
-                    1
+                    1,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(9),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
-            '08-wide_paging_with_cursor_backword-03' => [
+            '08-wide_paging_with_cursor_backword-03'               => [
                 [            23, 19, 17], null, 9,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(3),
                     ['gender' => 1, 'user_id' => 10],
-                    8
+                    8,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(10),
                     ['gender' => 2, 'user_id' => 12],
-                    1
+                    1,
                 ),
             ],
 
             //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
-            '09-full_paging_with_cursor-01' => [
+            '09-full_paging_with_cursor-01'                        => [
                 [30, 29, 28], 32, 10,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(2),
                     ['gender' => 1, 'user_id' => 23],
-                    9
+                    9,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(1),
                 null,
             ],
-            '09-full_paging_with_cursor-02' => [
+            '09-full_paging_with_cursor-02'                        => [
                 [            23, 19, 17], 32, 9,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(3),
                     ['gender' => 1, 'user_id' => 10],
-                    8
+                    8,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(2),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(2),
                     ['gender' => 1, 'user_id' => 23],
-                    9
+                    9,
                 ),
             ],
-            '09-full_paging_with_cursor-03' => [
+            '09-full_paging_with_cursor-03'                        => [
                 [                                  5, 4, 3], 32, 7,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(5),
                     ['gender' => 1, 'user_id' => 2],
-                    6
+                    6,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(4),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(3),
                     ['gender' => 1, 'user_id' => 10],
-                    8
+                    8,
                 ),
             ],
-            '09-full_paging_with_cursor-04' => [
+            '09-full_paging_with_cursor-04'                        => [
                 [                                                                                                      12, 11, 8], 32, 1,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(10),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(5),
                     ['gender' => 1, 'user_id' => 2],
-                    6
+                    6,
                 ),
             ],
-            '09-full_paging_with_cursor-05' => [
+            '09-full_paging_with_cursor-05'                        => [
                 [                                                                                                                 6, 1], 32, 0,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
-            '09-full_paging_with_cursor-06' => [
+            '09-full_paging_with_cursor-06'                        => [
                 [], 32, 0,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(12),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
 
             //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
-            '10-full_paging_with_cursor_backword-01' => [
+            '10-full_paging_with_cursor_backword-01'               => [
                 [                                                                                                      12, 11, 8], 32, 1,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(10),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
-            '10-full_paging_with_cursor_backword-02' => [
+            '10-full_paging_with_cursor_backword-02'               => [
                 [                                                                                          15, 14, 13], 32, 2,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(10),
                     ['gender' => 2, 'user_id' => 12],
-                    1
+                    1,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(9),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
                     ['gender' => 2, 'user_id' => 6],
-                    0
+                    0,
                 ),
             ],
-            '10-full_paging_with_cursor_backword-03' => [
+            '10-full_paging_with_cursor_backword-03'               => [
                 [            23, 19, 17], 32, 9,
                 Cursor::create(
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(3),
                     ['gender' => 1, 'user_id' => 10],
-                    8
+                    8,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(2),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(10),
                     ['gender' => 2, 'user_id' => 12],
-                    1
+                    1,
                 ),
             ],
 
@@ -919,82 +920,82 @@ class DatabaseTest extends RebetDatabaseTestCase
                     $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(3),
                     ['gender' => 1, 'user_id' => 10],
-                    8
+                    8,
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(2),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(2),
                     ['gender' => 1, 'user_id' => 23],
-                    9
+                    9,
                 ),
                 User::class,
                 "SELECT COUNT(*) FROM users",
             ],
 
             //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
-            '12-wide_paging_with_alias_cursor-01' => [
+            '12-wide_paging_with_alias_cursor-01'                  => [
                 [            23, 19, 17], null, 3,
                 Cursor::create(
                     $order_by = ['user_gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(3),
                     ['user_gender' => 1, 'user_id' => 10],
-                    2
+                    2,
                 ),
                 "SELECT *, gender AS user_gender FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                     ['user_gender' => 1, 'user_id' => 23],
-                    3
+                    3,
                 ),
             ],
-            '12-wide_paging_with_alias_cursor-02' => [
+            '12-wide_paging_with_alias_cursor-02'                  => [
                 [            23, 19, 17], null, 3,
                 Cursor::create(
                     $order_by = ['user_gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(3),
                     ['user_gender' => 1, 'user_id' => 10],
-                    2
+                    2,
                 ),
                 "SELECT *, COALESCE(gender, 3) AS user_gender FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                     ['user_gender' => 1, 'user_id' => 23],
-                    3
+                    3,
                 ),
             ],
-            '12-wide_paging_with_alias_cursor-03' => [
+            '12-wide_paging_with_alias_cursor-03'                  => [
                 [            26, 25, 24], null, 3,
                 Cursor::create(
                     $order_by = ['gender_label' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(3),
                     ['gender_label' => 'Female', 'user_id' => 22],
-                    2
+                    2,
                 ),
                 "SELECT *, CASE gender WHEN 1 THEN 'Male' ELSE 'Female' END AS gender_label FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                     ['gender_label' => 'Female', 'user_id' => 26],
-                    3
+                    3,
                 ),
             ],
-            '12-wide_paging_with_alias_cursor-04' => [
+            '12-wide_paging_with_alias_cursor-04'                  => [
                 [            23, 19, 17], null, 3,
                 Cursor::create(
                     $order_by = ['user_gender' => 'asc', 'user_id' => 'desc'],
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(3),
                     ['user_gender' => 1, 'user_id' => 10],
-                    2
+                    2,
                 ),
                 "SELECT *, (SELECT gender FROM users AS T WHERE U.user_id = T.user_id) AS user_gender FROM users AS U", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                 Cursor::create(
                     $order_by,
                     Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
                     ['user_gender' => 1, 'user_id' => 23],
-                    3
+                    3,
                 ),
             ],
         ];
@@ -1023,7 +1024,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                 $next_cursor = Cursor::load($pager->cursor());
                 if ($expect_cursor) {
                     if (!$expect_cursor->equals($next_cursor)) {
-                        $this->fail("Cursor is not equals to expect.\n".var_export($expect_cursor, true)."\n".var_export($next_cursor, true));
+                        $this->fail("Cursor is not equals to expect.\n" . var_export($expect_cursor, true) . "\n" . var_export($next_cursor, true));
                     }
                 } else {
                     $this->assertNull($next_cursor);
@@ -1178,7 +1179,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db) {
             $this->assertEquals(
                 $db->select("SELECT * FROM users WHERE gender = 1", null, [], null, false, User::class),
-                $db->filter(function (User $user) { return $user->gender == Gender::MALE(); }, "SELECT * FROM users")
+                $db->filter(function (User $user) { return $user->gender == Gender::MALE(); }, "SELECT * FROM users"),
             );
         });
     }
@@ -1188,7 +1189,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db) {
             $this->assertEquals(
                 $db->select("SELECT * FROM users", ['user_id' => 'asc'], [], null, false, User::class)->all(),
-                $db->map(function (User $user) { return $user; }, "SELECT * FROM users", ['user_id' => 'asc'])->all()
+                $db->map(function (User $user) { return $user; }, "SELECT * FROM users", ['user_id' => 'asc'])->all(),
             );
         });
     }
@@ -1198,7 +1199,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db) {
             $this->assertEquals(
                 Decimal::of($db->get(0, "SELECT SUM(user_id) FROM users")),
-                Decimal::of($db->reduce(function (User $user, $carry) { return $carry + $user->user_id; }, 0, "SELECT * FROM users"))
+                Decimal::of($db->reduce(function (User $user, $carry) { return $carry + $user->user_id; }, 0, "SELECT * FROM users")),
             );
         });
     }

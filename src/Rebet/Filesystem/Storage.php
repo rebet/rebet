@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Filesystem;
@@ -48,9 +49,7 @@ class Storage
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get the given name disk storage.
@@ -58,7 +57,7 @@ class Storage
      * @param  string     $name
      * @return Filesystem
      */
-    public static function disk(string $name) : Filesystem
+    public static function disk(string $name): Filesystem
     {
         if ($disk = static::$disks[$name] ?? null) {
             return $disk;
@@ -68,7 +67,7 @@ class Storage
 
         return static::$disks[$name] = new $filesystem(
             static::configInstantiate("disks.{$name}.adapter"),
-            static::config("disks.{$name}.config", false, null)
+            static::config("disks.{$name}.config", false, null),
         );
     }
 
@@ -77,7 +76,7 @@ class Storage
      *
      * @return Filesystem
      */
-    public static function private() : Filesystem
+    public static function private(): Filesystem
     {
         return static::disk(static::config('private_disk'));
     }
@@ -87,7 +86,7 @@ class Storage
      *
      * @return Filesystem
      */
-    public static function public() : Filesystem
+    public static function public(): Filesystem
     {
         return static::disk(static::config('public_disk'));
     }
@@ -98,7 +97,7 @@ class Storage
      * @param  string|null $name (default: null for all storages)
      * @return void
      */
-    public static function reset(string|null $name = null) : void
+    public static function reset(string|null $name = null): void
     {
         if ($name) {
             $disk = static::$disks[$name] ?? null;
@@ -127,11 +126,11 @@ class Storage
      * @param  bool                        $replace   (default: false)
      * @return void
      */
-    public static function copy(string $from_disk, string $from_path, string $to_disk, string|null $to_path = null, $options = [], bool $replace = false) : void
+    public static function copy(string $from_disk, string $from_path, string $to_disk, string|null $to_path = null, $options = [], bool $replace = false): void
     {
-        $from    = static::disk($from_disk);
-        $to      = static::disk($to_disk);
-        $to_path = $to_path ?? $from_path;
+        $from = static::disk($from_disk);
+        $to   = static::disk($to_disk);
+        $to_path ??= $from_path;
         if ($replace) {
             $to->delete($to_path);
         } else {
@@ -149,7 +148,7 @@ class Storage
         }
 
         foreach ($from->ls($from_path, '*', null, true) as $content) {
-            $path = Path::normalize($to_path.'/'.Strings::ltrim($content, Strings::ltrim($from_path, '/')));
+            $path = Path::normalize($to_path . '/' . Strings::ltrim($content, Strings::ltrim($from_path, '/')));
             if ($from->isFile($content)) {
                 $to->put($path, $from->readStream($content), $options);
                 continue;
@@ -170,7 +169,7 @@ class Storage
      * @param  bool                        $replace   (default: false)
      * @return void
      */
-    public static function move(string $from_disk, string $from_path, string $to_disk, string|null $to_path = null, $options = [], bool $replace = false) : void
+    public static function move(string $from_disk, string $from_path, string $to_disk, string|null $to_path = null, $options = [], bool $replace = false): void
     {
         static::copy($from_disk, $from_path, $to_disk, $to_path, $options, $replace);
         static::disk($from_disk)->delete($from_path);
@@ -183,7 +182,7 @@ class Storage
      * @param  string|null $to   contents path (default: null for use $from contents path, as it is)
      * @return void
      */
-    public static function publish(string $from, string|null $to = null) : void
+    public static function publish(string $from, string|null $to = null): void
     {
         static::move(static::config('private_disk'), $from, static::config('public_disk'), $to, Filesystem::VISIBILITY_PUBLIC, true);
     }

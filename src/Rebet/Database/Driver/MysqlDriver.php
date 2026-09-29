@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Driver;
@@ -56,7 +57,7 @@ class MysqlDriver extends AbstractDriver
     {
         return [
             'options' => [
-                'pdo' => [
+                'pdo'       => [
                     \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
                     \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
                     \PDO::ATTR_EMULATE_PREPARES   => false,
@@ -69,11 +70,11 @@ class MysqlDriver extends AbstractDriver
             'ransack' => [
                 'value_converters' => [],
                 'predicates'       => [
-                    'matches'     => ["{col} REGEXP {val}"          , null , 'OR' ],
-                    'not_matches' => ["{col} NOT REGEXP {val}"      , null , 'AND'],
-                    'search'      => ["MATCH({col}) AGAINST({val})" , null , 'OR' ],
+                    'matches'     => ["{col} REGEXP {val}", null, 'OR' ],
+                    'not_matches' => ["{col} NOT REGEXP {val}", null, 'AND'],
+                    'search'      => ["MATCH({col}) AGAINST({val})", null, 'OR' ],
                 ],
-                'options' => [
+                'options'          => [
                     'bin' => 'BINARY {col}',
                     'cs'  => '{col} COLLATE utf8mb4_bin',
                     'ci'  => '{col} COLLATE utf8mb4_general_ci',
@@ -107,7 +108,7 @@ class MysqlDriver extends AbstractDriver
     /**
      * {@inheritDoc}
      */
-    public function toPdoType($value) : PdoParameter
+    public function toPdoType($value): PdoParameter
     {
         if ($value instanceof Enum) {
             $value = $value->value;
@@ -141,7 +142,7 @@ class MysqlDriver extends AbstractDriver
 
             case 'string':
             case 'var_string':
-                return (string)$value;
+                return (string) $value;
 
             case 'tiny':
                 return $meta['len'] === 1 ? boolval($value) : intval($value) ;
@@ -152,7 +153,7 @@ class MysqlDriver extends AbstractDriver
                 return intval($value) ;
 
             case 'longlong':
-                return PHP_INT_SIZE === 8 ? intval($value) : (string)$value ;
+                return PHP_INT_SIZE === 8 ? intval($value) : (string) $value ;
 
             case 'float':
             case 'double':
@@ -184,11 +185,11 @@ class MysqlDriver extends AbstractDriver
 
             case 'time':
                 // @todo Implements Time and Interval class and incorporate
-                return (string)$value;
+                return (string) $value;
 
             case 'geometry':
                 // @todo Select and incorporate geometry library
-                return (string)$value;
+                return (string) $value;
 
             case 'tiny_blob':
             case 'medium_blob':

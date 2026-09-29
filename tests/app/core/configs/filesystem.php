@@ -14,14 +14,14 @@ return [
                     '@factory' => LocalFilesystemAdapter::class,
                     'location' => App::structure()->privateStorage(),
                 ],
-                'config' => null,
+                'config'  => null,
             ],
-            'public' => [
+            'public'  => [
                 'adapter' => [
                     '@factory' => LocalFilesystemAdapter::class,
                     'location' => App::structure()->publicStorage(),
                 ],
-                'config' => [
+                'config'  => [
                     'visibility' => 'public',
                     'url'        => App::structure()->storageUrl(),
                 ],

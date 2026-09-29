@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Config;
 
 use Rebet\Tests\RebetTestCase;
@@ -10,7 +11,7 @@ use Rebet\Tools\Utility\OverrideOption;
 
 class ConfigurableTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
     }
@@ -48,7 +49,7 @@ class ConfigurableTest extends RebetTestCase
                 'override_prepend' => ['a', 'b'],
                 'override_append'  => ['a', 'b'],
             ],
-            ConfigurableTest_Mock::config()
+            ConfigurableTest_Mock::config(),
         );
         $this->assertSame('mysql', ConfigurableTest_Mock::config('driver'));
         $this->assertNull(ConfigurableTest_Mock::config('database', false));
@@ -76,7 +77,7 @@ class ConfigurableTest extends RebetTestCase
                 'override_prepend' => ['a', 'b'],
                 'override_append'  => ['a', 'b'],
             ],
-            ConfigurableTest_Mock::config()
+            ConfigurableTest_Mock::config(),
         );
         $this->assertSame('pgsql', ConfigurableTest_Mock::config('driver'));
         $this->assertSame('pgsql', ConfigurableTest_Mock::configInStatic('driver'));
@@ -134,7 +135,7 @@ class ConfigurableTest extends RebetTestCase
                 'override_prepend' => ['a', 'b'],
                 'override_append'  => ['a', 'b'],
             ],
-            ConfigurableTest_Mock::config()
+            ConfigurableTest_Mock::config(),
         );
 
         $this->assertSame(
@@ -149,7 +150,7 @@ class ConfigurableTest extends RebetTestCase
                 'override_prepend' => ['a', 'b'],
                 'override_append'  => ['a', 'b'],
             ],
-            ConfigurableTest_MockChildInherit::config()
+            ConfigurableTest_MockChildInherit::config(),
         );
 
         $this->assertSame(
@@ -164,7 +165,7 @@ class ConfigurableTest extends RebetTestCase
                 'override_prepend' => ['a', 'b'],
                 'override_append'  => ['a', 'b'],
             ],
-            ConfigurableTest_MockChildShare::config()
+            ConfigurableTest_MockChildShare::config(),
         );
 
         $this->assertSame(
@@ -180,14 +181,14 @@ class ConfigurableTest extends RebetTestCase
                 'override_append'  => ['a', 'b'],
                 'encode'           => 'utf8mb4',
             ],
-            ConfigurableTest_MockChildOverride::config()
+            ConfigurableTest_MockChildOverride::config(),
         );
 
         $this->assertSame(
             [
                 'driver' => 'pgsql',
             ],
-            ConfigurableTest_MockChildHide::config()
+            ConfigurableTest_MockChildHide::config(),
         );
 
         $this->assertSame(
@@ -204,7 +205,7 @@ class ConfigurableTest extends RebetTestCase
                 'encode'           => 'utf8',
                 'new_key'          => 'new_value',
             ],
-            ConfigurableTest_MockGrandChildOverride::config()
+            ConfigurableTest_MockGrandChildOverride::config(),
         );
 
         $this->assertSame('mysql', ConfigurableTest_Mock::config('driver'));
@@ -298,7 +299,7 @@ class ConfigurableTest extends RebetTestCase
                 'override_prepend' => ['a', 'b'],
                 'override_append'  => ['a', 'b'],
             ],
-            ConfigurableTest_Mock::config()
+            ConfigurableTest_Mock::config(),
         );
 
         $this->assertSame(
@@ -308,7 +309,7 @@ class ConfigurableTest extends RebetTestCase
                 'override_prepend' => OverrideOption::PREPEND,
                 'override_append'  => OverrideOption::APPEND,
             ],
-            ConfigurableTest_Mock::defaultConfigOverrideOptions()
+            ConfigurableTest_Mock::defaultConfigOverrideOptions(),
         );
 
         Config::application([
@@ -332,7 +333,7 @@ class ConfigurableTest extends RebetTestCase
                 'override_prepend' => ['c', 'a', 'b'],
                 'override_append'  => ['a', 'b', 'c'],
             ],
-            ConfigurableTest_Mock::config()
+            ConfigurableTest_Mock::config(),
         );
     }
 
@@ -372,11 +373,11 @@ class ConfigurableTest_Mock
     public static function defaultConfig()
     {
         return [
-            'driver'   => 'mysql',
-            'host'     => 'localhost',
-            'port'     => 3306,
-            'database' => null,
-            'user'     => null,
+            'driver'           => 'mysql',
+            'host'             => 'localhost',
+            'port'             => 3306,
+            'database'         => null,
+            'user'             => null,
 
             'override_merge'   => ['a', 'b'],
             'override_replace' => ['a', 'b'],
@@ -385,7 +386,7 @@ class ConfigurableTest_Mock
         ];
     }
 
-    public static function defaultConfigOverrideOptions() : array
+    public static function defaultConfigOverrideOptions(): array
     {
         return [
             'override_merge'   => OverrideOption::MERGE,

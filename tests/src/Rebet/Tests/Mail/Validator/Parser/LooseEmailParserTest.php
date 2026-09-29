@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Mail\Validator\Parser;
 
 use Egulias\EmailValidator\EmailLexer;

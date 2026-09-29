@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility\Exception;
 
 use Rebet\Tests\RebetTestCase;

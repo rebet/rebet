@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application;
@@ -51,7 +52,7 @@ abstract class Kernel
      *
      * @return Structure
      */
-    public function structure() : Structure
+    public function structure(): Structure
     {
         return $this->structure;
     }
@@ -61,7 +62,7 @@ abstract class Kernel
      *
      * @return string
      */
-    public function channel() : string
+    public function channel(): string
     {
         return $this->channel;
     }
@@ -71,14 +72,14 @@ abstract class Kernel
      *
      * @return array<int, Bootstrapper|class-string<Bootstrapper>|array<int|string, mixed>> class name of Bootstrapper, or [class name, ...args] for Reflector::instantiate()
      */
-    abstract protected function bootstrappers() : array;
+    abstract protected function bootstrappers(): array;
 
     /**
      * Execute bootstrap processes.
      *
      * @return void
      */
-    public function bootstrap() : void
+    public function bootstrap(): void
     {
         foreach ($this->bootstrappers() as $bootstrapper) {
             Reflector::instantiate($bootstrapper)->bootstrap($this);
@@ -107,14 +108,14 @@ abstract class Kernel
      *
      * @return void
      */
-    abstract public function terminate() : void;
+    abstract public function terminate(): void;
 
     /**
      * Get exception handler.
      *
      * @return ExceptionHandler<I, R>
      */
-    abstract public function exceptionHandler() : ExceptionHandler;
+    abstract public function exceptionHandler(): ExceptionHandler;
 
     /**
      * Report an uncaught exception then display fallback pages(console messages).
@@ -122,7 +123,7 @@ abstract class Kernel
      * @param  \Throwable $e
      * @return int        error code for exit()
      */
-    abstract public function fallback(\Throwable $e) : int;
+    abstract public function fallback(\Throwable $e): int;
 
     /**
      * Report an uncaught exception.
@@ -131,5 +132,5 @@ abstract class Kernel
      * @param  \Throwable $e
      * @return void
      */
-    abstract public function report(\Throwable $e) : void;
+    abstract public function report(\Throwable $e): void;
 }

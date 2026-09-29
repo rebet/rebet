@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Auth\Provider;
@@ -38,7 +39,7 @@ abstract class AuthProvider
      * @param  mixed         $id
      * @return AuthUser|null
      */
-    abstract public function findById($id) : AuthUser|null ;
+    abstract public function findById($id): AuthUser|null ;
 
     /**
      * Find user by token.
@@ -46,7 +47,7 @@ abstract class AuthProvider
      * @param  string|null   $token
      * @return AuthUser|null
      */
-    abstract public function findByToken(string|null $token) : AuthUser|null ;
+    abstract public function findByToken(string|null $token): AuthUser|null ;
 
     /**
      * Find user by signin_id and password.
@@ -60,7 +61,7 @@ abstract class AuthProvider
      * @param  string|null   $password
      * @return AuthUser|null
      */
-    public function findByCredentials($signin_id, string|null $password) : AuthUser|null
+    public function findByCredentials($signin_id, string|null $password): AuthUser|null
     {
         $user = $this->findBySigninId($signin_id);
 
@@ -86,7 +87,7 @@ abstract class AuthProvider
      * @param  mixed         $signin_id
      * @return AuthUser|null
      */
-    abstract protected function findBySigninId($signin_id) : AuthUser|null ;
+    abstract protected function findBySigninId($signin_id): AuthUser|null ;
 
     /**
      * Save rehash password.
@@ -96,7 +97,7 @@ abstract class AuthProvider
      * @param  string $new_hash
      * @return void
      */
-    abstract public function rehashPassword($id, string $new_hash) : void ;
+    abstract public function rehashPassword($id, string $new_hash): void ;
 
     /**
      * It checks the provider will support remember token.
@@ -104,7 +105,7 @@ abstract class AuthProvider
      *
      * @return boolean
      */
-    public function supportRememberToken() : bool
+    public function supportRememberToken(): bool
     {
         return false;
     }
@@ -116,7 +117,7 @@ abstract class AuthProvider
      * @param  string|null   $token
      * @return AuthUser|null
      */
-    public function findByRememberToken(string|null $token) : AuthUser|null
+    public function findByRememberToken(string|null $token): AuthUser|null
     {
         return null;
     }
@@ -129,7 +130,7 @@ abstract class AuthProvider
      * @param  int         $remember_days
      * @return string|null token
      */
-    public function issuingRememberToken($id, int $remember_days) : string|null
+    public function issuingRememberToken($id, int $remember_days): string|null
     {
         return null;
     }
@@ -141,7 +142,7 @@ abstract class AuthProvider
      * @param  string|null $token
      * @return void
      */
-    public function removeRememberToken(string|null $token) : void
+    public function removeRememberToken(string|null $token): void
     {
         // Do nothing.
     }
@@ -167,7 +168,7 @@ abstract class AuthProvider
      * @param  integer $length (default: 60)
      * @return string
      */
-    protected function generateToken(int $length = 60) : string
+    protected function generateToken(int $length = 60): string
     {
         return Securities::randomCode($length);
     }
@@ -178,7 +179,7 @@ abstract class AuthProvider
      * @param  string      $token
      * @return string|null
      */
-    protected function hashToken(string|null $token) : string|null
+    protected function hashToken(string|null $token): string|null
     {
         return $token ? Securities::hmac($token) : null ;
     }

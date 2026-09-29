@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Application;
 
 use Rebet\Auth\AuthUser;
@@ -13,7 +14,7 @@ use Rebet\Tools\Config\Config;
 
 class EventTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         Config::application([
@@ -52,25 +53,25 @@ class EventTest extends RebetTestCase
             '143',
             function () {
                 Event::dispatch(new Signined(Request::create('/'), AuthUser::guest(), false));
-            }
+            },
         );
         $this->assertStdoutEquals(
             '23',
             function () {
                 Event::dispatch(new Signouted(Request::create('/'), AuthUser::guest()));
-            }
+            },
         );
         $this->assertStdoutEquals(
             '6-test',
             function () {
                 Event::dispatch('test');
-            }
+            },
         );
         $this->assertStdoutEquals(
             '3AB',
             function () {
                 Event::dispatch(new SigninFailed(Request::create('/')));
-            }
+            },
         );
     }
 }

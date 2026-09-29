@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Tinker;
 
 use Rebet\Application\App;
@@ -29,7 +30,7 @@ class TinkerTest extends RebetTestCase
     private $destructive;
     private $safty;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         App::setLocale('ja');
@@ -47,8 +48,8 @@ class TinkerTest extends RebetTestCase
         $this->datetime_s = Tinker::with('2001/02/03 04:05:06');
         $this->array      = Tinker::with([1, 2, 3]);
         $this->map        = Tinker::with([
-            'foo'    => 'FOO',
-            'parent' => [
+            'foo'     => 'FOO',
+            'parent'  => [
                 'child' => [
                     'bar' => 'BAR',
                 ],
@@ -156,15 +157,15 @@ class TinkerTest extends RebetTestCase
         $this->assertSame(Gender::MALE(), $this->enum->nothing()->return());
         $this->assertEquals(
             DateTime::valueOf('2002/02/03 04:05:06'),
-            $this->datetime_o->addYear(1)->return()
+            $this->datetime_o->addYear(1)->return(),
         );
         $this->assertEquals(
             '2001/02/03 04:05:06',
-            $this->datetime_s->addYear(1)->return()
+            $this->datetime_s->addYear(1)->return(),
         );
         $this->assertEquals(
             DateTime::valueOf('2002/02/03 04:05:06'),
-            $this->datetime_s->convert(DateTime::class)->addYear(1)->return()
+            $this->datetime_s->convert(DateTime::class)->addYear(1)->return(),
         );
 
         $this->assertSame(0, $this->destructive->count->return());
@@ -472,7 +473,7 @@ class TinkerTest extends RebetTestCase
         // Arrays::override
         $this->assertSame(
             ['foo' => 'foo', 'parent' => null, 'number' => 123, 'gender' => Gender::MALE(), 'boolean' => true],
-            $this->map->override(['foo' => 'foo', 'parent=' => null])->return()
+            $this->map->override(['foo' => 'foo', 'parent=' => null])->return(),
         );
 
         // Arrays::duplicate
@@ -570,13 +571,13 @@ class TinkerTest extends RebetTestCase
         // Arrays::sortBy
         $this->assertSame(
             [1 => ['age' => '8'], 2 => ['age' => '14'], 0 => ['age' => '23']],
-            Tinker::with([['age' => '23'], ['age' => '8'], ['age' => '14']])->sortBy('age')->return()
+            Tinker::with([['age' => '23'], ['age' => '8'], ['age' => '14']])->sortBy('age')->return(),
         );
 
         // Arrays::sortKeys
         $this->assertSame(
             ['a' => 'A', 'b' => 'B', 'c' => 'C'],
-            Tinker::with(['c' => 'C', 'a' => 'A', 'b' => 'B'])->sortKeys()->return()
+            Tinker::with(['c' => 'C', 'a' => 'A', 'b' => 'B'])->sortKeys()->return(),
         );
 
         // Arrays::sum
@@ -813,23 +814,23 @@ class TinkerTest extends RebetTestCase
         $this->assertSame('null', $this->null->dump()->return());
         $this->assertSame(
             <<<EOS
-        array:3 [
-            0 => 1,
-            1 => 2,
-            2 => 3
-        ]
-        EOS,
-            $this->array->dump()->return()
+                array:3 [
+                    0 => 1,
+                    1 => 2,
+                    2 => 3
+                ]
+                EOS,
+            $this->array->dump()->return(),
         );
         $this->assertSame(
             <<<EOS
-        array:3 [
-            0 => 1,
-            1 => ***,
-            2 => 3
-        ]
-        EOS,
-            $this->array->dump([1], '***')->return()
+                array:3 [
+                    0 => 1,
+                    1 => ***,
+                    2 => 3
+                ]
+                EOS,
+            $this->array->dump([1], '***')->return(),
         );
 
         // Tinker.filter.customs.invoke
@@ -995,12 +996,12 @@ class TinkerTest_DestructiveMock
 {
     public $count = 0;
 
-    public function add_void(int $i = 1) : void
+    public function add_void(int $i = 1): void
     {
         $this->count += $i;
     }
 
-    public function add_bool(int $i = 1) : bool
+    public function add_bool(int $i = 1): bool
     {
         $this->count += $i;
         return true;
@@ -1043,12 +1044,12 @@ class TinkerTest_User
         $this->birthday   = $birthday;
     }
 
-    public function fullName() : string
+    public function fullName(): string
     {
         return "{$this->first_name} {$this->last_name}";
     }
 
-    public function age($at = 'today') : int
+    public function age($at = 'today'): int
     {
         return $this->birthday->age($at);
     }

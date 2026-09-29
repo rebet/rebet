@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use Rebet\Tests\RebetTestCase;
@@ -7,7 +8,7 @@ use TestApp\Enum\Gender;
 
 class UtilsTest extends RebetTestCase
 {
-    const TEST_VALUE = "UtilsTest::TEST_VALUE";
+    public const TEST_VALUE = "UtilsTest::TEST_VALUE";
 
     public function test_equivalent()
     {
@@ -38,7 +39,7 @@ class UtilsTest extends RebetTestCase
         $this->assertSame(false, Utils::equivalent([1, 2, 3], [1, 2]));
 
         $this->assertSame(true, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], ['a' => 1, 'b' => 2, 'c' => 3]));
-        $this->assertSame(true, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], (object)['a' => 1, 'b' => 2, 'c' => 3])); // stdClass can be treated synonymous with array even if it is not iterable
+        $this->assertSame(true, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], (object) ['a' => 1, 'b' => 2, 'c' => 3])); // stdClass can be treated synonymous with array even if it is not iterable
         $this->assertSame(false, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], ['a' => 1, 'b' => 2, 'C' => 3]));
         $object = new class {
             public $a = 1;
@@ -125,15 +126,15 @@ class UtilsTest extends RebetTestCase
     {
         $_        = Utils::heredocImplanter();
         $expected = <<<EOS
-START
-UtilsTest::TEST_VALUE
-END
-EOS;
+            START
+            UtilsTest::TEST_VALUE
+            END
+            EOS;
         $actual = <<<EOS
-START
-{$_(UtilsTest::TEST_VALUE)}
-END
-EOS;
+            START
+            {$_(UtilsTest::TEST_VALUE)}
+            END
+            EOS;
 
         $this->assertSame($expected, $actual);
     }
@@ -148,7 +149,7 @@ EOS;
         $this->assertSame(123, Utils::intval(123));
         $this->assertSame(123, Utils::intval(123.0));
 
-        $this->assertSame(011, Utils::intval('11', 8));
+        $this->assertSame(0o11, Utils::intval('11', 8));
         $this->assertSame(0xF, Utils::intval('F', 16));
     }
 

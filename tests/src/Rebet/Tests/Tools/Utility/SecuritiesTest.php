@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Utility;
 
 use Rebet\Tests\RebetTestCase;
@@ -90,7 +91,7 @@ class SecuritiesTest extends RebetTestCase
         $plain     = 'This is pen';
         $secretKey = 'Test';
         $encrypted = Securities::encrypt($plain, $secretKey);
-        $decrypted = Securities::decrypt($encrypted.'a', $secretKey);
+        $decrypted = Securities::decrypt($encrypted . 'a', $secretKey);
         $this->assertNotSame($plain, $decrypted);
     }
 
@@ -107,7 +108,7 @@ class SecuritiesTest extends RebetTestCase
         $plain     = 'This is pen';
         $secretKey = 'Test';
         $encrypted = Securities::encrypt($plain, $secretKey);
-        $decrypted = Securities::decrypt($encrypted.'a', $secretKey);
+        $decrypted = Securities::decrypt($encrypted . 'a', $secretKey);
         $this->assertNotSame($plain, $decrypted);
     }
 

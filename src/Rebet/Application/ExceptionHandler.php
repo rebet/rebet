@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application;
@@ -19,9 +20,7 @@ abstract class ExceptionHandler
     /**
      * {@inheritDoc}
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Report an exception.
@@ -32,7 +31,7 @@ abstract class ExceptionHandler
      * @param  \Throwable $e
      * @return void
      */
-    abstract public function report($input, $result, \Throwable $e) : void;
+    abstract public function report($input, $result, \Throwable $e): void;
 
     /**
      * Handle an exception

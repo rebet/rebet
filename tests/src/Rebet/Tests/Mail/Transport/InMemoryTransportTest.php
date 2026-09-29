@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Mail\Transport;
 
 use Rebet\Mail\Transport\InMemoryTransport;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Translation;
@@ -39,5 +40,5 @@ interface Dictionary
      * @param  bool               $recursive (default: true)
      * @return string|null
      */
-    public function sentence(string $group, string $key, array $locales, $selector = null, bool $recursive = true) : string|null ;
+    public function sentence(string $group, string $key, array $locales, $selector = null, bool $recursive = true): string|null ;
 }

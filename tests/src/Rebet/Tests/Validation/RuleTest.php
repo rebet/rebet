@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Validation;
 
 use Rebet\Tests\RebetTestCase;
@@ -11,7 +12,7 @@ class RuleTest extends RebetTestCase
     private $errors;
     private $rule;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->rule   = new UserValidation();
@@ -35,7 +36,7 @@ class RuleTest extends RebetTestCase
             'C',
             ['mail_address' => 'john@rebet.local'],
             $this->errors,
-            ['dummy' => []]
+            ['dummy' => []],
         );
         $c->initBy('mail_address');
         $this->assertTrue($this->rule->validate('MailAddressExists', $c));

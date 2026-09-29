@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\View\Engine\Blade;
@@ -24,9 +25,9 @@ class BladeTagCustomizer
      *
      * @param Blade $blade
      */
-    public static function customize(Blade $blade) : void
+    public static function customize(Blade $blade): void
     {
-        $blade->appendPath(__DIR__.'/views');
+        $blade->appendPath(__DIR__ . '/views');
         $compiler = $blade->compiler();
 
         // Line feed handler that next of tag closing bracket.
@@ -237,7 +238,7 @@ class BladeTagCustomizer
      * @param  BladeCompiler $compiler
      * @return void
      */
-    protected static function disable(BladeCompiler $compiler) : void
+    protected static function disable(BladeCompiler $compiler): void
     {
         $compiler->disable('auth', "Unsupported directive '@auth' found. In Rebet, you should use '@role' directive instead.");
         $compiler->disable('guest', "Unsupported directive '@guest' found. In Rebet, you should use '@role' directive instead.");

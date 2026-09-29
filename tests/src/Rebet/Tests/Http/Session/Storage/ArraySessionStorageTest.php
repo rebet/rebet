@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Http\Session\Storage;
 
 use Rebet\Http\Session\Storage\ArraySessionStorage;

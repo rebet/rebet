@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http\Session\Storage\Bag;
@@ -54,7 +55,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * {@inheritdoc}
      */
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -64,7 +65,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      *
      * @param array<string, mixed> $attributes
      */
-    public function initialize(array &$attributes) : void
+    public function initialize(array &$attributes): void
     {
         $this->attributes = &$attributes;
     }
@@ -72,7 +73,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * {@inheritdoc}
      */
-    public function getStorageKey() : string
+    public function getStorageKey(): string
     {
         return $this->storage_key;
     }
@@ -80,7 +81,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * {@inheritdoc}
      */
-    public function clear() : mixed
+    public function clear(): mixed
     {
         $value            = $this->attributes;
         $this->attributes = [];
@@ -93,7 +94,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      * @param  string  $name You can use dot notation.
      * @return boolean
      */
-    public function has(string $name) : bool
+    public function has(string $name): bool
     {
         return Reflector::has($this->attributes, $name);
     }
@@ -117,7 +118,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      * @param  mixed  $value
      * @return void
      */
-    public function set(string $name, $value) : void
+    public function set(string $name, $value): void
     {
         Reflector::set($this->attributes, $name, $value);
     }
@@ -127,7 +128,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      *
      * @return array<string, mixed>
      */
-    public function all() : array
+    public function all(): array
     {
         return $this->attributes;
     }
@@ -148,7 +149,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      *
      * @return \ArrayIterator<string, mixed>
      */
-    public function getIterator() : \Traversable
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->attributes);
     }
@@ -158,7 +159,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      *
      * @return int
      */
-    public function count() : int
+    public function count(): int
     {
         return \count($this->attributes);
     }

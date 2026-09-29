@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Resource;
 
 use Rebet\Application\App;
@@ -10,7 +11,7 @@ class EnvResourceTest extends RebetTestCase
 {
     private $resources;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->resources = App::structure()->resources('/adhoc/Tools/Resource/EnvResource');
@@ -23,32 +24,32 @@ class EnvResourceTest extends RebetTestCase
                 'extra'  => 1,
                 'int'    => 2,
                 'string' => 'a',
-                'array'  => [1 , 2 , 3, 1 , 2 , 3, 4],
+                'array'  => [1, 2, 3, 1, 2, 3, 4],
                 'map'    => [
                     'int'    => 1,
                     'string' => 'A',
-                    'array'  => [1 , 2 , 3, 4],
+                    'array'  => [1, 2, 3, 4],
                     'new'    => 'NEW',
                 ],
-                'new' => 'NEW',
+                'new'    => 'NEW',
             ],
-            EnvResource::load('unittest', $this->resources)
+            EnvResource::load('unittest', $this->resources),
         );
 
         $this->assertSame(
             [
                 'int'    => 2,
                 'string' => 'a',
-                'array'  => [1 , 2 , 3, 1 , 2 , 3, 4],
+                'array'  => [1, 2, 3, 1, 2, 3, 4],
                 'map'    => [
                     'int'    => 1,
                     'string' => 'A',
-                    'array'  => [1 , 2 , 3, 4],
+                    'array'  => [1, 2, 3, 4],
                     'new'    => 'NEW',
                 ],
-                'new' => 'NEW',
+                'new'    => 'NEW',
             ],
-            EnvResource::load('unittest', $this->resources, 'test')
+            EnvResource::load('unittest', $this->resources, 'test'),
         );
 
         $this->assertSame(
@@ -62,7 +63,7 @@ class EnvResourceTest extends RebetTestCase
                     'array'  => [1, 2, 3],
                 ],
             ],
-            EnvResource::load('production', $this->resources, 'test')
+            EnvResource::load('production', $this->resources, 'test'),
         );
 
         $this->assertSame(
@@ -75,9 +76,9 @@ class EnvResourceTest extends RebetTestCase
                     'string' => 'a',
                     'array'  => [1, 2, 3],
                 ],
-                'extra' => 1,
+                'extra'  => 1,
             ],
-            EnvResource::load('production', $this->resources, ['test', 'extra'])
+            EnvResource::load('production', $this->resources, ['test', 'extra']),
         );
 
         $this->assertSame(
@@ -90,21 +91,21 @@ class EnvResourceTest extends RebetTestCase
                     'string' => 'b',
                 ],
             ],
-            EnvResource::load('unittest', $this->resources, 'test', 'ini')
+            EnvResource::load('unittest', $this->resources, 'test', 'ini'),
         );
 
         $this->assertSame(
             [
                 'int'    => 1,
                 'string' => 'a',
-                'array'  => [1 , 2 , 3],
+                'array'  => [1, 2, 3],
                 'map'    => [
                     'int'    => 1,
                     'string' => 'a',
-                    'array'  => [1 , 2 , 3],
+                    'array'  => [1, 2, 3],
                 ],
             ],
-            EnvResource::load('unittest', $this->resources, 'test', 'json')
+            EnvResource::load('unittest', $this->resources, 'test', 'json'),
         );
     }
 

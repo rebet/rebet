@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database;
 
 use Rebet\Database\OrderBy;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database;
@@ -54,7 +55,7 @@ class Statement implements \IteratorAggregate
      *
      * @return PDOStatement
      */
-    public function raw() : PDOStatement
+    public function raw(): PDOStatement
     {
         return $this->stmt;
     }
@@ -64,7 +65,7 @@ class Statement implements \IteratorAggregate
      *
      * @return array<int|string, array<string, mixed>>
      */
-    public function meta() : array
+    public function meta(): array
     {
         $meta = [];
         try {
@@ -88,7 +89,7 @@ class Statement implements \IteratorAggregate
      * @return self
      * @throws DatabaseException|PDOException
      */
-    public function execute(array $params = []) : self
+    public function execute(array $params = []): self
     {
         try {
             foreach ($params as $key => $param) {
@@ -114,9 +115,9 @@ class Statement implements \IteratorAggregate
      *
      * @return string|null
      */
-    protected function queryString() : string|null
+    protected function queryString(): string|null
     {
-        return isset($this->stmt->queryString) ? $this->stmt->queryString : null;
+        return $this->stmt->queryString ?? null;
     }
 
     /**
@@ -129,8 +130,8 @@ class Statement implements \IteratorAggregate
      */
     protected function convert($row, string $class, array|null $meta = null)
     {
-        $meta = $meta ?? $this->meta();
-        $dm   = new $class();
+        $meta ??= $this->meta();
+        $dm = new $class();
         foreach ($row as $column => $value) {
             $dm->$column = $this->db->driver()->toPhpType($value, $meta[$column] ?? [], Reflector::getPropertyTypeHintOf($class, $column));
         }
@@ -164,7 +165,7 @@ class Statement implements \IteratorAggregate
      * @param  string    $class (default: 'stdClass')
      * @return ResultSet
      */
-    public function all(string $class = 'stdClass') : ResultSet
+    public function all(string $class = 'stdClass'): ResultSet
     {
         $rs   = [];
         $meta = $this->meta();
@@ -192,7 +193,7 @@ class Statement implements \IteratorAggregate
      * @param  string|null $type   name of convert to type
      * @return ResultSet
      */
-    public function allOf($column, string|null $type = null) : ResultSet
+    public function allOf($column, string|null $type = null): ResultSet
     {
         $rs   = [];
         $meta = $this->meta();
@@ -221,7 +222,7 @@ class Statement implements \IteratorAggregate
      *
      * @return integer
      */
-    public function affectedRows() : int
+    public function affectedRows(): int
     {
         return $this->stmt->rowCount();
     }
@@ -234,7 +235,7 @@ class Statement implements \IteratorAggregate
      * @param  callable $callback function(Class $row) : bool {}
      * @return self
      */
-    public function each(callable $callback) : self
+    public function each(callable $callback): self
     {
         $meta  = $this->meta();
         $class = Reflector::getParameterTypeHintOf($callback, 0) ?? 'stdClass';
@@ -253,7 +254,7 @@ class Statement implements \IteratorAggregate
      * @param  callable  $callback function(Class $row) : bool {}
      * @return ResultSet
      */
-    public function filter(callable $callback) : ResultSet
+    public function filter(callable $callback): ResultSet
     {
         $filtered = [];
         $meta     = $this->meta();
@@ -274,7 +275,7 @@ class Statement implements \IteratorAggregate
      * @param  callable  $callback function(Class $row) : mixed {}
      * @return ResultSet
      */
-    public function map(callable $callback) : ResultSet
+    public function map(callable $callback): ResultSet
     {
         $map   = [];
         $meta  = $this->meta();
@@ -307,7 +308,7 @@ class Statement implements \IteratorAggregate
     /**
      * {@inheritDoc}
      */
-    public function getIterator() : \Traversable
+    public function getIterator(): \Traversable
     {
         return $this->stmt;
     }
@@ -317,7 +318,7 @@ class Statement implements \IteratorAggregate
      *
      * @return boolean
      */
-    public function close() : bool
+    public function close(): bool
     {
         return $this->stmt->closeCursor();
     }

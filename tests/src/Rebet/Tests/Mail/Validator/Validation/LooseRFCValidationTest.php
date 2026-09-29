@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Mail\Validator\Validation;
 
 use Egulias\EmailValidator\EmailLexer;
@@ -16,17 +17,17 @@ class LooseRFCValidationTest extends RebetTestCase
         $this->assertInstanceOf(LooseRFCValidation::class, new LooseRFCValidation());
     }
 
-    public static function dataIsValids() : array
+    public static function dataIsValids(): array
     {
         return [
-            [ true , '.invalid..rfc.mail.@foo.com'      ],
-            [ false, '.invalid.rfc.mail@foo.com'    , []],
-            [ true , '.invalid.rfc.mail@foo.com'    , [DotAtStart::class]],
-            [ false, '.invalid..rfc.mail@foo.com'   , [DotAtStart::class]],
-            [ true , '.invalid..rfc.mail@foo.com'   , [DotAtStart::class, ConsecutiveDot::class]],
-            [ false, '.invalid..rfc.mail.@foo.com'  , [DotAtStart::class, ConsecutiveDot::class]],
-            [ true , '.invalid..rfc.mail.@foo.com'  , [DotAtStart::class, ConsecutiveDot::class, DotAtEnd::class]],
-            [ true , '".invalid..rfc.mail."@foo.com', []],
+            [ true, '.invalid..rfc.mail.@foo.com'      ],
+            [ false, '.invalid.rfc.mail@foo.com', []],
+            [ true, '.invalid.rfc.mail@foo.com', [DotAtStart::class]],
+            [ false, '.invalid..rfc.mail@foo.com', [DotAtStart::class]],
+            [ true, '.invalid..rfc.mail@foo.com', [DotAtStart::class, ConsecutiveDot::class]],
+            [ false, '.invalid..rfc.mail.@foo.com', [DotAtStart::class, ConsecutiveDot::class]],
+            [ true, '.invalid..rfc.mail.@foo.com', [DotAtStart::class, ConsecutiveDot::class, DotAtEnd::class]],
+            [ true, '".invalid..rfc.mail."@foo.com', []],
         ];
     }
 

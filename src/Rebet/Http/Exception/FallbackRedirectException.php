@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http\Exception;
@@ -58,7 +59,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
      * @param  string $fallback
      * @return self
      */
-    public function to(string $fallback) : self
+    public function to(string $fallback): self
     {
         $this->fallback = $fallback;
         return $this;
@@ -70,7 +71,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
      * @param  array<string, mixed> $input
      * @return self
      */
-    public function with(array $input) : self
+    public function with(array $input): self
     {
         $this->input = $input;
         return $this;
@@ -82,7 +83,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
      * @param  array<string, array<int, string>> $errors
      * @return self
      */
-    public function errors(array $errors) : self
+    public function errors(array $errors): self
     {
         $this->errors = $errors;
         return $this;
@@ -93,7 +94,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
      *
      * @return RedirectResponse
      */
-    public function redirect() : RedirectResponse
+    public function redirect(): RedirectResponse
     {
         return Responder::redirect($this->fallback)->with($this->input)->errors($this->errors);
     }
@@ -101,12 +102,12 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
     /**
      * {@inheritDoc}
      */
-    public function problem() : ProblemResponse
+    public function problem(): ProblemResponse
     {
         return Responder::problem(
             400,
             Translator::get('message.fallback_errors.title') ?? 'A retryable error occurred. Please check error details and try again.',
-            ProblemResponse::TYPE_FALLBACK_ERRORS
+            ProblemResponse::TYPE_FALLBACK_ERRORS,
         )
         ->detail(Translator::get('message.fallback_errors.detail') ?? $this->getMessage())
         ->additional([

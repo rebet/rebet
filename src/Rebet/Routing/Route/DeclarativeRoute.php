@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
@@ -44,9 +45,9 @@ abstract class DeclarativeRoute extends Route
     public function __toString()
     {
         $rc     = new \ReflectionClass($this);
-        $where  = empty($this->wheres) ? '' : ' where '.json_encode($this->wheres);
-        $method = empty($this->methods) ? '[ALL]' : "[".join('|', $this->methods)."]" ;
-        return $rc->getShortName().": {$method} {$this->uri}{$where}";
+        $where  = empty($this->wheres) ? '' : ' where ' . json_encode($this->wheres);
+        $method = empty($this->methods) ? '[ALL]' : "[" . join('|', $this->methods) . "]" ;
+        return $rc->getShortName() . ": {$method} {$this->uri}{$where}";
     }
 
     /**
@@ -72,7 +73,7 @@ abstract class DeclarativeRoute extends Route
      * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
-    protected function analyze(Request $request) : array|null
+    protected function analyze(Request $request): array|null
     {
         $matches  = [];
         $is_match = preg_match($this->getMatchingRegex(), $request->getRequestPath(), $matches);
@@ -104,7 +105,7 @@ abstract class DeclarativeRoute extends Route
     /**
      * {@inheritDoc}
      */
-    public function defaultView() : string
+    public function defaultView(): string
     {
         return Path::normalize(Strings::latrim($this->uri, '{'));
     }
@@ -114,14 +115,14 @@ abstract class DeclarativeRoute extends Route
      *
      * @return string
      */
-    protected function getMatchingRegex() : string
+    protected function getMatchingRegex(): string
     {
-        $regex = $this->prefix.$this->uri;
+        $regex = $this->prefix . $this->uri;
         $regex = preg_replace('/(\/{[^{]+?\?})/', '(?:\1)?/?', $regex);
         $regex = str_replace('?}', '}', $regex);
         $regex = str_replace('{', '(?P<', $regex);
         $regex = str_replace('}', '>[^/]+?)', $regex);
         $regex = str_replace('/', '\\/', $regex);
-        return '/^'.$regex.'$/';
+        return '/^' . $regex . '$/';
     }
 }

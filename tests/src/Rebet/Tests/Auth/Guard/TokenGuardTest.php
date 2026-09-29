@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Auth\Guard;
 
 use Rebet\Auth\Auth;

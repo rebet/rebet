@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Attribute;
@@ -17,6 +18,4 @@ namespace Rebet\Database\Attribute;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Unmap
-{
-}
+final class Unmap {}

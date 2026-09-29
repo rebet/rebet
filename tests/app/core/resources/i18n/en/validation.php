@@ -1,12 +1,13 @@
 <?php
+
 return [
-    'Regex' => [
+    'Regex'         => [
         "{digits} The :attribute must be digits.",
     ],
-    'Regex@List' => [
+    'Regex@List'    => [
         "{digits} The :nth :attribute (:value) must be digits.",
     ],
-    'NotRegex' => [
+    'NotRegex'      => [
         "{digits} The :attribute must contain non-digits characters.",
     ],
     'NotRegex@List' => [

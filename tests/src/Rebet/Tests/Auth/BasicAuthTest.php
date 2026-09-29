@@ -1,15 +1,15 @@
 <?php
+
 namespace Rebet\Tests\Auth;
 
 use Rebet\Auth\BasicAuth;
 use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Tests\RebetTestCase;
-
 use Rebet\Tools\Testable\System;
 
 class BasicAuthTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
     }
@@ -62,7 +62,7 @@ class BasicAuthTest extends RebetTestCase
             ['id' => '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'],
             function ($password) {
                 return sha1($password);
-            }
+            },
         );
         $this->assertSame('id', $id);
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -18,9 +19,7 @@ class Nets
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Convert binary data to a string that can be used for URL.
@@ -29,7 +28,7 @@ class Nets
      * @param  mixed  $byte
      * @return string
      */
-    public static function encodeBase64Url($byte) : string
+    public static function encodeBase64Url($byte): string
     {
         return strtr(base64_encode($byte), '+/=', '._-');
     }

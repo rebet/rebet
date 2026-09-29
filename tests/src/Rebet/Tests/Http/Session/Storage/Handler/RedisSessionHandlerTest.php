@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Http\Session\Storage\Handler;
 
 use Rebet\Http\Session\Storage\Handler\RedisSessionHandler;

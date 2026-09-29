@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Translation;
@@ -93,7 +94,7 @@ class FileDictionary implements Dictionary
      * @param  string ...$groups
      * @return self
      */
-    public function addLibraryResource(string $resource, string ...$groups) : self
+    public function addLibraryResource(string $resource, string ...$groups): self
     {
         if (in_array($resource, static::$resouce_dirs, true)) {
             return $this;
@@ -120,7 +121,7 @@ class FileDictionary implements Dictionary
      * @param  string|null $locale (default: null)
      * @return self
      */
-    public function clear(string|null $group = null, string|null $locale = null) : self
+    public function clear(string|null $group = null, string|null $locale = null): self
     {
         if ($group !== null && $locale !== null) {
             unset($this->resouces[$group][$locale]);
@@ -141,7 +142,7 @@ class FileDictionary implements Dictionary
      * @param  string $locale
      * @return self
      */
-    protected function load(string $group, string $locale) : self
+    protected function load(string $group, string $locale): self
     {
         if ($this->isLoaded($group, $locale)) {
             return $this;
@@ -157,7 +158,7 @@ class FileDictionary implements Dictionary
      * @param  string  $locale
      * @return boolean
      */
-    public function isLoaded(string $group, string $locale) : bool
+    public function isLoaded(string $group, string $locale): bool
     {
         return isset($this->resouces[$group][$locale]);
     }
@@ -176,7 +177,7 @@ class FileDictionary implements Dictionary
      *
      * @param array<int, string> $locales
      */
-    public function sentence(string $group, string $key, array $locales, $selector = null, bool $recursive = true) : string|null
+    public function sentence(string $group, string $key, array $locales, $selector = null, bool $recursive = true): string|null
     {
         $sentence = null;
         foreach ($locales as $locale) {
@@ -206,7 +207,7 @@ class FileDictionary implements Dictionary
      * @param  int|string|null                       $selector
      * @return string|null
      */
-    protected function choose($sentence, $selector) : string|null
+    protected function choose($sentence, $selector): string|null
     {
         if (is_null($sentence)) {
             return null;
@@ -234,7 +235,7 @@ class FileDictionary implements Dictionary
      * @param  int|string|null $selector
      * @return string|null
      */
-    protected function extract(string $part, $selector) : string|null
+    protected function extract(string $part, $selector): string|null
     {
         preg_match('/^[\{\[]([^\[\]\{\}]*)[\}\]](.*)/s', $part, $matches);
         if (count($matches) !== 3) {

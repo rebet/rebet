@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Cache\Adapter\Symfony;
@@ -57,11 +58,11 @@ class PdoAdapter extends AbstractSymfonyAdapter
                 $namespace,
                 Unit::of(Unit::TIME)->convert($default_lifetime)->toInt(),
                 $options,
-                $marshaller
+                $marshaller,
             ),
             $taggable,
             $tags_pool,
-            $known_tag_versions_ttl
+            $known_tag_versions_ttl,
         );
     }
 }

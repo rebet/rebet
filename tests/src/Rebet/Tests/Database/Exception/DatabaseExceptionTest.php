@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Database\Exception;
 
 use Rebet\Database\Exception\DatabaseException;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Inflection;
@@ -66,8 +67,8 @@ class Inflector
     public static function defaultConfig()
     {
         return [
-            'plural' => [
-                'rules' => [
+            'plural'      => [
+                'rules'       => [
                     ['/(s)tatus$/i', '\1\2tatuses'],
                     ['/(quiz)$/i', '\1zes'],
                     ['/^(ox)$/i', '\1\2en'],
@@ -105,7 +106,7 @@ class Inflector
                     'cookie',
                     'police',
                 ],
-                'irregular' => [
+                'irregular'   => [
                     'atlas'        => 'atlases',
                     'axe'          => 'axes',
                     'beef'         => 'beefs',
@@ -171,8 +172,8 @@ class Inflector
                 ],
             ],
 
-            'singular' => [
-                'rules' => [
+            'singular'    => [
+                'rules'       => [
                     ['/(s)tatuses$/i', '\1\2tatus'],
                     ['/^(.*)(menu)s$/i', '\1\2'],
                     ['/(quiz)zes$/i', '\\1'],
@@ -227,7 +228,7 @@ class Inflector
                     'pants',
                     'clothes',
                 ],
-                'irregular' => [
+                'irregular'   => [
                     'abuses'     => 'abuse',
                     'avalanches' => 'avalanche',
                     'caches'     => 'cache',
@@ -287,7 +288,7 @@ class Inflector
      * Clears Inflectors inflected value caches, and resets the inflection
      * rules to the initial values.
      */
-    public static function reset() : void
+    public static function reset(): void
     {
         static::clearConfig();
         self::$cache = [
@@ -309,7 +310,7 @@ class Inflector
      * @param  string      $delimiters  (default: ' _-')
      * @return string|null
      */
-    public static function tableize(string|null $word, string $replacement = '_', string $delimiters = ' _-') : string|null
+    public static function tableize(string|null $word, string $replacement = '_', string $delimiters = ' _-'): string|null
     {
         return $word === null ? null : static::pluralize(static::snakize($word, $replacement, $delimiters));
     }
@@ -325,7 +326,7 @@ class Inflector
      * @param  string                         $delimiters  (default: ' _-')
      * @return string|null
      */
-    public static function pivotize($word, string $replacement = '_', string $delimiters = ' _-') : string|null
+    public static function pivotize($word, string $replacement = '_', string $delimiters = ' _-'): string|null
     {
         if ($word === null) {
             return null;
@@ -353,9 +354,9 @@ class Inflector
      * @param  string      $delimiters  (default: ' _-')
      * @return string|null
      */
-    public static function primarize(string|null $word, string $replacement = '_', string $delimiters = ' _-') : string|null
+    public static function primarize(string|null $word, string $replacement = '_', string $delimiters = ' _-'): string|null
     {
-        return Utils::isBlank($word) ? $word : static::singularize(static::snakize($word, $replacement, $delimiters)).'_id';
+        return Utils::isBlank($word) ? $word : static::singularize(static::snakize($word, $replacement, $delimiters)) . '_id';
     }
 
     /**
@@ -366,7 +367,7 @@ class Inflector
      * @param  string      $delimiters (default: ' _-')
      * @return string|null
      */
-    public static function classify(string|null $word, string $delimiters = ' _-') : string|null
+    public static function classify(string|null $word, string $delimiters = ' _-'): string|null
     {
         return $word === null ? null : static::pascalize(static::singularize($word), $delimiters);
     }
@@ -379,7 +380,7 @@ class Inflector
      * @param  string      $delimiters (default: ' _-')
      * @return string|null
      */
-    public static function pascalize(string|null $word, string $delimiters = ' _-') : string|null
+    public static function pascalize(string|null $word, string $delimiters = ' _-'): string|null
     {
         return static::humanize($word, '', $delimiters);
     }
@@ -393,7 +394,7 @@ class Inflector
      * @param  string      $delimiters (default: ' _-')
      * @return string|null
      */
-    public static function camelize(string|null $word, string $delimiters = ' _-') : string|null
+    public static function camelize(string|null $word, string $delimiters = ' _-'): string|null
     {
         return $word === null ? null : lcfirst(static::pascalize($word, $delimiters));
     }
@@ -407,7 +408,7 @@ class Inflector
      * @param  string      $delimiters  (default: ' _-')
      * @return string|null
      */
-    public static function snakize(string|null $word, string $replacement = '_', string $delimiters = ' _-') : string|null
+    public static function snakize(string|null $word, string $replacement = '_', string $delimiters = ' _-'): string|null
     {
         return $word === null ? null : str_replace(Strings::toCharArray($delimiters), $replacement, mb_strtolower(static::splitize($word, $replacement)));
     }
@@ -421,7 +422,7 @@ class Inflector
      * @param  string      $delimiters (default: ' _-')
      * @return string|null
      */
-    public static function kebabize(string|null $word, string $delimiters = ' _-') : string|null
+    public static function kebabize(string|null $word, string $delimiters = ' _-'): string|null
     {
         return static::snakize($word, '-', $delimiters);
     }
@@ -436,7 +437,7 @@ class Inflector
      * @param  string      $delimiters  (default: ' _-')
      * @return string|null
      */
-    public static function humanize(string|null $word, string $replacement = ' ', string $delimiters = ' _-') : string|null
+    public static function humanize(string|null $word, string $replacement = ' ', string $delimiters = ' _-'): string|null
     {
         return $word === null ? null : str_replace(Strings::toCharArray($delimiters), $replacement, ucwords(static::splitize($word, $replacement), $delimiters));
     }
@@ -448,7 +449,7 @@ class Inflector
      * @param  string $delimiter
      * @return string
      */
-    protected static function splitize(string $word, string $delimiter) : string
+    protected static function splitize(string $word, string $delimiter): string
     {
         return preg_replace('~(?<=\\w)([A-Z])~u', "{$delimiter}$1", $word);
     }
@@ -460,7 +461,7 @@ class Inflector
      * @param  string      $delimiters (default: ' \t\r\n\f\v')
      * @return string|null
      */
-    public static function capitalize(string|null $text, string $delimiters = " \t\r\n\f\v") : string|null
+    public static function capitalize(string|null $text, string $delimiters = " \t\r\n\f\v"): string|null
     {
         return $text === null ? null : ucwords($text, $delimiters);
     }
@@ -471,7 +472,7 @@ class Inflector
      * @param  string|null $word
      * @return string|null
      */
-    public static function pluralize(string|null $word) : string|null
+    public static function pluralize(string|null $word): string|null
     {
         $cache    = self::$cache['pluralize'];
         $compiled = self::$compiled['pluralize'];
@@ -516,7 +517,7 @@ class Inflector
      * @param  string|null $word
      * @return string|null
      */
-    public static function singularize(string|null $word) : string|null
+    public static function singularize(string|null $word): string|null
     {
         $cache    = self::$cache['singularize'];
         $compiled = self::$compiled['singularize'];

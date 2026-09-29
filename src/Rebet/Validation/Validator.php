@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Validation;
@@ -60,7 +61,7 @@ class Validator
      * @param  boolean $nested_attribute_auto_format
      * @return void
      */
-    public static function setNestedAttributeAutoFormat(bool $nested_attribute_auto_format) : void
+    public static function setNestedAttributeAutoFormat(bool $nested_attribute_auto_format): void
     {
         static::setConfig(['nested_attribute_auto_format' => $nested_attribute_auto_format]);
     }
@@ -87,7 +88,7 @@ class Validator
      * @param  bool                                                                                                  $accept_undefined (default: false)
      * @return ValidData|null
      */
-    public function validate(string $crud, $rules, bool $accept_undefined = false) : ValidData|null
+    public function validate(string $crud, $rules, bool $accept_undefined = false): ValidData|null
     {
         if (!Arrays::isSequential($rules)) {
             $rules = [$rules];
@@ -99,9 +100,9 @@ class Validator
             $rule = is_string($rule) ? Reflector::instantiate($rule) : $rule ;
             $spot = null;
             if ($rule instanceof Rule) {
-                $nested_attribute_auto_format = $nested_attribute_auto_format ?? $rule->nestedAttributeAutoFormat();
-                $spot                         = $rule;
-                $rule                         = $rule->rules();
+                $nested_attribute_auto_format ??= $rule->nestedAttributeAutoFormat();
+                $spot = $rule;
+                $rule = $rule->rules();
             }
 
             $errors       = [];
@@ -137,7 +138,7 @@ class Validator
      * @param  Rule|null            $spot_validations
      * @return ValidData
      */
-    protected function _validate(Context $context, $rules, Rule|null $spot_validations) : ValidData
+    protected function _validate(Context $context, $rules, Rule|null $spot_validations): ValidData
     {
         $valid_data = [];
         foreach ($rules as $field => $config) {
@@ -145,7 +146,7 @@ class Validator
             $context->initBy($field);
 
             // Handle before filter
-            $before = (array)($config['before'] ?? []);
+            $before = (array) ($config['before'] ?? []);
             foreach ($before as $filter) {
                 $context->value = $filter($context->value);
             }
@@ -181,7 +182,7 @@ class Validator
             }
 
             // Handle after filter
-            $after = (array)($config['after'] ?? []);
+            $after = (array) ($config['after'] ?? []);
             foreach ($after as $filter) {
                 $data = $filter($data);
             }
@@ -198,7 +199,7 @@ class Validator
      * @param array<int, mixed> $rules
      * @param Rule|null         $spot_validations
      */
-    protected function validateRules(Context $context, array $rules, Rule|null $spot_validations) : void
+    protected function validateRules(Context $context, array $rules, Rule|null $spot_validations): void
     {
         foreach ($rules as $rule) {
             if (!is_array($rule)) {
@@ -247,7 +248,7 @@ class Validator
      *
      * @return array<string, array<int, string>>
      */
-    public function errors() : array
+    public function errors(): array
     {
         return $this->errors;
     }

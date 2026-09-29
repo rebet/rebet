@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Middleware\Routing;
 
 use Rebet\Http\Responder;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Cache\Adapter\Symfony\Pool;
@@ -49,14 +50,14 @@ class ArrayPool implements AdapterInterface
                 return $item;
             },
             null,
-            CacheItem::class
+            CacheItem::class,
         );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getItem($key) : CacheItem
+    public function getItem($key): CacheItem
     {
         $isHit = $this->hasItem($key);
         $value = $isHit ? $this->pool[$key][0] : null ;
@@ -67,7 +68,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function getItems(array $keys = []) : iterable
+    public function getItems(array $keys = []): iterable
     {
         $items = [];
         foreach ($keys as $key) {
@@ -79,7 +80,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function hasItem(string $key) : bool
+    public function hasItem(string $key): bool
     {
         if (isset($this->pool[$key]) && $this->pool[$key][1] > microtime(true)) {
             return true;
@@ -91,7 +92,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function clear(string $prefix = '') : bool
+    public function clear(string $prefix = ''): bool
     {
         $prefix = 0 < \func_num_args() ? (string) func_get_arg(0) : '';
         if ('' !== $prefix) {
@@ -110,7 +111,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function deleteItem($key) : bool
+    public function deleteItem($key): bool
     {
         CacheItem::validateKey($key);
         unset($this->pool[$key]);
@@ -120,7 +121,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function deleteItems(array $keys) : bool
+    public function deleteItems(array $keys): bool
     {
         foreach ($keys as $key) {
             $this->deleteItem($key);
@@ -131,7 +132,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function save(CacheItemInterface $item) : bool
+    public function save(CacheItemInterface $item): bool
     {
         if (!$item instanceof CacheItem) {
             return false;
@@ -154,7 +155,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function saveDeferred(CacheItemInterface $item) : bool
+    public function saveDeferred(CacheItemInterface $item): bool
     {
         if (!$item instanceof CacheItem) {
             return false;
@@ -166,7 +167,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function commit() : bool
+    public function commit(): bool
     {
         foreach ($this->deferred as $item) {
             $this->save($item);

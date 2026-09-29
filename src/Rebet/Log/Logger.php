@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Log;
@@ -38,7 +39,7 @@ class Logger
      *
      * @return PsrLogger
      */
-    public function driver() : PsrLogger
+    public function driver(): PsrLogger
     {
         return $this->driver;
     }
@@ -72,7 +73,7 @@ class Logger
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public function emergency($message, array $context = [], $exception = null) : void
+    public function emergency($message, array $context = [], $exception = null): void
     {
         $this->log(LogLevel::EMERGENCY, $message, $context, $exception);
     }
@@ -89,7 +90,7 @@ class Logger
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public function alert($message, array $context = [], $exception = null) : void
+    public function alert($message, array $context = [], $exception = null): void
     {
         $this->log(LogLevel::ALERT, $message, $context, $exception);
     }
@@ -105,7 +106,7 @@ class Logger
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public function critical($message, array $context = [], $exception = null) : void
+    public function critical($message, array $context = [], $exception = null): void
     {
         $this->log(LogLevel::CRITICAL, $message, $context, $exception);
     }
@@ -119,7 +120,7 @@ class Logger
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public function error($message, array $context = [], $exception = null) : void
+    public function error($message, array $context = [], $exception = null): void
     {
         $this->log(LogLevel::ERROR, $message, $context, $exception);
     }
@@ -136,7 +137,7 @@ class Logger
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public function warning($message, array $context = [], $exception = null) : void
+    public function warning($message, array $context = [], $exception = null): void
     {
         $this->log(LogLevel::WARNING, $message, $context, $exception);
     }
@@ -150,7 +151,7 @@ class Logger
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public function notice($message, array $context = [], $exception = null) : void
+    public function notice($message, array $context = [], $exception = null): void
     {
         $this->log(LogLevel::NOTICE, $message, $context, $exception);
     }
@@ -166,7 +167,7 @@ class Logger
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public function info($message, array $context = [], $exception = null) : void
+    public function info($message, array $context = [], $exception = null): void
     {
         $this->log(LogLevel::INFO, $message, $context, $exception);
     }
@@ -180,7 +181,7 @@ class Logger
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public function debug($message, array $context = [], $exception = null) : void
+    public function debug($message, array $context = [], $exception = null): void
     {
         $this->log(LogLevel::DEBUG, $message, $context, $exception);
     }
@@ -194,7 +195,7 @@ class Logger
      * @param  \Throwable           $exception (default: null)
      * @return void
      */
-    public function log(string $level, $message, array $context = [], $exception = null) : void
+    public function log(string $level, $message, array $context = [], $exception = null): void
     {
         if ($exception) {
             $context['exception'] = $exception;
@@ -210,12 +211,12 @@ class Logger
      * @param  string $level    (default: LogLevel::DEBUG)
      * @return void
      */
-    public function memory(string $message = '', int $decimals = 2, string $level = LogLevel::DEBUG) : void
+    public function memory(string $message = '', int $decimals = 2, string $level = LogLevel::DEBUG): void
     {
         $current = number_format(memory_get_usage() / 1048576, $decimals);
         $peak    = number_format(memory_get_peak_usage() / 1048576, $decimals);
         $message = empty($message) ? "" : "{$message} : " ;
-        $message = $message."Memory {$current} MB / Peak Memory {$peak} MB";
+        $message = $message . "Memory {$current} MB / Peak Memory {$peak} MB";
         $this->log($level, $message);
     }
 }

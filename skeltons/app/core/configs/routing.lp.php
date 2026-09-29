@@ -34,7 +34,7 @@ return [
     | This section defines routing settings.
     | You may change these defaults as required.
     */
-    Router::class => [
+    Router::class            => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Global Middlewares
@@ -55,7 +55,7 @@ return [
         |  - @see Rebet\Middleware\Routing\VerifyCsrfToken
         |  and also you can use any middleware class that you want.
         */
-        'middlewares' => [
+        'middlewares'              => [
             'web' => [
                 Rebet\Middleware\Routing\AddQueuedCookiesToResponse::class,
                 Rebet\Middleware\Routing\StartSession::class,
@@ -81,7 +81,7 @@ return [
         | Normally you don't need to change this setting, it is automatically set from the current
         | application/kernel.
         */
-        'current_channel' => App::channel(),
+        'current_channel'          => App::channel(),
 
 
         /*
@@ -106,7 +106,7 @@ return [
     | This section defines settings for selecting/changing the view to be rendered depending on the
     | current request and authenticated user (ex: device or role dependent view switching).
     */
-    ViewSelector::class => [
+    ViewSelector::class      => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | View Changer
@@ -136,7 +136,7 @@ return [
         | This option defines the namespace where controller classes are resolved from.
         | You can use `@` namespace alias (ex: '@controller') defined by `Namespaces::alias()`.
         */
-        'namespace' => '@controller',
+        'namespace'                  => '@controller',
 
 
         /*
@@ -157,7 +157,7 @@ return [
         | This option defines the separator used when converting a snake/kebab case URI controller
         | part (ex: 'user-account') to a pascal case controller class name (ex: 'UserAccount').
         */
-        'uri_snake_separator' => '-',
+        'uri_snake_separator'        => '-',
 
 
         /*
@@ -167,8 +167,8 @@ return [
         | These options define the suffix appended to the resolved controller class name and action
         | method name.
         */
-        'controller_suffix' => 'Controller',
-        'action_suffix'     => '',
+        'controller_suffix'          => 'Controller',
+        'action_suffix'              => '',
 
 
         /*
@@ -180,7 +180,7 @@ return [
         |
         | ex) 'aliases' => ['user' => 'user-account/list'],
         */
-        'aliases' => [],
+        'aliases'                    => [],
 
 
         /*
@@ -191,7 +191,7 @@ return [
         | If you set this option true, then non-public (protected/private) methods also become
         | routable. It is not recommended unless you have a specific reason.
         */
-        'accessible' => false,
+        'accessible'                 => false,
     ],
 
 
@@ -202,7 +202,7 @@ return [
     | This section defines settings for `Router::match()` (get/post/put/patch/delete/options/any)
     | declarative routing, that resolves given `'Controller::action'` string style action.
     */
-    MethodRoute::class => [
+    MethodRoute::class       => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Controller Namespace

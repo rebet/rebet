@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http;
@@ -22,5 +23,5 @@ interface ProblemRespondable
      *
      * @return ProblemResponse
      */
-    public function problem() : ProblemResponse ;
+    public function problem(): ProblemResponse ;
 }

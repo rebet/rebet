@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Log\Driver;
@@ -26,7 +27,7 @@ class NullDriver extends PsrAbstractLogger
      * @param  array<string, mixed> $context (default: [])
      * @return void
      */
-    public function log($level, string|\Stringable $message, array $context = []) : void
+    public function log($level, string|\Stringable $message, array $context = []): void
     {
         // Do nothing.
     }

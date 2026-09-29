@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\View\Engine\Twig;
@@ -21,9 +22,9 @@ class TwigTagCustomizer
     /**
      * define costom extentions for Rebet.
      */
-    public static function customize(Twig $twig) : void
+    public static function customize(Twig $twig): void
     {
-        $twig->appendPath(__DIR__.'/views');
+        $twig->appendPath(__DIR__ . '/views');
         $environment = $twig->core();
 
         // ------------------------------------------------

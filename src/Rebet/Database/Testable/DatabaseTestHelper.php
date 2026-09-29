@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Database\Testable;
@@ -35,7 +36,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      * Set up database configuration for unit testing.
      * This method is expected to be called in setUp().
      */
-    public static function setUpDatabase() : void
+    public static function setUpDatabase(): void
     {
         Config::runtime([
             Database::class => [
@@ -51,7 +52,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      * Tear down database configuration for unit testing.
      * This method is expected to be called in tearDownAfterClass().
      */
-    public static function tearDownDatabase() : void
+    public static function tearDownDatabase(): void
     {
         static::eachDb(function (Database $db) {
             $db->close();
@@ -66,7 +67,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      * @param  string   ...$dbs that are test targets
      * @return void
      */
-    public static function eachDb(\Closure $test, string ...$dbs) : void
+    public static function eachDb(\Closure $test, string ...$dbs): void
     {
         $dbs = empty($dbs) ? array_keys(Dao::config('dbs')) : $dbs ;
         foreach ($dbs as $name) {
@@ -93,7 +94,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      * @param  bool  $with_truncate (default: true)
      * @return void
      */
-    public static function setUpDataSet(array $data, bool $with_truncate = true) : void
+    public static function setUpDataSet(array $data, bool $with_truncate = true): void
     {
         Dao::clear();
         static::eachDb(function (Database $db) use ($data, $with_truncate) {
@@ -111,7 +112,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
                 $columns    = array_shift($records) ?? [];
                 $table_name = $db->driver()->quoteIdentifier($table_name);
                 foreach ($records as $record) {
-                    $db->execute("INSERT INTO {$table_name} (". join(',', array_map(function ($v) use ($db) { return $db->driver()->quoteIdentifier($v); }, $columns)).") VALUES (:values)", ['values' => $record]);
+                    $db->execute("INSERT INTO {$table_name} (" . join(',', array_map(function ($v) use ($db) { return $db->driver()->quoteIdentifier($v); }, $columns)) . ") VALUES (:values)", ['values' => $record]);
                 }
             }
             $db->commit();
@@ -125,12 +126,12 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      * @param  bool $emulate SQL or not (default: true)
      * @return void
      */
-    public static function dumpExecutedQueries(bool $emulate = true) : void
+    public static function dumpExecutedQueries(bool $emulate = true): void
     {
         echo "\n";
         echo "---------- [ Executed Queries ] ----------\n";
         foreach (static::$executed_queries as $i => $query) {
-            echo "[".$query->driver()->name().": {$i}] >> ".($emulate ? $query->emulate() : $query->toString())."\n";
+            echo "[" . $query->driver()->name() . ": {$i}] >> " . ($emulate ? $query->emulate() : $query->toString()) . "\n";
         }
         echo "------------------------------------------\n";
     }
@@ -140,7 +141,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      *
      * @return void
      */
-    public static function clearExecutedQueries() : void
+    public static function clearExecutedQueries(): void
     {
         static::$executed_queries = [];
     }
@@ -150,7 +151,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      *
      * @return Query|null
      */
-    public static function dequeueExecutedQuery() : Query|null
+    public static function dequeueExecutedQuery(): Query|null
     {
         return array_shift(static::$executed_queries);
     }
@@ -162,7 +163,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
     /**
      * @see PHPUnit\Framework\Assert::fail
      */
-    abstract public static function fail(string $message = '') : void;
+    abstract public static function fail(string $message = ''): void;
 
     // ========================================================================
     // Dependent Rebet\Tools\Testable\TestHelper methods and assertions
@@ -171,12 +172,12 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
     /**
      * @see Rebet\Tools\Testable\TestHelper::success
      */
-    abstract public static function success() : void ;
+    abstract public static function success(): void ;
 
     /**
      * @see Rebet\Tools\Testable\TestHelper::assertStringWildcardAll
      */
-    abstract public static function assertStringWildcardAll($expects, string $actual, array $wildcards = [], string $message = '') : void;
+    abstract public static function assertStringWildcardAll($expects, string $actual, array $wildcards = [], string $message = ''): void;
 
     // ========================================================================
     // Extended assertions
@@ -194,13 +195,13 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      * @param  string   $message          (default: '')
      * @return void
      */
-    public static function assertExecutedQueryWildcard(Database $db, string $expect, array $depended_expects = [], array $wildcards = ['*' => '@'], string $message = '') : void
+    public static function assertExecutedQueryWildcard(Database $db, string $expect, array $depended_expects = [], array $wildcards = ['*' => '@'], string $message = ''): void
     {
         static::assertStringWildcardAll(
             $depended_expects[$db->driverName()] ?? $expect,
             Strings::ltrim(static::dequeueExecutedQuery()->emulate(), "/* Emulated SQL */ ", 1),
             $wildcards,
-            '['.$db->driverName().'] : '.$message
+            '[' . $db->driverName() . '] : ' . $message,
         );
     }
 
@@ -226,7 +227,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      * @param  string   $message (default: '')
      * @return void
      */
-    public static function assertDatabaseMatches(Database $db, array $expects, bool $strict = true, string $message = '') : void
+    public static function assertDatabaseMatches(Database $db, array $expects, bool $strict = true, string $message = ''): void
     {
         $is_debug = $db->isDebug();
         $db->debug(false);
@@ -242,11 +243,11 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
                 $expect_count = count($rows);
                 if ($expect_count != $actual_count) {
                     static::fail(
-                        "{$message}Failed asserting that table '{$table_name}' on {$db->name()} rows count: expect \"{$expect_count}\" but actual \"{$actual_count}\".\n".
-                        "\n".
-                        "---------- [ Full data of {$table_name} ] ----------\n".
-                        Strings::stringify($db->select("SELECT * FROM {$table}", [reset($columns) => 'ASC']))."\n".
-                        "----------------------------------------------------\n"
+                        "{$message}Failed asserting that table '{$table_name}' on {$db->name()} rows count: expect \"{$expect_count}\" but actual \"{$actual_count}\".\n"
+                        . "\n"
+                        . "---------- [ Full data of {$table_name} ] ----------\n"
+                        . Strings::stringify($db->select("SELECT * FROM {$table}", [reset($columns) => 'ASC'])) . "\n"
+                        . "----------------------------------------------------\n",
                     );
                 }
             }
@@ -254,19 +255,19 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
                 $params = array_combine($columns, $row);
                 $sql    = "SELECT * FROM {$table} WHERE 1=1";
                 foreach ($params as $column => $value) {
-                    $sql .= " AND ".$db->driver()->quoteIdentifier($column).($value === null ? " IS NULL" : " = :{$column}") ;
+                    $sql .= " AND " . $db->driver()->quoteIdentifier($column) . ($value === null ? " IS NULL" : " = :{$column}") ;
                 }
                 if (($count = $db->count($sql, $params)) != 1) {
                     static::fail(
-                        "{$message}Failed asserting that table '{$table_name}' on {$db->name()} rows ".($count === 0 ? "miss match" : "too many match").": expect \n".
-                        Strings::indent(Strings::stringify($params), " ", 4)."\n".
-                        "but SQL \n".
-                        Strings::indent($db->sql($sql, $params)->emulate(), ">> ")."\n".
-                        ($count === 0 ? "was not hit any data.\n" : "was hit {$count} data.\n").
-                        "\n".
-                        "---------- [ Full data of {$table_name} ] ----------\n".
-                        Strings::stringify($db->select("SELECT * FROM {$table}", [reset($columns) => 'ASC']))."\n".
-                        "----------------------------------------------------\n"
+                        "{$message}Failed asserting that table '{$table_name}' on {$db->name()} rows " . ($count === 0 ? "miss match" : "too many match") . ": expect \n"
+                        . Strings::indent(Strings::stringify($params), " ", 4) . "\n"
+                        . "but SQL \n"
+                        . Strings::indent($db->sql($sql, $params)->emulate(), ">> ") . "\n"
+                        . ($count === 0 ? "was not hit any data.\n" : "was hit {$count} data.\n")
+                        . "\n"
+                        . "---------- [ Full data of {$table_name} ] ----------\n"
+                        . Strings::stringify($db->select("SELECT * FROM {$table}", [reset($columns) => 'ASC'])) . "\n"
+                        . "----------------------------------------------------\n",
                     );
                 }
             }

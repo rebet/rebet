@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Resource;
@@ -39,11 +40,11 @@ class EnvResource
      * @return array<string, mixed>
      * @throws LogicException
      */
-    public static function load(string $env, string $dir_path, $base_names = null, string $suffix = 'php', array $option = []) : array
+    public static function load(string $env, string $dir_path, $base_names = null, string $suffix = 'php', array $option = []): array
     {
-        $base_names = $base_names ?? static::listBaseNames($dir_path, $suffix) ;
-        $resource   = [];
-        foreach ((array)$base_names as $base_name) {
+        $base_names ??= static::listBaseNames($dir_path, $suffix) ;
+        $resource = [];
+        foreach ((array) $base_names as $base_name) {
             $base_resource_path = "{$dir_path}/{$base_name}.{$suffix}";
             $base_resource      = Resource::load($suffix, $base_resource_path, $option);
 
@@ -67,7 +68,7 @@ class EnvResource
      * @param  string             $suffix
      * @return array<int, string>
      */
-    protected static function listBaseNames(string $dir_path, string $suffix) : array
+    protected static function listBaseNames(string $dir_path, string $suffix): array
     {
         $basenames = [];
         $excludes  = ['.', '..'];

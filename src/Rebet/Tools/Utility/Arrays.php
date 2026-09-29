@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
@@ -26,9 +27,7 @@ class Arrays
     /**
      * No instantiation
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * It randomly selects the given number of items from the target list.
@@ -40,7 +39,7 @@ class Arrays
      * @param  int                      $number
      * @return array<int, array<mixed>> [[selected_item, ...], [not_selected_items, ...]]
      */
-    public static function random(array $list, int $number) : array
+    public static function random(array $list, int $number): array
     {
         if (count($list) <= $number) {
             return [$list, []] ;
@@ -92,7 +91,7 @@ class Arrays
      * @param  array<mixed>|null $array
      * @return bool
      */
-    public static function isSequential($array) : bool
+    public static function isSequential($array): bool
     {
         if (!static::accessible($array)) {
             return false;
@@ -125,7 +124,7 @@ class Arrays
      * @return array<mixed>
      * @see Reflector::get()
      */
-    public static function pluck(array|null $list, $value_field, $key_field = null) : array
+    public static function pluck(array|null $list, $value_field, $key_field = null): array
     {
         if (Utils::isEmpty($list)) {
             return [];
@@ -133,7 +132,7 @@ class Arrays
         $plucks = [];
         $i      = 0;
         foreach ($list as $key => $row) {
-            $k          = Utils::isBlank($key_field)   ? $i   : ($key_field   instanceof \Closure ? call_user_func($key_field, $i, $key, $row)   : Reflector::get($row, $key_field));
+            $k          = Utils::isBlank($key_field) ? $i : ($key_field   instanceof \Closure ? call_user_func($key_field, $i, $key, $row) : Reflector::get($row, $key_field));
             $plucks[$k] = Utils::isBlank($value_field) ? $row : ($value_field instanceof \Closure ? call_user_func($value_field, $i, $key, $row) : Reflector::get($row, $value_field));
             $i++;
         }
@@ -317,7 +316,7 @@ class Arrays
      * @param  array<mixed>|null      $array
      * @return array<int, mixed>|null
      */
-    public static function duplicate(array|null $array) : array|null
+    public static function duplicate(array|null $array): array|null
     {
         if ($array === null) {
             return null;
@@ -338,7 +337,7 @@ class Arrays
      * @param  array<mixed>|null $array
      * @return array<mixed>|null
      */
-    public static function collapse($array) : array|null
+    public static function collapse($array): array|null
     {
         if ($array === null) {
             return null;
@@ -360,7 +359,7 @@ class Arrays
      * @param  iterable<mixed>          ...$arrays
      * @return array<int, array<mixed>>
      */
-    public static function crossJoin(iterable ...$arrays) : array
+    public static function crossJoin(iterable ...$arrays): array
     {
         $results = [[]];
         foreach ($arrays as $index => $array) {
@@ -394,7 +393,7 @@ class Arrays
      * @param  string|int|null                                   $key
      * @return bool
      */
-    public static function exists($array, $key) : bool
+    public static function exists($array, $key): bool
     {
         if ($array === null) {
             return false;
@@ -497,7 +496,7 @@ class Arrays
      * @param  array<mixed>|null $array
      * @return array<mixed>|null
      */
-    public static function compact(array|null $array) : array|null
+    public static function compact(array|null $array): array|null
     {
         if ($array === null) {
             return null;
@@ -512,7 +511,7 @@ class Arrays
      * @param  int               $sort_flags (default: SORT_REGULAR)
      * @return array<mixed>|null
      */
-    public static function unique(array|null $array, int $sort_flags = SORT_REGULAR) : array|null
+    public static function unique(array|null $array, int $sort_flags = SORT_REGULAR): array|null
     {
         return $array === null ? null : array_unique($array, $sort_flags) ;
     }
@@ -585,7 +584,7 @@ class Arrays
      * @param  int|float         $depth (default: INF)
      * @return array<mixed>
      */
-    public static function flatten(array|null $array, $depth = INF) : array|null
+    public static function flatten(array|null $array, $depth = INF): array|null
     {
         if ($array === null) {
             return null;
@@ -630,7 +629,7 @@ class Arrays
      * @param  array<int|string>|string $keys
      * @return array<mixed>|null
      */
-    public static function only(array|null $array, $keys) : array|null
+    public static function only(array|null $array, $keys): array|null
     {
         if ($array === null) {
             return null;
@@ -646,7 +645,7 @@ class Arrays
      * @param  mixed             $key
      * @return array<mixed>
      */
-    public static function prepend(array|null $array, $value, $key = null) : array
+    public static function prepend(array|null $array, $value, $key = null): array
     {
         if ($array === null) {
             return is_null($key) ? [$value] : [$key => $value] ;
@@ -681,7 +680,7 @@ class Arrays
      * @param  int|null          $seed
      * @return array<mixed>
      */
-    public static function shuffle(array|null $array, int|null $seed = null) : array|null
+    public static function shuffle(array|null $array, int|null $seed = null): array|null
     {
         if ($array === null) {
             return null;
@@ -704,7 +703,7 @@ class Arrays
      * @param  callable|null $test  of counting target function($value, $key):bool
      * @return int
      */
-    public static function count($value, callable|null $test = null) : int
+    public static function count($value, callable|null $test = null): int
     {
         if ($test === null && (is_array($value) || $value instanceof \Countable)) {
             return count($value);
@@ -725,7 +724,7 @@ class Arrays
      * @param  mixed             $items
      * @return array<mixed>|null
      */
-    public static function toArray($items) : array|null
+    public static function toArray($items): array|null
     {
         if ($items === null) {
             return null;
@@ -760,7 +759,7 @@ class Arrays
      * @param  callable          $callback function($value, $key) { ... }
      * @return array<mixed>|null
      */
-    public static function map(array|null $array, callable $callback) : array|null
+    public static function map(array|null $array, callable $callback): array|null
     {
         if ($array === null) {
             return null;
@@ -790,7 +789,7 @@ class Arrays
      * @param  callable|null     $comparator function(mixed $a, mixed $b) : int (default: null)
      * @return array<mixed>|null
      */
-    public static function diff(array|null $array, $items, callable|null $comparator = null) : array|null
+    public static function diff(array|null $array, $items, callable|null $comparator = null): array|null
     {
         if ($array === null) {
             return null;
@@ -809,7 +808,7 @@ class Arrays
      * @param  callable|null     $comparator function(mixed $a, mixed $b):int (default: null)
      * @return array<mixed>|null
      */
-    public static function intersect(array|null $array, $items, callable|null $comparator = null) : array|null
+    public static function intersect(array|null $array, $items, callable|null $comparator = null): array|null
     {
         if ($array === null) {
             return null;
@@ -827,7 +826,7 @@ class Arrays
      * @param  callable          $test  of function($v, $k):bool
      * @return bool
      */
-    public static function every(array|null $array, callable $test) : bool
+    public static function every(array|null $array, callable $test): bool
     {
         if ($array === null) {
             return true;
@@ -848,7 +847,7 @@ class Arrays
      * @param  bool                         $preserve_keys (default: false)
      * @return array<mixed>
      */
-    public static function groupBy(array|null $array, $group_by = null, bool $preserve_keys = false) : array|null
+    public static function groupBy(array|null $array, $group_by = null, bool $preserve_keys = false): array|null
     {
         if ($array === null) {
             return null;
@@ -889,7 +888,7 @@ class Arrays
      * @param  mixed             $other
      * @return array<mixed>|null
      */
-    public static function union(array|null $array, mixed $other) : array|null
+    public static function union(array|null $array, mixed $other): array|null
     {
         return $array === null ? null : $array + (static::toArray($other) ?? []);
     }
@@ -938,7 +937,7 @@ class Arrays
      * @param  callable|int      $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
      * @return array<mixed>|null
      */
-    public static function sort(array|null $array, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) : array|null
+    public static function sort(array|null $array, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR): array|null
     {
         if ($array === null) {
             return null;
@@ -963,7 +962,7 @@ class Arrays
      * @param  callable|int      $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
      * @return array<mixed>|null
      */
-    public static function sortBy(array|null $array, callable|string $retriever, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) : array|null
+    public static function sortBy(array|null $array, callable|string $retriever, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR): array|null
     {
         if ($array === null) {
             return null;
@@ -991,7 +990,7 @@ class Arrays
      * @param  callable|int      $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
      * @return array<mixed>|null
      */
-    public static function sortKeys(array|null $array, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) : array|null
+    public static function sortKeys(array|null $array, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR): array|null
     {
         if ($array === null) {
             return null;
@@ -1016,7 +1015,7 @@ class Arrays
      * @param  int|null             $precision           for arbitrary precision (default: null)
      * @return Decimal|null
      */
-    public static function sum(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null) : Decimal|null
+    public static function sum(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null): Decimal|null
     {
         if ($array === null) {
             return null;
@@ -1042,7 +1041,7 @@ class Arrays
      * @param  int|null             $precision           for arbitrary precision (default: null)
      * @return Decimal|null
      */
-    public static function avg(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null) : Decimal|null
+    public static function avg(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null): Decimal|null
     {
         if (empty($array)) {
             return null;
@@ -1063,7 +1062,7 @@ class Arrays
      * @param  int|null             $precision           for arbitrary precision (default: null)
      * @return Decimal|null
      */
-    public static function median(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null) : Decimal|null
+    public static function median(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null): Decimal|null
     {
         if (empty($array)) {
             return null;
@@ -1088,7 +1087,7 @@ class Arrays
      * @param  callable|string|null $retriever key name (with/without '@') or function($value):mixed.
      * @return array<mixed>|null
      */
-    public static function mode(array|null $array, callable|string|null $retriever = null) : array|null
+    public static function mode(array|null $array, callable|string|null $retriever = null): array|null
     {
         if (empty($array)) {
             return null;
@@ -1131,7 +1130,7 @@ class Arrays
      * @param  string|null $kvs       key and value separator (default: null for omit key)
      * @return string|null return null when other than iterable given as $iterable.
      */
-    public static function implode($iterable, string $delimiter = ', ', string|null $kvs = null) : string|null
+    public static function implode($iterable, string $delimiter = ', ', string|null $kvs = null): string|null
     {
         if (!is_iterable($iterable)) {
             return null;
@@ -1140,7 +1139,7 @@ class Arrays
         $string = '';
         foreach ($iterable as $key => $value) {
             if (is_iterable($value)) {
-                $value = '['.static::implode($value, $delimiter).']';
+                $value = '[' . static::implode($value, $delimiter) . ']';
             }
             $string .= $kvs ? "{$key}{$kvs}{$value}{$delimiter}" : "{$value}{$delimiter}";
         }
@@ -1153,7 +1152,7 @@ class Arrays
      * @param  array<mixed>                              $array
      * @return array{key: int|string|null, value: mixed} ['key' => key, 'value' => value]
      */
-    public static function pop(array &$array) : array
+    public static function pop(array &$array): array
     {
         if (empty($array)) {
             return ['key' => null, 'value' => null];
@@ -1172,7 +1171,7 @@ class Arrays
      * @param  int                                   $encoding of PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
-    public static function toQuery(array|\Traversable|null $value, int $encoding = PHP_QUERY_RFC1738) : string|null
+    public static function toQuery(array|\Traversable|null $value, int $encoding = PHP_QUERY_RFC1738): string|null
     {
         return $value === null ? null : http_build_query($value, '', '&', $encoding) ;
     }

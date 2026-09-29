@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Http;
@@ -23,7 +24,7 @@ class UserAgent extends DeviceDetector
      * @param  string|DeviceDetector|UserAgent|null $ua
      * @return self|null
      */
-    public static function valueOf($ua) : self|null
+    public static function valueOf($ua): self|null
     {
         switch (true) {
             case $ua === null:

@@ -43,7 +43,7 @@ return [
     | See below for more detailed configuration examples for this file:
     | @see Rebet\Application\Console\Command\skeltons\configs\auth.lp.php
     */
-    Auth::class => [
+    Auth::class     => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Authentication Guards
@@ -57,10 +57,10 @@ return [
         |  - @see Rebet\Auth\Guard\TokenGuard
         |  - and also you can use any auth guard that extended Rebet\Auth\Guard\Guard.
         */
-        'guards' => [
+        'guards'    => [
             //{%-- commentif !$use_auth -%}
             'user:web' => [SessionGuard::class, 'provider' => 'user', 'fallback' => '/signin'],
-            'user:api' => [TokenGuard::class  , 'provider' => 'user'],
+            'user:api' => [TokenGuard::class, 'provider' => 'user'],
             //{%-- endcommentif -%}
         ],
 
@@ -124,7 +124,7 @@ return [
         | You can also use `Auth::role()` and `Auth::user()->is()` methods, or `role` tag in views
         | to see if the target user belongs to a role.
         */
-        'roles' => [
+        'roles'     => [
             //{%-- commentif !$use_auth -%}
             'all'   => function (AuthUser $user) { return true; },
             'guest' => function (AuthUser $user) { return $user->isGuest(); },
@@ -142,7 +142,7 @@ return [
         | You can use `Auth::policy()` and `Auth::user()->can()` methods, or 'can' tag in views to
         | see if the target user was allowed given action.
         */
-        'policies' => [
+        'policies'  => [
             //{%-- commentif !($use_auth && $use_db) -%}
             User::class => [
                 // '@before' => function (AuthUser $user, $target, string $action) { return $user->is('admin'); },

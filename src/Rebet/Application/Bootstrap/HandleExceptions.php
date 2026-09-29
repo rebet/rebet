@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Application\Bootstrap;
@@ -23,7 +24,7 @@ class HandleExceptions implements Bootstrapper
         ini_set('display_errors', 'Off');
         error_reporting(-1);
 
-        set_error_handler(function (int $level, string $message, string $file = '', int $line = 0) : bool {
+        set_error_handler(function (int $level, string $message, string $file = '', int $line = 0): bool {
             if (error_reporting() & $level) {
                 throw new \ErrorException($message, 0, $level, $file, $line);
             }

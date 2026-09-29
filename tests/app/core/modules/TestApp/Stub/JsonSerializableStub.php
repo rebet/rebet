@@ -1,4 +1,5 @@
 <?php
+
 namespace TestApp\Stub;
 
 class JsonSerializableStub implements \JsonSerializable
@@ -10,7 +11,7 @@ class JsonSerializableStub implements \JsonSerializable
         $this->value = $value;
     }
 
-    public function jsonSerialize() : mixed
+    public function jsonSerialize(): mixed
     {
         return $this->value;
     }

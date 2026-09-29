@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Filesystem\Exception;
 
 use Rebet\Filesystem\Exception\FileNotFoundException;

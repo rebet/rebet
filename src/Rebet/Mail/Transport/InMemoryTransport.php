@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Mail\Transport;
@@ -41,7 +42,7 @@ class InMemoryTransport extends AbstractTransport
     /**
      * {@inheritDoc}
      */
-    protected function doSend(SentMessage $message) : void
+    protected function doSend(SentMessage $message): void
     {
         $this->message = $message;
     }
@@ -51,7 +52,7 @@ class InMemoryTransport extends AbstractTransport
      *
      * @return SentMessage|null
      */
-    public function getSentMessage() : SentMessage|null
+    public function getSentMessage(): SentMessage|null
     {
         return $this->message;
     }
@@ -59,7 +60,7 @@ class InMemoryTransport extends AbstractTransport
     /**
      * {@inheritDoc}
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return 'rebet://in-memory';
     }

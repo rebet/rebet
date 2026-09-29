@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Tools\Translation;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -15,7 +16,7 @@ class FileDictionaryTest extends RebetTestCase
      */
     private $dictionary;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->dictionary = new FileDictionary();
@@ -28,8 +29,8 @@ class FileDictionaryTest extends RebetTestCase
 
     public function test_addLibraryResource()
     {
-        $label_key = Gender::class.'.label.1';
-        $mark_key  = Gender::class.'.mark.1';
+        $label_key = Gender::class . '.label.1';
+        $mark_key  = Gender::class . '.mark.1';
 
         $label = $this->dictionary->sentence('enum', $label_key, ['ja', 'en']);
         $mark  = $this->dictionary->sentence('enum', $mark_key, ['ja', 'en']);
@@ -56,7 +57,7 @@ class FileDictionaryTest extends RebetTestCase
 
     public function test_clear()
     {
-        $label_key = Gender::class.'.label.1';
+        $label_key = Gender::class . '.label.1';
         $label     = $this->dictionary->sentence('enum', $label_key, ['ja', 'en']);
         $label     = $this->dictionary->sentence('enum', $label_key, ['de', 'en']);
         $attribute = $this->dictionary->sentence('attribute', 'translate', ['ja', 'en']);
@@ -97,7 +98,7 @@ class FileDictionaryTest extends RebetTestCase
         $this->assertFalse($this->dictionary->isLoaded('enum', 'de'));
         $this->assertFalse($this->dictionary->isLoaded('attribute', 'ja'));
 
-        $label_key = Gender::class.'.label.1';
+        $label_key = Gender::class . '.label.1';
         $label     = $this->dictionary->sentence('enum', $label_key, ['ja', 'en']);
 
         $this->assertTrue($this->dictionary->isLoaded('enum', 'ja'));
@@ -122,72 +123,72 @@ class FileDictionaryTest extends RebetTestCase
         $this->assertSame($expect, $this->dictionary->sentence('unittest', $key, $locales, $selector, $recursive));
     }
 
-    public static function dataSentences() : array
+    public static function dataSentences(): array
     {
         return [
             [null, 'invalid', ['ja', 'en']],
 
             ['こんにちは Rebet。', 'hello', ['ja', 'en']],
-            ['Hello Rebet.'     , 'hello', ['en']      ],
+            ['Hello Rebet.', 'hello', ['en']      ],
 
-            [null            , 'welcom', ['ja']      ],
+            [null, 'welcom', ['ja']      ],
             ['Welcom :name !', 'welcom', ['ja', 'en']],
             ['Welcom :name !', 'welcom', ['en']      ],
 
             ['This is *(othre).', 'select_by_number', ['en']   ],
-            ['This is 1.'       , 'select_by_number', ['en'], 1],
-            ['This is 2.'       , 'select_by_number', ['en'], 2],
-            ['This is 3.'       , 'select_by_number', ['en'], 3],
+            ['This is 1.', 'select_by_number', ['en'], 1],
+            ['This is 2.', 'select_by_number', ['en'], 2],
+            ['This is 3.', 'select_by_number', ['en'], 3],
             ['This is *(othre).', 'select_by_number', ['en'], 4],
 
             ['This is *(othre).', 'select_by_number_using_pipe', ['en']   ],
-            ['This is 1.'       , 'select_by_number_using_pipe', ['en'], 1],
-            ['This is 2.'       , 'select_by_number_using_pipe', ['en'], 2],
-            ['This is 3.'       , 'select_by_number_using_pipe', ['en'], 3],
+            ['This is 1.', 'select_by_number_using_pipe', ['en'], 1],
+            ['This is 2.', 'select_by_number_using_pipe', ['en'], 2],
+            ['This is 3.', 'select_by_number_using_pipe', ['en'], 3],
             ['This is *(othre).', 'select_by_number_using_pipe', ['en'], 4],
 
-            ['This is *,*(othre).'              , 'select_by_number_range', ['en']    ],
-            ['This is less than or equal 9.'    , 'select_by_number_range', ['en'],  1],
-            ['This is less than or equal 9.'    , 'select_by_number_range', ['en'],  9],
-            ['This is 10 to 19.'                , 'select_by_number_range', ['en'], 10],
-            ['This is 10 to 19.'                , 'select_by_number_range', ['en'], 19],
+            ['This is *,*(othre).', 'select_by_number_range', ['en']    ],
+            ['This is less than or equal 9.', 'select_by_number_range', ['en'],  1],
+            ['This is less than or equal 9.', 'select_by_number_range', ['en'],  9],
+            ['This is 10 to 19.', 'select_by_number_range', ['en'], 10],
+            ['This is 10 to 19.', 'select_by_number_range', ['en'], 19],
             ['This is greater than or equal 20.', 'select_by_number_range', ['en'], 20],
             ['This is greater than or equal 20.', 'select_by_number_range', ['en'], 29],
 
-            [null        , 'select_by_number_without_other', ['en']   ],
+            [null, 'select_by_number_without_other', ['en']   ],
             ['This is 1.', 'select_by_number_without_other', ['en'], 1],
-            [null        , 'select_by_number_without_other', ['en'], 2],
+            [null, 'select_by_number_without_other', ['en'], 2],
 
             ['This is *(othre).', 'select_by_word', ['en']        ],
-            ['This is one.'     , 'select_by_word', ['en'], 'one' ],
-            ['This is some.'    , 'select_by_word', ['en'], 'some'],
-            ['This is all.'     , 'select_by_word', ['en'], 'all' ],
+            ['This is one.', 'select_by_word', ['en'], 'one' ],
+            ['This is some.', 'select_by_word', ['en'], 'some'],
+            ['This is all.', 'select_by_word', ['en'], 'all' ],
             ['This is *(othre).', 'select_by_word', ['en'], 'foo' ],
 
-            ['This is *(othre).'    , 'select_by_word_multi', ['en']              ],
+            ['This is *(othre).', 'select_by_word_multi', ['en']              ],
             ['This is today or now.', 'select_by_word_multi', ['en'], 'today'     ],
             ['This is today or now.', 'select_by_word_multi', ['en'], 'now'       ],
-            ['This is *(othre).'    , 'select_by_word_multi', ['en'], '2010-01-02'],
+            ['This is *(othre).', 'select_by_word_multi', ['en'], '2010-01-02'],
 
-            [null          , 'select_by_word_withot_other', ['en']       ],
+            [null, 'select_by_word_withot_other', ['en']       ],
             ['This is one.', 'select_by_word_withot_other', ['en'], 'one'],
-            [null          , 'select_by_word_withot_other', ['en'], 'two'],
+            [null, 'select_by_word_withot_other', ['en'], 'two'],
 
             ['root',          'recursive', ['en']],
-            ['a'   ,        'a.recursive', ['en']],
-            ['b'   ,        'b.recursive', ['en']],
+            ['a',        'a.recursive', ['en']],
+            ['b',        'b.recursive', ['en']],
             ['root',        'c.recursive', ['en']],
-            ['A'   , 'custom.a.recursive', ['en']],
-            ['b'   , 'custom.b.recursive', ['en']],
+            ['A', 'custom.a.recursive', ['en']],
+            ['b', 'custom.b.recursive', ['en']],
             ['root', 'custom.c.recursive', ['en']],
 
             ['root',          'recursive', ['en'], null, false],
-            ['a'   ,        'a.recursive', ['en'], null, false],
-            ['b'   ,        'b.recursive', ['en'], null, false],
-            [null  ,        'c.recursive', ['en'], null, false],
-            ['A'   , 'custom.a.recursive', ['en'], null, false],
-            [null  , 'custom.b.recursive', ['en'], null, false],
-            [null  , 'custom.c.recursive', ['en'], null, false],
+            ['a',        'a.recursive', ['en'], null, false],
+            ['b',        'b.recursive', ['en'], null, false],
+            [null,        'c.recursive', ['en'], null, false],
+            ['A', 'custom.a.recursive', ['en'], null, false],
+            [null, 'custom.b.recursive', ['en'], null, false],
+            [null, 'custom.c.recursive', ['en'], null, false],
 
             ['baz', 'group.parent.child', ['en']   ],
             ['foo', 'group.parent.child', ['en'], 1],

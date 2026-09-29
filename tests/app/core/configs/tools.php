@@ -7,11 +7,11 @@ use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Namespaces;
 
 return [
-    DateTime::class => [
-        'default_timezone' => Config::refer(App::class, 'timezone', date_default_timezone_get() ? : 'UTC'),
+    DateTime::class       => [
+        'default_timezone' => Config::refer(App::class, 'timezone', date_default_timezone_get() ?: 'UTC'),
     ],
 
-    Namespaces::class => [
+    Namespaces::class     => [
         'aliases' => [
             '@app'        => 'TestApp',
             '@controller' => '@app\\Controller',
@@ -20,7 +20,7 @@ return [
         ],
     ],
 
-    Translator::class => [
+    Translator::class     => [
         'locale'          => Config::refer(App::class, 'locale'),
         'fallback_locale' => Config::refer(App::class, 'fallback_locale'),
     ],

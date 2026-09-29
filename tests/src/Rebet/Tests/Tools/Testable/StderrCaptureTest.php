@@ -1,10 +1,11 @@
 <?php
+
 namespace Rebet\Tests\Tools\Testable;
 
-use function PHPUnit\Framework\assertEquals;
 use Rebet\Tests\RebetTestCase;
-
 use Rebet\Tools\Testable\StderrCapture;
+
+use function PHPUnit\Framework\assertEquals;
 
 class StderrCaptureTest extends RebetTestCase
 {

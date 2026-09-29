@@ -12,7 +12,7 @@ return [
     ],
 
     // This enum not translatable
-    Kind::class => [
+    Kind::class   => [
         'label' => [
             1 => '整合性チェック',
             2 => '依存性チェック',

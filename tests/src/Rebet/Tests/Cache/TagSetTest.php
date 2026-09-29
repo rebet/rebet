@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Cache;
 
 use Rebet\Cache\Adapter\Symfony\ArrayAdapter;

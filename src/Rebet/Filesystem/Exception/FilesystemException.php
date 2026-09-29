@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rebet\Filesystem\Exception;
@@ -29,7 +30,7 @@ class FilesystemException extends RuntimeException
      * @param  FlysystemException $e
      * @return self
      */
-    public static function from(FlysystemException $e) : self
+    public static function from(FlysystemException $e): self
     {
         return new static($e->getMessage(), $e);
     }

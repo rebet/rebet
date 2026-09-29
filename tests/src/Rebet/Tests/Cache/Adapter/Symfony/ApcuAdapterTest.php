@@ -1,4 +1,5 @@
 <?php
+
 namespace Rebet\Tests\Cache\Adapter\Symfony;
 
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
@@ -24,7 +25,7 @@ use Rebet\Tests\RebetTestCase;
 #[RequiresPhpExtension('apcu')]
 class ApcuAdapterTest extends RebetTestCase
 {
-    protected function setUp() : void
+    protected function setUp(): void
     {
         if (!ApcuAdapter::isSupported()) {
             $this->markTestSkipped('APCu is not enabled.');
