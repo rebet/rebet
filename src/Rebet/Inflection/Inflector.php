@@ -340,9 +340,7 @@ class Inflector
         if (count($word) !== 2) {
             return null;
         }
-        return implode('_', Arrays::sort(array_map(function ($value) use ($replacement, $delimiters) {
-            return static::singularize(static::snakize($value, $replacement, $delimiters));
-        }, $word)));
+        return implode('_', Arrays::sort(array_map(fn($value) => static::singularize(static::snakize($value, $replacement, $delimiters)), $word)));
     }
 
     /**

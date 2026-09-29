@@ -17,7 +17,7 @@ class RouteTest extends RebetTestCase
 {
     public function test_where(): void
     {
-        $route = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
+        $route = new ClosureRoute(['GET'], '/foo', fn() => 'Hello World.');
         $this->assertSame([], Reflector::get($route, 'wheres', null, true));
         $this->assertInstanceOf(ClosureRoute::class, $route->where('id', '/[0-9]+/'));
         $this->assertSame(['id' => '/[0-9]+/'], Reflector::get($route, 'wheres', null, true));
@@ -27,7 +27,7 @@ class RouteTest extends RebetTestCase
 
     public function test___invoke(): void
     {
-        $route   = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
+        $route   = new ClosureRoute(['GET'], '/foo', fn() => 'Hello World.');
         $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
         $route->match($request);
         $response = $route->__invoke($request);
@@ -57,7 +57,7 @@ class RouteTest extends RebetTestCase
 
     public function test_middlewares(): void
     {
-        $route = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
+        $route = new ClosureRoute(['GET'], '/foo', fn() => 'Hello World.');
         $this->assertSame([], $route->middlewares());
         $middleware = new AddGlobalShareVariableToView();
         $this->assertInstanceOf(ClosureRoute::class, $route->middlewares($middleware));
@@ -66,7 +66,7 @@ class RouteTest extends RebetTestCase
 
     public function test_roles(): void
     {
-        $route = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
+        $route = new ClosureRoute(['GET'], '/foo', fn() => 'Hello World.');
         $this->assertSame([], $route->roles());
         $this->assertInstanceOf(ClosureRoute::class, $route->roles('user'));
         $this->assertSame(['user'], $route->roles());
@@ -81,7 +81,7 @@ class RouteTest extends RebetTestCase
 
     public function test_guard(): void
     {
-        $route = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
+        $route = new ClosureRoute(['GET'], '/foo', fn() => 'Hello World.');
         $this->assertSame(null, $route->guard());
         $this->assertInstanceOf(ClosureRoute::class, $route->guard('web'));
         $this->assertSame('web', $route->guard());

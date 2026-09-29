@@ -28,7 +28,7 @@ class SetRequestInputDataToView
      */
     public function handle(Request $request, \Closure $next): Response
     {
-        View::share('input', Tinker::promise(function () use ($request) { return $request->input(); }));
+        View::share('input', Tinker::promise(fn() => $request->input()));
         return $next($request);
     }
 }

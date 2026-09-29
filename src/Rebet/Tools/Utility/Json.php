@@ -35,13 +35,13 @@ class Json
             case $value instanceof \JsonSerializable:
                 return $value->jsonSerialize();
             case is_array($value):
-                return array_map(function ($v) { return Json::serialize($v); }, $value);
+                return array_map(fn($v) => Json::serialize($v), $value);
             case $value instanceof stdClass:
-                return array_map(function ($v) { return Json::serialize($v); }, (array) $value);
+                return array_map(fn($v) => Json::serialize($v), (array) $value);
             case is_object($value) && method_exists($value, 'toArray'):
-                return array_map(function ($v) { return Json::serialize($v); }, $value->toArray());
+                return array_map(fn($v) => Json::serialize($v), $value->toArray());
             case is_iterable($value):
-                return array_map(function ($v) { return Json::serialize($v); }, iterator_to_array($value));
+                return array_map(fn($v) => Json::serialize($v), iterator_to_array($value));
             default:
                 return $value;
         }

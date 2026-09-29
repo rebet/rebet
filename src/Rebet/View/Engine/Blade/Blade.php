@@ -85,32 +85,18 @@ class Blade implements Engine
         $view_path  = (array) static::config('view_path');
         $cache_path = static::config('cache_path', false);
 
-        $app->bind('files', function () {
-            return new Filesystem();
-        });
-        $app->bind('view.finder', function ($app) use ($view_path) {
-            return new FileViewFinder($app['files'], (array) $view_path);
-        });
-        $app->bind('events', function () {
-            return new Dispatcher();
-        });
+        $app->bind('files', fn() => new Filesystem());
+        $app->bind('view.finder', fn($app) => new FileViewFinder($app['files'], (array) $view_path));
+        $app->bind('events', fn() => new Dispatcher());
         $app->singleton('view.engine.resolver', function ($app) use ($cache_path) {
             if (! is_dir($cache_path)) {
                 mkdir($cache_path, 0o777, true);
             }
             $resolver = new EngineResolver();
-            $app->singleton('blade.compiler', function ($app) use ($cache_path) {
-                return new BladeCompiler($app['files'], $cache_path);
-            });
-            $resolver->register('blade', function () use ($app) {
-                return new CompilerEngine($app['blade.compiler']);
-            });
-            $resolver->register('php', function () use ($app) {
-                return new PhpEngine($app['files']);
-            });
-            $resolver->register('file', function () use ($app) {
-                return new FileEngine($app['files']);
-            });
+            $app->singleton('blade.compiler', fn($app) => new BladeCompiler($app['files'], $cache_path));
+            $resolver->register('blade', fn() => new CompilerEngine($app['blade.compiler']));
+            $resolver->register('php', fn() => new PhpEngine($app['files']));
+            $resolver->register('file', fn() => new FileEngine($app['files']));
             return $resolver;
         });
         $app->singleton('view', function ($app) {
@@ -143,7 +129,7 @@ class Blade implements Engine
      */
     public function getPaths(): array
     {
-        return array_map(function ($path) { return Path::normalize($path); }, $this->finder()->getPaths());
+        return array_map(fn($path) => Path::normalize($path), $this->finder()->getPaths());
     }
 
     /**

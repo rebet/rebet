@@ -21,7 +21,7 @@ class StartSessionTest extends RebetTestCase
     public function test_handleAndTerminate(): void
     {
         $middleware  = new StartSession();
-        $destination = function ($request) { return Responder::toResponse('OK'); };
+        $destination = fn($request) => Responder::toResponse('OK');
 
         $request = Request::create('/');
         try {

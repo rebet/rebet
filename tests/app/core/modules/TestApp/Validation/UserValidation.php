@@ -50,7 +50,7 @@ class UserValidation extends Rule
             'password_confirm'   => [
                 'label' => 'パスワード(確認)',
                 'rule'  => [
-                    ['CU', Valid::SATISFY, function (Context $c) { return !Auth::isAdmin(); }, 'then' => [
+                    ['CU', Valid::SATISFY, fn(Context $c) => !Auth::isAdmin(), 'then' => [
                         ['C', Valid::REQUIRED],
                         ['CU', Valid::SAME_AS, ':password'],
                     ]],
@@ -73,7 +73,7 @@ class UserValidation extends Rule
             ],
             'birthday'           => [
                 'label'   => '生年月日',
-                'before'  => function ($value) { return mb_convert_kana($value, 'a'); },
+                'before'  => fn($value) => mb_convert_kana($value, 'a'),
                 'rule'    => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::DATETIME],

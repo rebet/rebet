@@ -16,7 +16,7 @@ class SystemTest extends RebetTestCase
 
     public function test___callStatic(): void
     {
-        System::emulator('mb_strlen', function () { return 6; });
+        System::emulator('mb_strlen', fn() => 6);
 
         System::testing(false);
         $this->assertSame(3, System::mb_strlen('abc'));

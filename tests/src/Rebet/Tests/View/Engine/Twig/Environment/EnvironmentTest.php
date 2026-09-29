@@ -49,7 +49,7 @@ class EnvironmentTest extends RebetTestCase
 
     public function test_embed(): void
     {
-        $this->env->embed('hello', null, [], 'echo(', new CallbackProcessor(function (string $name = 'everyone', string $greet = 'Hello') { return "{$greet} {$name}."; }), ');');
+        $this->env->embed('hello', null, [], 'echo(', new CallbackProcessor(fn(string $name = 'everyone', string $greet = 'Hello') => "{$greet} {$name}."), ');');
 
         $this->assertSame(
             <<<EOS
@@ -86,7 +86,7 @@ class EnvironmentTest extends RebetTestCase
 
     public function test_case(): void
     {
-        $this->env->case('env', 'is', ['...' => [',', 'or']], new CallbackProcessor(function ($env) { return true; }));
+        $this->env->case('env', 'is', ['...' => [',', 'or']], new CallbackProcessor(fn($env) => true));
 
         $this->assertSame(
             <<<EOS

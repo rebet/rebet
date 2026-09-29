@@ -30,31 +30,29 @@ return [
             'user'  => [
                 '@factory'     => ArrayProvider::class,
                 'users'        => $users,
-                'precondition' => function ($user) { return !isset($user['resigned_at']); },
+                'precondition' => fn($user) => !isset($user['resigned_at']),
             ],
             'admin' => [
                 '@factory'     => ArrayProvider::class,
                 'users'        => $users,
-                'precondition' => function ($user) { return !isset($user['resigned_at']) && $user['role'] === 'admin'; },
+                'precondition' => fn($user) => !isset($user['resigned_at']) && $user['role'] === 'admin',
             ],
         ],
         'roles'     => [
-            'all'      => function (AuthUser $user) { return true; },
-            'guest'    => function (AuthUser $user) { return $user->isGuest(); },
-            'admin'    => function (AuthUser $user) { return $user->role === 'admin'; },
-            'user'     => function (AuthUser $user) { return $user->role === 'user'; },
-            'editable' => function (AuthUser $user) { return $user->id === 4; },
+            'all'      => fn(AuthUser $user) => true,
+            'guest'    => fn(AuthUser $user) => $user->isGuest(),
+            'admin'    => fn(AuthUser $user) => $user->role === 'admin',
+            'user'     => fn(AuthUser $user) => $user->role === 'user',
+            'editable' => fn(AuthUser $user) => $user->id === 4,
         ],
         'policies'  => [
             User::class    => [
-                '@before' => function (AuthUser $user, $target, string $action) { return $user->is('admin'); },
-                'update'  => function (AuthUser $user, User $target) { return $user->id === $target->user_id; },
-                'create'  => function (AuthUser $user) { return $user->is('editable'); },
+                '@before' => fn(AuthUser $user, $target, string $action) => $user->is('admin'),
+                'update'  => fn(AuthUser $user, User $target) => $user->id === $target->user_id,
+                'create'  => fn(AuthUser $user) => $user->is('editable'),
             ],
             Address::class => [
-                'create' => function (AuthUser $user, string $target, array $addresses) {
-                    return !$user->isGuest() && count($addresses) < 5 ;
-                },
+                'create' => fn(AuthUser $user, string $target, array $addresses) => !$user->isGuest() && count($addresses) < 5,
             ],
         ],
     ],

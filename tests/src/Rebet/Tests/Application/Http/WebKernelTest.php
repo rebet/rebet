@@ -26,9 +26,7 @@ class WebKernelTest extends RebetTestCase
         Router::reset();
         Router::setCurrentChannel('web');
         Router::rules('web')->routing(function (): void {
-            Router::get('/', function () {
-                return 'Top: index';
-            });
+            Router::get('/', fn() => 'Top: index');
         });
         $this->kernel = new WebKernel(App::structure());
     }

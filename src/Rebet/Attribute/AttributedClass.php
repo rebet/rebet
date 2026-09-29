@@ -93,7 +93,7 @@ class AttributedClass
      */
     public function properties(): array
     {
-        return array_map(function ($v) { return new AttributedProperty($v, $this); }, $this->class->getProperties());
+        return array_map(fn($v) => new AttributedProperty($v, $this), $this->class->getProperties());
     }
 
     /**

@@ -242,7 +242,7 @@ class AuthUserTest extends RebetTestCase
             $user = new AuthUser($user_source, ['role' => 'user_id']);
             $this->assertSame(2, $user->role);
 
-            $user = new AuthUser($user_source, ['role' => function ($user) { return $user ? strtoupper(Reflector::get($user, 'role')) : null ; }]);
+            $user = new AuthUser($user_source, ['role' => fn($user) => $user ? strtoupper(Reflector::get($user, 'role')) : null ]);
             $this->assertSame('USER', $user->role);
 
             $user = new AuthUser($user_source, ['role' => 123]);

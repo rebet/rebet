@@ -12,6 +12,6 @@ return [
     ],
 
     Pager::class  => [
-        'resolver' => function (Pager $pager) { return $pager; },
+        'resolver' => fn(Pager $pager) => $pager,
     ],
 ];

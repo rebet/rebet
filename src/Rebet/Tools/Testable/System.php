@@ -74,9 +74,7 @@ class System
                     ],
                 ],
                 'headers_list'   => [
-                    'emulator' => function () {
-                        return Arrays::flatten(\array_values(System::memory('emulated_header')));
-                    },
+                    'emulator' => fn() => Arrays::flatten(\array_values(System::memory('emulated_header'))),
                 ],
                 'dns_get_record' => [
                     'emulator' => function (string $hostname, int $type = DNS_ANY, array|null &$authns = null, array|null &$addtl = null, bool $raw = false): array {

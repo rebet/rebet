@@ -20,12 +20,12 @@ class EmbedTokenParserTest extends RebetTestCase
 {
     public function test___constract(): void
     {
-        $this->assertInstanceOf(EmbedTokenParser::class, new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'));
+        $this->assertInstanceOf(EmbedTokenParser::class, new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'));
     }
 
     public function test_getTag(): void
     {
-        $paser = new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';');
+        $paser = new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';');
         $this->assertSame('hello', $paser->getTag());
     }
 
@@ -33,7 +33,7 @@ class EmbedTokenParserTest extends RebetTestCase
     {
         return [
             [
-                new EmbedTokenParser('hello', null, null, 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+                new EmbedTokenParser('hello', null, null, 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
                 '{% hello %}',
                 <<<EOS
                     // line 1
@@ -41,7 +41,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+                new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
                 '{% hello "a" %}',
                 <<<EOS
                     // line 1
@@ -49,7 +49,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, [','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+                new EmbedTokenParser('hello', null, [','], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
                 '{% hello "a", "b" %}',
                 <<<EOS
                     // line 1
@@ -57,7 +57,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, [''], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+                new EmbedTokenParser('hello', null, [''], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
                 '{% hello "a" "b" %}',
                 <<<EOS
                     // line 1
@@ -65,7 +65,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
                 '{% hello "world" %}',
                 <<<EOS
                     // line 1
@@ -73,7 +73,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
                 '{% hello name %}',
                 <<<EOS
                     // line 1
@@ -81,7 +81,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
                 '{% hello name, "!" %}',
                 <<<EOS
                     // line 1
@@ -89,7 +89,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, ['...' => [',', 'and']], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+                new EmbedTokenParser('hello', null, ['...' => [',', 'and']], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
                 '{% hello you, he and name %}',
                 <<<EOS
                     // line 1
@@ -97,7 +97,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
                 '{% hello [you, he, name], "!" %}',
                 <<<EOS
                     // line 1
@@ -105,7 +105,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';', ['foo']),
+                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';', ['foo']),
                 '{% hello %}',
                 <<<EOS
                     // line 1
@@ -113,7 +113,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';', ['foo']),
+                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';', ['foo']),
                 '{% hello "world" %}',
                 <<<EOS
                     // line 1
@@ -121,7 +121,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';', ['foo']),
+                new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';', ['foo']),
                 '{% hello "world", bar %}',
                 <<<EOS
                     // line 1
@@ -129,7 +129,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'is', ['...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'is', ['...' => ','], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role is "admin" %}',
                 <<<EOS
                     // line 1
@@ -138,7 +138,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'is', ['...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'is', ['...' => ','], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role is "admin", "user"%}',
                 <<<EOS
                     // line 1
@@ -147,7 +147,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role is "admin", "user"%}',
                 <<<EOS
                     // line 1
@@ -156,7 +156,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role is "admin" or "user"%}',
                 <<<EOS
                     // line 1
@@ -165,7 +165,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'is', ['...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'is', ['...' => ','], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role is not "admin" %}',
                 <<<EOS
                     // line 1
@@ -174,7 +174,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'in', ['...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'in', ['...' => ','], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role in "admin", "user" %}',
                 <<<EOS
                     // line 1
@@ -183,7 +183,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'in', ['...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'in', ['...' => ','], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role not in "admin", "user" %}',
                 <<<EOS
                     // line 1
@@ -192,7 +192,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role is "a", "b", "c", "d" or "e" %}',
                 <<<EOS
                     // line 1
@@ -201,7 +201,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role is "a", "b", "c", ("d" or "e") %}',
                 <<<EOS
                     // line 1
@@ -210,7 +210,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'is', ['or', ':', '...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'is', ['or', ':', '...' => ','], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role is "a" or "b" : "c", "d", "e" %}',
                 <<<EOS
                     // line 1
@@ -219,7 +219,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'is', ['with', '...' => [',', 'and']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'is', ['with', '...' => [',', 'and']], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role is "a" with "b", "c", "d" and "e" %}',
                 <<<EOS
                     // line 1
@@ -228,7 +228,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('role', 'is', ['with', '...' => [',', 'and']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
+                new EmbedTokenParser('role', 'is', ['with', '...' => [',', 'and']], 'if(', new CallbackProcessor(fn($role) => true), ") {\n"),
                 '{% role is "a" with "b", "c", "d", "e" %}',
                 <<<EOS
                     // line 1
@@ -237,7 +237,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('can', '', [], 'if(', new CallbackProcessor(function ($action) { return true; }), ") {\n"),
+                new EmbedTokenParser('can', '', [], 'if(', new CallbackProcessor(fn($action) => true), ") {\n"),
                 '{% can "update" %}',
                 <<<EOS
                     // line 1
@@ -246,7 +246,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('can', '', [], 'if(', new CallbackProcessor(function ($action) { return true; }), ") {\n"),
+                new EmbedTokenParser('can', '', [], 'if(', new CallbackProcessor(fn($action) => true), ") {\n"),
                 '{% can not "update" %}',
                 <<<EOS
                     // line 1
@@ -255,7 +255,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('can', null, [], 'if(', new CallbackProcessor(function ($action) { return true; }), ") {\n"),
+                new EmbedTokenParser('can', null, [], 'if(', new CallbackProcessor(fn($action) => true), ") {\n"),
                 '{% can not "update" %}',
                 <<<EOS
                     // line 1
@@ -264,7 +264,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, ['??'], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+                new EmbedTokenParser('hello', null, ['??'], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
                 '{% hello "world" ?? "default" %}',
                 <<<EOS
                     // line 1
@@ -272,7 +272,7 @@ class EmbedTokenParserTest extends RebetTestCase
                     EOS,
             ],
             [
-                new EmbedTokenParser('hello', null, ['??'], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';', [], true),
+                new EmbedTokenParser('hello', null, ['??'], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';', [], true),
                 '{% hello ?? "default" %}',
                 <<<EOS
                     // line 1
@@ -294,7 +294,7 @@ class EmbedTokenParserTest extends RebetTestCase
         $this->expectExceptionMessage("Too many code arguments. The code tag 'hello' takes no arguments at line 1.");
 
         $this->renderPhpCode(
-            new EmbedTokenParser('hello', null, null, 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+            new EmbedTokenParser('hello', null, null, 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
             '{% hello "a" %}',
         );
     }
@@ -305,7 +305,7 @@ class EmbedTokenParserTest extends RebetTestCase
         $this->expectExceptionMessage("Too many code arguments. The code tag 'hello' takes only one argument at line 1.");
 
         $this->renderPhpCode(
-            new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+            new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
             '{% hello "a" "b" %}',
         );
     }
@@ -316,7 +316,7 @@ class EmbedTokenParserTest extends RebetTestCase
         $this->expectExceptionMessage("1st and 2nd arguments of the code tag 'hello' must be separated by 'with' at line 1.");
 
         $this->renderPhpCode(
-            new EmbedTokenParser('hello', null, ['with'], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+            new EmbedTokenParser('hello', null, ['with'], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
             '{% hello "a", "b" %}',
         );
     }
@@ -327,7 +327,7 @@ class EmbedTokenParserTest extends RebetTestCase
         $this->expectExceptionMessage("1st and 2nd arguments of the code tag 'hello' must be separated by ',' or 'or' at line 1.");
 
         $this->renderPhpCode(
-            new EmbedTokenParser('hello', null, [[',', 'or']], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+            new EmbedTokenParser('hello', null, [[',', 'or']], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
             '{% hello "a" "b" %}',
         );
     }
@@ -338,7 +338,7 @@ class EmbedTokenParserTest extends RebetTestCase
         $this->expectExceptionMessage("Too many code arguments. The code tag 'hello' takes up to 2 arguments at line 1.");
 
         $this->renderPhpCode(
-            new EmbedTokenParser('hello', null, [','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
+            new EmbedTokenParser('hello', null, [','], 'echo', new CallbackProcessor(fn(...$args) => "Hello dummy"), ';'),
             '{% hello "a", "b", "c" %}',
         );
     }

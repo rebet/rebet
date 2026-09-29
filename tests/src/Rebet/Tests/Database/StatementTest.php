@@ -361,9 +361,7 @@ class StatementTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
-            $users    = $stmt->execute()->filter(function (User $user) {
-                return $user->gender == Gender::MALE();
-            });
+            $users    = $stmt->execute()->filter(fn(User $user) => $user->gender == Gender::MALE());
             $this->assertSame([2, 3], Arrays::pluck($users->toArray(), 'user_id'));
         });
     }
@@ -386,9 +384,7 @@ class StatementTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
-            $result   = $stmt->execute()->reduce(function (User $user, $carry) {
-                return $carry + $user->user_id;
-            }, 0);
+            $result   = $stmt->execute()->reduce(fn(User $user, $carry) => $carry + $user->user_id, 0);
             $this->assertSame(6, $result);
         });
     }

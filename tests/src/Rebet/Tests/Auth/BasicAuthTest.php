@@ -62,9 +62,7 @@ class BasicAuthTest extends RebetTestCase
         $_SERVER['PHP_AUTH_PW']   = 'password';
         $id                       = BasicAuth::authenticate(
             ['id' => '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'],
-            function ($password) {
-                return sha1($password);
-            },
+            fn($password) => sha1($password),
         );
         $this->assertSame('id', $id);
     }

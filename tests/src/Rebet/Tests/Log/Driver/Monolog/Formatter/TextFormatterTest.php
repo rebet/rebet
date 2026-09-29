@@ -111,7 +111,7 @@ class TextFormatterTest extends RebetTestCase
                 ],
             ],
             ["2010年10月20日(水) 10:20:30.123456 web/ [DEBUG] Log Message.\n", [], null, [
-                '{datetime}' => function (DateTime $val) { return $val->format('@ddd @ttt'); },
+                '{datetime}' => fn(DateTime $val) => $val->format('@ddd @ttt'),
             ]],
         ];
     }

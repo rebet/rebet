@@ -30,12 +30,8 @@ class PipelineTest extends RebetTestCase
     {
         $this->pipeline->through([
             PipelineTest_Wrapper::class,
-            function ($input, $next) {
-                return $next($input . '!');
-            },
-        ])->then(function ($input) {
-            return $input;
-        });
+            fn($input, $next) => $next($input . '!'),
+        ])->then(fn($input) => $input);
 
         $output = $this->pipeline->send('onion');
         $this->assertSame('(onion!)', $output);
@@ -50,17 +46,11 @@ class PipelineTest extends RebetTestCase
     public function test_usage_objectAndArray(): void
     {
         $this->pipeline->through(
-            function ($input, $next) {
-                return strtoupper($next($input));
-            },
+            fn($input, $next) => strtoupper($next($input)),
             new PipelineTest_Wrapper(),
             [PipelineTest_Wrapper::class, '[', ']'],
-            function ($input, $next) {
-                return $next($input . '!');
-            },
-        )->then(function ($input) {
-            return $input;
-        });
+            fn($input, $next) => $next($input . '!'),
+        )->then(fn($input) => $input);
 
         $output = $this->pipeline->send('onion');
         $this->assertSame('([ONION!])', $output);
@@ -69,9 +59,7 @@ class PipelineTest extends RebetTestCase
     public function test_getDestination(): void
     {
         $this->assertNull($this->pipeline->getDestination());
-        $destination = function ($input) {
-            return $input;
-        };
+        $destination = fn($input) => $input;
         $this->pipeline->then($destination);
         $this->assertSame($destination, $this->pipeline->getDestination());
     }
@@ -81,12 +69,8 @@ class PipelineTest extends RebetTestCase
         $this->pipeline->through(
             new PipelineTest_Wrapper(),
             [PipelineTest_Wrapper::class, '[', ']'],
-            function ($input, $next) {
-                return $next($input . '!');
-            },
-        )->then(function ($input) {
-            return $input;
-        });
+            fn($input, $next) => $next($input . '!'),
+        )->then(fn($input) => $input);
 
         $this->assertStdoutEquals(
             '[terminate](terminate)',

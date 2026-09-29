@@ -16,12 +16,8 @@ class ConfigPromiseTest extends RebetTestCase
     {
         parent::setUp();
         \putenv('PROMISE_TEST=');
-        $this->promise_once = new ConfigPromise(function () {
-            return \getenv('PROMISE_TEST') ?: 'default';
-        });
-        $this->promise_every = new ConfigPromise(function () {
-            return \getenv('PROMISE_TEST') ?: 'default';
-        }, false);
+        $this->promise_once  = new ConfigPromise(fn() => \getenv('PROMISE_TEST') ?: 'default');
+        $this->promise_every = new ConfigPromise(fn() => \getenv('PROMISE_TEST') ?: 'default', false);
     }
 
     protected function tearDown(): void

@@ -37,7 +37,7 @@ class OrderBy implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeri
      */
     public function __construct(array $order_by)
     {
-        $this->order_by = array_map(function ($v) { return strtoupper($v); }, $order_by);
+        $this->order_by = array_map(fn($v) => strtoupper($v), $order_by);
     }
 
     /**
@@ -57,7 +57,7 @@ class OrderBy implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeri
      */
     public function reverse(): self
     {
-        return new static(array_map(function ($v) { return $v === 'ASC' ? 'DESC' : 'ASC'; }, $this->order_by));
+        return new static(array_map(fn($v) => $v === 'ASC' ? 'DESC' : 'ASC', $this->order_by));
     }
 
     /**

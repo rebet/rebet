@@ -117,20 +117,20 @@ class ViewTest extends RebetTestCase
         $this->expectException(ViewRenderFailedException::class);
         $this->expectExceptionMessage("The view [nothing] (possible: ja/nothing, en/nothing) render failed because of all of view templates not exists.");
 
-        View::of('nothing', function (string $name) { return ["ja/{$name}", "en/{$name}"] ;})->render();
+        View::of('nothing', fn(string $name) => ["ja/{$name}", "en/{$name}"])->render();
     }
 
     public function test_exists(): void
     {
         $this->assertTrue(View::of('welcome')->exists());
         $this->assertFalse(View::of('nothing')->exists());
-        $this->assertTrue(View::of('nothing', function ($name) { return [$name, 'welcome']; })->exists());
+        $this->assertTrue(View::of('nothing', fn($name) => [$name, 'welcome'])->exists());
     }
 
     public function test_getPossibleNames(): void
     {
         $this->assertSame(['nothing'], View::of('nothing')->getPossibleNames());
-        $this->assertSame(['nothing', 'welcome'], View::of('nothing', function ($name) { return [$name, 'welcome']; })->getPossibleNames());
-        $this->assertSame(['NOTHING'], View::of('nothing', function ($name) { return strtoupper($name); })->getPossibleNames());
+        $this->assertSame(['nothing', 'welcome'], View::of('nothing', fn($name) => [$name, 'welcome'])->getPossibleNames());
+        $this->assertSame(['NOTHING'], View::of('nothing', fn($name) => strtoupper($name))->getPossibleNames());
     }
 }

@@ -45,17 +45,13 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? > :age_gt',
                 ['age_gt' => 20],
                 'age_gt', 20, [],
-                function (Ransack $ransack): Query|null {
-                    return null;
-                },
+                fn(Ransack $ransack): Query|null => null,
             ],
             [
                 '?age? > :age_gt',
                 ['age_gt' => 20],
                 'age_gt', 20, [],
-                function (Ransack $ransack): Query|null {
-                    return $ransack->convert();
-                },
+                fn(Ransack $ransack): Query|null => $ransack->convert(),
             ],
             [
                 '?age? grater than :age_gt',
@@ -74,7 +70,7 @@ class RansackTest extends RebetDatabaseTestCase
                 'age_gt', 20, [],
                 function (Ransack $ransack): Query|null {
                     if ($ransack->origin() === 'age_gt') {
-                        return $ransack->convert('{col} grater than {val}', function ($v) { return $v * 2; });
+                        return $ransack->convert('{col} grater than {val}', fn($v) => $v * 2);
                     }
                     return null;
                 },

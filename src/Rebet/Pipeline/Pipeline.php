@@ -157,9 +157,7 @@ class Pipeline
      */
     protected function prepareDestination(callable $destination): \Closure
     {
-        return function ($passable) use ($destination) {
-            return $destination($passable);
-        };
+        return fn($passable) => $destination($passable);
     }
 
     /**
@@ -173,9 +171,7 @@ class Pipeline
             $pipe               = \is_callable($pipe) ? $pipe : Reflector::instantiate($pipe) ;
             $this->real_pipes[] = $pipe;
 
-            return function ($passable) use ($stack, $pipe) {
-                return method_exists($pipe, $this->method) ? $pipe->{$this->method}($passable, $stack) : $pipe($passable, $stack);
-            };
+            return fn($passable) => method_exists($pipe, $this->method) ? $pipe->{$this->method}($passable, $stack) : $pipe($passable, $stack);
         };
     }
 }

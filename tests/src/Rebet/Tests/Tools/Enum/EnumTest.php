@@ -277,9 +277,7 @@ class EnumTest extends RebetTestCase
 
         $this->assertSame(
             [2],
-            Gender::listOf('value', function ($enum) {
-                return $enum->label === 'Female';
-            }),
+            Gender::listOf('value', fn($enum) => $enum->label === 'Female'),
         );
 
         $this->assertSame(
@@ -330,9 +328,7 @@ class EnumTest extends RebetTestCase
 
         $this->assertSame(
             [2],
-            Gender::values(function ($enum) {
-                return $enum->label === 'Female';
-            }),
+            Gender::values(fn($enum) => $enum->label === 'Female'),
         );
 
         $this->assertSame(
@@ -360,9 +356,7 @@ class EnumTest extends RebetTestCase
 
         $this->assertSame(
             ['Male'],
-            Gender::labels(function ($enum) {
-                return $enum->value === 1;
-            }),
+            Gender::labels(fn($enum) => $enum->value === 1),
         );
 
         $this->assertSame(

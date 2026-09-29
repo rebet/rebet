@@ -86,7 +86,7 @@ abstract class RebetTestCase extends TestCase
         $session->start();
         $request = Request::create($path, $method);
         $request->session($session);
-        $request->route = $route ?? new ClosureRoute([], $path, function () use ($channel) { return $channel === 'api' ? ['OK'] : 'OK' ; });
+        $request->route = $route ?? new ClosureRoute([], $path, fn() => $channel === 'api' ? ['OK'] : 'OK');
         if ($guard) {
             $request->route->guard($guard);
         }
@@ -105,7 +105,7 @@ abstract class RebetTestCase extends TestCase
         $request->headers->set('X-Requested-With', 'XMLHttpRequest');
         $request->headers->set('Accept', '*/*');
         $request->session($session);
-        $request->route = new ClosureRoute([], $path, function () use ($channel) { return $channel === 'api' ? ['OK'] : 'OK' ; });
+        $request->route = new ClosureRoute([], $path, fn() => $channel === 'api' ? ['OK'] : 'OK');
         $request->route->roles(...((array) $roles));
         $request->route->prefix = $prefix;
         return $request;

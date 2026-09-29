@@ -93,7 +93,7 @@ class BuiltinValidationsTest extends RebetTestCase
             }
         }
         if (is_array($value)) {
-            return array_map(function ($v) { return $this->resolveMarkers($v); }, $value);
+            return array_map(fn($v) => $this->resolveMarkers($v), $value);
         }
         return $value;
     }
@@ -204,10 +204,10 @@ class BuiltinValidationsTest extends RebetTestCase
                 'name'  => 'Satisfy',
                 'data'  => ['foo' => 1, 'bar' => 2, 'baz' => 2],
                 'tests' => [
-                    ['foo', [function (Context $c) { return $c->value == 1 ? true : $c->appendError("@The {$c->label} is not 1.") ; }], true, []],
-                    ['bar', [function (Context $c) { return $c->value == 1 ? true : $c->appendError("@The {$c->label} is not 1.") ; }], false, ['bar' => ["The Bar is not 1."]]],
-                    ['foo', [function (Context $c) { return $c->value == 1; }                                                        ], true, []],
-                    ['bar', [function (Context $c) { return $c->value == 1; }                                                        ], false, []],
+                    ['foo', [fn(Context $c) => $c->value == 1 ? true : $c->appendError("@The {$c->label} is not 1.") ], true, []],
+                    ['bar', [fn(Context $c) => $c->value == 1 ? true : $c->appendError("@The {$c->label} is not 1.") ], false, ['bar' => ["The Bar is not 1."]]],
+                    ['foo', [fn(Context $c) => $c->value == 1                                                        ], true, []],
+                    ['bar', [fn(Context $c) => $c->value == 1                                                        ], false, []],
                 ],
             ]],
 

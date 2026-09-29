@@ -106,7 +106,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([], Arrays::pluck(null, 'user_id'));
         $this->assertSame([], Arrays::pluck([], 'user_id'));
         $this->assertSame([21, 35, 43], Arrays::pluck($list, 'user_id'));
-        $this->assertSame(['user_0' => 21, 'user_1' => 35, 'user_2' => 43], Arrays::pluck($list, 'user_id', function ($i, $key, $row) { return "user_{$i}"; }));
+        $this->assertSame(['user_0' => 21, 'user_1' => 35, 'user_2' => 43], Arrays::pluck($list, 'user_id', fn($i, $key, $row) => "user_{$i}"));
         $this->assertSame([21 => 'John', 35 => 'David', 43 => 'Linda'], Arrays::pluck($list, 'name', 'user_id'));
         $this->assertSame(
             [
@@ -122,7 +122,7 @@ class ArraysTest extends RebetTestCase
                 35 => 'David(35)',
                 43 => 'Linda(43)',
             ],
-            Arrays::pluck($list, function ($i, $key, $row) { return "{$row['name']}({$row['user_id']})"; }, 'user_id'),
+            Arrays::pluck($list, fn($i, $key, $row) => "{$row['name']}({$row['user_id']})", 'user_id'),
         );
     }
 
@@ -558,13 +558,9 @@ class ArraysTest extends RebetTestCase
     public function test_last(): void
     {
         $array = [100, 200, 300];
-        $last  = Arrays::last($array, function ($value) {
-            return $value < 250;
-        });
+        $last  = Arrays::last($array, fn($value) => $value < 250);
         $this->assertEquals(200, $last);
-        $last = Arrays::last($array, function ($value, $key) {
-            return $key < 2;
-        });
+        $last = Arrays::last($array, fn($value, $key) => $key < 2);
         $this->assertEquals(200, $last);
         $this->assertEquals(300, Arrays::last($array));
     }
@@ -572,17 +568,13 @@ class ArraysTest extends RebetTestCase
     public function test_find(): void
     {
         $array = ['a' => 100, 'b' => 200, 'c' => 300];
-        $this->assertEquals('b', Arrays::find($array, function ($value) {
-            return $value >= 150;
-        }));
+        $this->assertEquals('b', Arrays::find($array, fn($value) => $value >= 150));
     }
 
     public function test_first(): void
     {
         $array = [100, 200, 300];
-        $value = Arrays::first($array, function ($value) {
-            return $value >= 150;
-        });
+        $value = Arrays::first($array, fn($value) => $value >= 150);
         $this->assertEquals(200, $value);
         $this->assertEquals(100, Arrays::first($array));
     }
@@ -594,9 +586,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals([100, '200', 300, '400', 500], $array);
 
         $array = [100, '200', 300, '400', 500];
-        $array = Arrays::where($array, function ($value, $key) {
-            return is_string($value);
-        });
+        $array = Arrays::where($array, fn($value, $key) => is_string($value));
         $this->assertEquals([1 => 200, 3 => 400], $array);
     }
 
@@ -744,7 +734,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame(4, Arrays::count(new CountableStub(4)));
         $this->assertSame(5, Arrays::count(new IteratorAggregateStub([1, 2, 3, 4, 5])));
 
-        $odd_counter = function ($v) { return $v % 2 === 1; };
+        $odd_counter = fn($v) => $v % 2 === 1;
         $this->assertSame(2, Arrays::count([1, 2, 3], $odd_counter));
         $this->assertSame(3, Arrays::count(new IteratorAggregateStub([1, 2, 3, 4, 5]), $odd_counter));
     }
@@ -824,29 +814,19 @@ class ArraysTest extends RebetTestCase
     public function test_every(): void
     {
         $array = null;
-        $this->assertTrue(Arrays::every($array, function () {
-            return false;
-        }));
+        $this->assertTrue(Arrays::every($array, fn() => false));
 
         $array = [];
-        $this->assertTrue(Arrays::every($array, function () {
-            return false;
-        }));
+        $this->assertTrue(Arrays::every($array, fn() => false));
 
         $array = [['age' => 18], ['age' => 20], ['age' => 20]];
         $this->assertTrue(Arrays::every($array, Callbacks::test('age', '>=', 18)));
         $this->assertFalse(Arrays::every($array, Callbacks::test('age', '<', 18)));
-        $this->assertTrue(Arrays::every($array, function ($item) {
-            return $item['age'] >= 18;
-        }));
-        $this->assertFalse(Arrays::every($array, function ($item) {
-            return $item['age'] >= 20;
-        }));
+        $this->assertTrue(Arrays::every($array, fn($item) => $item['age'] >= 18));
+        $this->assertFalse(Arrays::every($array, fn($item) => $item['age'] >= 20));
 
         $array = [null, null];
-        $this->assertTrue(Arrays::every($array, function ($item) {
-            return $item === null;
-        }));
+        $this->assertTrue(Arrays::every($array, fn($item) => $item === null));
     }
 
     public function test_groupByAttribute(): void
@@ -913,9 +893,7 @@ class ArraysTest extends RebetTestCase
             ['rating' => 2, 'url' => 'b'],
         ];
 
-        $result = Arrays::groupBy($data, function ($item) {
-            return $item['rating'];
-        });
+        $result = Arrays::groupBy($data, fn($item) => $item['rating']);
 
         $this->assertEquals([
             1 => [
@@ -936,9 +914,7 @@ class ArraysTest extends RebetTestCase
             30 => ['rating' => 2, 'url' => 'b'],
         ];
 
-        $result = Arrays::groupBy($data, function ($item) {
-            return $item['rating'];
-        }, true);
+        $result = Arrays::groupBy($data, fn($item) => $item['rating'], true);
 
         $expected_result = [
             1 => [
@@ -1170,7 +1146,7 @@ class ArraysTest extends RebetTestCase
     public function test_sortBy(): void
     {
         $data      = ['23', '8', '14'];
-        $retriever = function ($x) { return $x; };
+        $retriever = fn($x) => $x;
         $this->assertEquals(['8', '14', '23'], array_values(Arrays::sortBy($data, $retriever)));
         $this->assertEquals(['23', '14', '8'], array_values(Arrays::sortBy($data, $retriever, SORT_DESC)));
         $this->assertEquals(['8', '23', '14'], array_values(Arrays::sortBy($data, 'mb_strlen')));
@@ -1195,7 +1171,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals([['age' => '8'], ['age' => '14'], ['age' => '23']], array_values(Arrays::sortBy($data, $retriever, SORT_ASC, $comparator)));
         $this->assertEquals([['age' => '23'], ['age' => '14'], ['age' => '8']], array_values(Arrays::sortBy($data, $retriever, SORT_DESC, $comparator)));
 
-        $retriever = function ($item) { return intval($item['age']); };
+        $retriever = fn($item) => intval($item['age']);
         $this->assertEquals([['age' => '8'], ['age' => '14'], ['age' => '23']], array_values(Arrays::sortBy($data, $retriever)));
         $this->assertEquals([['age' => '23'], ['age' => '14'], ['age' => '8']], array_values(Arrays::sortBy($data, $retriever, SORT_DESC)));
 
@@ -1213,7 +1189,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals([['age' => '8'], ['age' => '14'], ['age' => '23']], array_values(Arrays::sortBy($data, $retriever, SORT_DESC, $comparator)));
 
         $data      = ['c' => 'C', 'a' => 'A', 'b' => 'B'];
-        $retriever = function ($x) { return $x; };
+        $retriever = fn($x) => $x;
         $this->assertEquals(['a' => 'A', 'b' => 'B', 'c' => 'C'], Arrays::sortBy($data, $retriever));
 
         $data      = ['c' => ['age' => '23'], 'a' => ['age' => '8'], 'b' => ['age' => '14']];
@@ -1247,12 +1223,12 @@ class ArraysTest extends RebetTestCase
         $this->assertNull(Arrays::sum(null));
         $this->assertSame('0', Arrays::sum([])->value());
         $this->assertSame('55', Arrays::sum(range(1, 10))->value());
-        $this->assertSame('55', Arrays::sum(range(1, 10), function ($x) { return $x; })->value());
+        $this->assertSame('55', Arrays::sum(range(1, 10), fn($x) => $x)->value());
         $this->assertSame('88', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age')->value());
-        $this->assertSame('58', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; })->value());
-        $this->assertSame('58', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; })->value());
+        $this->assertSame('58', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], fn($v) => $v['age'] > 20 ? $v['age'] : 0)->value());
+        $this->assertSame('58', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], fn($v) => $v['age'] > 20 ? $v['age'] : null)->value());
         $this->assertSame('10', Arrays::sum([1, 2, 3, null, 4])->value());
-        $this->assertSame('10', Arrays::sum([1, 2, 3, null, 4], function ($v) { return $v; })->value());
+        $this->assertSame('10', Arrays::sum([1, 2, 3, null, 4], fn($v) => $v)->value());
 
         $this->assertFalse(0.3 == array_sum([0.1, 0.2]));
         $this->assertTrue(0.3 == Arrays::sum([0.1, 0.2])->value());
@@ -1269,12 +1245,12 @@ class ArraysTest extends RebetTestCase
         $this->assertNull(Arrays::avg(null));
         $this->assertNull(Arrays::avg([]));
         $this->assertSame('5.5', Arrays::avg(range(1, 10))->value());
-        $this->assertSame('5.5', Arrays::avg(range(1, 10), function ($x) { return $x; })->value());
+        $this->assertSame('5.5', Arrays::avg(range(1, 10), fn($x) => $x)->value());
         $this->assertSame('22', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age')->value());
-        $this->assertSame('14.5', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; })->value());
-        $this->assertSame('29', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; })->value());
+        $this->assertSame('14.5', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], fn($v) => $v['age'] > 20 ? $v['age'] : 0)->value());
+        $this->assertSame('29', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], fn($v) => $v['age'] > 20 ? $v['age'] : null)->value());
         $this->assertSame('2', Arrays::avg([1, 2, 3, null, 4])->value());
-        $this->assertSame('2.5', Arrays::avg([1, 2, 3, null, 4], function ($v) { return $v; })->value());
+        $this->assertSame('2.5', Arrays::avg([1, 2, 3, null, 4], fn($v) => $v)->value());
 
         $this->assertFalse(0.15 == array_sum([0.1, 0.2]) / 2);
         $this->assertTrue(0.15 == Arrays::avg([0.1, 0.2])->value());
@@ -1291,13 +1267,13 @@ class ArraysTest extends RebetTestCase
         $this->assertNull(Arrays::median(null));
         $this->assertNull(Arrays::median([]));
         $this->assertSame('5.5', Arrays::median(range(1, 10))->value());
-        $this->assertSame('5.5', Arrays::median(range(1, 10), function ($x) { return $x; })->value());
+        $this->assertSame('5.5', Arrays::median(range(1, 10), fn($x) => $x)->value());
         $this->assertSame('22.5', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age')->value());
         $this->assertSame('18', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18], ['age' => 9]], 'age')->value());
-        $this->assertSame('13.5', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; })->value());
-        $this->assertSame('29', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; })->value());
+        $this->assertSame('13.5', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], fn($v) => $v['age'] > 20 ? $v['age'] : 0)->value());
+        $this->assertSame('29', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], fn($v) => $v['age'] > 20 ? $v['age'] : null)->value());
         $this->assertSame('2.5', Arrays::median([1, 2, 3, null, 4])->value());
-        $this->assertSame('2.5', Arrays::median([1, 2, 3, null, 4], function ($v) { return $v; })->value());
+        $this->assertSame('2.5', Arrays::median([1, 2, 3, null, 4], fn($v) => $v)->value());
 
         $this->assertFalse(0.15 == array_sum([0.1, 0.2]) / 2);
         $this->assertTrue(0.15 == Arrays::median([0.1, 0.2])->value());
@@ -1364,14 +1340,14 @@ class ArraysTest extends RebetTestCase
 
     public function test_map(): void
     {
-        $this->assertSame(null, Arrays::map(null, function ($v, $k) { return $v; }));
-        $this->assertSame([2, 4], Arrays::map([1, 2], function ($v, $k) { return $v * 2; }));
-        $this->assertSame(["0 : 1", "1 : 2"], Arrays::map([1, 2], function ($v, $k) { return "{$k} : {$v}"; }));
+        $this->assertSame(null, Arrays::map(null, fn($v, $k) => $v));
+        $this->assertSame([2, 4], Arrays::map([1, 2], fn($v, $k) => $v * 2));
+        $this->assertSame(["0 : 1", "1 : 2"], Arrays::map([1, 2], fn($v, $k) => "{$k} : {$v}"));
     }
 
     public function test_reduce(): void
     {
-        $this->assertSame(null, Arrays::reduce(null, function ($c, $i) { return $c + $i; }));
-        $this->assertSame(6, Arrays::reduce([1, 2, 3], function ($c, $i) { return $c + $i; }, 0));
+        $this->assertSame(null, Arrays::reduce(null, fn($c, $i) => $c + $i));
+        $this->assertSame(6, Arrays::reduce([1, 2, 3], fn($c, $i) => $c + $i, 0));
     }
 }

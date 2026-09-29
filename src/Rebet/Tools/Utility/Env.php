@@ -47,7 +47,7 @@ class Env
      */
     public static function promise(string $name, $default = null, bool $only_once = true): ConfigPromise
     {
-        return Config::promise(function () use ($name, $default) { return static::get($name, $default); }, $only_once);
+        return Config::promise(fn() => static::get($name, $default), $only_once);
     }
 
     /**

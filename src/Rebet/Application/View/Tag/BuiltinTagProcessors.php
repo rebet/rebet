@@ -51,9 +51,7 @@ class BuiltinTagProcessors
      */
     public static function env(): Processor
     {
-        $processor = function (string ...$env) {
-            return in_array(App::env(), $env);
-        };
+        $processor = fn(string ...$env) => in_array(App::env(), $env);
 
         return new CallbackProcessor($processor);
     }
@@ -65,9 +63,7 @@ class BuiltinTagProcessors
      */
     public static function prefix(): Processor
     {
-        $processor = function ($prefix) {
-            return Tinker::with($prefix, true)->escape() ;
-        };
+        $processor = fn($prefix) => Tinker::with($prefix, true)->escape() ;
 
         return new CallbackProcessor($processor);
     }
@@ -79,9 +75,7 @@ class BuiltinTagProcessors
      */
     public static function role(): Processor
     {
-        $processor = function (string ...$roles) {
-            return Auth::user()->is(...$roles);
-        };
+        $processor = fn(string ...$roles) => Auth::user()->is(...$roles);
 
         return new CallbackProcessor($processor);
     }
@@ -93,9 +87,7 @@ class BuiltinTagProcessors
      */
     public static function can(): Processor
     {
-        $processor = function (string $action, $target, ...$extras) {
-            return Auth::user()->can($action, $target, ...$extras);
-        };
+        $processor = fn(string $action, $target, ...$extras) => Auth::user()->can($action, $target, ...$extras);
 
         return new CallbackProcessor($processor);
     }
@@ -165,7 +157,7 @@ class BuiltinTagProcessors
 
         $selector = function (array $args) use ($processor) {
             if (BuiltinTagProcessors::$field) {
-                return function ($errors, string|null $outer = null, string|null $inner = null) use ($processor) { return $processor($errors, BuiltinTagProcessors::$field, $outer, $inner); };
+                return fn($errors, string|null $outer = null, string|null $inner = null) => $processor($errors, BuiltinTagProcessors::$field, $outer, $inner);
             }
             return $processor;
         };
@@ -203,9 +195,7 @@ class BuiltinTagProcessors
 
         $selector = function (array $args) use ($processor) {
             if (BuiltinTagProcessors::$field) {
-                return function ($errors, $then, $else = null) use ($processor) {
-                    return $processor($errors, BuiltinTagProcessors::$field, $then, $else);
-                };
+                return fn($errors, $then, $else = null) => $processor($errors, BuiltinTagProcessors::$field, $then, $else);
             }
 
             return $processor;
@@ -229,9 +219,7 @@ class BuiltinTagProcessors
 
         $selector = function (array $args) use ($processor) {
             if (BuiltinTagProcessors::$field) {
-                return function ($errors, string $grammer) use ($processor) {
-                    return $processor($errors, BuiltinTagProcessors::$field, $grammer);
-                };
+                return fn($errors, string $grammer) => $processor($errors, BuiltinTagProcessors::$field, $grammer);
             }
 
             return $processor;
@@ -254,9 +242,7 @@ class BuiltinTagProcessors
 
         $selector = function (array $args) use ($processor) {
             if (BuiltinTagProcessors::$field) {
-                return function ($errors, $default = null) use ($processor) {
-                    return $processor($errors, BuiltinTagProcessors::$field, $default);
-                };
+                return fn($errors, $default = null) => $processor($errors, BuiltinTagProcessors::$field, $default);
             }
 
             return $processor;
@@ -305,7 +291,7 @@ class BuiltinTagProcessors
     public static function lang(): Processor
     {
         $processor = function (string $key, array $replacement = [], $selector = null, string|null $locale = null) {
-            $replacement = array_map(function ($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }, $replacement);
+            $replacement = array_map(fn($value) => htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'), $replacement);
             return Translator::get($key, $replacement, $selector, true, $locale);
         };
 

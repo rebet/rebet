@@ -102,7 +102,7 @@ class TranslatorTest extends RebetTestCase
         $this->assertSame('1', Translator::ordinalize(1));
         $this->assertSame('2', Translator::ordinalize(2));
         $this->assertSame('3', Translator::ordinalize(3));
-        Translator::setOrdinalize('ja', function (int $num) { return "{$num}番目"; });
+        Translator::setOrdinalize('ja', fn(int $num) => "{$num}番目");
         $this->assertSame('1番目', Translator::ordinalize(1));
         $this->assertSame('2番目', Translator::ordinalize(2));
         $this->assertSame('3番目', Translator::ordinalize(3));

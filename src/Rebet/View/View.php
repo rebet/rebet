@@ -188,9 +188,7 @@ class View implements Renderable
     public function with($key, $value = null): self
     {
         if (is_array($key)) {
-            $this->data = array_merge($this->data, array_map(function ($value) {
-                return Tinker::with($value) ;
-            }, $key));
+            $this->data = array_merge($this->data, array_map(fn($value) => Tinker::with($value), $key));
         } else {
             $this->data[$key] = Tinker::with($value);
         }

@@ -29,9 +29,7 @@ return [
         'label_short' => ['日', '月', '火', '水', '木', '金', '土'],
         'label_min'   => ['日', '月', '火', '水', '木', '金', '土'],
     ],
-    '@meridiem'      => function (DateTime $datetime, bool $uppercase) {
-        return $datetime->getHour() < 12 ? '午前' : '午後' ;
-    },
+    '@meridiem'      => fn(DateTime $datetime, bool $uppercase) => $datetime->getHour() < 12 ? '午前' : '午後',
     '@formats'       => [
         '@t'   => 'H:i',
         '@tt'  => 'H:i:s',

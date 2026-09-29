@@ -20,7 +20,7 @@ class RestoreInheritDataTest extends RebetTestCase
     public function test_handle(): void
     {
         $middleware  = new RestoreInheritData();
-        $destination = function ($request) { return Responder::toResponse('OK'); };
+        $destination = fn($request) => Responder::toResponse('OK');
 
         $request = $this->createRequestMock('/');
         $session = $request->session();

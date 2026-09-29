@@ -363,9 +363,7 @@ class Letterpress implements Renderable, \JsonSerializable
     {
         static::embed(
             $tag,
-            function (array $node, array $vars) use ($callback) {
-                return Tinker::peel(Reflector::evaluate($callback, Letterpress::evaluate('[' . $node['code'] . ']', $vars)));
-            },
+            fn(array $node, array $vars) => Tinker::peel(Reflector::evaluate($callback, Letterpress::evaluate('[' . $node['code'] . ']', $vars))),
         );
     }
 
@@ -379,7 +377,7 @@ class Letterpress implements Renderable, \JsonSerializable
         // ====================================================================
         // Define 'if' block tag
         // ====================================================================
-        static::if('if', function ($value) { return Tinker::peel($value); });
+        static::if('if', fn($value) => Tinker::peel($value));
 
         // ====================================================================
         // Define 'for' block tag
@@ -395,7 +393,7 @@ class Letterpress implements Renderable, \JsonSerializable
                     }
 
                     $vars['__callback'] = function ($vars) use (&$contents, $node): void {
-                        $vars = Arrays::where($vars, function ($v, $k) { return !Strings::startsWith($k, '__'); });
+                        $vars = Arrays::where($vars, fn($v, $k) => !Strings::startsWith($k, '__'));
                         $contents .= Letterpress::process($node['nodes'], $vars);
                     };
                     if (Letterpress::eval('$looped = false; foreach(' . $node['code'] . ') { $looped = true; $__callback->invoke(compact(array_keys(get_defined_vars()))); }; return $looped;', $vars, false)) {

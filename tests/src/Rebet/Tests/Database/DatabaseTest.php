@@ -1181,7 +1181,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db): void {
             $this->assertEquals(
                 $db->select("SELECT * FROM users WHERE gender = 1", null, [], null, false, User::class),
-                $db->filter(function (User $user) { return $user->gender == Gender::MALE(); }, "SELECT * FROM users"),
+                $db->filter(fn(User $user) => $user->gender == Gender::MALE(), "SELECT * FROM users"),
             );
         });
     }
@@ -1191,7 +1191,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db): void {
             $this->assertEquals(
                 $db->select("SELECT * FROM users", ['user_id' => 'asc'], [], null, false, User::class)->all(),
-                $db->map(function (User $user) { return $user; }, "SELECT * FROM users", ['user_id' => 'asc'])->all(),
+                $db->map(fn(User $user) => $user, "SELECT * FROM users", ['user_id' => 'asc'])->all(),
             );
         });
     }
@@ -1201,7 +1201,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db): void {
             $this->assertEquals(
                 Decimal::of($db->get(0, "SELECT SUM(user_id) FROM users")),
-                Decimal::of($db->reduce(function (User $user, $carry) { return $carry + $user->user_id; }, 0, "SELECT * FROM users")),
+                Decimal::of($db->reduce(fn(User $user, $carry) => $carry + $user->user_id, 0, "SELECT * FROM users")),
             );
         });
     }

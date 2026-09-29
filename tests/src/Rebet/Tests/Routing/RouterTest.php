@@ -60,89 +60,47 @@ class RouterTest extends RebetTestCase
 
         Router::reset();
         Router::rules('web')->routing(function (): void {
-            Router::get('/', function () {
-                return 'Content: /';
-            });
+            Router::get('/', fn() => 'Content: /');
 
-            Router::get('/get', function () {
-                return 'Content: /get';
-            });
+            Router::get('/get', fn() => 'Content: /get');
 
-            Router::post('/post', function () {
-                return 'Content: /post';
-            });
+            Router::post('/post', fn() => 'Content: /post');
 
-            Router::put('/put', function () {
-                return 'Content: /put';
-            });
+            Router::put('/put', fn() => 'Content: /put');
 
-            Router::patch('/patch', function () {
-                return 'Content: /patch';
-            });
+            Router::patch('/patch', fn() => 'Content: /patch');
 
-            Router::delete('/delete', function () {
-                return 'Content: /delete';
-            });
+            Router::delete('/delete', fn() => 'Content: /delete');
 
-            Router::options('/options', function () {
-                return 'Content: /options';
-            });
+            Router::options('/options', fn() => 'Content: /options');
 
-            Router::any('/any', function () {
-                return 'Content: /any';
-            });
+            Router::any('/any', fn() => 'Content: /any');
 
-            Router::get('/parameter/requierd/{id}', function ($id) {
-                return "Content: /parameter/requierd/{id} - {$id}";
-            });
+            Router::get('/parameter/requierd/{id}', fn($id) => "Content: /parameter/requierd/{id} - {$id}");
 
-            Router::get('/parameter/option/{id?}', function ($id = 'default') {
-                return "Content: /parameter/option/{id?} - {$id}";
-            });
+            Router::get('/parameter/option/{id?}', fn($id = 'default') => "Content: /parameter/option/{id?} - {$id}");
 
-            Router::get('/parameter/between/{from}/to/{to}', function ($from, $to) {
-                return "Content: /parameter/between/{from}/to/{to} - {$from}, {$to}";
-            });
+            Router::get('/parameter/between/{from}/to/{to}', fn($from, $to) => "Content: /parameter/between/{from}/to/{to} - {$from}, {$to}");
 
-            Router::get('/parameter/between/invert/{from}/to/{to}', function ($to, $from) {
-                return "Content: /parameter/between/invert/{from}/to/{to} - {$from}, {$to}";
-            });
+            Router::get('/parameter/between/invert/{from}/to/{to}', fn($to, $from) => "Content: /parameter/between/invert/{from}/to/{to} - {$from}, {$to}");
 
-            Router::get('/parameter/where/{id}', function ($id) {
-                return "Content: /parameter/where/{id} - {$id}";
-            })->where('id', '/^[0-9]+$/');
+            Router::get('/parameter/where/{id}', fn($id) => "Content: /parameter/where/{id} - {$id}")->where('id', '/^[0-9]+$/');
 
-            Router::get('/parameter/convert/int/{value}', function (int $value) {
-                return "Content: /parameter/convert/int/{value} - {$value} " . (is_int($value) ? 'int' : 'not int');
-            });
+            Router::get('/parameter/convert/int/{value}', fn(int $value) => "Content: /parameter/convert/int/{value} - {$value} " . (is_int($value) ? 'int' : 'not int'));
 
-            Router::get('/parameter/convert/array/{value}', function (array $value) {
-                return "Content: /parameter/convert/array/{value} - " . join('/', $value);
-            });
+            Router::get('/parameter/convert/array/{value}', fn(array $value) => "Content: /parameter/convert/array/{value} - " . join('/', $value));
 
-            Router::get('/parameter/convert/date-time/{value}', function (DateTime $value) {
-                return "Content: /parameter/convert/date-time/{value} - {$value->format('Y-m-d H:i:s.u')}";
-            });
+            Router::get('/parameter/convert/date-time/{value}', fn(DateTime $value) => "Content: /parameter/convert/date-time/{value} - {$value->format('Y-m-d H:i:s.u')}");
 
-            Router::get('/parameter/convert/enum/{value}', function (Gender $value) {
-                return "Content: /parameter/convert/enum/{value} - {$value}";
-            });
+            Router::get('/parameter/convert/enum/{value}', fn(Gender $value) => "Content: /parameter/convert/enum/{value} - {$value}");
 
-            Router::match(['GET', 'HEAD', 'POST'], '/match/get-head-post', function () {
-                return 'Content: /match/get-head-post';
-            });
+            Router::match(['GET', 'HEAD', 'POST'], '/match/get-head-post', fn() => 'Content: /match/get-head-post');
 
-            Router::get('/json/array', function () {
-                return [1, 2, 3];
-            });
+            Router::get('/json/array', fn() => [1, 2, 3]);
 
-            Router::get('/json/jsonSerializable', function () {
-                return DateTime::now();
-            });
+            Router::get('/json/jsonSerializable', fn() => DateTime::now());
 
-            Router::get('/renderable', function () {
-                return View::of('welcome')->with(['name' => 'Samantha']);
-            });
+            Router::get('/renderable', fn() => View::of('welcome')->with(['name' => 'Samantha']));
 
             Router::get('/method/private-call', 'TestController::privateCall');
             Router::get('/method/private-call-accessible', 'TestController::privateCall')->accessible(true);
@@ -209,9 +167,7 @@ class RouterTest extends RebetTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
 
-        Router::match('GET', '/get', function () {
-            return 'Content: /get';
-        });
+        Router::match('GET', '/get', fn() => 'Content: /get');
     }
 
     public function test_invalidRuleDefine_default(): void
@@ -219,9 +175,7 @@ class RouterTest extends RebetTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
 
-        Router::default(function () {
-            return 'default route.';
-        });
+        Router::default(fn() => 'default route.');
     }
 
     public function test_routing_root(): void
@@ -952,19 +906,15 @@ class RouterTest extends RebetTestCase
     {
         Router::reset();
         Router::rules('web')->prefix('/prefix')->routing(function (): void {
-            Router::get('/get', function () { return 'Content: /prefix/get'; });
+            Router::get('/get', fn() => 'Content: /prefix/get');
             Router::get('/method/public-call', 'TestController::publicCall');
             Router::controller('/controller/namespace/short', 'TestController');
             Router::default(ConventionalRoute::class);
-        })->fallback(function (Request $request, \Throwable $e) {
-            return Responder::toResponse('fallback prefix');
-        });
+        })->fallback(fn(Request $request, \Throwable $e) => Responder::toResponse('fallback prefix'));
 
         Router::rules('web')->routing(function (): void {
-            Router::get('/get', function () { return 'Content: /get'; });
-        })->fallback(function (Request $request, \Throwable $e) {
-            return Responder::toResponse('fallback');
-        });
+            Router::get('/get', fn() => 'Content: /get');
+        })->fallback(fn(Request $request, \Throwable $e) => Responder::toResponse('fallback'));
 
         $response = Router::handle(Request::create('/get-none'));
         $this->assertSame('fallback', $response->getContent());
@@ -993,9 +943,7 @@ class RouterTest extends RebetTestCase
         Router::reset();
         Config::application([
             Router::class => [
-                'default_fallback_handler' => function (Request $request, \Throwable $e) {
-                    return Responder::toResponse('fallback default');
-                },
+                'default_fallback_handler' => fn(Request $request, \Throwable $e) => Responder::toResponse('fallback default'),
             ],
         ]);
 

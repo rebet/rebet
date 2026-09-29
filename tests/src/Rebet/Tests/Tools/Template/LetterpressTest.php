@@ -372,7 +372,7 @@ class LetterpressTest extends RebetTestCase
                 'a'          => [1, 2, 3],
                 'b'          => 'b',
                 '__callback' => function ($i, $vars): void {
-                    $vars = Arrays::where($vars, function ($v, $k) { return !Strings::startsWith($k, '__'); });
+                    $vars = Arrays::where($vars, fn($v, $k) => !Strings::startsWith($k, '__'));
                     foreach ($vars as $k => $v) {
                         echo "[{$i}] {$k} = {$v}\n";
                     }
@@ -1230,21 +1230,15 @@ class LetterpressTest extends RebetTestCase
     {
         $this->assertFalse(Letterpress::defined('upper'));
 
-        Letterpress::filter('upper', function (string $body) {
-            return strtoupper($body);
-        });
+        Letterpress::filter('upper', fn(string $body) => strtoupper($body));
 
         $this->assertTrue(Letterpress::defined('upper'));
         $this->assertSame('foo BAR baz', Letterpress::of('foo {% upper %}bar{% endupper %} baz')->render());
 
-        Letterpress::filter('filter', function (string $body, $filter) {
-            return Reflector::evaluate($filter, array_merge([$body]));
-        });
+        Letterpress::filter('filter', fn(string $body, $filter) => Reflector::evaluate($filter, array_merge([$body])));
         $this->assertSame('foo BAR baz', Letterpress::of('foo {% filter "strtoupper" %}bar{% endfilter %} baz')->render());
 
-        Letterpress::filter('replace', function (string $body, $pattern, $replacement, int $limit = -1) {
-            return preg_replace($pattern, $replacement, $body, $limit);
-        });
+        Letterpress::filter('replace', fn(string $body, $pattern, $replacement, int $limit = -1) => preg_replace($pattern, $replacement, $body, $limit));
         $this->assertSame('foo bAr baz', Letterpress::of('foo {% replace "/a/", "A" %}bar{% endreplace %} baz')->render());
     }
 
@@ -1255,9 +1249,7 @@ class LetterpressTest extends RebetTestCase
         // of the outer `if`'s own `else`/`endif` (they were misrouted to the template root once the
         // filter tag's nested block finished), throwing "Unsupported (or invalid position) tag
         // {% else %} found." for input that is otherwise perfectly valid.
-        Letterpress::filter('upper', function (string $body) {
-            return strtoupper($body);
-        });
+        Letterpress::filter('upper', fn(string $body) => strtoupper($body));
 
         $template = 'a {% if $x %} x {% if $y %} y {% else %} {% upper %}z{% endupper %} {% endif %} {% else %} not-x {% endif %} b';
 
@@ -1280,9 +1272,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertTrue(Letterpress::defined('for'));
         $this->assertFalse(Letterpress::defined('upper'));
 
-        Letterpress::filter('upper', function (string $body) {
-            return strtoupper($body);
-        });
+        Letterpress::filter('upper', fn(string $body) => strtoupper($body));
 
         $this->assertTrue(Letterpress::defined('if'));
         $this->assertTrue(Letterpress::defined('for'));
@@ -1324,9 +1314,7 @@ class LetterpressTest extends RebetTestCase
     {
         $this->assertFalse(Letterpress::defined('hello'));
 
-        Letterpress::embed('hello', function (array $node, array $vars) {
-            return trim("'Hello " . Letterpress::evaluate($node['code'], $vars)) . "'";
-        });
+        Letterpress::embed('hello', fn(array $node, array $vars) => trim("'Hello " . Letterpress::evaluate($node['code'], $vars)) . "'");
 
         $this->assertTrue(Letterpress::defined('hello'));
         $this->assertSame("foo 'Hello' baz", Letterpress::of('foo {% hello %} baz')->render());
@@ -1349,9 +1337,7 @@ class LetterpressTest extends RebetTestCase
     {
         $this->assertFalse(Letterpress::defined('hello'));
 
-        Letterpress::function('hello', function (string $name = '') {
-            return trim("'Hello {$name}") . "'";
-        });
+        Letterpress::function('hello', fn(string $name = '') => trim("'Hello {$name}") . "'");
 
         $this->assertTrue(Letterpress::defined('hello'));
         $this->assertSame("foo 'Hello' baz", Letterpress::of('foo {% hello %} baz')->render());
@@ -1362,9 +1348,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame("foo 'Hello Default' baz", $text->with(['name' => null])->render());
 
 
-        Letterpress::function('welcome', function () {
-            return "Welcome " . (Auth::user()->isGuest() ? 'to Rebet' : Auth::user()->name) . "!";
-        });
+        Letterpress::function('welcome', fn() => "Welcome " . (Auth::user()->isGuest() ? 'to Rebet' : Auth::user()->name) . "!");
         $this->signout();
         $this->assertSame("Welcome to Rebet!", Letterpress::of('{% welcome %}')->render());
         $this->signin();
@@ -1376,9 +1360,7 @@ class LetterpressTest extends RebetTestCase
         Letterpress::reset();
         $this->assertFalse(Letterpress::defined('env'));
 
-        Letterpress::if('env', function (string ...$env) {
-            return App::envIn(...$env);
-        });
+        Letterpress::if('env', fn(string ...$env) => App::envIn(...$env));
 
         $this->assertTrue(Letterpress::defined('env'));
         $this->assertSame('a b c', Letterpress::of('a {% env "unittest" %}b{% endenv %} c')->render());

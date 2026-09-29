@@ -29,12 +29,9 @@ return [
         'label_short' => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
         'label_min'   => ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
     ],
-    '@meridiem'      => function (DateTime $datetime, bool $uppercase) {
-        return $datetime->getHour() < 12
+    '@meridiem'      => fn(DateTime $datetime, bool $uppercase) => $datetime->getHour() < 12
                 ? ($uppercase ? 'AM' : 'am')
-                : ($uppercase ? 'PM' : 'pm')
-        ;
-    },
+                : ($uppercase ? 'PM' : 'pm'),
     '@formats'       => [
         '@t'   => 'h:i @A',
         '@tt'  => 'h:i:s @A',

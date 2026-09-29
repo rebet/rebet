@@ -128,9 +128,9 @@ return [
         */
         'roles'     => [
             //{%-- commentif !$use_auth -%}
-            'all'   => function (AuthUser $user) { return true; },
-            'guest' => function (AuthUser $user) { return $user->isGuest(); },
-            'user'  => function (AuthUser $user) { return $user->role === 'user'; }, // @phpstan-ignore property.notFound (AuthUser allow dynamic properties)
+            'all'   => fn(AuthUser $user) => true,
+            'guest' => fn(AuthUser $user) => $user->isGuest(),
+            'user'  => fn(AuthUser $user) => $user->role === 'user', // @phpstan-ignore property.notFound (AuthUser allow dynamic properties)
             //{%-- endcommentif -%}
         ],
 
@@ -148,7 +148,7 @@ return [
             //{%-- commentif !($use_auth && $use_db) -%}
             User::class => [
                 // '@before' => function (AuthUser $user, $target, string $action) { return $user->is('admin'); },
-                'update' => function (AuthUser $user, User $target) { return $user->id === $target->user_id; },
+                'update' => fn(AuthUser $user, User $target) => $user->id === $target->user_id,
             ],
             //{%-- endcommentif -%}
         ],
@@ -174,7 +174,7 @@ return [
         | guests here.
         */
         'guest_aliases' => [
-            'name' => function ($user) { return Translator::get('message.guest_name') ?? 'Guest'; },
+            'name' => fn($user) => Translator::get('message.guest_name') ?? 'Guest',
             'role' => '@guest',
         ],
 

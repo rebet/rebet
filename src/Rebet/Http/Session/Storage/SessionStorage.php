@@ -71,7 +71,7 @@ class SessionStorage extends NativeSessionStorage
      */
     public function __construct(array $options = [], \SessionHandlerInterface|null $handler = null, MetadataBag|null $metadata_bag = null)
     {
-        $options = array_merge(array_filter(static::config('options'), function ($v) { return $v !== null; }), $options);
+        $options = array_merge(array_filter(static::config('options'), fn($v) => $v !== null), $options);
         parent::__construct($options, $handler ?? static::configInstantiate('handler', [], false), $metadata_bag ?? new MetadataBag('_rebet_meta'));
     }
 }

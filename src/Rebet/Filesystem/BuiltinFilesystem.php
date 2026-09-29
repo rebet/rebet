@@ -442,7 +442,7 @@ class BuiltinFilesystem implements Filesystem
             foreach ($this->driver->listContents($directory ?? '/', $recursive) as $item) {
                 $contents[] = ['type' => $item->type(), 'path' => $item->path()];
             }
-            usort($contents, function ($a, $b) { return $a['path'] <=> $b['path']; });
+            usort($contents, fn($a, $b) => $a['path'] <=> $b['path']);
             return $this->filter($contents, $type, $pattern, $matching_mode);
         } catch (\Exception $e) {
             throw $this->convertException($e);
@@ -477,11 +477,9 @@ class BuiltinFilesystem implements Filesystem
     protected function filter(array $lists, string|null $type = null, $pattern = '*', string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD): array
     {
         return Tinker::with($lists, true)
-            ->where(function ($content) use ($type) { return $type === null ? true : $content['type'] === $type; })
+            ->where(fn($content) => $type === null ? true : $content['type'] === $type)
             ->pluck('path')
-            ->where(function ($path) use ($pattern, $matching_mode) {
-                return $matching_mode === Filesystem::MATCHING_MODE_WILDCARD ? Strings::wildmatch($path, $pattern) : Strings::match($path, $pattern) ;
-            })
+            ->where(fn($path) => $matching_mode === Filesystem::MATCHING_MODE_WILDCARD ? Strings::wildmatch($path, $pattern) : Strings::match($path, $pattern))
             ->values()
             ->return()
         ;

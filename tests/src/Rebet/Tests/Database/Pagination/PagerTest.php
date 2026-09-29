@@ -21,7 +21,7 @@ class PagerTest extends RebetTestCase
         $this->assertSame(1, Pager::resolve()->page());
         Config::application([
             Pager::class => [
-                'resolver' => function (Pager $pager) { return $pager->page(3); },
+                'resolver' => fn(Pager $pager) => $pager->page(3),
             ],
         ]);
         $this->assertSame(3, Pager::resolve()->page());

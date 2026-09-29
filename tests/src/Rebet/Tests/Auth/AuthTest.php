@@ -105,7 +105,7 @@ class AuthTest extends RebetTestCase
             Auth::class => [
                 'providers' => [
                     'user' => [
-                        'precondition' => function ($user) { return $user['role'] === 'admin'; },
+                        'precondition' => fn($user) => $user['role'] === 'admin',
                     ],
                 ],
             ],
@@ -263,7 +263,7 @@ class AuthTest extends RebetTestCase
         $this->assertTrue($user->isGuest());
         $this->assertFalse(Auth::role($user, 'visitor'));
 
-        Auth::defineRole('visitor', function (AuthUser $user) { return $user->is('guest', 'user'); });
+        Auth::defineRole('visitor', fn(AuthUser $user) => $user->is('guest', 'user'));
 
         $this->assertTrue(Auth::role($user, 'visitor'));
 
@@ -300,7 +300,7 @@ class AuthTest extends RebetTestCase
 
         $this->assertFalse(Auth::policy(Auth::user(), 'update', $bank));
 
-        Auth::definePolicy(Bank::class, 'update', function (AuthUser $user, Bank $target) { return $user->id === $target->user_id; });
+        Auth::definePolicy(Bank::class, 'update', fn(AuthUser $user, Bank $target) => $user->id === $target->user_id);
 
         $this->assertFalse(Auth::policy(Auth::user(), 'update', $bank));
 
@@ -322,7 +322,7 @@ class AuthTest extends RebetTestCase
 
         $this->assertFalse(Auth::policy(Auth::user(), 'update', $bank));
 
-        Auth::defineBeforePolicy(Bank::class, function (AuthUser $user, Bank $target) { return $user->is('admin'); });
+        Auth::defineBeforePolicy(Bank::class, fn(AuthUser $user, Bank $target) => $user->is('admin'));
 
         $this->assertTrue(Auth::policy(Auth::user(), 'update', $bank));
     }

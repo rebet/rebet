@@ -368,9 +368,7 @@ class Context
     public function labels(array $fields, string|null $delimiter = null): string
     {
         $delimiter ??= $this->grammar('delimiter', ', ');
-        return implode($delimiter, array_map(function ($field) {
-            return $this->label($field);
-        }, $fields));
+        return implode($delimiter, array_map(fn($field) => $this->label($field), $fields));
     }
 
     /**
@@ -401,7 +399,7 @@ class Context
     {
         if ($nested_field) {
             $label = $this->formatNestedAttributeLabel($this->label("{$this->field}.{$nested_field}"), $this->label);
-            $list  = array_map(function ($value) use ($nested_field) { return Reflector::get($value, $nested_field); }, (array) $this->value);
+            $list  = array_map(fn($value) => Reflector::get($value, $nested_field), (array) $this->value);
             return [$list, $label];
         }
 

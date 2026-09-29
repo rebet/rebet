@@ -36,9 +36,7 @@ class Translator
             'locale'          => \locale_get_default(),
             'fallback_locale' => 'en',
             'ordinalize'      => [
-                'en' => function (int $num) {
-                    return in_array($num % 100, [11, 12, 13]) ? $num . 'th' : $num . (['th', 'st', 'nd', 'rd'][$num % 10] ?? 'th');
-                },
+                'en' => fn(int $num) => in_array($num % 100, [11, 12, 13]) ? $num . 'th' : $num . (['th', 'st', 'nd', 'rd'][$num % 10] ?? 'th'),
             ],
         ];
     }
@@ -231,7 +229,7 @@ class Translator
     public static function ordinalize(int $num, string|null $locale = null): string
     {
         $locale ??= static::config('locale');
-        $ordinalize = static::config("ordinalize.{$locale}", false, function (int $num) { return $num; });
+        $ordinalize = static::config("ordinalize.{$locale}", false, fn(int $num) => $num);
         return (string) $ordinalize($num);
     }
 }

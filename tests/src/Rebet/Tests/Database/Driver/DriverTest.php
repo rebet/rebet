@@ -40,7 +40,7 @@ class DriverTest extends RebetDatabaseTestCase
             [['mysql', 'mariadb'], PdoParameter::int(1), true],
             [['sqlite', 'pgsql'], PdoParameter::bool(false), false],
             [['mysql', 'mariadb'], PdoParameter::int(0), false],
-            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::lob($file), function () use ($path) { return fopen($path, 'r'); }],
+            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::lob($file), fn() => fopen($path, 'r')],
             [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::str('2001-02-03'), Date::today()],
             [['sqlite', 'mysql', 'mariadb'], PdoParameter::str('2001-02-03 04:05:06'), DateTime::now()],
             [['pgsql'], PdoParameter::str('2001-02-03 04:05:06+0000'), DateTime::now()],

@@ -350,7 +350,7 @@ class StringsTest extends RebetTestCase
                     EOS,
                 [new ToStringStub("multi\nline\ntext\nin\narray")],
             ],
-            ['Rebet\Tests\Tools\Utility\StringsTest::{closure}($a, ?int $b, string $c = default) : ?bool', function ($a, int|null $b, string $c = 'default'): bool|null { return true; }],
+            ['Rebet\Tests\Tools\Utility\StringsTest::{closure}($a, ?int $b, string $c = default) : ?bool', fn($a, int|null $b, string $c = 'default'): bool|null => true],
             ['TestApp\Stub\JsonSerializableStub : 123', new JsonSerializableStub(123)],
             ['TestApp\Stub\JsonSerializableStub : abc', new JsonSerializableStub('abc')],
             [

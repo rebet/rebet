@@ -19,7 +19,7 @@ class TrimStringsTest extends RebetTestCase
     public function test_handle(): void
     {
         $middleware  = new TrimStrings();
-        $destination = function ($request) { return Responder::toResponse('OK'); };
+        $destination = fn($request) => Responder::toResponse('OK');
 
         $request = $this->createRequestMock('/');
         $request->query->add([

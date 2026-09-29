@@ -208,7 +208,7 @@ class RequestTest extends RebetTestCase
         $this->expectExceptionMessage("Request::setSessionFactory() method is unspported in Rebet. You can use Request::session() method to set the session factory instead.");
 
         $request = Request::create('/');
-        $request->setSessionFactory(function () { return null; });
+        $request->setSessionFactory(fn() => null);
     }
 
     public function test_session_notSet(): void
@@ -228,7 +228,7 @@ class RequestTest extends RebetTestCase
         $this->assertInstanceOf(Session::class, $request->session());
         $this->assertSame($session, $request->session());
 
-        $factory = function () use ($session) { return $session; };
+        $factory = fn() => $session;
         $this->assertInstanceOf(Request::class, $request->session($factory));
         $this->assertInstanceOf(Session::class, $request->session());
         $this->assertSame($session, $request->session());
@@ -273,7 +273,7 @@ class RequestTest extends RebetTestCase
 
         Router::setCurrentChannel('web');
         Router::rules('web')->prefix('/prefix')->routing(function (): void {
-            Router::get('/foo', function () { return 'foo'; });
+            Router::get('/foo', fn() => 'foo');
         });
 
         $response = Router::handle($request);

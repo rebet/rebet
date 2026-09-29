@@ -350,7 +350,7 @@ class Unit
     public static function baseUnitOf($units): string|null
     {
         $units = is_array($units) ? $units : static::factorsOf($units) ;
-        return Arrays::find($units, function ($v) { return $v[0] === '1'; });
+        return Arrays::find($units, fn($v) => $v[0] === '1');
     }
 
     /**
@@ -426,7 +426,7 @@ class Unit
             $to_factor = is_array($to_factor) ? $to_factor['from_base'] : $to_factor ;
         } else {
             $abs_number = $number->abs();
-            foreach (Arrays::sort(Arrays::where($units, function ($flactor) { return $flactor[1]; }), SORT_ASC, function ($a, $b) { return Decimal::of($a[0])->comp($b[0]); }) as $prefix => [$factor, $auto_scalable]) {
+            foreach (Arrays::sort(Arrays::where($units, fn($flactor) => $flactor[1]), SORT_ASC, fn($a, $b) => Decimal::of($a[0])->comp($b[0])) as $prefix => [$factor, $auto_scalable]) {
                 if ($to === null) {
                     $to_factor = $factor;
                     $to        = $prefix;

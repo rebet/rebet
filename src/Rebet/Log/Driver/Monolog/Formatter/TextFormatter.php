@@ -28,12 +28,12 @@ class TextFormatter implements FormatterInterface
     {
         return [
             'default_format'      => "{datetime} {channel}/{extra.process_id} [{level_name}] {message}{context}{extra}{exception}\n",
-            'default_stringifier' => function ($val, array $masks, string $masked_label) { return Strings::stringify($val, $masks, $masked_label); },
+            'default_stringifier' => fn($val, array $masks, string $masked_label) => Strings::stringify($val, $masks, $masked_label),
             'stringifiers'        => [
-                '{datetime}'  => function ($val, array $masks, string $masked_label) { return $val->format('Y-m-d H:i:s.u'); },
-                '{context}'   => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n====== [  CONTEXT  ] ======\n" . Strings::indent(Strings::stringify($val, $masks, $masked_label), "== ") ; },
-                '{extra}'     => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n------ [   EXTRA   ] ------\n" . Strings::indent(Strings::stringify($val, $masks, $masked_label), "-- ") ; },
-                '{exception}' => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n****** [ EXCEPTION ] ******\n" . Strings::indent("{$val}", "** ") ; },
+                '{datetime}'  => fn($val, array $masks, string $masked_label) => $val->format('Y-m-d H:i:s.u'),
+                '{context}'   => fn($val, array $masks, string $masked_label) => empty($val) ? '' : "\n====== [  CONTEXT  ] ======\n" . Strings::indent(Strings::stringify($val, $masks, $masked_label), "== "),
+                '{extra}'     => fn($val, array $masks, string $masked_label) => empty($val) ? '' : "\n------ [   EXTRA   ] ------\n" . Strings::indent(Strings::stringify($val, $masks, $masked_label), "-- "),
+                '{exception}' => fn($val, array $masks, string $masked_label) => empty($val) ? '' : "\n****** [ EXCEPTION ] ******\n" . Strings::indent("{$val}", "** "),
             ],
             'masks'               => [],
             'masked_label'        => '********',

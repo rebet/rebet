@@ -116,9 +116,7 @@ trait Arrayable
      */
     public function toArray(): array
     {
-        return array_map(function ($value) {
-            return is_object($value) && method_exists($value, 'toArray') ? $value->toArray() : $value;
-        }, $this->container());
+        return array_map(fn($value) => is_object($value) && method_exists($value, 'toArray') ? $value->toArray() : $value, $this->container());
     }
 
     /**

@@ -63,13 +63,13 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             'test_now_timezone'          => null,
             'test_now_format'            => ['Y#m#d H:i:s.u', 'Y#m#d H:i:s', 'Y#m#d H:i', 'Y#m#d'],
             'custom_formats'             => [
-                '@www' => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label'); },
-                '@ww'  => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_short'); },
-                '@w'   => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_min'); },
-                '@mmm' => function (DateTime $datetime) { return $datetime->getLocalizedMonth()->translate('label'); },
-                '@mm'  => function (DateTime $datetime) { return $datetime->getLocalizedMonth()->translate('label_short'); },
-                '@a'   => function (DateTime $datetime) { return $datetime->getMeridiem(false); },
-                '@A'   => function (DateTime $datetime) { return $datetime->getMeridiem(true); },
+                '@www' => fn(DateTime $datetime) => $datetime->getDayOfWeek()->translate('label'),
+                '@ww'  => fn(DateTime $datetime) => $datetime->getDayOfWeek()->translate('label_short'),
+                '@w'   => fn(DateTime $datetime) => $datetime->getDayOfWeek()->translate('label_min'),
+                '@mmm' => fn(DateTime $datetime) => $datetime->getLocalizedMonth()->translate('label'),
+                '@mm'  => fn(DateTime $datetime) => $datetime->getLocalizedMonth()->translate('label_short'),
+                '@a'   => fn(DateTime $datetime) => $datetime->getMeridiem(false),
+                '@A'   => fn(DateTime $datetime) => $datetime->getMeridiem(true),
             ],
         ];
     }

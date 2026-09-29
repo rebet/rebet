@@ -535,10 +535,10 @@ abstract class DataModel
             return $this->pullEagerLoads($cache_key);
         }
 
-        $ransacks = $this->eagerRansack(function (DataModel $dm) use ($class, $alias) { return $dm->ransacksForBelongsTo($class, $alias); });
+        $ransacks = $this->eagerRansack(fn(DataModel $dm) => $dm->ransacksForBelongsTo($class, $alias));
         $rs       = Arrays::groupBy(
             $class::select($ransacks, [], null, $for_update)->toArray(),
-            function ($v, $k) { return $v->primaryHash(); },
+            fn($v, $k) => $v->primaryHash(),
         );
         $eager_group = new ResultSet();
         foreach ($this->_belongs_result_set as $dm) {
@@ -637,10 +637,10 @@ abstract class DataModel
             return $this->pullEagerLoads($cache_key);
         }
 
-        $ransacks = $this->eagerRansack(function (DataModel $dm) use ($alias) { return $dm->ransacksForHas($alias); });
+        $ransacks = $this->eagerRansack(fn(DataModel $dm) => $dm->ransacksForHas($alias));
         $rs       = Arrays::groupBy(
             $class::select($ransacks, [], null, $for_update)->toArray(),
-            function ($v, $k) use ($alias) { return $v->foreignHash(static::class, $alias); },
+            fn($v, $k) => $v->foreignHash(static::class, $alias),
         );
         $eager_group = new ResultSet();
         foreach ($this->_belongs_result_set as $dm) {
@@ -723,10 +723,10 @@ abstract class DataModel
             return $this->pullEagerLoads($cache_key);
         }
 
-        $ransacks = array_merge($ransacks, $this->eagerRansack(function (DataModel $dm) use ($alias) { return $dm->ransacksForHas($alias); }));
+        $ransacks = array_merge($ransacks, $this->eagerRansack(fn(DataModel $dm) => $dm->ransacksForHas($alias)));
         $rs       = Arrays::groupBy(
             $class::select($ransacks, $order_by, null, $for_update)->toArray(),
-            function ($v, $k) use ($alias) { return $v->foreignHash(static::class, $alias); },
+            fn($v, $k) => $v->foreignHash(static::class, $alias),
         );
         $eager_group = new ResultSet();
         foreach ($this->_belongs_result_set as $dm) {

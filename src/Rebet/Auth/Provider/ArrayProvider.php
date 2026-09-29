@@ -76,7 +76,7 @@ class ArrayProvider extends AuthProvider
         $this->users          = Tinker::with($users, true);
         $this->signin_id_name = $signin_id_name;
         $this->token_name     = $token_name;
-        $this->precondition   = $precondition ?? function ($user) { return true; };
+        $this->precondition   = $precondition ?? fn($user) => true;
         $this->aliases        = $aliases;
     }
 
@@ -86,8 +86,8 @@ class ArrayProvider extends AuthProvider
     public function findById($id): AuthUser|null
     {
         return $this->users
-            ->first(function ($user) use ($id) { return $user['user_id'] == $id; })
-            ->return(function ($user) { return new AuthUser($user, $this->aliases, $this); });
+            ->first(fn($user) => $user['user_id'] == $id)
+            ->return(fn($user) => new AuthUser($user, $this->aliases, $this));
     }
 
     /**
@@ -96,10 +96,10 @@ class ArrayProvider extends AuthProvider
     public function findByToken(string|null $token): AuthUser|null
     {
         return $this->users
-            ->where(function ($user) use ($token) { return $user[$this->token_name] == $this->hashToken($token); })
+            ->where(fn($user) => $user[$this->token_name] == $this->hashToken($token))
             ->where($this->precondition)
             ->first()
-            ->return(function ($user) { return new AuthUser($user, $this->aliases, $this); });
+            ->return(fn($user) => new AuthUser($user, $this->aliases, $this));
     }
 
     /**
@@ -108,10 +108,10 @@ class ArrayProvider extends AuthProvider
     protected function findBySigninId($signin_id): AuthUser|null
     {
         return $this->users
-            ->where(function ($user) use ($signin_id) { return $user[$this->signin_id_name] == $signin_id; })
+            ->where(fn($user) => $user[$this->signin_id_name] == $signin_id)
             ->where($this->precondition)
             ->first()
-            ->return(function ($user) { return new AuthUser($user, $this->aliases, $this); });
+            ->return(fn($user) => new AuthUser($user, $this->aliases, $this));
     }
 
     /**

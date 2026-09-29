@@ -21,7 +21,7 @@ class SetRequestInputDataToViewTest extends RebetTestCase
     public function test_handle(): void
     {
         $middleware  = new SetRequestInputDataToView();
-        $destination = function ($request) { return Responder::toResponse('OK'); };
+        $destination = fn($request) => Responder::toResponse('OK');
 
         $request = $this->createRequestMock('/');
         $request->query->set('query', 'Q');

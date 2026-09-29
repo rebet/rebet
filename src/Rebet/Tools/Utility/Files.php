@@ -151,9 +151,7 @@ class Files
     public static function zip(string $source_path, string $out_zip_path, bool $include_target_dir = true, \Closure|null $filter = null, int $out_dir_permission = 0o775): void
     {
         if (empty($filter)) {
-            $filter = function ($path) {
-                return true;
-            };
+            $filter = fn($path) => true;
         }
 
         $path_info   = pathInfo($source_path);

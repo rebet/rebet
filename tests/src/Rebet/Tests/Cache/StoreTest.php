@@ -39,8 +39,8 @@ class StoreTest extends RebetCacheTestCase
             $this->assertSame('foo', $store->retrieve('foo', '10min', 'FOO'), $msg);
 
             $this->assertNull($store->get('bar'), $msg);
-            $value_1 = $store->retrieve('bar', 1, function () { return Securities::randomHash(); });
-            $value_2 = $store->retrieve('bar', 1, function () { return Securities::randomHash(); });
+            $value_1 = $store->retrieve('bar', 1, fn() => Securities::randomHash());
+            $value_2 = $store->retrieve('bar', 1, fn() => Securities::randomHash());
             $this->assertSame($value_1, $store->get('bar'), $msg);
             $this->assertSame($value_1, $value_2, $msg);
 
@@ -48,7 +48,7 @@ class StoreTest extends RebetCacheTestCase
                 usleep(100000);
             }
 
-            $value_3 = $store->retrieve('bar', 1, function () { return Securities::randomHash(); });
+            $value_3 = $store->retrieve('bar', 1, fn() => Securities::randomHash());
             $this->assertSame($value_3, $store->get('bar'), $msg);
             $this->assertNotSame($value_1, $value_3, $msg);
         });

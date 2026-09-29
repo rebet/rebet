@@ -19,7 +19,7 @@ class RouteActionTest extends RebetTestCase
 {
     public function test___construct(): void
     {
-        $this->assertInstanceOf(RouteAction::class, $this->createRouteActionBasedClosureMock(function () { return 'Hello'; }));
+        $this->assertInstanceOf(RouteAction::class, $this->createRouteActionBasedClosureMock(fn() => 'Hello'));
     }
 
     protected function createRouteActionBasedClosureMock(callable $action): RouteAction
@@ -105,7 +105,7 @@ class RouteActionTest extends RebetTestCase
 
     public function test_getAttributedMethod(): void
     {
-        $route_action = $this->createRouteActionBasedClosureMock(function () { return 'Hello'; });
+        $route_action = $this->createRouteActionBasedClosureMock(fn() => 'Hello');
         $this->assertNull($route_action->getAttributedMethod());
 
 
@@ -120,7 +120,7 @@ class RouteActionTest extends RebetTestCase
 
     public function test_attribute(): void
     {
-        $route_action = $this->createRouteActionBasedClosureMock(function () { return 'Hello'; });
+        $route_action = $this->createRouteActionBasedClosureMock(fn() => 'Hello');
         $this->assertNull($route_action->attribute(Method::class));
 
 

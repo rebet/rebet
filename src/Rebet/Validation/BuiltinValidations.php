@@ -255,9 +255,7 @@ class BuiltinValidations implements Validations
      */
     public function validationWith(Context $c, $other, int|null $at_least = null): bool
     {
-        return !$this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
-            return false;
-        });
+        return !$this->handleWith($c, $other, $at_least, fn($c, $other, $at_least, $max, $inputed) => false);
     }
 
     /**
@@ -270,9 +268,7 @@ class BuiltinValidations implements Validations
      */
     public function validationWithout(Context $c, $other, int|null $at_least = null): bool
     {
-        return !$this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
-            return false;
-        });
+        return !$this->handleWithout($c, $other, $at_least, fn($c, $other, $at_least, $max, $not_inputed) => false);
     }
 
     /**
@@ -336,9 +332,7 @@ class BuiltinValidations implements Validations
      */
     public function validationRequiredIf(Context $c, string $other, $value): bool
     {
-        return !$c->blank() ? true : $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
-            return $c->appendError('RequiredIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
-        });
+        return !$c->blank() ? true : $this->handleIf($c, $other, $value, fn($c, $other, $value, $label) => $c->appendError('RequiredIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value)));
     }
 
     /**
@@ -351,9 +345,7 @@ class BuiltinValidations implements Validations
      */
     public function validationRequiredUnless(Context $c, string $other, $value): bool
     {
-        return !$c->blank() ? true : $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
-            return $c->appendError('RequiredUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
-        });
+        return !$c->blank() ? true : $this->handleUnless($c, $other, $value, fn($c, $other, $value, $label) => $c->appendError('RequiredUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value)));
     }
 
     /**
@@ -402,13 +394,11 @@ class BuiltinValidations implements Validations
      */
     public function validationRequiredWith(Context $c, $other, int|null $at_least = null): bool
     {
-        return !$c->blank() ? true : $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
-            return $c->appendError(
-                'RequiredWith',
-                ['other' => $c->labels($other), 'at_least' => $at_least],
-                Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all'),
-            );
-        });
+        return !$c->blank() ? true : $this->handleWith($c, $other, $at_least, fn($c, $other, $at_least, $max, $inputed) => $c->appendError(
+            'RequiredWith',
+            ['other' => $c->labels($other), 'at_least' => $at_least],
+            Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all'),
+        ));
     }
 
     /**
@@ -421,13 +411,11 @@ class BuiltinValidations implements Validations
      */
     public function validationRequiredWithout(Context $c, $other, int|null $at_least = null): bool
     {
-        return !$c->blank() ? true : $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
-            return $c->appendError(
-                'RequiredWithout',
-                ['other' => $c->labels($other), 'at_least' => $at_least],
-                Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all'),
-            );
-        });
+        return !$c->blank() ? true : $this->handleWithout($c, $other, $at_least, fn($c, $other, $at_least, $max, $not_inputed) => $c->appendError(
+            'RequiredWithout',
+            ['other' => $c->labels($other), 'at_least' => $at_least],
+            Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all'),
+        ));
     }
 
     /**
@@ -488,9 +476,7 @@ class BuiltinValidations implements Validations
      */
     public function validationBlankIf(Context $c, string $other, $value): bool
     {
-        return $c->blank() ? true : $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
-            return $c->appendError('BlankIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
-        });
+        return $c->blank() ? true : $this->handleIf($c, $other, $value, fn($c, $other, $value, $label) => $c->appendError('BlankIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value)));
     }
 
     /**
@@ -503,9 +489,7 @@ class BuiltinValidations implements Validations
      */
     public function validationBlankUnless(Context $c, string $other, $value): bool
     {
-        return $c->blank() ? true : $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
-            return $c->appendError('BlankUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
-        });
+        return $c->blank() ? true : $this->handleUnless($c, $other, $value, fn($c, $other, $value, $label) => $c->appendError('BlankUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value)));
     }
 
     /**
@@ -518,13 +502,11 @@ class BuiltinValidations implements Validations
      */
     public function validationBlankWith(Context $c, $other, int|null $at_least = null): bool
     {
-        return $c->blank() ? true : $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
-            return $c->appendError(
-                'BlankWith',
-                ['other' => $c->labels($other), 'at_least' => $at_least],
-                Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all'),
-            );
-        });
+        return $c->blank() ? true : $this->handleWith($c, $other, $at_least, fn($c, $other, $at_least, $max, $inputed) => $c->appendError(
+            'BlankWith',
+            ['other' => $c->labels($other), 'at_least' => $at_least],
+            Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all'),
+        ));
     }
 
     /**
@@ -537,13 +519,11 @@ class BuiltinValidations implements Validations
      */
     public function validationBlankWithout(Context $c, $other, int|null $at_least = null): bool
     {
-        return $c->blank() ? true : $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
-            return $c->appendError(
-                'BlankWithout',
-                ['other' => $c->labels($other), 'at_least' => $at_least],
-                Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all'),
-            );
-        });
+        return $c->blank() ? true : $this->handleWithout($c, $other, $at_least, fn($c, $other, $at_least, $max, $not_inputed) => $c->appendError(
+            'BlankWithout',
+            ['other' => $c->labels($other), 'at_least' => $at_least],
+            Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all'),
+        ));
     }
 
     /**
@@ -644,12 +624,10 @@ class BuiltinValidations implements Validations
         return $this->handleListableValue(
             $c,
             $kind,
-            function ($value) use ($pattern) {
-                return preg_match($pattern, (string) $value);
-            },
+            fn($value) => preg_match($pattern, (string) $value),
             $messsage_key,
             $replacement,
-            function ($value) use ($selector) { return $selector; },
+            fn($value) => $selector,
         );
     }
 
@@ -683,12 +661,10 @@ class BuiltinValidations implements Validations
         return $this->handleListableValue(
             $c,
             $kind,
-            function ($value) use ($pattern) {
-                return !preg_match($pattern, (string) $value);
-            },
+            fn($value) => !preg_match($pattern, (string) $value),
             $messsage_key,
             $replacement,
-            function ($value) use ($selector) { return $selector; },
+            fn($value) => $selector,
         );
     }
 
@@ -704,9 +680,7 @@ class BuiltinValidations implements Validations
         return $this->handleListableValue(
             $c,
             Kind::INDEPENDENTLY(),
-            function ($value) use ($max) {
-                return mb_strlen($value) <= $max;
-            },
+            fn($value) => mb_strlen($value) <= $max,
             'MaxLength',
             ['max' => $max],
         );
@@ -724,9 +698,7 @@ class BuiltinValidations implements Validations
         return $this->handleListableValue(
             $c,
             Kind::INDEPENDENTLY(),
-            function ($value) use ($min) {
-                return mb_strlen($value) >= $min;
-            },
+            fn($value) => mb_strlen($value) >= $min,
             'MinLength',
             ['min' => $min],
         );
@@ -744,9 +716,7 @@ class BuiltinValidations implements Validations
         return $this->handleListableValue(
             $c,
             Kind::INDEPENDENTLY(),
-            function ($value) use ($length) {
-                return mb_strlen($value) === $length;
-            },
+            fn($value) => mb_strlen($value) === $length,
             'Length',
             ['length' => $length],
         );
@@ -808,12 +778,10 @@ class BuiltinValidations implements Validations
         $listed = $this->handleListableValue(
             $c,
             Kind::TYPE_DEPENDENT_CHECK(),
-            function ($value) use ($number, $precision, $test) {
-                return $test(Decimal::of($value), Decimal::of($number), $precision);
-            },
+            fn($value) => $test(Decimal::of($value), Decimal::of($number), $precision),
             $messsage_key,
             $replacement,
-            function ($value) use ($precision) { return $precision ?? 'auto' ; },
+            fn($value) => $precision ?? 'auto',
         );
         return $valid && $listed;
     }
@@ -828,7 +796,7 @@ class BuiltinValidations implements Validations
      */
     public function validationNumberLessThan(Context $c, $number, int|null $precision = null): bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, int|null $precision) { return $value->lt($number, $precision); }, 'NumberLessThan');
+        return $this->handleNumber($c, $number, $precision, fn(Decimal $value, Decimal $number, int|null $precision) => $value->lt($number, $precision), 'NumberLessThan');
     }
 
     /**
@@ -841,7 +809,7 @@ class BuiltinValidations implements Validations
      */
     public function validationNumberLessThanOrEqual(Context $c, $number, int|null $precision = null): bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, int|null $precision) { return $value->lte($number, $precision); }, 'NumberLessThanOrEqual');
+        return $this->handleNumber($c, $number, $precision, fn(Decimal $value, Decimal $number, int|null $precision) => $value->lte($number, $precision), 'NumberLessThanOrEqual');
     }
 
     /**
@@ -854,7 +822,7 @@ class BuiltinValidations implements Validations
      */
     public function validationNumberEqual(Context $c, $number, int|null $precision = null): bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, int|null $precision) { return $value->eq($number, $precision); }, 'NumberEqual');
+        return $this->handleNumber($c, $number, $precision, fn(Decimal $value, Decimal $number, int|null $precision) => $value->eq($number, $precision), 'NumberEqual');
     }
 
     /**
@@ -867,7 +835,7 @@ class BuiltinValidations implements Validations
      */
     public function validationNumberGreaterThan(Context $c, $number, int|null $precision = null): bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, int|null $precision) { return $value->gt($number, $precision); }, 'NumberGreaterThan');
+        return $this->handleNumber($c, $number, $precision, fn(Decimal $value, Decimal $number, int|null $precision) => $value->gt($number, $precision), 'NumberGreaterThan');
     }
 
     /**
@@ -880,7 +848,7 @@ class BuiltinValidations implements Validations
      */
     public function validationNumberGreaterThanOrEqual(Context $c, $number, int|null $precision = null): bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, int|null $precision) { return $value->gte($number, $precision); }, 'NumberGreaterThanOrEqual');
+        return $this->handleNumber($c, $number, $precision, fn(Decimal $value, Decimal $number, int|null $precision) => $value->gte($number, $precision), 'NumberGreaterThanOrEqual');
     }
 
     /**
@@ -896,9 +864,7 @@ class BuiltinValidations implements Validations
             return $this->handleListableValue(
                 $c,
                 Kind::TYPE_CONSISTENCY_CHECK(),
-                function ($value) {
-                    return filter_var($value, FILTER_VALIDATE_EMAIL);
-                },
+                fn($value) => filter_var($value, FILTER_VALIDATE_EMAIL),
                 'Email',
             );
         }
@@ -956,7 +922,7 @@ class BuiltinValidations implements Validations
                 },
                 'Url',
                 [],
-                function ($value) { return 'nonactive'; },
+                fn($value) => 'nonactive',
             );
             $valid = $valid && $listed;
         }
@@ -1191,9 +1157,7 @@ class BuiltinValidations implements Validations
         return $this->handleListableValue(
             $c,
             Kind::TYPE_CONSISTENCY_CHECK(),
-            function ($value) use ($list) {
-                return in_array($value, $list);
-            },
+            fn($value) => in_array($value, $list),
             'Contains',
             ['list' => $list],
         );
@@ -1251,7 +1215,7 @@ class BuiltinValidations implements Validations
             return true;
         }
         [$list, $label] = $c->pluckNested($nested_field);
-        $duplicate      = Arrays::duplicate(array_map(function ($value) { return Context::isBlank($value) ? '' : $value; }, $list));
+        $duplicate      = Arrays::duplicate(array_map(fn($value) => Context::isBlank($value) ? '' : $value, $list));
         return empty($duplicate) ? true : $c->appendError('Unique', ['attribute' => $label, 'duplicate' => $duplicate], count($duplicate)) ;
     }
 
@@ -1264,7 +1228,7 @@ class BuiltinValidations implements Validations
      */
     public function validationDatetime(Context $c, $format = []): bool
     {
-        return $this->handleListableValue($c, Kind::TYPE_CONSISTENCY_CHECK(), function ($value) use ($format) { return !is_null(DateTime::createDateTime($value, $format)); }, 'Datetime');
+        return $this->handleListableValue($c, Kind::TYPE_CONSISTENCY_CHECK(), fn($value) => !is_null(DateTime::createDateTime($value, $format)), 'Datetime');
     }
 
     /**
@@ -1277,7 +1241,7 @@ class BuiltinValidations implements Validations
      */
     public function validationFutureThan(Context $c, $at_time, $format = []): bool
     {
-        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value > $at_time; }, 'FutureThan');
+        return $this->handleDatetime($c, $at_time, $format, fn(DateTime $value, DateTime $at_time) => $value > $at_time, 'FutureThan');
     }
 
     /**
@@ -1316,9 +1280,7 @@ class BuiltinValidations implements Validations
         $listed = $this->handleListableValue(
             $c,
             Kind::TYPE_DEPENDENT_CHECK(),
-            function ($value) use ($at_time, $format, $test) {
-                return $test(DateTime::createDateTime($value, $format), $at_time);
-            },
+            fn($value) => $test(DateTime::createDateTime($value, $format), $at_time),
             $messsage_key,
             $replacement,
             $selector,
@@ -1336,7 +1298,7 @@ class BuiltinValidations implements Validations
      */
     public function validationFutureThanOrEqual(Context $c, $at_time, $format = []): bool
     {
-        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value >= $at_time; }, 'FutureThanOrEqual');
+        return $this->handleDatetime($c, $at_time, $format, fn(DateTime $value, DateTime $at_time) => $value >= $at_time, 'FutureThanOrEqual');
     }
 
     /**
@@ -1349,7 +1311,7 @@ class BuiltinValidations implements Validations
      */
     public function validationPastThan(Context $c, $at_time, $format = []): bool
     {
-        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value < $at_time; }, 'PastThan');
+        return $this->handleDatetime($c, $at_time, $format, fn(DateTime $value, DateTime $at_time) => $value < $at_time, 'PastThan');
     }
 
     /**
@@ -1362,7 +1324,7 @@ class BuiltinValidations implements Validations
      */
     public function validationPastThanOrEqual(Context $c, $at_time, $format = []): bool
     {
-        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value <= $at_time; }, 'PastThanOrEqual');
+        return $this->handleDatetime($c, $at_time, $format, fn(DateTime $value, DateTime $at_time) => $value <= $at_time, 'PastThanOrEqual');
     }
 
     /**
@@ -1381,12 +1343,10 @@ class BuiltinValidations implements Validations
             $c,
             $at_time,
             $format,
-            function (DateTime $value, DateTime $at_time) use ($max) {
-                return $value->age($at_time) <= $max;
-            },
+            fn(DateTime $value, DateTime $at_time) => $value->age($at_time) <= $max,
             'MaxAge',
             ['max' => $max_label],
-            function ($value) use ($at_time) { return $at_time; },
+            fn($value) => $at_time,
         );
     }
 
@@ -1406,12 +1366,10 @@ class BuiltinValidations implements Validations
             $c,
             $at_time,
             $format,
-            function (DateTime $value, DateTime $at_time) use ($min) {
-                return $value->age($at_time) >= $min;
-            },
+            fn(DateTime $value, DateTime $at_time) => $value->age($at_time) >= $min,
             'MinAge',
             ['min' => $min_label],
-            function ($value) use ($at_time) { return $at_time; },
+            fn($value) => $at_time,
         );
     }
 
@@ -1463,7 +1421,7 @@ class BuiltinValidations implements Validations
     public function validationCorrelatedRequired(Context $c, array $fields, int $at_least): bool
     {
         $correlations = Tinker::with($c->pluckCorrelated($fields), true);
-        $inputed      = $correlations->where(function ($row) { return !Context::isBlank($row['value']); });
+        $inputed      = $correlations->where(fn($row) => !Context::isBlank($row['value']));
         return $inputed->count() >= $at_least ? true : $c->appendError('CorrelatedRequired', [
             'attribute' => $correlations->pluck('label')->return(),
             'at_least'  => $at_least,
@@ -1480,10 +1438,10 @@ class BuiltinValidations implements Validations
     public function validationCorrelatedUnique(Context $c, array $fields): bool
     {
         $correlations = Tinker::with($c->pluckCorrelated($fields), true);
-        $duplicate    = Arrays::duplicate($correlations->pluck('value')->map(function ($value) { return Context::isBlank($value) ? '' : $value ; })->return());
+        $duplicate    = Arrays::duplicate($correlations->pluck('value')->map(fn($value) => Context::isBlank($value) ? '' : $value)->return());
         return empty($duplicate) ? true : $c->appendError('CorrelatedUnique', [
             'attribute' => $correlations->pluck('label')->return(),
-            'duplicate' => $correlations->where(function ($row) use ($duplicate) { return in_array(Context::isBlank($row['value']) ? '' : $row['value'], $duplicate, true); })->pluck('label')->return(),
+            'duplicate' => $correlations->where(fn($row) => in_array(Context::isBlank($row['value']) ? '' : $row['value'], $duplicate, true))->pluck('label')->return(),
         ]) ;
     }
 
@@ -1674,7 +1632,7 @@ class BuiltinValidations implements Validations
             },
             $messsage_key,
             $replacement,
-            function (UploadedFile $value) { return $value->hasArea() ? 'area' : 'no-area' ; },
+            fn(UploadedFile $value) => $value->hasArea() ? 'area' : 'no-area',
         );
     }
 
@@ -1689,7 +1647,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function (int $width, int $height) use ($max) { return $width <= $max; },
+            fn(int $width, int $height) => $width <= $max,
             'FileImageMaxWidth',
             ['max' => $max],
         );
@@ -1706,7 +1664,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function (int $width, int $height) use ($size) { return $width === $size; },
+            fn(int $width, int $height) => $width === $size,
             'FileImageWidth',
             ['size' => $size],
         );
@@ -1723,7 +1681,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function (int $width, int $height) use ($min) { return $width >= $min; },
+            fn(int $width, int $height) => $width >= $min,
             'FileImageMinWidth',
             ['min' => $min],
         );
@@ -1740,7 +1698,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function (int $width, int $height) use ($max) { return $height <= $max; },
+            fn(int $width, int $height) => $height <= $max,
             'FileImageMaxHeight',
             ['max' => $max],
         );
@@ -1757,7 +1715,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function (int $width, int $height) use ($size) { return $height === $size; },
+            fn(int $width, int $height) => $height === $size,
             'FileImageHeight',
             ['size' => $size],
         );
@@ -1774,7 +1732,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function (int $width, int $height) use ($min) { return $height >= $min; },
+            fn(int $width, int $height) => $height >= $min,
             'FileImageMinHeight',
             ['min' => $min],
         );
@@ -1793,9 +1751,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function (int $width, int $height) use ($width_ratio, $height_ratio, $precision) {
-                return Decimal::of($width_ratio)->div($height_ratio, $precision)->eq(Decimal::of($width)->div($height, $precision));
-            },
+            fn(int $width, int $height) => Decimal::of($width_ratio)->div($height_ratio, $precision)->eq(Decimal::of($width)->div($height, $precision)),
             'FileImageAspectRatio',
             [
                 'width_ratio'  => $width_ratio,

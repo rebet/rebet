@@ -157,8 +157,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 ],
                 'customs'    => [
                     // You can use php built-in functions as filters when the 1st argument is for value.
-                    'nvl'       => function ($value, $default) { return $value ?? $default; },
-                    'default'   => function ($value, $default) { return $value ?? $default; },
+                    'nvl'       => fn($value, $default) => $value ?? $default,
+                    'default'   => fn($value, $default) => $value ?? $default,
                     'escape'    => function (string $value, string $type = 'html') {
                         switch ($type) {
                             case 'html': return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
@@ -166,46 +166,46 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                             default: throw new \InvalidArgumentException("Invalid escape type [{$type}] given. The type must be html or url");
                         }
                     },
-                    'nl2br'     => function (string $value) { return nl2br($value); },
-                    'datetimef' => function (DateTime $value, string $format) { return $value->format($format); },
-                    'numberf'   => function ($value, int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',') { return $value === null ? null : Decimal::of($value)->round($precision)->format($omit_zero, $decimal_point, $thousands_separator); },
-                    'stringf'   => function ($value, string $format) { return $value === null ? null : sprintf($format, $value) ; },
-                    'explode'   => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
-                    'replace'   => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
-                    'lower'     => function (string $value) { return strtolower($value); },
-                    'upper'     => function (string $value) { return strtoupper($value); },
-                    'decimal'   => function ($value) { return $value === null ? null : Decimal::of($value); },
-                    'abs'       => function ($value) { return $value === null ? null : Decimal::of($value)->abs(); },
-                    'eq'        => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->eq($other, $precision); },
-                    'gt'        => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gt($other, $precision); },
-                    'gte'       => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gte($other, $precision); },
-                    'lt'        => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lt($other, $precision); },
-                    'lte'       => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lte($other, $precision); },
-                    'not'       => function (bool|null $value) { return !$value; },
-                    'add'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->add($other, $precision, $mode); },
-                    'sub'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->sub($other, $precision, $mode); },
-                    'mul'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->mul($other, $precision, $mode); },
-                    'div'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->div($other, $precision, $mode); },
-                    'pow'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->pow($other, $precision, $mode); },
-                    'sqrt'      => function ($value, int|null $precision = null, int|null $mode = null) { return $value === null ? null : Decimal::of($value)->sqrt($precision, $mode); },
-                    'mod'       => function ($value, $modulus) { return $value === null || $modulus === null ? null : Decimal::of($value)->mod($modulus); },
-                    'powmod'    => function ($value, $exponent, $modulus) { return $value === null || $exponent === null || $modulus === null ? null : Decimal::of($value)->powmod($exponent, $modulus); },
-                    'floor'     => function ($value, int $precision = 0) { return $value === null ? null : Decimal::of($value)->floor($precision); },
-                    'round'     => function ($value, int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES) { return $value === null ? null : Decimal::of($value)->round($precision, $guard_digits, $precision_type); },
-                    'ceil'      => function ($value, int $precision = 0) { return $value === null ? null : Decimal::of($value)->ceil($precision); },
-                    'dump'      => function ($value, array $masks = [], string $masked_label = '********') { return Strings::stringify($value, $masks, $masked_label); },
-                    'invoke'    => function ($value, ...$args) { return call_user_func($value, ...$args); },
-                    'equals'    => function ($value, $other) { return $value == $other; },
-                    'sameAs'    => function ($value, $other) { return $value === $other; },
-                    'nnvl'      => function ($value, $then, $else = null) { return $value !== null ? $then : $else ; },
-                    'nbvl'      => function ($value, $then, $else = null) { return !Utils::isBlank($value) ? $then : $else; },
-                    'nevl'      => function ($value, $then, $else = null) { return !Utils::isEmpty($value) ? $then : $else; },
+                    'nl2br'     => fn(string $value) => nl2br($value),
+                    'datetimef' => fn(DateTime $value, string $format) => $value->format($format),
+                    'numberf'   => fn($value, int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',') => $value === null ? null : Decimal::of($value)->round($precision)->format($omit_zero, $decimal_point, $thousands_separator),
+                    'stringf'   => fn($value, string $format) => $value === null ? null : sprintf($format, $value),
+                    'explode'   => fn(string $value, string $delimiter, int $limit = PHP_INT_MAX) => explode($delimiter, $value, $limit),
+                    'replace'   => fn(string $value, $pattern, $replacement, int $limit = -1) => preg_replace($pattern, $replacement, $value, $limit),
+                    'lower'     => fn(string $value) => strtolower($value),
+                    'upper'     => fn(string $value) => strtoupper($value),
+                    'decimal'   => fn($value) => $value === null ? null : Decimal::of($value),
+                    'abs'       => fn($value) => $value === null ? null : Decimal::of($value)->abs(),
+                    'eq'        => fn($value, $other, int|null $precision = null) => $value === null || $other === null ? false : Decimal::of($value)->eq($other, $precision),
+                    'gt'        => fn($value, $other, int|null $precision = null) => $value === null || $other === null ? false : Decimal::of($value)->gt($other, $precision),
+                    'gte'       => fn($value, $other, int|null $precision = null) => $value === null || $other === null ? false : Decimal::of($value)->gte($other, $precision),
+                    'lt'        => fn($value, $other, int|null $precision = null) => $value === null || $other === null ? false : Decimal::of($value)->lt($other, $precision),
+                    'lte'       => fn($value, $other, int|null $precision = null) => $value === null || $other === null ? false : Decimal::of($value)->lte($other, $precision),
+                    'not'       => fn(bool|null $value) => !$value,
+                    'add'       => fn($value, $other, int|null $precision = null, int|null $mode = null) => $value === null || $other === null ? null : Decimal::of($value)->add($other, $precision, $mode),
+                    'sub'       => fn($value, $other, int|null $precision = null, int|null $mode = null) => $value === null || $other === null ? null : Decimal::of($value)->sub($other, $precision, $mode),
+                    'mul'       => fn($value, $other, int|null $precision = null, int|null $mode = null) => $value === null || $other === null ? null : Decimal::of($value)->mul($other, $precision, $mode),
+                    'div'       => fn($value, $other, int|null $precision = null, int|null $mode = null) => $value === null || $other === null ? null : Decimal::of($value)->div($other, $precision, $mode),
+                    'pow'       => fn($value, $other, int|null $precision = null, int|null $mode = null) => $value === null || $other === null ? null : Decimal::of($value)->pow($other, $precision, $mode),
+                    'sqrt'      => fn($value, int|null $precision = null, int|null $mode = null) => $value === null ? null : Decimal::of($value)->sqrt($precision, $mode),
+                    'mod'       => fn($value, $modulus) => $value === null || $modulus === null ? null : Decimal::of($value)->mod($modulus),
+                    'powmod'    => fn($value, $exponent, $modulus) => $value === null || $exponent === null || $modulus === null ? null : Decimal::of($value)->powmod($exponent, $modulus),
+                    'floor'     => fn($value, int $precision = 0) => $value === null ? null : Decimal::of($value)->floor($precision),
+                    'round'     => fn($value, int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES) => $value === null ? null : Decimal::of($value)->round($precision, $guard_digits, $precision_type),
+                    'ceil'      => fn($value, int $precision = 0) => $value === null ? null : Decimal::of($value)->ceil($precision),
+                    'dump'      => fn($value, array $masks = [], string $masked_label = '********') => Strings::stringify($value, $masks, $masked_label),
+                    'invoke'    => fn($value, ...$args) => call_user_func($value, ...$args),
+                    'equals'    => fn($value, $other) => $value == $other,
+                    'sameAs'    => fn($value, $other) => $value === $other,
+                    'nnvl'      => fn($value, $then, $else = null) => $value !== null ? $then : $else,
+                    'nbvl'      => fn($value, $then, $else = null) => !Utils::isBlank($value) ? $then : $else,
+                    'nevl'      => fn($value, $then, $else = null) => !Utils::isEmpty($value) ? $then : $else,
                     'when'      => function ($value, $test, $then, $else = null) {
                         $test = static::peel($test);
                         $test = is_callable($test) ? call_user_func($test, $value) : $test ;
                         return  (is_bool($test) ? $test : $value === $test) ? $then : ($else ?? $value) ;
                     },
-                    'case'      => function ($value, array $map, $default = null) { return $map[$value] ?? $default ?? $value; },
+                    'case'      => fn($value, array $map, $default = null) => $map[$value] ?? $default ?? $value,
                     'length'    => function ($value) {
                         switch (true) {
                             case $value === null:    return null;
@@ -214,8 +214,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                         }
                         return Arrays::count($value);
                     },
-                    'values'    => function (array $value) { return array_values($value); },
-                    'keys'      => function (array $value) { return array_keys($value); },
+                    'values'    => fn(array $value) => array_values($value),
+                    'keys'      => fn(array $value) => array_keys($value),
                 ],
             ],
         ];
@@ -282,7 +282,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      */
     public static function peelAll(array $values): array
     {
-        return array_map(function ($v) { return static::peel($v); }, $values);
+        return array_map(fn($v) => static::peel($v), $values);
     }
 
     /**
@@ -470,7 +470,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         $origin    = $this->origin();
         $type      = Reflector::getParameterTypeHintOf($filter, 0);
         $converted = Reflector::convert($origin, $type);
-        $args      = array_map(function ($value) { return static::peel($value); }, $args);
+        $args      = array_map(fn($value) => static::peel($value), $args);
         try {
             $result = $filter($converted, ...$args);
             return is_bool($result) ? $result : new static($result);
@@ -505,7 +505,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
             $type        = $method->getReturnType();
             $type        = $type instanceof \ReflectionNamedType ? $type->getName() : null ;
             $fingerprint = $type === null || $type == 'bool' || $type == 'boolean' ? md5(serialize($origin)) : null ;
-            $args        = array_map(function ($value) { return static::peel($value); }, $args);
+            $args        = array_map(fn($value) => static::peel($value), $args);
             $result      = $method->invoke($origin, ...$args);
             if (
                 $type == 'void'
@@ -577,9 +577,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     {
         $origin = $this->origin();
         return new \ArrayIterator(array_map(
-            function ($value) {
-                return static::with($value);
-            },
+            fn($value) => static::with($value),
             is_object($origin) ? get_object_vars($origin) : (array) $origin,
         ));
     }

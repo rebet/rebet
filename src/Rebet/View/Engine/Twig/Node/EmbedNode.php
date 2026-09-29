@@ -75,8 +75,8 @@ class EmbedNode extends Node
     {
         $elements = [];
         $args     = array_merge(
-            array_map(function ($value) use ($lineno) { return new NameExpression($value, $lineno); }, $binds),
-            array_map(function ($value) use ($lineno) { return $value instanceof Node ? $value : new ConstantExpression($value, $lineno); }, $args),
+            array_map(fn($value) => new NameExpression($value, $lineno), $binds),
+            array_map(fn($value) => $value instanceof Node ? $value : new ConstantExpression($value, $lineno), $args),
         );
         foreach ($args as $key => $value) {
             $elements[] = new ConstantExpression($key, $lineno);

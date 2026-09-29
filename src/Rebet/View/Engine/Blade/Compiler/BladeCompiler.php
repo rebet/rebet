@@ -35,9 +35,7 @@ class BladeCompiler extends LaravelBladeCompiler
      */
     public function raw(string $name, string $code): void
     {
-        $this->directive($name, function () use ($code) {
-            return "<?php {$code} ?>";
-        });
+        $this->directive($name, fn() => "<?php {$code} ?>");
     }
 
     /**
@@ -67,7 +65,7 @@ class BladeCompiler extends LaravelBladeCompiler
     public function embed(string $name, string $open, Processor $processor, string $close, \Closure|null $lf_trimer = null, string|null $binds = null): void
     {
         $this->processors[$name] = $processor;
-        $lf_trimer ??= function (string|null $expression) { return true; };
+        $lf_trimer ??= fn(string|null $expression) => true;
         $this->directive($name, function ($expression) use ($name, $open, $close, $binds, $lf_trimer) {
             $lf = $lf_trimer($expression) ? "" : "\n" ;
             return $binds
@@ -89,38 +87,28 @@ class BladeCompiler extends LaravelBladeCompiler
     {
         $this->processors[$name] = $processor;
 
-        $this->directive($name, function ($expression) use ($name, $binds) {
-            return $binds
+        $this->directive($name, fn($expression) => $binds
                     ? "<?php if (\Illuminate\Support\Facades\Blade::execute('{$name}', [{$binds}, {$expression}])): ?>"
-                    : "<?php if (\Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>";
-        });
+                    : "<?php if (\Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>");
 
-        $this->directive('else' . $name, function ($expression) use ($name, $binds) {
-            return $binds
+        $this->directive('else' . $name, fn($expression) => $binds
                 ? "<?php elseif (\Illuminate\Support\Facades\Blade::execute('{$name}', [{$binds}, {$expression}])): ?>"
-                : "<?php elseif (\Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>";
-        });
+                : "<?php elseif (\Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>");
 
-        $this->directive('end' . $name, function () {
-            return '<?php endif; ?>';
-        });
+        $this->directive('end' . $name, fn() => '<?php endif; ?>');
 
         $this->directive(
             $name . 'not',
-            function ($expression) use ($name, $binds) {
-                return $binds
+            fn($expression) => $binds
                 ? "<?php if (! \Illuminate\Support\Facades\Blade::execute('{$name}', [{$binds}, {$expression}])): ?>"
-                : "<?php if (! \Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>";
-            },
+                : "<?php if (! \Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>",
         );
 
         $this->directive(
             'else' . $name . 'not',
-            function ($expression) use ($name, $binds) {
-                return $binds
+            fn($expression) => $binds
                 ? "<?php elseif (! \Illuminate\Support\Facades\Blade::execute('{$name}', [{$binds}, {$expression}])): ?>"
-                : "<?php elseif (! \Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>";
-            },
+                : "<?php elseif (! \Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}])): ?>",
         );
     }
 

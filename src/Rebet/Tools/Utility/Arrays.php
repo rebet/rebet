@@ -501,7 +501,7 @@ class Arrays
         if ($array === null) {
             return null;
         }
-        return array_filter($array, function ($value) { return !Utils::isBlank($value); });
+        return array_filter($array, fn($value) => !Utils::isBlank($value));
     }
 
     /**
@@ -689,9 +689,7 @@ class Arrays
             shuffle($array);
         } else {
             srand($seed);
-            usort($array, function () {
-                return rand(-1, 1);
-            });
+            usort($array, fn() => rand(-1, 1));
         }
         return $array;
     }
@@ -876,7 +874,7 @@ class Arrays
             }
         }
         if (! empty($next_groups)) {
-            return static::map($results, function ($array) use ($next_groups, $preserve_keys) { return static::groupBy($array, $next_groups, $preserve_keys); });
+            return static::map($results, fn($array) => static::groupBy($array, $next_groups, $preserve_keys));
         }
         return $results;
     }
@@ -905,9 +903,7 @@ class Arrays
     public static function min(array|null $array, callable|string|null $retriever = null, mixed $initial = null)
     {
         $retriever = Callbacks::retriever($retriever);
-        $reducer   = function ($carry, $value) use ($retriever) {
-            return $carry === null || $retriever($value) < $retriever($carry) ? $value : $carry ;
-        };
+        $reducer   = fn($carry, $value) => $carry === null || $retriever($value) < $retriever($carry) ? $value : $carry ;
         return static::reduce($array, $reducer, $initial);
     }
 
@@ -923,9 +919,7 @@ class Arrays
     public static function max(array|null $array, callable|string|null $retriever = null, mixed $initial = null)
     {
         $retriever = Callbacks::retriever($retriever);
-        $reducer   = function ($carry, $value) use ($retriever) {
-            return $carry === null || $retriever($value) > $retriever($carry) ? $value : $carry ;
-        };
+        $reducer   = fn($carry, $value) => $carry === null || $retriever($value) > $retriever($carry) ? $value : $carry ;
         return static::reduce($array, $reducer, $initial);
     }
 
@@ -948,7 +942,7 @@ class Arrays
             return $array;
         }
 
-        $sorter = $order === SORT_ASC ? $comparator : function ($a, $b) use ($comparator) { return call_user_func($comparator, $a, $b) * -1; };
+        $sorter = $order === SORT_ASC ? $comparator : fn($a, $b) => call_user_func($comparator, $a, $b) * -1;
         uasort($array, $sorter);
         return $array;
     }
@@ -975,9 +969,7 @@ class Arrays
         };
 
         $retriever = Callbacks::retriever($retriever);
-        $sorter    = function ($a, $b) use ($retriever, $comparator) {
-            return call_user_func($comparator, $retriever($a), $retriever($b));
-        };
+        $sorter    = fn($a, $b) => call_user_func($comparator, $retriever($a), $retriever($b));
 
         return static::sort($array, $order, $sorter);
     }
@@ -1001,7 +993,7 @@ class Arrays
             return $array;
         }
 
-        $sorter = $order === SORT_ASC ? $comparator : function ($a, $b) use ($comparator) { return call_user_func($comparator, $a, $b) * -1; };
+        $sorter = $order === SORT_ASC ? $comparator : fn($a, $b) => call_user_func($comparator, $a, $b) * -1;
         uksort($array, $sorter);
         return $array;
     }
@@ -1026,9 +1018,7 @@ class Arrays
         }
 
         $retriever = Callbacks::retriever($retriever);
-        return Decimal::of(static::reduce($array, function ($carry, $item) use ($retriever, $arbitrary_precision, $precision) {
-            return $arbitrary_precision ? Decimal::of($carry)->add($retriever($item) ?? '0', $precision) : $carry + ($retriever($item) ?? 0) ;
-        }, '0'));
+        return Decimal::of(static::reduce($array, fn($carry, $item) => $arbitrary_precision ? Decimal::of($carry)->add($retriever($item) ?? '0', $precision) : $carry + ($retriever($item) ?? 0), '0'));
     }
 
     /**
@@ -1047,7 +1037,7 @@ class Arrays
             return null;
         }
         $retriever = $retriever === null ? null : Callbacks::retriever($retriever) ;
-        $counter   = $retriever === null ? null : function ($v) use ($retriever) { return call_user_func($retriever, $v) !== null; };
+        $counter   = $retriever === null ? null : fn($v) => call_user_func($retriever, $v) !== null;
         $sum       = static::sum($array, $retriever, $arbitrary_precision, $precision);
         $count     = static::count($array, $counter);
         return $sum->div($count, $precision) ;
@@ -1093,10 +1083,10 @@ class Arrays
             return null;
         }
         $array  = $retriever === null ? $array : static::map($array, Callbacks::retriever($retriever));
-        $counts = static::map(static::groupBy(static::compact($array)), function ($v) { return static::count($v); });
+        $counts = static::map(static::groupBy(static::compact($array)), fn($v) => static::count($v));
         $counts = static::sort($counts);
         $count  = end($counts);
-        return array_keys(static::where($counts, function ($v) use ($count) { return $v === $count; }));
+        return array_keys(static::where($counts, fn($v) => $v === $count));
     }
 
     /**

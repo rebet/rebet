@@ -847,8 +847,8 @@ class ConfigTest_MockPromise
     {
         return [
             'promise_not'   => \getenv('PROMISE_TEST') ?: 'default',
-            'promise_once'  => Config::promise(function () { return \getenv('PROMISE_TEST') ?: 'default'; }),
-            'promise_every' => Config::promise(function () { return \getenv('PROMISE_TEST') ?: 'default'; }, false),
+            'promise_once'  => Config::promise(fn() => \getenv('PROMISE_TEST') ?: 'default'),
+            'promise_every' => Config::promise(fn() => \getenv('PROMISE_TEST') ?: 'default', false),
         ];
     }
 }

@@ -724,7 +724,7 @@ class Reflector
                     return $converted;
                 };
             } else {
-                $converter = function ($value) { return $value; } ;
+                $converter = fn($value) => $value ;
             }
 
             if ($is_variadic) {

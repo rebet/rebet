@@ -86,9 +86,7 @@ class Callbacks
             return \Closure::fromCallable($retriever);
         }
 
-        return function ($item) use ($retriever) {
-            return Reflector::get($item, Strings::ltrim($retriever, '@', 1));
-        };
+        return fn($item) => Reflector::get($item, Strings::ltrim($retriever, '@', 1));
     }
 
     /**
@@ -152,7 +150,7 @@ class Callbacks
      */
     public static function echoBack(): \Closure
     {
-        return static::$cache[__FUNCTION__] ?? static::$cache[__FUNCTION__] = function ($value) { return $value; };
+        return static::$cache[__FUNCTION__] ?? static::$cache[__FUNCTION__] = fn($value) => $value;
     }
 
     /**
@@ -162,6 +160,6 @@ class Callbacks
      */
     public static function compareLength(): \Closure
     {
-        return static::$cache[__FUNCTION__] ?? static::$cache[__FUNCTION__] = Callbacks::compare(function ($key) { return $key ? mb_strlen($key) : 0 ; });
+        return static::$cache[__FUNCTION__] ?? static::$cache[__FUNCTION__] = Callbacks::compare(fn($key) => $key ? mb_strlen($key) : 0);
     }
 }

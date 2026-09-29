@@ -20,7 +20,7 @@ class AddQueuedCookiesToResponseTest extends RebetTestCase
     public function test_handle(): void
     {
         $middleware  = new AddQueuedCookiesToResponse();
-        $destination = function ($request) { return Responder::toResponse('OK'); };
+        $destination = fn($request) => Responder::toResponse('OK');
 
         Cookie::set('key', 'value');
         Cookie::set('test', 'unit');

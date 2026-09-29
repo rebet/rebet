@@ -121,7 +121,7 @@ abstract class Entity extends DataModel
             return static::meta(__METHOD__, false);
         }
 
-        $expect_table_name = Inflector::pivotize(array_map(function ($key) { return Strings::rtrim($key, '_id'); }, $primary_keys));
+        $expect_table_name = Inflector::pivotize(array_map(fn($key) => Strings::rtrim($key, '_id'), $primary_keys));
         return static::meta(__METHOD__, (new ReflectionClass(static::class))->getShortName() === Inflector::classify($expect_table_name));
     }
 

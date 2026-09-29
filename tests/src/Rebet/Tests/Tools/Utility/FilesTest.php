@@ -106,7 +106,7 @@ class FilesTest extends RebetTestCase
         $this->assertFileDoesNotExist("{$this->test_dir}/archives/2/parent");
         $this->assertFileExists("{$this->test_dir}/archives/2/foo.txt");
 
-        Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/archives/3/parent.zip", false, function ($path) { return !Strings::endsWith($path, '.ini'); });
+        Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/archives/3/parent.zip", false, fn($path) => !Strings::endsWith($path, '.ini'));
         Files::unzip("{$this->test_dir}/archives/3/parent.zip", "{$this->test_dir}/archives/3");
         $this->assertFileExists("{$this->test_dir}/archives/3/foo.txt");
         $this->assertFileDoesNotExist("{$this->test_dir}/archives/3/bar.ini");

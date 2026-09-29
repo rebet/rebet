@@ -32,7 +32,7 @@ class EmbedNodeTest extends RebetTestCase
     {
         EmbedNode::reset();
         $this->assertNull(EmbedNode::execute('hello'));
-        EmbedNode::addCode('hello', new CallbackProcessor(function ($name = 'everyone', $call = 'Hello') { return "{$call} {$name}."; }));
+        EmbedNode::addCode('hello', new CallbackProcessor(fn($name = 'everyone', $call = 'Hello') => "{$call} {$name}."));
         $this->assertSame('Hello everyone.', EmbedNode::execute('hello'));
         $this->assertSame('Hello rebet.', EmbedNode::execute('hello', ['rebet']));
         $this->assertSame('Good by everyone.', EmbedNode::execute('hello', ['call' => 'Good by']));

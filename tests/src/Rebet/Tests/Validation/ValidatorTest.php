@@ -32,9 +32,7 @@ class ValidatorTest extends RebetTestCase
         Config::application([
             BuiltinValidations::class => [
                 'customs' => [
-                    'Ok' => function (Context $c) {
-                        return true;
-                    },
+                    'Ok' => fn(Context $c) => true,
                     'Ng' => function (Context $c, string|null $message = null) {
                         $c->appendError($message ?? "@The {$c->label} is NG.");
                         return false;
@@ -101,8 +99,8 @@ class ValidatorTest extends RebetTestCase
             // [['target' => 1], ['C', Valid::IF_AN_ERROR, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], true ],
             [['target' => 2], ['C', Valid::IF_AN_ERROR, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], false],
             // Valid::SATISFY
-            [['target' => 1], ['C', Valid::SATISFY, function (Context $c) { return $c->value == 1 ? true : $c->appendError("@NG");}], true ],
-            [['target' => 2], ['C', Valid::SATISFY, function (Context $c) { return $c->value == 1 ? true : $c->appendError("@NG");}], false],
+            [['target' => 1], ['C', Valid::SATISFY, fn(Context $c) => $c->value == 1 ? true : $c->appendError("@NG")], true ],
+            [['target' => 2], ['C', Valid::SATISFY, fn(Context $c) => $c->value == 1 ? true : $c->appendError("@NG")], false],
             // Valid::REQUIRED
             [['target' => 1   ], ['C', Valid::REQUIRED], true ],
             [['target' => null], ['C', Valid::REQUIRED], false],
@@ -400,7 +398,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => 'foo']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'before' => function ($value) { return is_string($value) ? strtoupper($value) : $value ; },
+                'before' => fn($value) => is_string($value) ? strtoupper($value) : $value,
                 'rule'   => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::REGEX, '/^[A-Z]+$/'],
@@ -420,7 +418,7 @@ class ValidatorTest extends RebetTestCase
                     ['C', Valid::REQUIRED],
                     ['C', Valid::ALPHA],
                 ],
-                'after' => function ($value) { return is_string($value) ? strtoupper($value) : $value ; },
+                'after' => fn($value) => is_string($value) ? strtoupper($value) : $value,
             ],
         ]);
         $this->assertNotNull($valid_data);

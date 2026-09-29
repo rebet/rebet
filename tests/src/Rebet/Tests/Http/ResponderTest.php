@@ -46,7 +46,7 @@ class ResponderTest extends RebetTestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertSame('1', $response->getContent());
 
-        $response = Responder::toResponse(function () { return "test"; });
+        $response = Responder::toResponse(fn() => "test");
         $this->assertInstanceOf(StreamedResponse::class, $response);
 
         Config::application([

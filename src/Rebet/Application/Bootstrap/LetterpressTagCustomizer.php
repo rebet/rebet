@@ -34,9 +34,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   {% env 'local' %} ... {% elseenv 'testing' %} ... {% else %} ... {% endenv %}
         //   {% env 'local', 'testing' %} ... {% else %} ... {% endenv %}
         $processor = BuiltinTagProcessors::env();
-        Letterpress::if('env', function (string ...$env) use ($processor) {
-            return $processor->execute($env);
-        });
+        Letterpress::if('env', fn(string ...$env) => $processor->execute($env));
 
         // ------------------------------------------------
         // [prefix] Output route prefix
@@ -45,9 +43,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   (none)
         // Usage:
         //   {% prefix %}
-        Letterpress::function('prefix', function () use ($kernel) {
-            return $kernel instanceof WebKernel ? $kernel->request()->getRoutePrefix() : '' ;
-        });
+        Letterpress::function('prefix', fn() => $kernel instanceof WebKernel ? $kernel->request()->getRoutePrefix() : '');
 
         // ------------------------------------------------
         // [role/rolenot] Check current users role (Authorization)
@@ -59,9 +55,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   {% role 'user', 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role 'user', 'guest:post-editable' %} ... {% else %} ... {% endrole %}
         $processor = BuiltinTagProcessors::role();
-        Letterpress::if('role', function (string ...$roles) use ($processor) {
-            return $processor->execute($roles);
-        });
+        Letterpress::if('role', fn(string ...$roles) => $processor->execute($roles));
 
         // ------------------------------------------------
         // [can/cannot] Check policy for target to current user (Authorization)
@@ -75,9 +69,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   {% can 'create', Post::class %} ... {% else %} ... {% endcan %}
         //   {% can 'update', 'remark', $post %} ... {% else %} ... {% endcan %}
         $processor = BuiltinTagProcessors::can();
-        Letterpress::if('can', function (string $action, $target, ...$extras) use ($processor) {
-            return $processor->execute([$action, Tinker::peel($target), ...Tinker::peelAll($extras)]);
-        });
+        Letterpress::if('can', fn(string $action, $target, ...$extras) => $processor->execute([$action, Tinker::peel($target), ...Tinker::peelAll($extras)]));
 
         // ------------------------------------------------
         // [lang] Translate given message to current locale
@@ -95,8 +87,6 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   {% lang 'messages.tags', ['tags' => $tags], count($tags) %}
         //   {% lang 'messages.tags', ['tags' => $tags], count($tags), 'en' %}
         $processor = BuiltinTagProcessors::lang();
-        Letterpress::function('lang', function (string $key, $replacement = [], $selector = null, string|null $locale = null) use ($processor) {
-            return $processor->execute([$key, is_array($replacement) ? Tinker::peelAll($replacement) : Tinker::peel($replacement), Tinker::peel($selector), $locale]);
-        });
+        Letterpress::function('lang', fn(string $key, $replacement = [], $selector = null, string|null $locale = null) => $processor->execute([$key, is_array($replacement) ? Tinker::peelAll($replacement) : Tinker::peel($replacement), Tinker::peel($selector), $locale]));
     }
 }

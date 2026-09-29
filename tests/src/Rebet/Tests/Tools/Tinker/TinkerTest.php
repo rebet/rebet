@@ -67,7 +67,7 @@ class TinkerTest extends RebetTestCase
             new TinkerTest_User(4, 'Qux', 'Fourth', 'qux@hoge.com', Gender::FEMALE(), new DateTime('1968-07-18')),
             new TinkerTest_User(5, 'Quxx', 'Fifth', 'quxx@moge.net', Gender::FEMALE(), new DateTime('1983-04-21')),
         ]);
-        $this->callable    = Tinker::with(function (string $value) { return "Hello {$value}"; });
+        $this->callable    = Tinker::with(fn(string $value) => "Hello {$value}");
         $this->destructive = Tinker::with(new TinkerTest_DestructiveMock());
         $this->safty       = Tinker::with("Hello Rebet", true);
     }
@@ -111,13 +111,13 @@ class TinkerTest extends RebetTestCase
     {
         $this->assertSame("Hello Rebet", $this->string->wrap()->return());
         $this->assertSame("Hello Rebet", $this->safty->wrap()->return());
-        Tinker::addFilter('wrap', function ($value) { return "({$value})"; });
+        Tinker::addFilter('wrap', fn($value) => "({$value})");
         $this->assertSame("(Hello Rebet)", $this->string->wrap()->return());
         $this->assertSame("Hello Rebet", $this->safty->wrap()->return());
 
         $this->assertSame("HELLO REBET", $this->string->upper()->return());
         $this->assertSame("HELLO REBET", $this->safty->upper()->return());
-        Tinker::addFilter('upper', function ($value) { return "Upper: $value"; });
+        Tinker::addFilter('upper', fn($value) => "Upper: $value");
         $this->assertSame("Upper: Hello Rebet", $this->string->upper()->return());
         $this->assertSame("HELLO REBET", $this->safty->upper()->return());
     }
@@ -491,7 +491,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame(['foo' => 'FOO', 'number' => 123, 'boolean' => true], $this->map->except(['parent', 'gender'])->return());
 
         // Arrays::where
-        $this->assertSame(['foo' => 'FOO', 'number' => 123, 'boolean' => true], $this->map->where(function ($v, $k) { return is_scalar($v); })->return());
+        $this->assertSame(['foo' => 'FOO', 'number' => 123, 'boolean' => true], $this->map->where(fn($v, $k) => is_scalar($v))->return());
 
         // Arrays::compact
         $this->assertSame([0 => 1, 2 => 3], Tinker::with([1, null, 3])->compact()->return());
@@ -526,11 +526,11 @@ class TinkerTest extends RebetTestCase
         }
 
         // Arrays::map
-        $this->assertSame([2, 4, 6], Tinker::with([1, 2, 3])->map(function ($v, $k) { return $v * 2; })->return());
+        $this->assertSame([2, 4, 6], Tinker::with([1, 2, 3])->map(fn($v, $k) => $v * 2)->return());
 
         // Arrays::reduce
-        $this->assertSame(6, Tinker::with([1, 2, 3])->reduce(function ($c, $i) { return $c + $i; }, 0)->return());
-        $this->assertSame(true, Tinker::with([1, 2, 3])->reduce(function ($c, $i) { return $c && ($i < 10); }, true));
+        $this->assertSame(6, Tinker::with([1, 2, 3])->reduce(fn($c, $i) => $c + $i, 0)->return());
+        $this->assertSame(true, Tinker::with([1, 2, 3])->reduce(fn($c, $i) => $c && ($i < 10), true));
 
         // Arrays::diff
         $this->assertSame([1 => 2], Tinker::with([1, 2, 3])->diff([1, 3, 4])->return());
@@ -539,7 +539,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame([0 => 1, 2 => 3], Tinker::with([1, 2, 3])->intersect([1, 3, 4])->return());
 
         // Arrays::every
-        $this->assertSame(false, Tinker::with([1, 2, 3])->every(function ($v) { return $v % 2 === 1; }));
+        $this->assertSame(false, Tinker::with([1, 2, 3])->every(fn($v) => $v % 2 === 1));
 
         // Arrays::groupBy
         $this->assertSame([
@@ -884,7 +884,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame('A', $this->int->when(Tinker::with(123), 'A')->return());
         $this->assertSame(123, $this->int->when(234, 'A')->return());
         $this->assertSame('B', $this->int->when(234, 'A', 'B')->return());
-        $this->assertSame('A', $this->int->when(function ($v) { return $v < 999; }, 'A', 'B')->return());
+        $this->assertSame('A', $this->int->when(fn($v) => $v < 999, 'A', 'B')->return());
         $this->assertSame('A', $this->int->when(true, 'A', 'B')->return());
         $this->assertSame('B', $this->int->when(false, 'A', 'B')->return());
 

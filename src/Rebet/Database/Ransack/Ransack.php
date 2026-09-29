@@ -109,10 +109,10 @@ class Ransack
         return [
             'compound_separator' => '/[\s　]/',
             'value_converters'   => [
-                'ignore'   => function ($value) { return null; },
-                'contains' => function ($value) { return '%' . str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value) . '%'; },
-                'starts'   => function ($value) { return     str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value) . '%'; },
-                'ends'     => function ($value) { return '%' . str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value)    ; },
+                'ignore'   => fn($value) => null,
+                'contains' => fn($value) => '%' . str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value) . '%',
+                'starts'   => fn($value) => str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value) . '%',
+                'ends'     => fn($value) => '%' . str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value),
             ],
             'predicates'         => [
                 // predicate => [template, value_converter, multiple_columns_conjunction]
@@ -424,7 +424,7 @@ class Ransack
 
         $value_converter ??= $this->value_converter ;
         if ($value_converter) {
-            return $this->compound ? array_map(function ($v) use ($value_converter) { return $value_converter($v); }, $value) : $value_converter($value) ;
+            return $this->compound ? array_map(fn($v) => $value_converter($v), $value) : $value_converter($value) ;
         }
         return $this->value ;
     }
@@ -504,8 +504,8 @@ class Ransack
             return $this->columns;
         }
         return $this->option
-            ? array_map(function ($v) { return str_replace('{col}', $this->driver->quoteIdentifier($v), $this->option); }, $this->columns)
-            : array_map(function ($v) { return $this->driver->quoteIdentifier($v); }, $this->columns)
+            ? array_map(fn($v) => str_replace('{col}', $this->driver->quoteIdentifier($v), $this->option), $this->columns)
+            : array_map(fn($v) => $this->driver->quoteIdentifier($v), $this->columns)
         ;
     }
 

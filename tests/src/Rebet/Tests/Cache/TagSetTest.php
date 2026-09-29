@@ -26,7 +26,7 @@ class TagSetTest extends RebetCacheTestCase
             $this->assertSame(true, $store->tags('F')->flush(), $msg);
             $this->assertSame(null, $store->get('foo'), $msg);
 
-            $this->assertSame('foo', $store->tags('F', 'B')->retrieve('foo', '10min', function () { return 'foo'; }), $msg);
+            $this->assertSame('foo', $store->tags('F', 'B')->retrieve('foo', '10min', fn() => 'foo'), $msg);
             $this->assertSame('foo', $store->get('foo'), $msg);
             $this->assertSame(true, $store->tags('F')->flush(), $msg);
             $this->assertSame(null, $store->get('foo'), $msg);

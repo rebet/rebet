@@ -13,15 +13,15 @@ class DeclarativeRouteTest extends RebetTestCase
 {
     public function test___construct(): void
     {
-        $this->assertInstanceOf(DeclarativeRoute::class, new ClosureRoute(['GET'], '/', function () { return 'Hello World.'; }));
+        $this->assertInstanceOf(DeclarativeRoute::class, new ClosureRoute(['GET'], '/', fn() => 'Hello World.'));
     }
 
     public function test___toString(): void
     {
-        $route = new ClosureRoute(['GET', 'HEAD'], '/path', function () { return 'Hello World.'; });
+        $route = new ClosureRoute(['GET', 'HEAD'], '/path', fn() => 'Hello World.');
         $this->assertSame('ClosureRoute: [GET|HEAD] /path', $route->__toString());
 
-        $route = new ClosureRoute(['GET', 'HEAD'], '/path', function () { return 'Hello World.'; });
+        $route = new ClosureRoute(['GET', 'HEAD'], '/path', fn() => 'Hello World.');
         $route->where('id', '/[0-9]+/');
         $this->assertSame('ClosureRoute: [GET|HEAD] /path where {"id":"\/[0-9]+\/"}', $route->__toString());
     }
@@ -40,7 +40,7 @@ class DeclarativeRouteTest extends RebetTestCase
     #[DataProvider('dataDefaultViews')]
     public function test_defaultView($expect, $uri): void
     {
-        $route = new ClosureRoute([], $uri, function () { return 'Hello World.'; });
+        $route = new ClosureRoute([], $uri, fn() => 'Hello World.');
         $this->assertSame($expect, $route->defaultView());
     }
 }

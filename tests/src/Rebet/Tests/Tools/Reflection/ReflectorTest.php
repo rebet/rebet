@@ -618,17 +618,17 @@ class ReflectorTest extends RebetTestCase
 
     public function test_evaluate(): void
     {
-        $function = function () { return 'foo'; };
+        $function = fn() => 'foo';
         $this->assertSame('foo', Reflector::evaluate($function));
 
-        $function = function ($val = 'default') { return $val; };
+        $function = fn($val = 'default') => $val;
         $this->assertSame('default', Reflector::evaluate($function));
         $this->assertSame(123, Reflector::evaluate($function, [123]));
 
-        $function = function (string $val = 'default') { return $val; };
+        $function = fn(string $val = 'default') => $val;
         $this->assertSame('123', Reflector::evaluate($function, [123], true));
 
-        $function = function (Gender $gender = null, int $age = 20) { return "{$age} years old " . ($gender ?? Gender::MALE()); };
+        $function = fn(Gender $gender = null, int $age = 20) => "{$age} years old " . ($gender ?? Gender::MALE());
         $this->assertSame('20 years old 男性', Reflector::evaluate($function));
         $this->assertSame('20 years old 女性', Reflector::evaluate($function, [Gender::FEMALE()]));
         $this->assertSame('18 years old 女性', Reflector::evaluate($function, ['gender' => Gender::FEMALE(), 'age' => 18]));
@@ -716,9 +716,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertFalse(Reflector::typeOf('abc', 'callable'));
         $this->assertFalse(Reflector::typeOf('abc', ReflectorTest_Mock::class));
 
-        $callable = function () {
-            return 1;
-        };
+        $callable = fn() => 1;
         $this->assertFalse(Reflector::typeOf($callable, 'int'));
         $this->assertFalse(Reflector::typeOf($callable, 'float'));
         $this->assertFalse(Reflector::typeOf($callable, 'bool'));
@@ -1108,9 +1106,7 @@ class ReflectorTest extends RebetTestCase
         $type = 'callable';
         $this->assertNull(Reflector::convert(null, $type));
 
-        $closure = function () {
-            return 123;
-        };
+        $closure = fn() => 123;
         $this->assertSame($closure, Reflector::convert($closure, $type));
 
         $array = [$this, 'test_convert_callable'];
@@ -1130,9 +1126,7 @@ class ReflectorTest extends RebetTestCase
         $type = \Closure::class;
         $this->assertNull(Reflector::convert(null, $type));
 
-        $closure = function () {
-            return 123;
-        };
+        $closure = fn() => 123;
         $this->assertSame($closure, Reflector::convert($closure, $type));
 
         $array        = [$this, 'test_convert_callable'];

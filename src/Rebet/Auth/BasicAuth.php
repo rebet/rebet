@@ -38,9 +38,7 @@ class BasicAuth
     public static function authenticate(array $auth_list, \Closure|null $to_hash = null, string $realm = "Enter your ID and PASSWORD.", string $failed_text = "Authenticate Failed.", string $charset = 'UTF-8'): string
     {
         if (empty($to_hash)) {
-            $to_hash = function ($password) {
-                return $password;
-            };
+            $to_hash = fn($password) => $password;
         }
 
         $user      = Reflector::get($_SERVER, 'PHP_AUTH_USER');
