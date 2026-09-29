@@ -34,7 +34,7 @@ class ConfigPromise implements DotAccessDelegator
     private $only_once = true;
 
     /**
-     * Values ​​determined by delayed execution (used when only_once is true).
+     * Values determined by delayed execution (used when only_once is true).
      * @var mixed
      */
     private $evaluated_value = null;

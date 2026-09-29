@@ -18,7 +18,7 @@ use Rebet\Tools\Config\Configurable;
  *
  *     Cache::class => [
  *         'stores' => [
- *              'name' => [                         // Alias ​​for classification, Not a store name
+ *              'name' => [                         // Alias for classification, Not a store name
  *                  'adapter'    => Adapter::class, // Adapter Interface implementation class
  *                  'arg_name_1' => value_1,        // Constructor argument name and value for 'adapter' class.
  *                  (snip)                          // If the argument has default value (or variadic), then the parameter can be optional.

@@ -56,7 +56,7 @@ class Database
     }
 
     /**
-     * The name of this database (alias ​​for classification).
+     * The name of this database (alias for classification).
      *
      * @var string
      */
@@ -100,7 +100,7 @@ class Database
     /**
      * Create database instance using given PDO instance.
      *
-     * @param string        $name        of this database (alias ​​for classification)
+     * @param string        $name        of this database (alias for classification)
      * @param Driver        $driver
      * @param bool          $debug       (default: false)
      * @param callable|null $log_handler function(Database $db, Query $query) (default: depend on configure)

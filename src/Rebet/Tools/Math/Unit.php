@@ -131,20 +131,20 @@ class Unit
                     'fur'  => ['201.168', false], // furlong [≡ 10ch = 660ft = 220yd]
                     'ch'   => ['20.11684', false], // chain (Gunter's; Surveyor's) [≡ 66ft(US) ≡ 4rods]
                     'rope' => ['6.096', false], // rope (H) [≡ 20ft]
-                    'rd'   => ['5.0292', false], // rod; pole; perch (H) [≡ ​16 1/2ft]
+                    'rd'   => ['5.0292', false], // rod; pole; perch (H) [≡ 16 1/2ft]
                     'ell'  => ['1.143', false], // ell (H) [≡ 45in (In England usually)]
                     'ftm'  => ['1.8288', false], // fathom [≡ 6ft]
                     'm'    => ['1', true ], // meter (Base Unit)
                     'yd'   => ['0.9144', false], // yard (International) [≡ 0.9144m ≡ 3ft ≡ 36in]
                     'lnk'  => ['0.2011684', false], // link (Gunter's; Surveyor's) [≡ 1/100ch ≡ 0.66ft(US) ≡ 7.92in]
-                    'ft'   => ['0.3048', false], // foot (International) [≡ 0.3048m ≡ ​1/3yd ≡ 12inches]
-                    'in'   => ['0.0254', false], // inch (International) [≡ 2.54cm ≡ ​1/36yd ≡ ​1/12ft]
+                    'ft'   => ['0.3048', false], // foot (International) [≡ 0.3048m ≡ 1/3yd ≡ 12inches]
+                    'in'   => ['0.0254', false], // inch (International) [≡ 2.54cm ≡ 1/36yd ≡ 1/12ft]
                     'cal'  => ['0.0254', false], // calibre [≡ 1in]
                     'dm'   => ['1e-1', false], // decimetre
                     'cm'   => ['1e-2', true ], // centimetre
                     'ln'   => ['0.002116666667', false], // line
                     'mm'   => ['1e-3', true ], // millimeter
-                    'twp'  => ['1.763888889e-5', false], // twip [≡ ​1/1440in]
+                    'twp'  => ['1.763888889e-5', false], // twip [≡ 1/1440in]
                     'μm'   => ['1e-6', true ], // micrometre (old: micron)
                     'nm'   => ['1e-9', true ], // nanometre
                     'Å'    => ['1e-10', false], // ångström
@@ -178,7 +178,7 @@ class Unit
                     'st'  => ['6.35029318', false], // stone
                     'kg'  => ['1', true ], // kilogram (Base Unit)
                     'lb'  => ['0.45359237', false], // pound (avoirdupois)
-                    'dr'  => ['1.7718451953125e-3', false], // dram (avoirdupois) [≡ ​27 11/32 gr]
+                    'dr'  => ['1.7718451953125e-3', false], // dram (avoirdupois) [≡ 27 11/32 gr]
                     'oz'  => ['28.349523125e-3', false], // ounce (avoirdupois)
                     'g'   => ['1e-3', true ], // gram
                     'gr'  => ['64.79891e-6', false], // grain

@@ -27,7 +27,7 @@ use Rebet\Tools\Utility\Strings;
  *
  *     Dao::class => [
  *         'dbs' => [
- *              'name' => [                       // Alias ​​for classification, Not a schema name
+ *              'name' => [                       // Alias for classification, Not a schema name
  *                  'dsn'      => 'dsn:string',   // DSN string or function returned PDO object `function():\PDO { ... }`
  *                  'user'     => 'user',         // Database user name
  *                  'password' => 'password',     // Database pasword
