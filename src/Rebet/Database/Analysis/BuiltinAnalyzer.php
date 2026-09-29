@@ -121,58 +121,65 @@ class BuiltinAnalyzer implements Analyzer
      */
     protected function build(array $parsed): string
     {
+        $builders = [
+            new class extends ColumnReferenceBuilder {
+                /**
+                 * @param array<mixed> $parsed
+                 */
+                #[Override]
+                protected function buildAlias($parsed): string
+                {
+                    return '';
+                }
+            },
+            new class extends SelectBracketExpressionBuilder {
+                /**
+                 * @param array<mixed> $parsed
+                 */
+                #[Override]
+                protected function buildAlias($parsed): string
+                {
+                    return '';
+                }
+            },
+            new class extends SelectExpressionBuilder {
+                /**
+                 * @param array<mixed> $parsed
+                 */
+                #[Override]
+                protected function buildAlias($parsed): string
+                {
+                    return '';
+                }
+            },
+            new class extends FunctionBuilder {
+                /**
+                 * @param array<mixed> $parsed
+                 */
+                #[Override]
+                protected function buildAlias($parsed): string
+                {
+                    return '';
+                }
+            },
+            new class extends ConstantBuilder {
+                /**
+                 * @param array<mixed> $parsed
+                 */
+                #[Override]
+                protected function buildAlias($parsed): string
+                {
+                    return '';
+                }
+            },
+            new ReservedBuilder(),
+        ];
+
         $sql = "";
-        $sql .= (new class extends ColumnReferenceBuilder {
-            /**
-             * @param array<mixed> $parsed
-             */
-            #[Override]
-            protected function buildAlias($parsed): string
-            {
-                return '';
-            }
-        })->build($parsed);
-        $sql .= (new class extends SelectBracketExpressionBuilder {
-            /**
-             * @param array<mixed> $parsed
-             */
-            #[Override]
-            protected function buildAlias($parsed): string
-            {
-                return '';
-            }
-        })->build($parsed);
-        $sql .= (new class extends SelectExpressionBuilder {
-            /**
-             * @param array<mixed> $parsed
-             */
-            #[Override]
-            protected function buildAlias($parsed): string
-            {
-                return '';
-            }
-        })->build($parsed);
-        $sql .= (new class extends FunctionBuilder {
-            /**
-             * @param array<mixed> $parsed
-             */
-            #[Override]
-            protected function buildAlias($parsed): string
-            {
-                return '';
-            }
-        })->build($parsed);
-        $sql .= (new class extends ConstantBuilder {
-            /**
-             * @param array<mixed> $parsed
-             */
-            #[Override]
-            protected function buildAlias($parsed): string
-            {
-                return '';
-            }
-        })->build($parsed);
-        $sql .= (new ReservedBuilder())->build($parsed);
+        foreach ($builders as $builder) {
+            // The vendor PHPDoc of Builder::build() is "@return A string, ...", so IDEs misread the return type as class "A".
+            $sql .= (string) $builder->build($parsed);
+        }
 
         return $sql;
     }
