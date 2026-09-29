@@ -688,8 +688,8 @@ class Arrays
         if (is_null($seed)) {
             shuffle($array);
         } else {
-            srand($seed);
-            usort($array, fn() => rand(-1, 1));
+            mt_srand($seed);
+            usort($array, fn() => mt_rand(-1, 1));
         }
         return $array;
     }
