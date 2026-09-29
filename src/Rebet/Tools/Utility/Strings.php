@@ -479,7 +479,7 @@ class Strings
             return $value->format(DateTime::config('default_format'));
         }
         if (is_object($value) && method_exists($value, '__toString')) {
-            $class = get_class($value);
+            $class = $value::class;
             $value = $value->__toString();
             if (Strings::contains($value, "\n")) {
                 return $class . ' : """' . "\n" . static::indent($value, '    ') . "\n" . '"""';
@@ -490,7 +490,7 @@ class Strings
             return Callbacks::stringify($value);
         }
         if (is_object($value) && $value instanceof \JsonSerializable) {
-            return get_class($value) . " : " . static::_stringify($value->jsonSerialize(), true, $masks, $masked_label);
+            return $value::class . " : " . static::_stringify($value->jsonSerialize(), true, $masks, $masked_label);
         }
         if (is_array($value) && empty($value)) {
             return "[]";
@@ -506,7 +506,7 @@ class Strings
             return (Reflector::getType($value) ?? 'unkown') . ":{$count} [" . static::rtrim($describes, ',') . "\n]";
         }
 
-        $class = get_class($value);
+        $class = $value::class;
         return "<instance of {$class}>";
     }
 

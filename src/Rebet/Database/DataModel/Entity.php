@@ -60,7 +60,7 @@ abstract class Entity extends DataModel
      */
     public function origin(Entity|null $origin = null): self|null
     {
-        if ($origin !== null && ($class = get_class($this)) !== get_class($origin)) {
+        if ($origin !== null && ($class = get_class($this)) !== $origin::class) {
             throw new \InvalidArgumentException("Origin must be same class of [{$class}].");
         }
         return $this->getset('_origin', $origin);

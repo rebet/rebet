@@ -624,7 +624,7 @@ class Reflector
             return null;
         }
         if (is_object($value)) {
-            return get_class($value);
+            return $value::class;
         }
         foreach (['string', 'array', 'int', 'float', 'bool', 'callable', 'resource', 'iterable'] as $type) {
             $type_check = "is_{$type}";

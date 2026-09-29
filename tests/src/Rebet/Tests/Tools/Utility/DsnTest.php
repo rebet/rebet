@@ -20,7 +20,7 @@ class DsnTest extends RebetTestCase
         } catch (Exception $e) {
             if ($expect instanceof Exception) {
                 $this->assertSame($expect->getMessage(), $e->getMessage());
-                $this->assertInstanceOf(get_class($expect), $e);
+                $this->assertInstanceOf($expect::class, $e);
             } else {
                 throw $e;
             }

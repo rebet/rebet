@@ -294,7 +294,7 @@ class Auth
         if (empty($target)) {
             return true;
         }
-        $selector = is_object($target) ? get_class($target) : $target ;
+        $selector = is_object($target) ? $target::class : $target ;
         $policy   = static::config("policies.{$selector}.{$action}", false);
         return is_callable($policy) ? static::invoke(\Closure::fromCallable($policy), $user, array_merge([$target], $extras)) : false ;
     }

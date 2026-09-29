@@ -744,8 +744,8 @@ class ConfigTest extends RebetTestCase
             }
         };
 
-        $this->assertSame('a', Config::get(get_class($a), 'key'));
-        $this->assertSame('b', Config::get(get_class($b), 'key'));
+        $this->assertSame('a', Config::get($a::class, 'key'));
+        $this->assertSame('b', Config::get($b::class, 'key'));
     }
 
     public function test_has(): void

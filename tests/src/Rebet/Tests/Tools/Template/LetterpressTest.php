@@ -294,7 +294,7 @@ class LetterpressTest extends RebetTestCase
     public function test_compile(string|null $template, $expect): void
     {
         if ($expect instanceof \Exception) {
-            $this->expectException(get_class($expect));
+            $this->expectException($expect::class);
             $this->expectExceptionMessage($expect->getMessage());
         }
         $this->assertSame($expect, $this->inspect(new Letterpress($template), 'syntax'));
@@ -430,7 +430,7 @@ class LetterpressTest extends RebetTestCase
     public function test_expandVars(LogicException|string $expect, string $template, array $vars = []): void
     {
         if ($expect instanceof \Exception) {
-            $this->expectException(get_class($expect));
+            $this->expectException($expect::class);
             $this->expectExceptionMessage($expect->getMessage());
         }
         $this->assertSame($expect, Letterpress::expandVars($template, $vars));
@@ -1172,7 +1172,7 @@ class LetterpressTest extends RebetTestCase
     public function test_render(string|null $text, array $vars, string $expect): void
     {
         if ($expect instanceof \Exception) {
-            $this->expectException(get_class($expect));
+            $this->expectException($expect::class);
             $this->expectExceptionMessage($expect->getMessage());
         }
         $this->assertSame($expect, Letterpress::of($text)->with($vars)->render());

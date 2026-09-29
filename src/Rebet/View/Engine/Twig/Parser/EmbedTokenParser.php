@@ -230,7 +230,7 @@ class EmbedTokenParser extends AbstractTokenParser
             if ($token = $stream->nextIf(Token::OPERATOR_TYPE, '=')) {
                 if (!$value instanceof NameExpression) {
                     throw new SyntaxError(
-                        sprintf('A parameter name must be a string, "%s" given.', \get_class($value)),
+                        sprintf('A parameter name must be a string, "%s" given.', $value::class),
                         $token->getLine(),
                         $stream->getSourceContext(),
                     );

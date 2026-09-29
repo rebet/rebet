@@ -71,6 +71,6 @@ class LooseLocalPartTest extends RebetTestCase
         } else {
             $this->assertTrue($result->isValid());
         }
-        $this->assertSame($warnings ?? $ignores, array_values(array_map(fn($v) => get_class($v), $parser->getWarnings())));
+        $this->assertSame($warnings ?? $ignores, array_values(array_map(fn($v) => $v::class, $parser->getWarnings())));
     }
 }
