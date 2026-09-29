@@ -12,7 +12,7 @@ use Rebet\Tools\Translation\Translator;
 class MonthTest extends RebetTestCase
 {
     #[DataProvider('dataDefinitions')]
-    public function test_definition(Month $month, $value, $label, $label_short)
+    public function test_definition(Month $month, $value, $label, $label_short): void
     {
         $this->assertSame($value, $month->value);
         $this->assertSame($label, $month->label);
@@ -38,7 +38,7 @@ class MonthTest extends RebetTestCase
     }
 
     #[DataProvider('dataTranslations')]
-    public function test_translation(Month $month, $locale, $label, $label_short)
+    public function test_translation(Month $month, $locale, $label, $label_short): void
     {
         Translator::setLocale($locale);
         $this->assertSame($label, $month->translate('label'));

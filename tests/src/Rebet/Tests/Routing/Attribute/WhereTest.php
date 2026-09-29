@@ -11,7 +11,7 @@ use TestApp\Stub\AttributedStub;
 
 class WhereTest extends RebetTestCase
 {
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $attribute = Where::class;
         $ac        = new AttributedClass(AttributedStub::class);

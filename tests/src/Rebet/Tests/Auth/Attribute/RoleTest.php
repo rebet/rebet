@@ -11,7 +11,7 @@ use TestApp\Stub\AttributedStub;
 
 class RoleTest extends RebetTestCase
 {
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $attribute = Role::class;
         $ac        = new AttributedClass(AttributedStub::class);

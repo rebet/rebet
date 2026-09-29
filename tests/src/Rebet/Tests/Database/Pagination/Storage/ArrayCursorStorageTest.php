@@ -23,7 +23,7 @@ class ArrayCursorStorageTest extends RebetTestCase
         $this->strage = new ArrayCursorStorage();
     }
 
-    public function test_saveAndLoadAndRemove()
+    public function test_saveAndLoadAndRemove(): void
     {
         $cursor = Cursor::create(['user_id' => 'asc'], new Pager(), ['user_id' => 12], 3);
         $this->assertNull($this->strage->load('user:search'));

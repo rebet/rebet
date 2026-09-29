@@ -12,7 +12,7 @@ use TestApp\Stub\AttributedStub;
 
 class DefaultsTest extends RebetTestCase
 {
-    public function test_attribute()
+    public function test_attribute(): void
     {
         DateTime::setTestNow('2010-01-02 03:04:05');
 

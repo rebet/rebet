@@ -12,7 +12,7 @@ use TestApp\Model\User;
 
 class UpdatingTest extends RebetDatabaseTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $db    = Dao::db();
         $old   = new User();

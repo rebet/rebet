@@ -12,12 +12,12 @@ use Rebet\Tests\RebetTestCase;
 
 class AddQueuedCookiesToResponseTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(AddQueuedCookiesToResponse::class, new AddQueuedCookiesToResponse());
     }
 
-    public function test_handle()
+    public function test_handle(): void
     {
         $middleware  = new AddQueuedCookiesToResponse();
         $destination = function ($request) { return Responder::toResponse('OK'); };

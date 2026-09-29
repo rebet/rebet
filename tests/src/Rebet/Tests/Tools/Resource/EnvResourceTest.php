@@ -19,7 +19,7 @@ class EnvResourceTest extends RebetTestCase
         $this->resources = App::structure()->resources('/adhoc/Tools/Resource/EnvResource');
     }
 
-    public function test_load()
+    public function test_load(): void
     {
         $this->assertSame(
             [
@@ -111,7 +111,7 @@ class EnvResourceTest extends RebetTestCase
         );
     }
 
-    public function test_load_notfound()
+    public function test_load_notfound(): void
     {
         $this->expectException(LogicException::class);
 

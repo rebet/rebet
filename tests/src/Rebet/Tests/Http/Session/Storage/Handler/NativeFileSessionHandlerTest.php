@@ -21,7 +21,7 @@ class NativeFileSessionHandlerTest extends RebetTestCase
 
     #[RunInSeparateProcess]
     #[PreserveGlobalState(false)]
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(NativeFileSessionHandler::class, new NativeFileSessionHandler('vfs://root/session'));
     }

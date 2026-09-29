@@ -13,7 +13,7 @@ use Rebet\Tools\Utility\Env;
 
 class LoadEnvironmentVariablesTest extends RebetTestCase
 {
-    public function test_bootstrap()
+    public function test_bootstrap(): void
     {
         $structure = $this->createMock(Structure::class);
         $structure->method('env')->willReturn(App::structure()->resources('/adhoc/Application/Bootstrap/LoadEnvironmentVariables'));

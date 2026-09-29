@@ -11,7 +11,7 @@ class EnvCommandTest extends RebetConsoleTestCase
 {
     public const AVIRABLE_COMMANDS = [EnvCommand::class];
 
-    public function test_execute()
+    public function test_execute(): void
     {
         $tester = $this->getCommandTester(EnvCommand::NAME);
         $status = $tester->execute([]);

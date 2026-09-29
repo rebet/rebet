@@ -12,7 +12,7 @@ use Rebet\Tools\Exception\LogicException;
 
 class ProblemResponseTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $response = new ProblemResponse(404);
         $this->assertInstanceOf(ProblemResponse::class, $response);
@@ -45,7 +45,7 @@ class ProblemResponseTest extends RebetTestCase
         $this->assertSame('Not Found', $response->getProblem('title'));
     }
 
-    public function test_detail()
+    public function test_detail(): void
     {
         App::setLocale('ja');
 
@@ -56,13 +56,13 @@ class ProblemResponseTest extends RebetTestCase
         $this->assertSame('ご指定のページは見つかりませんでした。ご指定のURLが間違っているか、既にページが削除／移動された可能性があります。', $response->getProblem('detail'));
     }
 
-    public function test_instance()
+    public function test_instance(): void
     {
         $response = (new ProblemResponse(404))->instance('Instance');
         $this->assertSame('Instance', $response->getProblem('instance'));
     }
 
-    public function test_additional_invalidType()
+    public function test_additional_invalidType(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("The type of 'about:blank' can not contains additional.");
@@ -70,7 +70,7 @@ class ProblemResponseTest extends RebetTestCase
         $response = (new ProblemResponse(404))->additional('foo', 'bar');
     }
 
-    public function test_additional_reservedWord_status()
+    public function test_additional_reservedWord_status(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("The key of 'status' is reserved. so you can't set 'status' via additional.");
@@ -78,7 +78,7 @@ class ProblemResponseTest extends RebetTestCase
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('status', 200);
     }
 
-    public function test_additional_array_reservedWord_status()
+    public function test_additional_array_reservedWord_status(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("The key of 'status' is reserved. so you can't set 'status' via additional.");
@@ -86,7 +86,7 @@ class ProblemResponseTest extends RebetTestCase
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['status' => 200]);
     }
 
-    public function test_additional_reservedWord_title()
+    public function test_additional_reservedWord_title(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("The key of 'title' is reserved. so you can't set 'title' via additional.");
@@ -94,7 +94,7 @@ class ProblemResponseTest extends RebetTestCase
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('title', 'new');
     }
 
-    public function test_additional_array_reservedWord_title()
+    public function test_additional_array_reservedWord_title(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("The key of 'title' is reserved. so you can't set 'title' via additional.");
@@ -102,7 +102,7 @@ class ProblemResponseTest extends RebetTestCase
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['title' => 'new']);
     }
 
-    public function test_additional_reservedWord_detail()
+    public function test_additional_reservedWord_detail(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("The key of 'detail' is reserved. so you can't set 'detail' via additional.");
@@ -110,7 +110,7 @@ class ProblemResponseTest extends RebetTestCase
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('detail', 'new');
     }
 
-    public function test_additional_array_reservedWord_detail()
+    public function test_additional_array_reservedWord_detail(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("The key of 'detail' is reserved. so you can't set 'detail' via additional.");
@@ -118,7 +118,7 @@ class ProblemResponseTest extends RebetTestCase
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['detail' => 'new']);
     }
 
-    public function test_additional_reservedWord_instance()
+    public function test_additional_reservedWord_instance(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("The key of 'instance' is reserved. so you can't set 'instance' via additional.");
@@ -126,7 +126,7 @@ class ProblemResponseTest extends RebetTestCase
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('instance', 'new');
     }
 
-    public function test_additional_array_reservedWord_instance()
+    public function test_additional_array_reservedWord_instance(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("The key of 'instance' is reserved. so you can't set 'instance' via additional.");
@@ -134,7 +134,7 @@ class ProblemResponseTest extends RebetTestCase
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['instance' => 'new']);
     }
 
-    public function test_additional()
+    public function test_additional(): void
     {
         $response = (new ProblemResponse(404, 'Fallback', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('foo', 'bar');
         $this->assertSame('bar', $response->getProblem('foo'));
@@ -143,7 +143,7 @@ class ProblemResponseTest extends RebetTestCase
         $this->assertSame('bar', $response->getProblem('foo'));
     }
 
-    public function test_getProblem()
+    public function test_getProblem(): void
     {
         $response = (new ProblemResponse(400, 'New Title', ProblemResponse::TYPE_FALLBACK_ERRORS))
                     ->detail('Detail')

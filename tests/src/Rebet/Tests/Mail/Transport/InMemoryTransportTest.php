@@ -14,12 +14,12 @@ use Symfony\Component\Mime\RawMessage;
 
 class InMemoryTransportTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(TransportInterface::class, new InMemoryTransport());
     }
 
-    public function test_getSentMessage()
+    public function test_getSentMessage(): void
     {
         $transport = new InMemoryTransport();
         $this->assertNull($transport->getSentMessage());
@@ -36,7 +36,7 @@ class InMemoryTransportTest extends RebetTestCase
         $this->assertSame('message 2', $transport->getSentMessage()->getOriginalMessage()->toString());
     }
 
-    public function test___toString()
+    public function test___toString(): void
     {
         $this->assertSame('rebet://in-memory', (string) (new InMemoryTransport()));
     }

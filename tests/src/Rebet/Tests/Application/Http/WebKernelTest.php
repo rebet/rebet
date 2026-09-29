@@ -25,7 +25,7 @@ class WebKernelTest extends RebetTestCase
         parent::setUp();
         Router::reset();
         Router::setCurrentChannel('web');
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::get('/', function () {
                 return 'Top: index';
             });
@@ -33,7 +33,7 @@ class WebKernelTest extends RebetTestCase
         $this->kernel = new WebKernel(App::structure());
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $kernel = new WebKernel(App::structure());
         $this->assertInstanceOf(WebKernel::class, $kernel);
@@ -43,17 +43,17 @@ class WebKernelTest extends RebetTestCase
         $this->assertSame('other', $kernel->channel());
     }
 
-    public function test_structure()
+    public function test_structure(): void
     {
         $this->assertSame(App::structure(), $this->kernel->structure());
     }
 
-    public function test_channel()
+    public function test_channel(): void
     {
         $this->assertSame('web', $this->kernel->channel());
     }
 
-    public function test_bootstrap()
+    public function test_bootstrap(): void
     {
         // The global test bootstrap (RebetTestCase::setUp()) already bootstrapped an AppWebKernel,
         // so re-registering process-wide singletons (like Letterpress tags) must be reset first.
@@ -67,7 +67,7 @@ class WebKernelTest extends RebetTestCase
         restore_exception_handler();
     }
 
-    public function test_handle()
+    public function test_handle(): void
     {
         $request  = Request::create('/');
         $response = $this->kernel->handle($request);
@@ -76,21 +76,21 @@ class WebKernelTest extends RebetTestCase
         $this->assertSame($request, $this->kernel->request());
     }
 
-    public function test_call()
+    public function test_call(): void
     {
         $response = $this->kernel->call('/');
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('Top: index', $response->getContent());
     }
 
-    public function test_terminate()
+    public function test_terminate(): void
     {
         $this->kernel->handle(Request::create('/'));
         $this->kernel->terminate();
         $this->assertTrue(true); // No exception raised.
     }
 
-    public function test_fallback()
+    public function test_fallback(): void
     {
         ob_start();
         $code    = $this->kernel->fallback(new \Exception('Kernel fallback test'));
@@ -102,7 +102,7 @@ class WebKernelTest extends RebetTestCase
         $this->assertStringNotContainsString('Kernel fallback test', $content);
     }
 
-    public function test_report()
+    public function test_report(): void
     {
         $this->kernel->report(new \Exception('Kernel report test'));
         $driver = Log::channel()->driver();
@@ -110,7 +110,7 @@ class WebKernelTest extends RebetTestCase
         $this->assertStringContainsString('Unhandled exception occurred.', $driver->formatted());
     }
 
-    public function test_report_after_handle()
+    public function test_report_after_handle(): void
     {
         // Once a response is set, report() delegates to WebExceptionHandler's status-based leveling.
         $this->kernel->handle(Request::create('/'));
@@ -120,7 +120,7 @@ class WebKernelTest extends RebetTestCase
         $this->assertFalse($driver->hasErrorRecords());
     }
 
-    public function test_request()
+    public function test_request(): void
     {
         $kernel = new WebKernel(App::structure());
         $this->expectException(LogicException::class);
@@ -128,14 +128,14 @@ class WebKernelTest extends RebetTestCase
         $kernel->request();
     }
 
-    public function test_request_after_handle()
+    public function test_request_after_handle(): void
     {
         $request = Request::create('/');
         $this->kernel->handle($request);
         $this->assertSame($request, $this->kernel->request());
     }
 
-    public function test_exceptionHandler()
+    public function test_exceptionHandler(): void
     {
         $this->assertInstanceOf(WebExceptionHandler::class, $this->kernel->exceptionHandler());
         $this->assertNotSame($this->kernel->exceptionHandler(), $this->kernel->exceptionHandler());

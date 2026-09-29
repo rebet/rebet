@@ -11,12 +11,12 @@ use Rebet\Tests\RebetTestCase;
 
 class DeclarativeRouteTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(DeclarativeRoute::class, new ClosureRoute(['GET'], '/', function () { return 'Hello World.'; }));
     }
 
-    public function test___toString()
+    public function test___toString(): void
     {
         $route = new ClosureRoute(['GET', 'HEAD'], '/path', function () { return 'Hello World.'; });
         $this->assertSame('ClosureRoute: [GET|HEAD] /path', $route->__toString());
@@ -38,7 +38,7 @@ class DeclarativeRouteTest extends RebetTestCase
     }
 
     #[DataProvider('dataDefaultViews')]
-    public function test_defaultView($expect, $uri)
+    public function test_defaultView($expect, $uri): void
     {
         $route = new ClosureRoute([], $uri, function () { return 'Hello World.'; });
         $this->assertSame($expect, $route->defaultView());

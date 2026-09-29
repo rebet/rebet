@@ -25,9 +25,9 @@ class EventTest extends RebetTestCase
                     EventTest_EchoSignined::class,
                     EventTest_EchoSignouted::class,
                     EventTest_EchoAuthentication::class,
-                    function (Signined $event) { echo '4'; },
-                    function ($event) { echo '5'; },
-                    function (string $event) { echo "6-{$event}"; },
+                    function (Signined $event): void { echo '4'; },
+                    function ($event): void { echo '5'; },
+                    function (string $event): void { echo "6-{$event}"; },
                     [EventTest_EchoSigninFailed::class, 'A'],
                     [EventTest_EchoSigninFailed::class, 'B'],
                 ],
@@ -35,43 +35,43 @@ class EventTest extends RebetTestCase
         ]);
     }
 
-    public function test_listenAndClear()
+    public function test_listenAndClear(): void
     {
-        $this->assertStdoutEquals('6-a', function () { Event::dispatch('a'); });
-        $this->assertStdoutEquals('', function () { Event::dispatch(1); });
+        $this->assertStdoutEquals('6-a', function (): void { Event::dispatch('a'); });
+        $this->assertStdoutEquals('', function (): void { Event::dispatch(1); });
 
-        Event::listen(function (int $event) { echo $event; });
-        $this->assertStdoutEquals('6-a', function () { Event::dispatch('a'); });
-        $this->assertStdoutEquals('1', function () { Event::dispatch(1); });
+        Event::listen(function (int $event): void { echo $event; });
+        $this->assertStdoutEquals('6-a', function (): void { Event::dispatch('a'); });
+        $this->assertStdoutEquals('1', function (): void { Event::dispatch(1); });
 
         Event::reset();
-        $this->assertStdoutEquals('', function () { Event::dispatch('a'); });
-        $this->assertStdoutEquals('', function () { Event::dispatch(1); });
+        $this->assertStdoutEquals('', function (): void { Event::dispatch('a'); });
+        $this->assertStdoutEquals('', function (): void { Event::dispatch(1); });
     }
 
-    public function test_dispatch()
+    public function test_dispatch(): void
     {
         $this->assertStdoutEquals(
             '143',
-            function () {
+            function (): void {
                 Event::dispatch(new Signined(Request::create('/'), AuthUser::guest(), false));
             },
         );
         $this->assertStdoutEquals(
             '23',
-            function () {
+            function (): void {
                 Event::dispatch(new Signouted(Request::create('/'), AuthUser::guest()));
             },
         );
         $this->assertStdoutEquals(
             '6-test',
-            function () {
+            function (): void {
                 Event::dispatch('test');
             },
         );
         $this->assertStdoutEquals(
             '3AB',
-            function () {
+            function (): void {
                 Event::dispatch(new SigninFailed(Request::create('/')));
             },
         );
@@ -80,7 +80,7 @@ class EventTest extends RebetTestCase
 
 class EventTest_EchoSignined
 {
-    public function handle(Signined $event)
+    public function handle(Signined $event): void
     {
         echo '1';
     }
@@ -88,7 +88,7 @@ class EventTest_EchoSignined
 
 class EventTest_EchoSignouted
 {
-    public function handle(Signouted $event)
+    public function handle(Signouted $event): void
     {
         echo '2';
     }
@@ -96,7 +96,7 @@ class EventTest_EchoSignouted
 
 class EventTest_EchoAuthentication
 {
-    public function handle(Authentication $event)
+    public function handle(Authentication $event): void
     {
         echo '3';
     }
@@ -111,7 +111,7 @@ class EventTest_EchoSigninFailed
         $this->text = $text;
     }
 
-    public function handle(SigninFailed $event)
+    public function handle(SigninFailed $event): void
     {
         echo $this->text;
     }

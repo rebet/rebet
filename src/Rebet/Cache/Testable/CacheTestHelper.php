@@ -32,7 +32,7 @@ trait CacheTestHelper // @phpstan-ignore trait.unused
      * @param  string   ...$dbs that are test targets
      * @return void
      */
-    public static function eachStore(\Closure $test, bool $taggable = false, string ...$stores)
+    public static function eachStore(\Closure $test, bool $taggable = false, string ...$stores): void
     {
         Config::reset(Cache::class, Layer::RUNTIME);
         Cache::clear();

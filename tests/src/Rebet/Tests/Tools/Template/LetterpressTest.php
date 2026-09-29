@@ -291,7 +291,7 @@ class LetterpressTest extends RebetTestCase
     }
 
     #[DataProvider('dataCompiles')]
-    public function test_compile(string|null $template, $expect)
+    public function test_compile(string|null $template, $expect): void
     {
         if ($expect instanceof \Exception) {
             $this->expectException(get_class($expect));
@@ -328,26 +328,26 @@ class LetterpressTest extends RebetTestCase
     }
 
     #[DataProvider('dataEvaluates')]
-    public function test_evaluate(string $code, array $tests)
+    public function test_evaluate(string $code, array $tests): void
     {
         foreach ($tests as $i => [$vars, $expect]) {
             $this->assertEquals($expect, Letterpress::evaluate($code, $vars), ">> {$code} test #{$i}");
         }
     }
 
-    public function test_eval_if()
+    public function test_eval_if(): void
     {
         $this->expectOutputString('a');
         Letterpress::eval('if($a->isInt()) { echo "a"; } else { echo "b"; }', ['a' => 123]);
     }
 
-    public function test_eval_foreach()
+    public function test_eval_foreach(): void
     {
         $this->expectOutputString('1, 2, 3, ');
         Letterpress::eval('foreach($a as $v) { echo $v.", "; }', ['a' => [1, 2, 3]]);
     }
 
-    public function test_eval_foreachCallback()
+    public function test_eval_foreachCallback(): void
     {
         $this->expectOutputString(
             <<<EOS
@@ -371,7 +371,7 @@ class LetterpressTest extends RebetTestCase
             [
                 'a'          => [1, 2, 3],
                 'b'          => 'b',
-                '__callback' => function ($i, $vars) {
+                '__callback' => function ($i, $vars): void {
                     $vars = Arrays::where($vars, function ($v, $k) { return !Strings::startsWith($k, '__'); });
                     foreach ($vars as $k => $v) {
                         echo "[{$i}] {$k} = {$v}\n";
@@ -427,7 +427,7 @@ class LetterpressTest extends RebetTestCase
     }
 
     #[DataProvider('dataExpandVars')]
-    public function test_expandVars(LogicException|string $expect, string $template, array $vars = [])
+    public function test_expandVars(LogicException|string $expect, string $template, array $vars = []): void
     {
         if ($expect instanceof \Exception) {
             $this->expectException(get_class($expect));
@@ -1169,7 +1169,7 @@ class LetterpressTest extends RebetTestCase
     }
 
     #[DataProvider('dataRenders')]
-    public function test_render(string|null $text, array $vars, string $expect)
+    public function test_render(string|null $text, array $vars, string $expect): void
     {
         if ($expect instanceof \Exception) {
             $this->expectException(get_class($expect));
@@ -1178,7 +1178,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame($expect, Letterpress::of($text)->with($vars)->render());
     }
 
-    public function test_defined()
+    public function test_defined(): void
     {
         $this->assertTrue(Letterpress::defined('if'));
         $this->assertTrue(Letterpress::defined('elseif'));
@@ -1201,18 +1201,18 @@ class LetterpressTest extends RebetTestCase
     }
 
     #[DataProvider('dataTemplateFiles')]
-    public function test_isTemplateFile(string $filename, bool $expect_is_template, string $expect_stripped)
+    public function test_isTemplateFile(string $filename, bool $expect_is_template, string $expect_stripped): void
     {
         $this->assertSame($expect_is_template, Letterpress::isTemplateFile($filename));
     }
 
     #[DataProvider('dataTemplateFiles')]
-    public function test_stripMarker(string $filename, bool $expect_is_template, string $expect_stripped)
+    public function test_stripMarker(string $filename, bool $expect_is_template, string $expect_stripped): void
     {
         $this->assertSame($expect_stripped, Letterpress::stripMarker($filename));
     }
 
-    public function test_block()
+    public function test_block(): void
     {
         $this->assertFalse(Letterpress::defined('upper'));
 
@@ -1226,7 +1226,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame('foo BAR baz', Letterpress::of('foo {% upper %}bar{% endupper %} baz')->render());
     }
 
-    public function test_filter()
+    public function test_filter(): void
     {
         $this->assertFalse(Letterpress::defined('upper'));
 
@@ -1248,7 +1248,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame('foo bAr baz', Letterpress::of('foo {% replace "/a/", "A" %}bar{% endreplace %} baz')->render());
     }
 
-    public function test_filter_nestedInIf()
+    public function test_filter_nestedInIf(): void
     {
         // Regression test: a filter-type block tag (`upper`, like `commentif`/`uncommentif`) used
         // inside an `if` branch that is itself nested inside another `if` used to corrupt parsing
@@ -1274,7 +1274,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame('not-aTAIL', Letterpress::of($template3)->with(['a' => false, 'b' => true, 'c' => true])->render());
     }
 
-    public function test_reset()
+    public function test_reset(): void
     {
         $this->assertTrue(Letterpress::defined('if'));
         $this->assertTrue(Letterpress::defined('for'));
@@ -1295,7 +1295,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertFalse(Letterpress::defined('upper'));
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $letterpress = Letterpress::of('{{ $name }}')->with(['name' => 'Rebet']);
         $this->assertSame('Rebet', $letterpress->render());
@@ -1304,23 +1304,23 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame('', $letterpress->render());
     }
 
-    public function test_block_duplicatedTag()
+    public function test_block_duplicatedTag(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Tag 'if' is already defined.");
 
-        Letterpress::block('if', null, function (array $nodes, array $vars) {});
+        Letterpress::block('if', null, function (array $nodes, array $vars): void {});
     }
 
-    public function test_block_unavailableSiblingTag()
+    public function test_block_unavailableSiblingTag(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Tag 'foo' contains unavailable sibling tags [if, for], these are already defined as tag.");
 
-        Letterpress::block('foo', ['foo' => ['if', 'bar', 'for'], 'if' => ['for'], 'bar' => [], 'for' => []], function (array $nodes, array $vars) {});
+        Letterpress::block('foo', ['foo' => ['if', 'bar', 'for'], 'if' => ['for'], 'bar' => [], 'for' => []], function (array $nodes, array $vars): void {});
     }
 
-    public function test_embed()
+    public function test_embed(): void
     {
         $this->assertFalse(Letterpress::defined('hello'));
 
@@ -1337,15 +1337,15 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame("foo 'Hello Default' baz", $text->with(['name' => null])->render());
     }
 
-    public function test_embed_duplicatedTag()
+    public function test_embed_duplicatedTag(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Tag 'if' is already defined.");
 
-        Letterpress::embed('if', function (array $nodes, array $vars) {});
+        Letterpress::embed('if', function (array $nodes, array $vars): void {});
     }
 
-    public function test_function()
+    public function test_function(): void
     {
         $this->assertFalse(Letterpress::defined('hello'));
 
@@ -1371,7 +1371,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame("Welcome User!", Letterpress::of('{% welcome %}')->render());
     }
 
-    public function test_if()
+    public function test_if(): void
     {
         Letterpress::reset();
         $this->assertFalse(Letterpress::defined('env'));
@@ -1394,7 +1394,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame('a b e', Letterpress::of('a {% envnot "development" %}b{% elseenvnot "production" %}c{% else %}d{% endenvnot %} e')->render());
     }
 
-    public function test_jsonSerialize()
+    public function test_jsonSerialize(): void
     {
         $this->assertSame([], Letterpress::of('')->jsonSerialize());
         $this->assertSame(['foo' => 1], Letterpress::of('')->with(['foo' => 1])->jsonSerialize());

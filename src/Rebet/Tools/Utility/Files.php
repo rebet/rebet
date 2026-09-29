@@ -183,7 +183,7 @@ class Files
      * @param  \Closure    $filter
      * @return void
      */
-    private static function folderToZip(string $folder, \ZipArchive &$zip_file, int $exclusive_length, \Closure $filter)
+    private static function folderToZip(string $folder, \ZipArchive &$zip_file, int $exclusive_length, \Closure $filter): void
     {
         $handle = opendir($folder);
         while (false !== $f = readdir($handle)) {

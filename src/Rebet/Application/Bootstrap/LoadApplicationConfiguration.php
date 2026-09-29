@@ -22,7 +22,7 @@ class LoadApplicationConfiguration implements Bootstrapper
     /**
      * {@inheritDoc}
      */
-    public function bootstrap(Kernel $kernel)
+    public function bootstrap(Kernel $kernel): void
     {
         Config::application(EnvResource::load(App::env(), $kernel->structure()->configs()));
     }

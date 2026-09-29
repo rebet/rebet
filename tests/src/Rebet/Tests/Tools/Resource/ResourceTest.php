@@ -19,7 +19,7 @@ class ResourceTest extends RebetTestCase
         $this->resources = App::structure()->resources('/adhoc/Tools/Resource/Resource');
     }
 
-    public function test_load()
+    public function test_load(): void
     {
         $this->assertSame(
             [
@@ -83,7 +83,7 @@ class ResourceTest extends RebetTestCase
         );
     }
 
-    public function test_load_unsuported()
+    public function test_load_unsuported(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Unsupported file type [yaml]. Please set loader to Rebet\Tools\Resource\Resource class.");
@@ -91,7 +91,7 @@ class ResourceTest extends RebetTestCase
         Resource::load('yaml', $this->resources . '/test.yaml');
     }
 
-    public function test_load_notfound()
+    public function test_load_notfound(): void
     {
         $this->assertNull(Resource::load('php', $this->resources . '/notfound.php'));
     }

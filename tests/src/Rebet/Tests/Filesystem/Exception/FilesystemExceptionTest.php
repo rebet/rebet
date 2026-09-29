@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class FilesystemExceptionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $e = new FilesystemException('test');
         $this->assertInstanceOf(FilesystemException::class, $e);

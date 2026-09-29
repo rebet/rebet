@@ -12,7 +12,7 @@ use Rebet\Tools\Translation\Translator;
 class DayOfWeekTest extends RebetTestCase
 {
     #[DataProvider('dataDefinitions')]
-    public function test_definition(DayOfWeek $dayOfWeek, $value, $label, $label_short, $label_min)
+    public function test_definition(DayOfWeek $dayOfWeek, $value, $label, $label_short, $label_min): void
     {
         $this->assertSame($value, $dayOfWeek->value);
         $this->assertSame($label, $dayOfWeek->label);
@@ -34,7 +34,7 @@ class DayOfWeekTest extends RebetTestCase
     }
 
     #[DataProvider('dataTranslations')]
-    public function test_translation(DayOfWeek $dayOfWeek, $locale, $label, $label_short, $label_min)
+    public function test_translation(DayOfWeek $dayOfWeek, $locale, $label, $label_short, $label_min): void
     {
         Translator::setLocale($locale);
         $this->assertSame($label, $dayOfWeek->translate('label'));
@@ -64,7 +64,7 @@ class DayOfWeekTest extends RebetTestCase
     }
 
     #[DataProvider('dataXxxxs')]
-    public function test_isXxxx(DayOfWeek $dayOfWeek, $xxxx, $expect)
+    public function test_isXxxx(DayOfWeek $dayOfWeek, $xxxx, $expect): void
     {
         $method = "is{$xxxx}";
         $this->assertSame($expect, $dayOfWeek->$method());

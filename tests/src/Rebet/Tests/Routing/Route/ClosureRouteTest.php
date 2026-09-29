@@ -11,12 +11,12 @@ use Rebet\Tests\RebetTestCase;
 
 class ClosureRouteTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(ClosureRoute::class, new ClosureRoute(['GET'], '/', function () { return 'Hello World.'; }));
     }
 
-    public function test_routing()
+    public function test_routing(): void
     {
         $route   = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
         $request = $this->createRequestMock('/foo');
@@ -39,7 +39,7 @@ class ClosureRouteTest extends RebetTestCase
         $this->assertSame("id: 123, code: abc", $response->getContent());
     }
 
-    public function test_terminate()
+    public function test_terminate(): void
     {
         $route   = new ClosureRoute(['GET'], '/', function () { return 'Hello World.'; });
         $request = $this->createRequestMock('/foo');

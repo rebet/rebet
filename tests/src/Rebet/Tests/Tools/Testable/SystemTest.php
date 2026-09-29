@@ -14,7 +14,7 @@ class SystemTest extends RebetTestCase
         parent::setUp();
     }
 
-    public function test___callStatic()
+    public function test___callStatic(): void
     {
         System::emulator('mb_strlen', function () { return 6; });
 
@@ -25,7 +25,7 @@ class SystemTest extends RebetTestCase
         $this->assertSame(6, System::mb_strlen('abc'));
     }
 
-    public function test_headerAndHeadersList()
+    public function test_headerAndHeadersList(): void
     {
         $this->assertSame(
             [
@@ -82,7 +82,7 @@ class SystemTest extends RebetTestCase
         );
     }
 
-    public function test_dns_get_record()
+    public function test_dns_get_record(): void
     {
         $this->assertSame(
             [

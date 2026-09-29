@@ -26,7 +26,7 @@ class DaoTest extends RebetDatabaseTestCase
         ]);
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $mysql = Dao::db('mysql');
         $this->assertSame($mysql, Dao::current());
@@ -49,7 +49,7 @@ class DaoTest extends RebetDatabaseTestCase
         $this->assertSame(true, $pgsql->closed());
     }
 
-    public function test_db()
+    public function test_db(): void
     {
         $default = Dao::db();
         $sqlite  = Dao::db('sqlite');
@@ -58,7 +58,7 @@ class DaoTest extends RebetDatabaseTestCase
         // @todo Need implement more tests.
     }
 
-    public function test_current()
+    public function test_current(): void
     {
         $this->assertSame(null, Dao::current());
         $mysql = Dao::db('mysql');
@@ -69,7 +69,7 @@ class DaoTest extends RebetDatabaseTestCase
         $this->assertSame($pgsql, Dao::current());
     }
 
-    public function test___callStatic()
+    public function test___callStatic(): void
     {
         $this->assertSame('Elody Bode III', Dao::find("SELECT * FROM users WHERE user_id = :user_id", null, ['user_id' => 1])->name);
         $this->assertSame('sqlite', Dao::driverName());

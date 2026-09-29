@@ -9,7 +9,7 @@ use Rebet\Tools\Utility\Exception\ZipArchiveException;
 
 class ZipArchiveExceptionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $e = new ZipArchiveException('test');
         $this->assertInstanceOf(ZipArchiveException::class, $e);

@@ -9,7 +9,7 @@ use Rebet\Validation\Kind;
 
 class KindTest extends RebetTestCase
 {
-    public function test_translatable()
+    public function test_translatable(): void
     {
         $this->assertSame('TYPE_CONSISTENCY_CHECK', Kind::TYPE_CONSISTENCY_CHECK()->translate('label', 'ja'));
     }

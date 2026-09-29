@@ -16,7 +16,7 @@ use TestApp\Stub\ToArrayStub;
 class JsonTest extends RebetTestCase
 {
     #[DataProvider('dataSerializes')]
-    public function test_serialize($value, $expect)
+    public function test_serialize($value, $expect): void
     {
         $this->assertSame($expect, Json::serialize($value));
     }
@@ -42,7 +42,7 @@ class JsonTest extends RebetTestCase
         ];
     }
 
-    public function test_digest()
+    public function test_digest(): void
     {
         $this->assertSame(Json::digest('sha256', 1), Json::digest('sha256', 1));
         $this->assertNotSame(Json::digest('sha256', 1), Json::digest('sha256', 2));

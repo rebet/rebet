@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class MemcachedSessionHandlerTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $memcached = $this->getMockBuilder('Memcached')->getMock();
         $this->assertInstanceOf(MemcachedSessionHandler::class, new MemcachedSessionHandler($memcached));

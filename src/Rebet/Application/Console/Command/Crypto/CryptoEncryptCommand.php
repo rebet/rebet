@@ -35,7 +35,7 @@ class CryptoEncryptCommand extends Command
     /**
      * {@inheritDoc}
      */
-    protected function handle()
+    protected function handle(): void
     {
         $encrypted = Securities::encrypt(
             $this->argument('plain'),

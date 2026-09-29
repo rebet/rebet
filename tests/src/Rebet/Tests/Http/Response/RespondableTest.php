@@ -13,7 +13,7 @@ use Rebet\Tools\Reflection\Reflector;
 
 class RespondableTest extends RebetTestCase
 {
-    public function test_getHeader()
+    public function test_getHeader(): void
     {
         $response = new BasicResponse('Content', 200, [
             'Content-Type' => 'text/html',
@@ -25,7 +25,7 @@ class RespondableTest extends RebetTestCase
         $this->assertSame(null, $response->getHeader('X-Nothing'));
     }
 
-    public function test_setHeader()
+    public function test_setHeader(): void
     {
         $response = new BasicResponse();
         $this->assertSame(null, $response->getHeader('X-Test'));
@@ -38,7 +38,7 @@ class RespondableTest extends RebetTestCase
         $this->assertSame('b', $response->getHeader('X-Test', true));
     }
 
-    public function test_getAndSetCookie()
+    public function test_getAndSetCookie(): void
     {
         $response = new BasicResponse();
         $this->assertSame(null, $response->getCookie('foo'));

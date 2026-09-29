@@ -11,7 +11,7 @@ use TestApp\Stub\AttributedStub;
 
 class NotRoutingTest extends RebetTestCase
 {
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $attribute = NotRouting::class;
         $ac        = new AttributedClass(AttributedStub::class);

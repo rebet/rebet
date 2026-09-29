@@ -16,19 +16,19 @@ use Twig\TokenParser\TokenParserInterface;
 
 class RawTokenParserTest extends RebetTestCase
 {
-    public function test___constract()
+    public function test___constract(): void
     {
         $this->assertInstanceOf(RawTokenParser::class, new RawTokenParser('endenv', '}'));
     }
 
-    public function test_getTag()
+    public function test_getTag(): void
     {
         $paser = new RawTokenParser('endenv', '}');
         $this->assertSame('endenv', $paser->getTag());
     }
 
     #[DataProvider('dataParses')]
-    public function test_parse(TokenParserInterface $token_parser, string $source, string $expect)
+    public function test_parse(TokenParserInterface $token_parser, string $source, string $expect): void
     {
         $env = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock());
         $env->addTokenParser($token_parser);

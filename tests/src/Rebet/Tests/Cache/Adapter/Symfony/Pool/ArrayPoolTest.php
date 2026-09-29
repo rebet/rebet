@@ -30,12 +30,12 @@ class ArrayPoolTest extends RebetTestCase
         }
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(ArrayPool::class, new ArrayPool());
     }
 
-    public function test_getItemAndSave()
+    public function test_getItemAndSave(): void
     {
         foreach ($this->pools as $pool) {
             $item = $pool->getItem('foo');
@@ -84,7 +84,7 @@ class ArrayPoolTest extends RebetTestCase
         }
     }
 
-    public function test_getItems()
+    public function test_getItems(): void
     {
         foreach ($this->pools as $pool) {
             $values = ['foo' => null, 'bar' => null];
@@ -119,7 +119,7 @@ class ArrayPoolTest extends RebetTestCase
         }
     }
 
-    public function test_hasItem()
+    public function test_hasItem(): void
     {
         foreach ($this->pools as $pool) {
             $this->assertSame(false, $pool->hasItem('foo'));
@@ -146,7 +146,7 @@ class ArrayPoolTest extends RebetTestCase
         }
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         foreach ($this->pools as $pool) {
             $this->assertSame(false, $pool->hasItem('foo'));
@@ -175,7 +175,7 @@ class ArrayPoolTest extends RebetTestCase
         }
     }
 
-    public function test_deleteItem()
+    public function test_deleteItem(): void
     {
         foreach ($this->pools as $pool) {
             $item = $pool->getItem('foo');
@@ -187,7 +187,7 @@ class ArrayPoolTest extends RebetTestCase
         }
     }
 
-    public function test_saveDeferredAndCommit()
+    public function test_saveDeferredAndCommit(): void
     {
         foreach ($this->pools as $pool) {
             $this->assertSame(false, $pool->hasItem('foo'));

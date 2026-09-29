@@ -14,7 +14,7 @@ use Rebet\Tests\RebetTestCase;
 
 class LooseRFCValidationTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(LooseRFCValidation::class, new LooseRFCValidation());
     }
@@ -34,7 +34,7 @@ class LooseRFCValidationTest extends RebetTestCase
     }
 
     #[DataProvider('dataIsValids')]
-    public function test_isValid(bool $expect, string $mail_address, array|null $ignores = null)
+    public function test_isValid(bool $expect, string $mail_address, array|null $ignores = null): void
     {
         $validation = new LooseRFCValidation($ignores);
         $lexer      = new EmailLexer();

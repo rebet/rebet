@@ -10,7 +10,7 @@ use Rebet\Tests\RebetTestCase;
 
 class StreamedResponseTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $response = new StreamedResponse();
         $this->assertInstanceOf(StreamedResponse::class, $response);

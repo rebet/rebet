@@ -85,7 +85,7 @@ class BladeCompiler extends LaravelBladeCompiler
      * @param  string|null $binds     (default: null)
      * @return void
      */
-    public function case($name, Processor $processor, string|null $binds = null)
+    public function case($name, Processor $processor, string|null $binds = null): void
     {
         $this->processors[$name] = $processor;
 
@@ -134,7 +134,7 @@ class BladeCompiler extends LaravelBladeCompiler
     public function disable(string $name, $thrower = null): void
     {
         $thrower ??= "The '{$name}' directive is not supported in Rebet." ;
-        $this->directive($name, function ($expression) use ($thrower) {
+        $this->directive($name, function ($expression) use ($thrower): void {
             throw is_string($thrower) ? new LogicException($thrower) : $thrower() ;
         });
     }

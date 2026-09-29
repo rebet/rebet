@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class RedisSessionHandlerTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(RedisSessionHandler::class, new RedisSessionHandler($this->getMockBuilder('Redis')->getMock()));
     }

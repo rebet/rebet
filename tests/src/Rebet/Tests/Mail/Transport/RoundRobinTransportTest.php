@@ -16,7 +16,7 @@ use Symfony\Component\Mime\RawMessage;
 
 class RoundRobinTransportTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $transport = new RoundRobinTransport([
             InMemoryTransport::class,
@@ -33,14 +33,14 @@ class RoundRobinTransportTest extends RebetTestCase
         $this->assertInstanceOf(NullLogger::class, $this->inspect($transport, 'logger'));
     }
 
-    public function test___construct_defaults()
+    public function test___construct_defaults(): void
     {
         $transport = new RoundRobinTransport([new NullTransport()]);
         $this->assertSame(60, $this->inspect($transport, 'retryPeriod'));
         $this->assertInstanceOf(NullLogger::class, $this->inspect($transport, 'logger'));
     }
 
-    public function test_send_rotatesAcrossTransports()
+    public function test_send_rotatesAcrossTransports(): void
     {
         $t1 = new InMemoryTransport();
         $t2 = new InMemoryTransport();

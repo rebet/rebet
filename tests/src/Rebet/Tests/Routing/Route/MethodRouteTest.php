@@ -11,14 +11,14 @@ use TestApp\Controller\TestController;
 
 class MethodRouteTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(MethodRoute::class, new MethodRoute(['GET'], '/', 'TestApp\Controller\TestController::index'));
         $this->assertInstanceOf(MethodRoute::class, new MethodRoute(['GET'], '/', '@controller\TestController::index'));
         $this->assertInstanceOf(MethodRoute::class, new MethodRoute(['GET'], '/', 'TestController::index'));
     }
 
-    public function test_routing()
+    public function test_routing(): void
     {
         $route   = new MethodRoute(['GET'], '/foo', 'TestApp\Controller\TestController::index');
         $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
@@ -57,7 +57,7 @@ class MethodRouteTest extends RebetTestCase
         $this->assertSame('Controller: privateCall', $response->getContent());
     }
 
-    public function test_terminate()
+    public function test_terminate(): void
     {
         $route   = new MethodRoute(['GET'], '/foo', 'TestController::index');
         $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);

@@ -44,7 +44,7 @@ class ValidatorTest extends RebetTestCase
         ]);
     }
 
-    public function test_cunstract()
+    public function test_cunstract(): void
     {
         $this->assertInstanceOf(Validator::class, new Validator([]));
     }
@@ -315,7 +315,7 @@ class ValidatorTest extends RebetTestCase
     }
 
     #[DataProvider('dataValidationInvoke')]
-    public function test_validateInvoke(array $data, array $rule, bool $expect_valid)
+    public function test_validateInvoke(array $data, array $rule, bool $expect_valid): void
     {
         $validator  = new Validator($data);
         $valid_data = $validator->validate('C', ['target' => ['rule' => [$rule]]]);
@@ -323,7 +323,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame($expect_valid, !is_null($valid_data));
     }
 
-    public function test_validate_argsTypeCheck()
+    public function test_validate_argsTypeCheck(): void
     {
         $validator = new Validator(['foo' => 'FOO', 'bar' => 'BAR']);
 
@@ -395,7 +395,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame('BAR', $valid_data->bar);
     }
 
-    public function test_validate_beforeFilter()
+    public function test_validate_beforeFilter(): void
     {
         $validator  = new Validator(['foo' => 'foo']);
         $valid_data = $validator->validate('C', [
@@ -411,7 +411,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame('FOO', $valid_data->foo);
     }
 
-    public function test_validate_afterFilter()
+    public function test_validate_afterFilter(): void
     {
         $validator  = new Validator(['foo' => 'foo']);
         $valid_data = $validator->validate('C', [
@@ -427,7 +427,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame('FOO', $valid_data->foo);
     }
 
-    public function test_validate_convert()
+    public function test_validate_convert(): void
     {
         $validator  = new Validator(['foo' => '2001-01-01']);
         $valid_data = $validator->validate('C', [
@@ -444,7 +444,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame('2001/01/01', $valid_data->foo->format('Y/m/d'));
     }
 
-    public function test_validate_convertWithValidationError()
+    public function test_validate_convertWithValidationError(): void
     {
         $validator  = new Validator(['foo' => 'fooo-01-01']);
         $valid_data = $validator->validate('C', [
@@ -459,7 +459,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertNull($valid_data);
     }
 
-    public function test_validate_convertWithConvertError()
+    public function test_validate_convertWithConvertError(): void
     {
         $validator  = new Validator(['foo' => '2001-01-01']);
         $valid_data = $validator->validate('C', [
@@ -475,7 +475,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame(['foo' => ["The value of Foo could not be converted correctly."]], $validator->errors());
     }
 
-    public function test_validate_quiet()
+    public function test_validate_quiet(): void
     {
         $validator  = new Validator(['foo' => 'abc']);
         $valid_data = $validator->validate('C', [
@@ -489,7 +489,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame([], $validator->errors());
     }
 
-    public function test_validate_quietThenElse()
+    public function test_validate_quietThenElse(): void
     {
         $rule = [
             'foo' => [
@@ -514,7 +514,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame(['foo' => ["The Foo must be greater than 100."]], $validator->errors());
     }
 
-    public function test_validate_then()
+    public function test_validate_then(): void
     {
         $rule = [
             'foo' => [
@@ -535,7 +535,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame(['foo' => ["The Foo must be greater than 100."]], $validator->errors());
     }
 
-    public function test_validate_exitOnError()
+    public function test_validate_exitOnError(): void
     {
         $validator  = new Validator(['foo' => 'abc']);
         $valid_data = $validator->validate('C', [
@@ -561,7 +561,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame(['foo' => ["The Foo must be number."]], $validator->errors());
     }
 
-    public function test_validate_duplicatedMessage()
+    public function test_validate_duplicatedMessage(): void
     {
         $validator  = new Validator(['foo' => 'abc']);
         $valid_data = $validator->validate('C', [
@@ -579,7 +579,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame(['foo' => ["Error message 1.", "Error message 2.", "Error message 3."]], $validator->errors()); // The same message is not duplicated
     }
 
-    public function test_validate_typeConsistencyCheck()
+    public function test_validate_typeConsistencyCheck(): void
     {
         $validator  = new Validator(['foo' => ['abc', 99]]);
         $valid_data = $validator->validate('C', [
@@ -614,7 +614,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame(['foo' => ["The 1st Foo (abc) must be number.", "The 2nd Foo (99) must be greater than 100."]], $validator->errors());
     }
 
-    public function test_validate_inlineLabelAndI18n()
+    public function test_validate_inlineLabelAndI18n(): void
     {
         $validator  = new Validator(['foo' => null]);
         $valid_data = $validator->validate('C', [
@@ -651,7 +651,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame(['foo' => ["フーを入力して下さい。"]], $validator->errors()); // 'i18n/{locale}/attribute.php' transration settings take precedence over inline labels
     }
 
-    public function test_validate_nest()
+    public function test_validate_nest(): void
     {
         $rule = [
             'bank' => [
@@ -778,7 +778,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame(['bank.name' => ["The Custom BANK Name field is required."]], $validator->errors());
     }
 
-    public function test_validate_nests()
+    public function test_validate_nests(): void
     {
         $rule = [
             'shipping_addresses' => [
@@ -818,7 +818,7 @@ class ValidatorTest extends RebetTestCase
         ], $validator->errors());
     }
 
-    public function test_validate_crud()
+    public function test_validate_crud(): void
     {
         $rule = [
             'foo'     => ['rule' => [['C', 'Ng']]],
@@ -946,7 +946,7 @@ class ValidatorTest extends RebetTestCase
         ], $validator->errors());
     }
 
-    public function test_validate_acceptUndefined()
+    public function test_validate_acceptUndefined(): void
     {
         $rule = [
             'foo' => [
@@ -964,7 +964,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame(['foo' => 'Foo', 'bar' => 'bar'], $valid_data->toArray());
     }
 
-    public function test_validate_invalidFormatThen()
+    public function test_validate_invalidFormatThen(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid rules format. A 'rule/then/else' list item should be array.");
@@ -977,7 +977,7 @@ class ValidatorTest extends RebetTestCase
         ]);
     }
 
-    public function test_validate_invalidFormatElse()
+    public function test_validate_invalidFormatElse(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid rules format. A 'rule/then/else' list item should be array.");

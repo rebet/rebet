@@ -27,7 +27,7 @@ class BuiltinValidationsTest extends RebetTestCase
         $this->validations = new BuiltinValidations();
     }
 
-    public function test_registerAndValidate()
+    public function test_registerAndValidate(): void
     {
         BuiltinValidations::register('Hello', function (Context $c) {
             if ($c->blank()) {
@@ -62,7 +62,7 @@ class BuiltinValidationsTest extends RebetTestCase
         $this->assertSame(['say' => ["The Say must be 'Hello'"]], $validation->errors());
     }
 
-    public function test_cunstract()
+    public function test_cunstract(): void
     {
         $validations = new BuiltinValidations();
         $this->assertInstanceOf(BuiltinValidations::class, $validations);

@@ -10,13 +10,13 @@ use Rebet\Tools\Utility\Securities;
 
 class SecuritiesTest extends RebetTestCase
 {
-    public function test_randomCode()
+    public function test_randomCode(): void
     {
         $this->assertSame(8, mb_strlen(Securities::randomCode(8)));
         $this->assertSame('aaa', Securities::randomCode(3, 'a'));
     }
 
-    public function test_hash()
+    public function test_hash(): void
     {
         putenv('DEFAULT_HASH_SALT=salt');
         putenv('DEFAULT_HASH_PEPPER=pepper');
@@ -24,7 +24,7 @@ class SecuritiesTest extends RebetTestCase
         $this->assertNotSame(Securities::hash('password'), Securities::hash('p@ssword'));
     }
 
-    public function test_hash_unsetSalt()
+    public function test_hash_unsetSalt(): void
     {
         putenv('DEFAULT_HASH_SALT');
         putenv('DEFAULT_HASH_PEPPER=pepper');
@@ -33,7 +33,7 @@ class SecuritiesTest extends RebetTestCase
         $this->assertSame(Securities::hash('password'), Securities::hash('password'));
     }
 
-    public function test_hash_unsetPepper()
+    public function test_hash_unsetPepper(): void
     {
         putenv('DEFAULT_HASH_SALT=salt');
         putenv('DEFAULT_HASH_PEPPER');
@@ -42,7 +42,7 @@ class SecuritiesTest extends RebetTestCase
         $this->assertSame(Securities::hash('password'), Securities::hash('password'));
     }
 
-    public function test_hash_withArgs()
+    public function test_hash_withArgs(): void
     {
         putenv('DEFAULT_HASH_SALT');
         putenv('DEFAULT_HASH_PEPPER');
@@ -50,12 +50,12 @@ class SecuritiesTest extends RebetTestCase
         $this->assertNotSame(Securities::hash('password', 'salt', 'pepper'), Securities::hash('p@ssword', 'salt', 'pepper'));
     }
 
-    public function test_randomHash()
+    public function test_randomHash(): void
     {
         $this->assertNotSame(Securities::randomHash(), Securities::randomHash());
     }
 
-    public function test_hmac()
+    public function test_hmac(): void
     {
         putenv('DEFAULT_HMAC_SECRET_KEY=secret');
         $this->assertSame(Securities::hmac('text'), Securities::hmac('text'));
@@ -63,7 +63,7 @@ class SecuritiesTest extends RebetTestCase
         $this->assertSame(hash_hmac('SHA256', 'text', 'secret'), Securities::hmac('text'));
     }
 
-    public function test_hmac_unsetSecretKey()
+    public function test_hmac_unsetSecretKey(): void
     {
         putenv('DEFAULT_HMAC_SECRET_KEY');
         $this->expectException(ConfigNotDefineException::class);
@@ -71,7 +71,7 @@ class SecuritiesTest extends RebetTestCase
         Securities::hmac('text');
     }
 
-    public function test_hmac_withArgs()
+    public function test_hmac_withArgs(): void
     {
         putenv('DEFAULT_HMAC_SECRET_KEY');
         $this->assertSame(Securities::hmac('text', 'secret_key'), Securities::hmac('text', 'secret_key'));
@@ -80,7 +80,7 @@ class SecuritiesTest extends RebetTestCase
         $this->assertSame(hash_hmac('sha512', 'text', 'secret_key'), Securities::hmac('text', 'secret_key', 'sha512'));
     }
 
-    public function test_encrypt()
+    public function test_encrypt(): void
     {
         for ($i = 0; $i < 20; $i++) {
             $plain     = Securities::randomCode(mt_rand(12, 32));
@@ -97,7 +97,7 @@ class SecuritiesTest extends RebetTestCase
         $this->assertNotSame($plain, $decrypted);
     }
 
-    public function test_decrypt()
+    public function test_decrypt(): void
     {
         for ($i = 0; $i < 20; $i++) {
             $plain     = Securities::randomCode(mt_rand(12, 32));
@@ -114,7 +114,7 @@ class SecuritiesTest extends RebetTestCase
         $this->assertNotSame($plain, $decrypted);
     }
 
-    public function test_encrypt_withHmacArgs()
+    public function test_encrypt_withHmacArgs(): void
     {
         $plain           = 'This is pen';
         $secretKey       = 'crypto_secret';

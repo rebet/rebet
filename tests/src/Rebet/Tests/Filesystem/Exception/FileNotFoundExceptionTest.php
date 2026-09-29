@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class FileNotFoundExceptionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $e = new FileNotFoundException('test');
         $this->assertInstanceOf(FileNotFoundException::class, $e);

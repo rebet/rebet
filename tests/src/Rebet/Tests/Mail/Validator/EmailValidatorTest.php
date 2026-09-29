@@ -37,12 +37,12 @@ class EmailValidatorTest extends RebetTestCase
         parent::tearDown();
     }
 
-    public function test_defaultConfig()
+    public function test_defaultConfig(): void
     {
         $this->assertInstanceOf(RFCValidation::class, EmailValidator::config('validation'));
     }
 
-    public function test_isValid()
+    public function test_isValid(): void
     {
         $validator = new EmailValidator();
         $this->assertSame(false, $validator->isValid('.invalid..rfc.@foo.com', new RFCValidation()));
@@ -52,7 +52,7 @@ class EmailValidatorTest extends RebetTestCase
         $this->assertSame(true, $validator->isValid('.invalid..rfc.@foo.com', new LooseRFCValidation()));
     }
 
-    public function test_setValidation()
+    public function test_setValidation(): void
     {
         $this->assertInstanceOf(RFCValidation::class, EmailValidator::config('validation'));
 
@@ -61,7 +61,7 @@ class EmailValidatorTest extends RebetTestCase
         $this->assertSame($loose, EmailValidator::config('validation'));
     }
 
-    public function test_enable()
+    public function test_enable(): void
     {
         // The EmailValidatorEnable bootstrapper already calls enable() during App::init(), so
         // reset() first to force back to the pre-enable state.
@@ -73,7 +73,7 @@ class EmailValidatorTest extends RebetTestCase
         $this->assertInstanceOf(EmailValidator::class, Reflector::get(Address::class, 'validator', null, true));
     }
 
-    public function test_enable_isNoopWhenAlreadyEnabled()
+    public function test_enable_isNoopWhenAlreadyEnabled(): void
     {
         EmailValidator::enable();
         $enabled = Reflector::get(Address::class, 'validator', null, true);
@@ -84,7 +84,7 @@ class EmailValidatorTest extends RebetTestCase
         $this->assertSame($enabled, Reflector::get(Address::class, 'validator', null, true));
     }
 
-    public function test_reset()
+    public function test_reset(): void
     {
         // The EmailValidatorEnable bootstrapper already calls enable() during App::init(), so
         // reset() first to force back to (and capture) the pre-enable state.
@@ -100,7 +100,7 @@ class EmailValidatorTest extends RebetTestCase
         $this->assertSame($before, Reflector::get(Address::class, 'validator', null, true));
     }
 
-    public function test_reset_isNoopWhenEnableWasNeverCalled()
+    public function test_reset_isNoopWhenEnableWasNeverCalled(): void
     {
         // Reset the captured original to null, simulating a state where enable() has never
         // been called, regardless of what earlier tests (or the kernel bootstrap) may have done.
@@ -115,7 +115,7 @@ class EmailValidatorTest extends RebetTestCase
         $this->assertNull(Reflector::get($class, 'original_validator', null, true));
     }
 
-    public function test_enable_appliesConfiguredValidationToAddress()
+    public function test_enable_appliesConfiguredValidationToAddress(): void
     {
         EmailValidator::setValidation(new RFCValidation());
         EmailValidator::enable();
@@ -124,7 +124,7 @@ class EmailValidatorTest extends RebetTestCase
         new Address('.invalid..rfc.@foo.com');
     }
 
-    public function test_enable_appliesConfiguredLooseValidationToAddress()
+    public function test_enable_appliesConfiguredLooseValidationToAddress(): void
     {
         EmailValidator::setValidation(new LooseRFCValidation());
         EmailValidator::enable();

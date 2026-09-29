@@ -22,12 +22,12 @@ class StackDriverTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(StackDriver::class, new StackDriver(['test', 'stderr']));
     }
 
-    public function test_log()
+    public function test_log(): void
     {
         Config::application([
             Log::class => [
@@ -54,7 +54,7 @@ class StackDriverTest extends RebetTestCase
         $stack      = new StackDriver(['test', 'stderr']);
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [stderr.ERROR] {$process_id} Somthing error happened.\n",
-            function () use ($stack) {
+            function () use ($stack): void {
                 $stack->error('Somthing error happened.');
             },
         );
@@ -65,14 +65,14 @@ class StackDriverTest extends RebetTestCase
 
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [stderr.INFO] {$process_id} Somthing infomation.\n",
-            function () use ($stack) {
+            function () use ($stack): void {
                 $stack->info('Somthing infomation.');
             },
         );
         $this->assertFalse(Log::channel('test')->driver()->hasInfoRecords());
     }
 
-    public function test_log_withSetName()
+    public function test_log_withSetName(): void
     {
         Config::application([
             Log::class => [
@@ -100,7 +100,7 @@ class StackDriverTest extends RebetTestCase
         $this->assertInstanceOf(LoggerInterface::class, $stack->setName('foo'));
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [foo.ERROR] {$process_id} Somthing error happened.\n",
-            function () use ($stack) {
+            function () use ($stack): void {
                 $stack->error('Somthing error happened.');
             },
         );
@@ -111,14 +111,14 @@ class StackDriverTest extends RebetTestCase
 
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [foo.INFO] {$process_id} Somthing infomation.\n",
-            function () use ($stack) {
+            function () use ($stack): void {
                 $stack->info('Somthing infomation.');
             },
         );
         $this->assertFalse(Log::channel('test')->driver()->hasInfoRecords());
     }
 
-    public function test_log_withName()
+    public function test_log_withName(): void
     {
         Config::application([
             Log::class => [
@@ -146,7 +146,7 @@ class StackDriverTest extends RebetTestCase
         $stack_foo  = $stack->withName('foo');
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [stderr.ERROR] {$process_id} Somthing error happened.\n",
-            function () use ($stack) {
+            function () use ($stack): void {
                 $stack->error('Somthing error happened.');
             },
         );
@@ -157,7 +157,7 @@ class StackDriverTest extends RebetTestCase
 
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [stderr.INFO] {$process_id} Somthing infomation.\n",
-            function () use ($stack) {
+            function () use ($stack): void {
                 $stack->info('Somthing infomation.');
             },
         );
@@ -165,7 +165,7 @@ class StackDriverTest extends RebetTestCase
 
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [foo.ERROR] {$process_id} Somthing error happened.\n",
-            function () use ($stack_foo) {
+            function () use ($stack_foo): void {
                 $stack_foo->error('Somthing error happened.');
             },
         );
@@ -177,7 +177,7 @@ class StackDriverTest extends RebetTestCase
 
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [foo.INFO] {$process_id} Somthing infomation.\n",
-            function () use ($stack_foo) {
+            function () use ($stack_foo): void {
                 $stack_foo->info('Somthing infomation.');
             },
         );

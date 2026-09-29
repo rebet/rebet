@@ -10,13 +10,13 @@ use Rebet\Tests\RebetDatabaseTestCase;
 
 class QueryTest extends RebetDatabaseTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $query = new Query(Dao::db()->driver(), 'param = :param', ['param' => 'value']);
         $this->assertInstanceOf(Query::class, $query);
     }
 
-    public function test_asWhere()
+    public function test_asWhere(): void
     {
         $driver = Dao::db()->driver();
         $query  = new Query($driver, '');

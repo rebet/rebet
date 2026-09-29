@@ -19,7 +19,7 @@ class HandleExceptions implements Bootstrapper
     /**
      * {@inheritDoc}
      */
-    public function bootstrap(Kernel $kernel)
+    public function bootstrap(Kernel $kernel): void
     {
         ini_set('display_errors', 'Off');
         error_reporting(-1);
@@ -31,13 +31,13 @@ class HandleExceptions implements Bootstrapper
             return false;
         });
 
-        $fallbacker = function (\Throwable $e) use ($kernel) {
+        $fallbacker = function (\Throwable $e) use ($kernel): void {
             $kernel->fallback($e);
             $kernel->terminate();
         };
         set_exception_handler($fallbacker);
 
-        register_shutdown_function(function () use ($kernel, $fallbacker) {
+        register_shutdown_function(function () use ($kernel, $fallbacker): void {
             if ($error = error_get_last()) {
                 $exception = new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
                 if (in_array($error['type'], [E_COMPILE_ERROR, E_CORE_ERROR, E_ERROR, E_PARSE])) {

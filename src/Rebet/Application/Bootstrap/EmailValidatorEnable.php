@@ -20,7 +20,7 @@ class EmailValidatorEnable implements Bootstrapper
     /**
      * {@inheritDoc}
      */
-    public function bootstrap(Kernel $kernel)
+    public function bootstrap(Kernel $kernel): void
     {
         EmailValidator::enable();
     }

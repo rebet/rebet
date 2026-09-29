@@ -35,23 +35,23 @@ class BuiltinFilesystemTest extends RebetTestCase
         parent::tearDown();
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $filesystem = new BuiltinFilesystem(new LocalFilesystemAdapter($this->root));
         $this->assertInstanceOf(BuiltinFilesystem::class, $filesystem);
     }
 
-    public function test_driver()
+    public function test_driver(): void
     {
         $this->assertInstanceOf(FlysystemFilesystem::class, $this->filesystem->driver());
     }
 
-    public function test_adapter()
+    public function test_adapter(): void
     {
         $this->assertInstanceOf(LocalFilesystemAdapter::class, $this->filesystem->adapter());
     }
 
-    public function test_exists()
+    public function test_exists(): void
     {
         foreach (['hello.txt', 'dir/hello.txt'] as $path) {
             $this->assertSame(false, $this->filesystem->exists($path));
@@ -60,27 +60,27 @@ class BuiltinFilesystemTest extends RebetTestCase
         }
     }
 
-    public function test_isFile()
+    public function test_isFile(): void
     {
         $this->filesystem->put('dir/foo.txt', 'foo');
         $this->assertSame(false, $this->filesystem->isFile('dir'));
         $this->assertSame(true, $this->filesystem->isFile('dir/foo.txt'));
     }
 
-    public function test_isDirectory()
+    public function test_isDirectory(): void
     {
         $this->filesystem->put('dir/foo.txt', 'foo');
         $this->assertSame(true, $this->filesystem->isDirectory('dir'));
         $this->assertSame(false, $this->filesystem->isDirectory('dir/foo.txt'));
     }
 
-    public function test_path()
+    public function test_path(): void
     {
         $this->assertSame(App::structure()->storage('/test/Filesystem/BuiltinFilesystem'), $this->filesystem->path());
         $this->assertSame(App::structure()->storage('/test/Filesystem/BuiltinFilesystem/hello.txt'), $this->filesystem->path('hello.txt'));
     }
 
-    public function test_get()
+    public function test_get(): void
     {
         $path = 'hello.txt';
         $body = 'Hello';
@@ -88,7 +88,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame($body, $this->filesystem->get($path));
     }
 
-    public function test_get_fileNotFound()
+    public function test_get_fileNotFound(): void
     {
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage("File not found at path: not_found.txt");
@@ -96,7 +96,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->filesystem->get('not_found.txt');
     }
 
-    public function test_put()
+    public function test_put(): void
     {
         foreach (['hello.txt', 'dir/hello.txt'] as $path) {
             $contents = "Hello {$path}";
@@ -135,7 +135,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         fclose($file);
     }
 
-    public function test_putFile()
+    public function test_putFile(): void
     {
         $path     = 'env.txt';
         $contents = App::structure()->env('/.env');
@@ -146,7 +146,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertStringStartsWith("APP_ENV=unittest\n", $this->filesystem->get($path));
     }
 
-    public function test_getAndSetVisibility()
+    public function test_getAndSetVisibility(): void
     {
         $path     = 'hello.txt';
         $contents = 'Hello';
@@ -173,7 +173,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         }
     }
 
-    public function test_prepend()
+    public function test_prepend(): void
     {
         $path = 'hello.txt';
         $this->assertSame(false, $this->filesystem->exists($path));
@@ -186,7 +186,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame("c\nb\na", $this->filesystem->get($path));
     }
 
-    public function test_append()
+    public function test_append(): void
     {
         $path = 'hello.txt';
         $this->assertSame(false, $this->filesystem->exists($path));
@@ -199,7 +199,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame("a\nb\nc", $this->filesystem->get($path));
     }
 
-    public function test_delete()
+    public function test_delete(): void
     {
         foreach ([
             'a.txt',
@@ -269,7 +269,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame(true, $this->filesystem->exists('path/2/2.log'));
     }
 
-    public function test_clean()
+    public function test_clean(): void
     {
         foreach ([
             'a.txt',
@@ -306,7 +306,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame([], $this->filesystem->ls());
     }
 
-    public function test_copy()
+    public function test_copy(): void
     {
         $this->filesystem->put('from.txt', "Hello a");
         $this->assertSame(false, $this->filesystem->exists('to.txt'));
@@ -315,7 +315,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame("Hello a", $this->filesystem->get('to.txt'));
     }
 
-    public function test_copy_replace()
+    public function test_copy_replace(): void
     {
         $this->filesystem->put('from.txt', "1");
         $this->filesystem->put('to.txt', "2");
@@ -324,7 +324,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame("1", $this->filesystem->get('to.txt'));
     }
 
-    public function test_copy_replace_faile()
+    public function test_copy_replace_faile(): void
     {
         $this->expectException(FilesystemException::class);
         $this->expectExceptionMessage("File already exists at path: to.txt");
@@ -334,7 +334,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->filesystem->copy('from.txt', 'to.txt');
     }
 
-    public function test_copy_dir()
+    public function test_copy_dir(): void
     {
         $this->filesystem->put('dir_from/1.txt', "1");
         $this->filesystem->put('dir_from/2.txt', "2");
@@ -351,7 +351,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame(true, $this->filesystem->exists('foo/bar/baz/sub'));
     }
 
-    public function test_copy_dir_replace()
+    public function test_copy_dir_replace(): void
     {
         $this->filesystem->put('dir_from/1.txt', "1");
         $this->filesystem->put('dir_to/2.txt', "2");
@@ -361,7 +361,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame(false, $this->filesystem->exists('dir_to/2.txt'));
     }
 
-    public function test_copy_dir_replace_failed()
+    public function test_copy_dir_replace_failed(): void
     {
         $this->expectException(FilesystemException::class);
         $this->expectExceptionMessage("Can not copy from `dir_from` to `dir_to`. `dir_to` directory already exists.");
@@ -371,7 +371,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->copy('dir_from', 'dir_to'));
     }
 
-    public function test_move()
+    public function test_move(): void
     {
         $this->filesystem->put('from.txt', "1");
         $this->assertSame(false, $this->filesystem->exists('to.txt'));
@@ -385,7 +385,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame(true, $this->filesystem->exists('dir/to.txt'));
     }
 
-    public function test_move_replace()
+    public function test_move_replace(): void
     {
         $this->filesystem->put('from.txt', "1");
         $this->filesystem->put('to.txt', "2");
@@ -394,7 +394,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame("1", $this->filesystem->get('to.txt'));
     }
 
-    public function test_move_replace_faile()
+    public function test_move_replace_faile(): void
     {
         $this->expectException(FilesystemException::class);
         $this->expectExceptionMessage("File already exists at path: to.txt");
@@ -404,7 +404,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->filesystem->move('from.txt', 'to.txt');
     }
 
-    public function test_move_dir()
+    public function test_move_dir(): void
     {
         $this->filesystem->put('dir_from/1.txt', "1");
         $this->filesystem->put('dir_from/2.txt', "2");
@@ -423,7 +423,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame(true, $this->filesystem->exists('foo/bar/baz/sub'));
     }
 
-    public function test_move_dir_replace()
+    public function test_move_dir_replace(): void
     {
         $this->filesystem->put('dir_from/1.txt', "1");
         $this->filesystem->put('dir_to/2.txt', "2");
@@ -434,7 +434,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame(false, $this->filesystem->exists('dir_to/2.txt'));
     }
 
-    public function test_move_dir_replace_failed()
+    public function test_move_dir_replace_failed(): void
     {
         $this->expectException(FilesystemException::class);
         $this->expectExceptionMessage("File already exists at path: dir_to");
@@ -444,7 +444,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->move('dir_from', 'dir_to'));
     }
 
-    public function test_size()
+    public function test_size(): void
     {
         $path = 'size.test';
         $this->filesystem->put($path, "1");
@@ -457,7 +457,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame(454, $this->filesystem->size('72x72.png'));
     }
 
-    public function test_metadata()
+    public function test_metadata(): void
     {
         $path = '1.txt';
         $this->filesystem->put($path, "1");
@@ -492,7 +492,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertNotNull($metadata['timestamp'] ?? null);
     }
 
-    public function test_mimeType()
+    public function test_mimeType(): void
     {
         $path = '1.txt';
         $this->filesystem->put($path, "1");
@@ -515,7 +515,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame('image/png', $mime_type);
     }
 
-    public function test_lastModified()
+    public function test_lastModified(): void
     {
         $path  = '1.txt';
         $start = DateTime::now()->setMilliMicro(0)->addMinute(-1);
@@ -528,7 +528,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertTrue($last_modified <= $end, $message);
     }
 
-    public function test_url_private()
+    public function test_url_private(): void
     {
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage("/foo/bar.txt is not public.");
@@ -539,7 +539,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $filesystem->url('/foo/bar.txt');
     }
 
-    public function test_url()
+    public function test_url(): void
     {
         $public = new BuiltinFilesystem(new LocalFilesystemAdapter($this->root), [
             'visibility' => 'public',
@@ -557,7 +557,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $public->clean();
     }
 
-    public function test_readStream()
+    public function test_readStream(): void
     {
         $this->filesystem->put('foo.txt', 'foo');
         $file = $this->filesystem->readStream('foo.txt');
@@ -565,7 +565,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame('foo', stream_get_contents($file));
     }
 
-    public function test_ls()
+    public function test_ls(): void
     {
         foreach ([
             'a.txt',
@@ -660,7 +660,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         ], $this->filesystem->ls('/', '*.txt', null, true));
     }
 
-    public function test_files()
+    public function test_files(): void
     {
         foreach ([
             'a.txt',
@@ -701,7 +701,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         ], $this->filesystem->files('/', '*', true));
     }
 
-    public function test_directories()
+    public function test_directories(): void
     {
         foreach ([
             'a.txt',
@@ -737,7 +737,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         ], $this->filesystem->directories('/', '*', true));
     }
 
-    public function test_mkdir()
+    public function test_mkdir(): void
     {
         $this->assertSame(false, $this->filesystem->exists('dir'));
         $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->mkdir('dir'));

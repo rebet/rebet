@@ -17,7 +17,7 @@ use Rebet\Tools\Reflection\Reflector;
 
 class RouteActionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(RouteAction::class, $this->createRouteActionBasedClosureMock(function () { return 'Hello'; }));
     }
@@ -39,7 +39,7 @@ class RouteActionTest extends RebetTestCase
         return [$request, $route, $route_action, $controller];
     }
 
-    public function test_invoke()
+    public function test_invoke(): void
     {
         [$request, $route, $route_action, $controller] = $this->createRouteActionBasedControllerMock('/test/index');
 
@@ -52,7 +52,7 @@ class RouteActionTest extends RebetTestCase
         $this->assertSame('Controller: index', $response->getContent());
     }
 
-    public function test_invoke_withParam()
+    public function test_invoke_withParam(): void
     {
         [$request, $route, $route_action, $controller] = $this->createRouteActionBasedControllerMock('/test/with-param/123');
 
@@ -83,7 +83,7 @@ class RouteActionTest extends RebetTestCase
         $this->assertSame('Controller: withConvertEnumParam - 男性', $response->getContent());
     }
 
-    public function test_invoke_withParam_error()
+    public function test_invoke_withParam_error(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::withParam not found. Routing parameter 'id' is requierd.");
@@ -93,7 +93,7 @@ class RouteActionTest extends RebetTestCase
         $response = $route_action->invoke($request);
     }
 
-    public function test_invoke_withParam_convertError()
+    public function test_invoke_withParam_convertError(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::withConvertEnumParam not found. Routing parameter gender(=3) can not convert to TestApp\Enum\Gender.");
@@ -103,7 +103,7 @@ class RouteActionTest extends RebetTestCase
         $response = $route_action->invoke($request);
     }
 
-    public function test_getAttributedMethod()
+    public function test_getAttributedMethod(): void
     {
         $route_action = $this->createRouteActionBasedClosureMock(function () { return 'Hello'; });
         $this->assertNull($route_action->getAttributedMethod());
@@ -118,7 +118,7 @@ class RouteActionTest extends RebetTestCase
         $this->assertSame(['GET'], $method->allows);
     }
 
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $route_action = $this->createRouteActionBasedClosureMock(function () { return 'Hello'; });
         $this->assertNull($route_action->attribute(Method::class));

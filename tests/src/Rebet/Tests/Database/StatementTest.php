@@ -33,20 +33,20 @@ class StatementTest extends RebetDatabaseTestCase
         ]);
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $pdo_stmt = $this->getMockBuilder(\PDOStatement::class)->getMock();
         $this->assertInstanceOf(Statement::class, new Statement(Dao::db(), $pdo_stmt));
     }
 
-    public function test_raw()
+    public function test_raw(): void
     {
         $pdo_stmt = $this->getMockBuilder(\PDOStatement::class)->getMock();
         $stmt     = new Statement(Dao::db(), $pdo_stmt);
         $this->assertSame($pdo_stmt, $stmt->raw());
     }
 
-    public function test_meta()
+    public function test_meta(): void
     {
         $pdo_stmt = $this->getMockBuilder(\PDOStatement::class)->getMock();
         $pdo_stmt->method('columnCount')->willReturn(2);
@@ -67,9 +67,9 @@ class StatementTest extends RebetDatabaseTestCase
         $this->assertEquals([], $stmt->meta());
     }
 
-    public function test_execute()
+    public function test_execute(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt     = $stmt->execute();
@@ -93,7 +93,7 @@ class StatementTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_execute_exception_01()
+    public function test_execute_exception_01(): void
     {
         $this->expectException(DatabaseException::class);
         $this->expectExceptionMessage("[db:sqlite/-----] This is test");
@@ -106,7 +106,7 @@ class StatementTest extends RebetDatabaseTestCase
         $stmt = $stmt->execute();
     }
 
-    public function test_execute_exception_02()
+    public function test_execute_exception_02(): void
     {
         $this->expectException(DatabaseException::class);
         $this->expectExceptionMessage("[db:sqlite/-----] Unkown error occured.");
@@ -119,9 +119,9 @@ class StatementTest extends RebetDatabaseTestCase
         $stmt = $stmt->execute();
     }
 
-    public function test_all()
+    public function test_all(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->all();
@@ -154,9 +154,9 @@ class StatementTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_first()
+    public function test_first(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->first();
@@ -186,9 +186,9 @@ class StatementTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_allOf()
+    public function test_allOf(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->allOf('user_id');
@@ -246,9 +246,9 @@ class StatementTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_firstOf()
+    public function test_firstOf(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->firstOf('user_id');
@@ -310,9 +310,9 @@ class StatementTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_affectedRows()
+    public function test_affectedRows(): void
     {
-        self::eachDb(function (Database $db, $driver) {
+        self::eachDb(function (Database $db, $driver): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $count    = $stmt->execute()->affectedRows();
@@ -335,13 +335,13 @@ class StatementTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_each()
+    public function test_each(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $i        = 1;
-            $stmt->execute()->each(function (User $user) use (&$i) {
+            $stmt->execute()->each(function (User $user) use (&$i): void {
                 $this->assertEquals($i++, $user->user_id);
                 $this->assertInstanceOf(User::class, $user);
             });
@@ -356,9 +356,9 @@ class StatementTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_filter()
+    public function test_filter(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $users    = $stmt->execute()->filter(function (User $user) {
@@ -368,9 +368,9 @@ class StatementTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_map()
+    public function test_map(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $users    = $stmt->execute()->map(function (User $user) {
@@ -381,9 +381,9 @@ class StatementTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_reduce()
+    public function test_reduce(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $result   = $stmt->execute()->reduce(function (User $user, $carry) {
@@ -393,18 +393,18 @@ class StatementTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_getIterator()
+    public function test_getIterator(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $this->assertInstanceOf(\Traversable::class, $stmt->getIterator());
         });
     }
 
-    public function test_close()
+    public function test_close(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $this->assertTrue($stmt->execute()->close());

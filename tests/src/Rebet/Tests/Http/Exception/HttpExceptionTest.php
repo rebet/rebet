@@ -11,7 +11,7 @@ use Rebet\Tests\RebetTestCase;
 
 class HttpExceptionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $e = new HttpException(404, 'message.http.404.detail', 'message.http.404.title');
         $this->assertInstanceOf(HttpException::class, $e);
@@ -40,7 +40,7 @@ class HttpExceptionTest extends RebetTestCase
         $this->assertSame('ご指定のページは見つかりませんでした。ご指定のURLが間違っているか、既にページが削除／移動された可能性があります。', $e->getDetail());
     }
 
-    public function test_getStatus()
+    public function test_getStatus(): void
     {
         $e = new HttpException(404);
         $this->assertSame(404, $e->getStatus());
@@ -49,7 +49,7 @@ class HttpExceptionTest extends RebetTestCase
         $this->assertSame(500, $e->getStatus());
     }
 
-    public function test_title()
+    public function test_title(): void
     {
         App::setLocale('ja');
 
@@ -60,7 +60,7 @@ class HttpExceptionTest extends RebetTestCase
         $this->assertSame('指定のページが見つかりません', $e->getTitle());
     }
 
-    public function test_getTitle()
+    public function test_getTitle(): void
     {
         $e = new HttpException(404, null, 'message.http.404.title');
         $this->assertSame('Custom Not Found', $e->getTitle());
@@ -85,7 +85,7 @@ class HttpExceptionTest extends RebetTestCase
         $this->assertSame('Not Found', $e->getTitle());
     }
 
-    public function test_detail()
+    public function test_detail(): void
     {
         App::setLocale('ja');
 
@@ -96,7 +96,7 @@ class HttpExceptionTest extends RebetTestCase
         $this->assertSame('ご指定のページは見つかりませんでした。ご指定のURLが間違っているか、既にページが削除／移動された可能性があります。', $e->getDetail());
     }
 
-    public function test_getDetail()
+    public function test_getDetail(): void
     {
         $e = new HttpException(404);
         $this->assertSame(null, $e->getDetail());
@@ -113,7 +113,7 @@ class HttpExceptionTest extends RebetTestCase
         $this->assertSame('ご指定のページは見つかりませんでした。ご指定のURLが間違っているか、既にページが削除／移動された可能性があります。', $e->getDetail());
     }
 
-    public function test_problem()
+    public function test_problem(): void
     {
         App::setLocale('ja');
 

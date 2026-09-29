@@ -10,7 +10,7 @@ use Rebet\Tests\RebetTestCase;
 
 class JsonResponseTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $response = new JsonResponse();
         $this->assertInstanceOf(JsonResponse::class, $response);

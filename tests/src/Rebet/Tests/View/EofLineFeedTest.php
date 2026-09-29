@@ -9,7 +9,7 @@ use Rebet\View\EofLineFeed;
 
 class EofLineFeedTest extends RebetTestCase
 {
-    public function test_process()
+    public function test_process(): void
     {
         $contents = "a\r\nb\r\n\r\n";
         $this->assertSame(null, EofLineFeed::TRIM()->process(null));

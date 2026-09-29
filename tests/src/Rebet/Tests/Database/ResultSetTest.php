@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class ResultSetTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(ResultSet::class, new ResultSet([]));
         $this->assertEquals([], (new ResultSet([]))->toArray());
@@ -17,7 +17,7 @@ class ResultSetTest extends RebetTestCase
         $this->assertEquals([1, 2, 3], (new ResultSet([1, 2, 3]))->toArray());
     }
 
-    public function test_reverse()
+    public function test_reverse(): void
     {
         $rs = new ResultSet([1, 2, 3]);
         $this->assertEquals([1, 2, 3], $rs->toArray());
@@ -25,7 +25,7 @@ class ResultSetTest extends RebetTestCase
         $this->assertEquals([3, 2, 1], $rs->toArray());
     }
 
-    public function test_pluk()
+    public function test_pluk(): void
     {
         $this->assertEquals([1, 2, 3], (new ResultSet([['a' => 1], ['a' => 2], ['a' => 3]]))->pluk('a'));
     }

@@ -10,7 +10,7 @@ use Rebet\Tests\RebetTestCase;
 
 class BasicResponseTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $response = new BasicResponse();
         $this->assertInstanceOf(BasicResponse::class, $response);

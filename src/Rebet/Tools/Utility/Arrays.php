@@ -442,7 +442,7 @@ class Arrays
      * @param  array<int|string>|string $keys
      * @return void
      */
-    public static function forget(array|null &$array, $keys)
+    public static function forget(array|null &$array, $keys): void
     {
         if ($array === null) {
             return;

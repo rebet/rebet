@@ -11,7 +11,7 @@ use Rebet\Tests\RebetTestCase;
 
 class BinaryFileResponseTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $response = new BinaryFileResponse(App::structure()->public('/assets/img/72x72.png'));
         $this->assertInstanceOf(BinaryFileResponse::class, $response);

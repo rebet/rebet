@@ -13,12 +13,12 @@ use Rebet\Tests\RebetTestCase;
 
 class AuthenticateTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(Authenticate::class, new Authenticate());
     }
 
-    public function test_handle()
+    public function test_handle(): void
     {
         $middleware  = new Authenticate();
         $destination = function ($request) { return Responder::toResponse('OK'); };

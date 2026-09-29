@@ -36,7 +36,7 @@ class RouterTest extends RebetTestCase
         Config::application([
             Router::class => [
                 'middlewares='             => [],
-                'default_fallback_handler' => function (Request $request, \Throwable $e) {
+                'default_fallback_handler' => function (Request $request, \Throwable $e): void {
                     throw $e;
                 },
             ],
@@ -59,7 +59,7 @@ class RouterTest extends RebetTestCase
         ]);
 
         Router::reset();
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::get('/', function () {
                 return 'Content: /';
             });
@@ -182,7 +182,7 @@ class RouterTest extends RebetTestCase
         });
     }
 
-    public function test_getAndSetCurrentChannel()
+    public function test_getAndSetCurrentChannel(): void
     {
         $this->assertSame('web', Router::getCurrentChannel());
         Router::setCurrentChannel('api');
@@ -191,7 +191,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('api', Router::getCurrentChannel());
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route GET / not found.");
@@ -204,7 +204,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/'));
     }
 
-    public function test_invalidRuleDefine_match()
+    public function test_invalidRuleDefine_match(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
@@ -214,7 +214,7 @@ class RouterTest extends RebetTestCase
         });
     }
 
-    public function test_invalidRuleDefine_default()
+    public function test_invalidRuleDefine_default(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
@@ -224,7 +224,7 @@ class RouterTest extends RebetTestCase
         });
     }
 
-    public function test_routing_root()
+    public function test_routing_root(): void
     {
         $response = Router::handle(Request::create('/'));
         $this->assertSame(200, $response->getStatusCode());
@@ -232,7 +232,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /', $response->getContent());
     }
 
-    public function test_routing_get()
+    public function test_routing_get(): void
     {
         $response = Router::handle(Request::create('/get'));
         $this->assertSame(200, $response->getStatusCode());
@@ -245,7 +245,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('', $response->getContent());
     }
 
-    public function test_routing_get_invalidMethod()
+    public function test_routing_get_invalidMethod(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: [GET|HEAD] /get not found. Invalid method POST given.");
@@ -253,7 +253,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/get', 'POST'));
     }
 
-    public function test_routing_post()
+    public function test_routing_post(): void
     {
         $response = Router::handle(Request::create('/post', 'POST'));
         $this->assertSame(200, $response->getStatusCode());
@@ -261,7 +261,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /post', $response->getContent());
     }
 
-    public function test_routing_put()
+    public function test_routing_put(): void
     {
         $response = Router::handle(Request::create('/put', 'PUT'));
         $this->assertSame(200, $response->getStatusCode());
@@ -269,7 +269,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /put', $response->getContent());
     }
 
-    public function test_routing_patch()
+    public function test_routing_patch(): void
     {
         $response = Router::handle(Request::create('/patch', 'PATCH'));
         $this->assertSame(200, $response->getStatusCode());
@@ -277,7 +277,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /patch', $response->getContent());
     }
 
-    public function test_routing_delete()
+    public function test_routing_delete(): void
     {
         $response = Router::handle(Request::create('/delete', 'DELETE'));
         $this->assertSame(200, $response->getStatusCode());
@@ -285,7 +285,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /delete', $response->getContent());
     }
 
-    public function test_routing_options()
+    public function test_routing_options(): void
     {
         $response = Router::handle(Request::create('/options', 'OPTIONS'));
         $this->assertSame(200, $response->getStatusCode());
@@ -293,7 +293,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /options', $response->getContent());
     }
 
-    public function test_routing_any()
+    public function test_routing_any(): void
     {
         $response = Router::handle(Request::create('/any'));
         $this->assertSame(200, $response->getStatusCode());
@@ -331,7 +331,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /any', $response->getContent());
     }
 
-    public function test_routing_match()
+    public function test_routing_match(): void
     {
         $response = Router::handle(Request::create('/match/get-head-post'));
         $this->assertSame(200, $response->getStatusCode());
@@ -349,17 +349,17 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /match/get-head-post', $response->getContent());
     }
 
-    public function test_routing_invalidMatch()
+    public function test_routing_invalidMatch(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid action type for declarative routing. Action should be string of 'Class::method' or callable.");
 
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::match(['GET', 'HEAD', 'POST'], '/match/invlid-action', null);
         });
     }
 
-    public function test_routing_parameterRequierd()
+    public function test_routing_parameterRequierd(): void
     {
         $response = Router::handle(Request::create('/parameter/requierd/1'));
         $this->assertSame('Content: /parameter/requierd/{id} - 1', $response->getContent());
@@ -368,7 +368,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /parameter/requierd/{id} - abc', $response->getContent());
     }
 
-    public function test_routing_parameterRequierdNothing()
+    public function test_routing_parameterRequierdNothing(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route GET /parameter/requierd not found.");
@@ -376,7 +376,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/parameter/requierd'));
     }
 
-    public function test_routing_parameterRequierdNothing2()
+    public function test_routing_parameterRequierdNothing2(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route GET /parameter/requierd/ not found.");
@@ -384,7 +384,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/parameter/requierd/'));
     }
 
-    public function test_routing_parameterOption()
+    public function test_routing_parameterOption(): void
     {
         $response = Router::handle(Request::create('/parameter/option/1'));
         $this->assertSame('Content: /parameter/option/{id?} - 1', $response->getContent());
@@ -423,7 +423,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /parameter/convert/enum/{value} - 男性', $response->getContent());
     }
 
-    public function test_routing_parameterOptionInvalidWhere()
+    public function test_routing_parameterOptionInvalidWhere(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: [GET|HEAD] /parameter/where/{id} where {\"id\":\"\/^[0-9]+$\/\"} not found. Routing parameter 'id' value 'abc' not match /^[0-9]+$/.");
@@ -431,7 +431,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/parameter/where/abc'));
     }
 
-    public function test_routing_parameterOptionInvalidConvert()
+    public function test_routing_parameterOptionInvalidConvert(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: [GET|HEAD] /parameter/convert/enum/{value} not found. Routing parameter value(=3) can not convert to TestApp\Enum\Gender.");
@@ -439,25 +439,25 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/parameter/convert/enum/3'));
     }
 
-    public function test_routing_jsonArray()
+    public function test_routing_jsonArray(): void
     {
         $response = Router::handle(Request::create('/json/array'));
         $this->assertSame('[1,2,3]', $response->getContent());
     }
 
-    public function test_routing_jsonJsonSerializable()
+    public function test_routing_jsonJsonSerializable(): void
     {
         $response = Router::handle(Request::create('/json/jsonSerializable'));
         $this->assertSame('"2010-10-20 10:20:30"', $response->getContent());
     }
 
-    public function test_routing_renderable()
+    public function test_routing_renderable(): void
     {
         $response = Router::handle(Request::create('/renderable'));
         $this->assertSame('Hello, Samantha.', $response->getContent());
     }
 
-    public function test_routing_methodPrivateCall()
+    public function test_routing_methodPrivateCall(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("MethodRoute: [GET|HEAD] /method/private-call not found. Action [ TestApp\Controller\TestController::privateCall ] not accessible.");
@@ -465,13 +465,13 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/method/private-call'));
     }
 
-    public function test_routing_methodPrivateCallAccessible()
+    public function test_routing_methodPrivateCallAccessible(): void
     {
         $response = Router::handle(Request::create('/method/private-call-accessible'));
         $this->assertSame('Controller: privateCall', $response->getContent());
     }
 
-    public function test_routing_methodProtectedCall()
+    public function test_routing_methodProtectedCall(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("MethodRoute: [GET|HEAD] /method/protected-call not found. Action [ TestApp\Controller\TestController::protectedCall ] not accessible.");
@@ -479,19 +479,19 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/method/protected-call'));
     }
 
-    public function test_routing_methodProtectedCallAccessible()
+    public function test_routing_methodProtectedCallAccessible(): void
     {
         $response = Router::handle(Request::create('/method/protected-call-accessible'));
         $this->assertSame('Controller: protectedCall', $response->getContent());
     }
 
-    public function test_routing_methodPublicCall()
+    public function test_routing_methodPublicCall(): void
     {
         $response = Router::handle(Request::create('/method/public-call'));
         $this->assertSame('Controller: publicCall', $response->getContent());
     }
 
-    public function test_routing_methodWithParam()
+    public function test_routing_methodWithParam(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route GET /method/with-param/ not found.");
@@ -502,7 +502,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/method/with-param/'));
     }
 
-    public function test_routing_methodWithParamWhere()
+    public function test_routing_methodWithParamWhere(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: [GET|HEAD] /method/with-param/where/{id} where {\"id\":\"\/^[0-9]+$\/\"} not found. Routing parameter 'id' value 'abc' not match /^[0-9]+$/.");
@@ -513,7 +513,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/method/with-param/where/abc'));
     }
 
-    public function test_routing_methodWithMissmatchParam()
+    public function test_routing_methodWithMissmatchParam(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: [GET|HEAD] /method/with-param/missmatch/{bad_name} not found. Routing parameter 'id' is requierd.");
@@ -521,7 +521,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/method/with-param/missmatch/123'));
     }
 
-    public function test_routing_methodWithOptionalParam()
+    public function test_routing_methodWithOptionalParam(): void
     {
         $response = Router::handle(Request::create('/method/with-optional-param/123'));
         $this->assertSame('Controller: withOptionalParam - 123', $response->getContent());
@@ -533,19 +533,19 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
     }
 
-    public function test_routing_methodWithMultiParam()
+    public function test_routing_methodWithMultiParam(): void
     {
         $response = Router::handle(Request::create('/method/with-multi-param/1/to/10'));
         $this->assertSame('Controller: withMultiParam - 1 to 10', $response->getContent());
     }
 
-    public function test_routing_methodWithMultiInvertParam()
+    public function test_routing_methodWithMultiInvertParam(): void
     {
         $response = Router::handle(Request::create('/method/with-multi-param/invert/1/to/10'));
         $this->assertSame('Controller: withMultiInvertParam - 1 to 10', $response->getContent());
     }
 
-    public function test_routing_methodWithConvertEnumParam()
+    public function test_routing_methodWithConvertEnumParam(): void
     {
         $response = Router::handle(Request::create('/method/with-convert-enum-param/1'));
         $this->assertSame('Controller: withConvertEnumParam - 男性', $response->getContent());
@@ -554,19 +554,19 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: withConvertEnumParam - 女性', $response->getContent());
     }
 
-    public function test_routing_methodNamespaceNest()
+    public function test_routing_methodNamespaceNest(): void
     {
         $response = Router::handle(Request::create('/method/namespace/nest'));
         $this->assertSame('Nest: foo', $response->getContent());
     }
 
-    public function test_routing_methodNamespaceDifferent()
+    public function test_routing_methodNamespaceDifferent(): void
     {
         $response = Router::handle(Request::create('/method/namespace/different'));
         $this->assertSame('Different: foo', $response->getContent());
     }
 
-    public function test_routing_redirect()
+    public function test_routing_redirect(): void
     {
         $response = Router::handle(Request::create('/redirect'));
         $this->assertSame('/destination', $response->getTargetUrl());
@@ -604,7 +604,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('/destination?page=1&id=123', $response->getTargetUrl());
     }
 
-    public function test_routing_view()
+    public function test_routing_view(): void
     {
         $response = Router::handle(Request::create('/view'));
         $this->assertSame('Hello, Bob.', $response->getContent());
@@ -616,14 +616,14 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Hello, John.', $response->getContent());
     }
 
-    public function test_routing_viewNotFound()
+    public function test_routing_viewNotFound(): void
     {
         $this->expectException(RouteNotFoundException::class);
 
         $response = Router::handle(Request::create('/view/not-found/John'));
     }
 
-    public function test_routing_controllerNamespaceShort()
+    public function test_routing_controllerNamespaceShort(): void
     {
         $response = Router::handle(Request::create('/controller/namespace/short/public-call'));
         $this->assertSame('Controller: publicCall', $response->getContent());
@@ -665,7 +665,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: index', $response->getContent());
     }
 
-    public function test_routing_controllerAnnotationChannelReject()
+    public function test_routing_controllerAnnotationChannelReject(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::annotationChannelApi not found. Routing channel 'web' not allowed or not annotated channel meta info.");
@@ -673,7 +673,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-channel-api'));
     }
 
-    public function test_routing_controllerAnnotationMethodReject()
+    public function test_routing_controllerAnnotationMethodReject(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::annotationMethodGet not found. Routing method 'POST' not allowed.");
@@ -681,7 +681,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-method-get', 'POST'));
     }
 
-    public function test_routing_controllerAnnotationWhereReject()
+    public function test_routing_controllerAnnotationWhereReject(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::annotationWhere not found. Routing parameter 'id' value '123' not match /^[a-zA-Z]+$/.");
@@ -689,7 +689,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-where/123'));
     }
 
-    public function test_routing_controllerAnnotationClassWhereReject()
+    public function test_routing_controllerAnnotationClassWhereReject(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::annotationClassWhere not found. Routing parameter 'user_id' value 'abc' not match /^[0-9]+$/.");
@@ -697,7 +697,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-class-where/abc'));
     }
 
-    public function test_routing_controllerAnnotationNotRouting()
+    public function test_routing_controllerAnnotationNotRouting(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Action [ TestApp\Controller\TestController::annotationNotRouting ] is not routing.");
@@ -705,7 +705,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-not-routing'));
     }
 
-    public function test_routing_controllerUndefinedAction()
+    public function test_routing_controllerUndefinedAction(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Action [ TestApp\Controller\TestController::undefinedAction ] not exists.");
@@ -713,7 +713,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/namespace/short/undefined-action'));
     }
 
-    public function test_routing_controllerPrivateCall()
+    public function test_routing_controllerPrivateCall(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Action [ TestApp\Controller\TestController::privateCall ] not accessible.");
@@ -721,7 +721,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/namespace/short/private-call'));
     }
 
-    public function test_routing_controllerProtectedCall()
+    public function test_routing_controllerProtectedCall(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Action [ TestApp\Controller\TestController::protectedCall ] not accessible.");
@@ -729,19 +729,19 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/namespace/short/protected-call'));
     }
 
-    public function test_routing_controllerNamespaceNest()
+    public function test_routing_controllerNamespaceNest(): void
     {
         $response = Router::handle(Request::create('/controller/namespace/nest/foo'));
         $this->assertSame('Nest: foo', $response->getContent());
     }
 
-    public function test_routing_controllerNamespaceDifferent()
+    public function test_routing_controllerNamespaceDifferent(): void
     {
         $response = Router::handle(Request::create('/controller/namespace/different/foo'));
         $this->assertSame('Different: foo', $response->getContent());
     }
 
-    public function test_routing_controllerAccessble()
+    public function test_routing_controllerAccessble(): void
     {
         $response = Router::handle(Request::create('/controller/accessble/private-call'));
         $this->assertSame('Controller: privateCall', $response->getContent());
@@ -750,7 +750,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: protectedCall', $response->getContent());
     }
 
-    public function test_routing_controllerWhere()
+    public function test_routing_controllerWhere(): void
     {
         $response = Router::handle(Request::create('/controller/where/with-param/abc'));
         $this->assertSame('Controller: withParam - abc', $response->getContent());
@@ -762,7 +762,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
     }
 
-    public function test_routing_controllerWhereReject()
+    public function test_routing_controllerWhereReject(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.");
@@ -770,10 +770,10 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/where/with-param/ABC'));
     }
 
-    public function test_routing_defaultConventionalRoute()
+    public function test_routing_defaultConventionalRoute(): void
     {
         Router::reset();
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::default(ConventionalRoute::class);
         });
 
@@ -820,10 +820,10 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Top: index', $response->getContent());
     }
 
-    public function test_routing_defaultConventionalRouteWhere()
+    public function test_routing_defaultConventionalRouteWhere(): void
     {
         Router::reset();
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]+$/');
         });
 
@@ -840,49 +840,49 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
     }
 
-    public function test_routing_defaultConventionalRouteNotFound()
+    public function test_routing_defaultConventionalRouteNotFound(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Controller [ TestApp\Controller\InvalidController ] can not instantiate.");
 
         Router::reset();
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::default(ConventionalRoute::class);
         });
 
         $response = Router::handle(Request::create('/invalid'));
     }
 
-    public function test_routing_defaultConventionalRouteWhereRejectTop()
+    public function test_routing_defaultConventionalRouteWhereRejectTop(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TopController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.");
 
         Router::reset();
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]*$/');
         });
 
         $response = Router::handle(Request::create('/top/with-param/ABC'));
     }
 
-    public function test_routing_defaultConventionalRouteWhereRejectRouterTest()
+    public function test_routing_defaultConventionalRouteWhereRejectRouterTest(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.");
 
         Router::reset();
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]*$/');
         });
 
         $response = Router::handle(Request::create('/test/with-param/ABC'));
     }
 
-    public function test_routing_defaultConventionalRouteAccessible()
+    public function test_routing_defaultConventionalRouteAccessible(): void
     {
         Router::reset();
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::default(ConventionalRoute::class)->accessible(true);
         });
 
@@ -893,23 +893,23 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: protectedCall', $response->getContent());
     }
 
-    public function test_routing_defaultConventionalRouteAliasOnly()
+    public function test_routing_defaultConventionalRouteAliasOnly(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Action [ TestApp\Controller\TestController::annotationAliasOnly ] accespt only alias access.");
 
         Router::reset();
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::default(ConventionalRoute::class);
         });
 
         $response = Router::handle(Request::create('/test/annotation-alias-only'));
     }
 
-    public function test_routing_defaultConventionalRouteAlias()
+    public function test_routing_defaultConventionalRouteAlias(): void
     {
         Router::reset();
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::default(ConventionalRoute::class)->aliases([
                 '/alias'       => '/test/annotation-alias-only',
                 '/param'       => '/test/with-param',
@@ -948,10 +948,10 @@ class RouterTest extends RebetTestCase
         $this->assertSame('/annotation/', Router::current()->getAliasName());
     }
 
-    public function test_routing_prefix()
+    public function test_routing_prefix(): void
     {
         Router::reset();
-        Router::rules('web')->prefix('/prefix')->routing(function () {
+        Router::rules('web')->prefix('/prefix')->routing(function (): void {
             Router::get('/get', function () { return 'Content: /prefix/get'; });
             Router::get('/method/public-call', 'TestController::publicCall');
             Router::controller('/controller/namespace/short', 'TestController');
@@ -960,7 +960,7 @@ class RouterTest extends RebetTestCase
             return Responder::toResponse('fallback prefix');
         });
 
-        Router::rules('web')->routing(function () {
+        Router::rules('web')->routing(function (): void {
             Router::get('/get', function () { return 'Content: /get'; });
         })->fallback(function (Request $request, \Throwable $e) {
             return Responder::toResponse('fallback');
@@ -1003,11 +1003,11 @@ class RouterTest extends RebetTestCase
         $this->assertSame('fallback default', $response->getContent());
     }
 
-    public function test_terminate()
+    public function test_terminate(): void
     {
         Router::reset();
         $middleware = new RouterTest_TerminatableMiddleware();
-        Router::rules('web')->routing(function () use ($middleware) {
+        Router::rules('web')->routing(function () use ($middleware): void {
             Router::default(ConventionalRoute::class)->middlewares($middleware);
         });
         $request    = Request::create('/test/index');
@@ -1020,7 +1020,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame(1, $middleware->terminate_count);
     }
 
-    public function test_current()
+    public function test_current(): void
     {
         $this->assertNull(Router::current());
         $request  = Request::create('/get');
@@ -1029,7 +1029,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame($request->route, $route);
     }
 
-    public function test_getPrefixFrom()
+    public function test_getPrefixFrom(): void
     {
         Router::rules('web')->prefix('/foo');
         Router::rules('web')->prefix('/bar');
@@ -1042,34 +1042,34 @@ class RouterTest extends RebetTestCase
         $this->assertSame('/bar', Router::getPrefixFrom('/bar'));
     }
 
-    public function test_activatePrefix()
+    public function test_activatePrefix(): void
     {
         $this->assertSame(null, Router::getPrefixFrom('/foo/bar'));
         $this->assertSame('/foo', Router::activatePrefix('/foo'));
         $this->assertSame('/foo', Router::getPrefixFrom('/foo/bar'));
     }
 
-    public function test_rules()
+    public function test_rules(): void
     {
         $this->assertSame('web', Reflector::get(Router::rules('web'), 'channel', null, true));
     }
 
-    public function test_prefix()
+    public function test_prefix(): void
     {
         $this->assertSame('/prefix', Reflector::get(Router::rules('web')->prefix('/prefix'), 'prefix', null, true));
     }
 
-    public function test_middlewares()
+    public function test_middlewares(): void
     {
         $this->assertSame([EmptyStringToNull::class, TrimStrings::class], Reflector::get(Router::rules('web')->middlewares(EmptyStringToNull::class, TrimStrings::class), 'middlewares', null, true));
     }
 
-    public function test_roles()
+    public function test_roles(): void
     {
         $this->assertSame(['user', 'admin'], Reflector::get(Router::rules('web')->roles('user', 'admin'), 'roles', null, true));
     }
 
-    public function test_guard()
+    public function test_guard(): void
     {
         $this->assertSame('web', Reflector::get(Router::rules('web')->guard('web'), 'guard', null, true));
     }
@@ -1084,7 +1084,7 @@ class RouterTest_TerminatableMiddleware
         return $next($request);
     }
 
-    public function terminate(Request $request, Response $response)
+    public function terminate(Request $request, Response $response): void
     {
         $this->terminate_count++;
     }

@@ -12,7 +12,7 @@ use Rebet\Tests\RebetTestCase;
 
 class SigninedTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $request  = Request::create('/');
         $user     = AuthUser::guest();

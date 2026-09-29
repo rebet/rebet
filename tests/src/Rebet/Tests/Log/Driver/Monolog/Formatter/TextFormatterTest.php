@@ -21,7 +21,7 @@ class TextFormatterTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(TextFormatter::class, new TextFormatter());
     }
@@ -117,7 +117,7 @@ class TextFormatterTest extends RebetTestCase
     }
 
     #[DataProvider('dataFormats')]
-    public function test_format($expect, array $record = [], string|null $format = null, array $stringifiers = [])
+    public function test_format($expect, array $record = [], string|null $format = null, array $stringifiers = []): void
     {
         $record = array_merge([
             'message'  => 'Log Message.',
@@ -139,7 +139,7 @@ class TextFormatterTest extends RebetTestCase
         $this->assertStringContainsString($expect, $formatter->format($log_record));
     }
 
-    public function test_formatBatch()
+    public function test_formatBatch(): void
     {
         $formatter = new TextFormatter();
         $records   = [

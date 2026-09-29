@@ -11,14 +11,14 @@ use Rebet\Tests\RebetTestCase;
 
 class AttributedPropertyTest extends RebetTestCase
 {
-    public function test_construct()
+    public function test_construct(): void
     {
         $rp = new \ReflectionProperty(AttributedPropertyTest_Mock::class, 'foo');
         $ap = new AttributedProperty($rp);
         $this->assertInstanceOf(AttributedProperty::class, $ap);
     }
 
-    public function test_of()
+    public function test_of(): void
     {
         $rp = new \ReflectionProperty(AttributedPropertyTest_Mock::class, 'foo');
         $ap = AttributedProperty::of($rp);
@@ -32,7 +32,7 @@ class AttributedPropertyTest extends RebetTestCase
         $this->assertInstanceOf(AttributedProperty::class, $ap);
     }
 
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $ap   = AttributedProperty::of('foo', AttributedPropertyTest_Mock::class);
         $attr = $ap->attribute(PropertyAttr::class, false);
@@ -48,14 +48,14 @@ class AttributedPropertyTest extends RebetTestCase
         $this->assertSame('bar-prop', $attr->value);
     }
 
-    public function test_nonAttribute()
+    public function test_nonAttribute(): void
     {
         $ap = AttributedProperty::of('foo', AttributedPropertyTest_Mock::class);
         $this->assertNull($ap->attribute(Channel::class, false));
         $this->assertNull($ap->attribute(Channel::class));
     }
 
-    public function test_attributes()
+    public function test_attributes(): void
     {
         $ap         = AttributedProperty::of('bar', AttributedPropertyTest_Mock::class);
         $attributes = $ap->attributes();
@@ -65,7 +65,7 @@ class AttributedPropertyTest extends RebetTestCase
         $this->assertSame('bar-prop', $attr->value);
     }
 
-    public function test_declaringClass()
+    public function test_declaringClass(): void
     {
         $ac = AttributedProperty::of('foo', AttributedPropertyTest_Mock::class)->declaringClass();
         $this->assertInstanceOf(AttributedClass::class, $ac);
@@ -75,7 +75,7 @@ class AttributedPropertyTest extends RebetTestCase
         $this->assertSame('prop', $attr->value);
     }
 
-    public function test_reflector()
+    public function test_reflector(): void
     {
         $ap = AttributedProperty::of('foo', AttributedPropertyTest_Mock::class);
         $this->assertInstanceOf(\ReflectionProperty::class, $ap->reflector());

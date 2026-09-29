@@ -13,14 +13,14 @@ use Rebet\Tests\RebetTestCase;
 
 class AttributedMethodTest extends RebetTestCase
 {
-    public function test_construct()
+    public function test_construct(): void
     {
         $rm = new \ReflectionMethod(AttributedMethodTest_Mock::class, 'foo');
         $am = new AttributedMethod($rm);
         $this->assertInstanceOf(AttributedMethod::class, $am);
     }
 
-    public function test_of()
+    public function test_of(): void
     {
         $rm = new \ReflectionMethod(AttributedMethodTest_Mock::class, 'foo');
         $am = AttributedMethod::of($rm);
@@ -34,7 +34,7 @@ class AttributedMethodTest extends RebetTestCase
         $this->assertInstanceOf(AttributedMethod::class, $am);
     }
 
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $am      = AttributedMethod::of('foo', AttributedMethodTest_Mock::class);
         $channel = $am->attribute(Channel::class, false);
@@ -57,14 +57,14 @@ class AttributedMethodTest extends RebetTestCase
         $this->assertNull($where);
     }
 
-    public function test_nonAttribute()
+    public function test_nonAttribute(): void
     {
         $am = AttributedMethod::of('foo', AttributedMethodTest_Mock::class);
         $this->assertNull($am->attribute(Method::class, false));
         $this->assertNull($am->attribute(Method::class));
     }
 
-    public function test_attributes()
+    public function test_attributes(): void
     {
         $am         = AttributedMethod::of('bar', AttributedMethodTest_Mock::class);
         $attributes = $am->attributes();
@@ -74,7 +74,7 @@ class AttributedMethodTest extends RebetTestCase
         $this->assertSame(['api'], $channel->allows);
     }
 
-    public function test_declaringClass()
+    public function test_declaringClass(): void
     {
         $ac = AttributedMethod::of('foo', AttributedMethodTest_Mock::class)->declaringClass();
         $this->assertInstanceOf(AttributedClass::class, $ac);
@@ -84,7 +84,7 @@ class AttributedMethodTest extends RebetTestCase
         $this->assertSame(['web'], $channel->allows);
     }
 
-    public function test_reflector()
+    public function test_reflector(): void
     {
         $am = AttributedMethod::of('foo', AttributedMethodTest_Mock::class);
         $this->assertInstanceOf(\ReflectionMethod::class, $am->reflector());
@@ -95,8 +95,8 @@ class AttributedMethodTest extends RebetTestCase
 class AttributedMethodTest_Mock
 {
     #[Where(id: "[0-9]+")]
-    public function foo($id) {}
+    public function foo($id): void {}
 
     #[Channel("api")]
-    public function bar() {}
+    public function bar(): void {}
 }

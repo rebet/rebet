@@ -34,12 +34,12 @@ class TwigTest extends RebetTestCase
         $this->twig = new Twig(true);
     }
 
-    public function test_getPaths()
+    public function test_getPaths(): void
     {
         $this->assertTrue(in_array(App::structure()->views('/twig'), $this->twig->getPaths()));
     }
 
-    public function test_prependPath()
+    public function test_prependPath(): void
     {
         $paths = $this->twig->getPaths();
         $this->twig->prependPath($path_1 = App::structure()->views(''));
@@ -47,7 +47,7 @@ class TwigTest extends RebetTestCase
         $this->assertSame(array_merge([$path_1], $paths), $new_paths);
     }
 
-    public function test_appendPath()
+    public function test_appendPath(): void
     {
         $paths = $this->twig->getPaths();
         $this->twig->appendPath($path_1 = App::structure()->views(''));
@@ -55,14 +55,14 @@ class TwigTest extends RebetTestCase
         $this->assertSame(array_merge($paths, [$path_1]), $new_paths);
     }
 
-    public function test_exists()
+    public function test_exists(): void
     {
         $this->assertTrue($this->twig->exists('welcome'));
         $this->assertTrue($this->twig->exists('custom/env'));
         $this->assertFalse($this->twig->exists('nothing'));
     }
 
-    public function test_render()
+    public function test_render(): void
     {
         $this->assertSame(
             <<<EOS

@@ -88,14 +88,14 @@ class DatabaseTest extends RebetDatabaseTestCase
         ]);
     }
 
-    public function test_name()
+    public function test_name(): void
     {
         foreach (array_keys(Dao::config('dbs')) as $name) {
             $this->assertSame($name, Dao::db($name)->name());
         }
     }
 
-    public function test_driverName()
+    public function test_driverName(): void
     {
         $this->assertSame('sqlite', Dao::db()->driverName());
         $this->assertSame('sqlite', Dao::db('sqlite')->driverName());
@@ -104,56 +104,56 @@ class DatabaseTest extends RebetDatabaseTestCase
         $this->assertSame('pgsql', Dao::db('pgsql')->driverName());
     }
 
-    public function test_serverVersion()
+    public function test_serverVersion(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertMatchesRegularExpression('/[0-9]+\.[0-9]+(\.[0-9]+)?/', $db->serverVersion());
         });
     }
 
-    public function test_clientVersion()
+    public function test_clientVersion(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertMatchesRegularExpression('/[0-9]+\.[0-9]+(\.[0-9]+)?/', $db->clientVersion());
         });
     }
 
-    public function test_pdo()
+    public function test_pdo(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertInstanceOf(\PDO::class, $db->pdo());
         });
     }
 
-    public function test_compiler()
+    public function test_compiler(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertInstanceOf(BuiltinCompiler::class, $db->compiler());
         });
     }
 
-    public function test_driver()
+    public function test_driver(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertInstanceOf(Driver::class, $db->driver());
         });
     }
 
-    public function test_analyzer()
+    public function test_analyzer(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertInstanceOf(BuiltinAnalyzer::class, $db->analyzer("SELECT * FROM users"));
         });
     }
 
-    public function test_ransacker()
+    public function test_ransacker(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertInstanceOf(BuiltinRansacker::class, $db->ransacker());
         });
     }
 
-    public function test_logAndDebug()
+    public function test_logAndDebug(): void
     {
         $name     = 'sqlite';
         $sql      = "SELECT * FROM user WHERE user_id = :user_id";
@@ -169,7 +169,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                 'dbs' => [
                     'sqlite' => [
                         'dsn'         => 'sqlite::memory:',
-                        'log_handler' => function (Database $db, Query $query) use (&$en, &$es, &$ep) {
+                        'log_handler' => function (Database $db, Query $query) use (&$en, &$es, &$ep): void {
                             $en = $db->name();
                             $es = $query->sql();
                             $ep = $query->params();
@@ -210,7 +210,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         $this->assertSame($ep, null);
     }
 
-    public function test_exception()
+    public function test_exception(): void
     {
         $sql    = "bogus SELECT * FROM user WHERE user_id = :user_id";
         $params = [':user_id' => 1];
@@ -220,9 +220,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         $this->assertInstanceOf(DatabaseException::class, $exception);
     }
 
-    public function test_beginAndSavepointAndCommitAndRollback()
+    public function test_beginAndSavepointAndCommitAndRollback(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertInstanceOf(Database::class, $db->begin(), "on {$db->name()}");
 
             $user = User::find(1);
@@ -280,13 +280,13 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_rollbackQuiet()
+    public function test_rollbackQuiet(): void
     {
         Dao::db()->rollback();
         $this->assertTrue(true);
     }
 
-    public function test_rollbackNotQuiet()
+    public function test_rollbackNotQuiet(): void
     {
         $this->expectException(DatabaseException::class);
         $this->expectExceptionMessage("There is no active transaction");
@@ -294,11 +294,11 @@ class DatabaseTest extends RebetDatabaseTestCase
         Dao::db()->rollback(null, false);
     }
 
-    public function test_transaction()
+    public function test_transaction(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             try {
-                $db->transaction(function (Database $db) {
+                $db->transaction(function (Database $db): void {
                     $user = User::find(1);
                     $this->assertEquals('Elody Bode III', $user->name);
 
@@ -319,7 +319,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $user = User::find(1);
             $this->assertEquals('Elody Bode III', $user->name);
 
-            $db->transaction(function (Database $db) {
+            $db->transaction(function (Database $db): void {
                 $user = User::find(1);
                 $this->assertEquals('Elody Bode III', $user->name);
 
@@ -335,9 +335,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_lastInsertId()
+    public function test_lastInsertId(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $article          = new Article();
             $article->user_id = 1;
             $article->subject = 'foo';
@@ -383,17 +383,17 @@ class DatabaseTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataQueries')]
-    public function test_query($expect, $col, $sql, $params = [])
+    public function test_query($expect, $col, $sql, $params = []): void
     {
-        self::eachDb(function (Database $db, $driver) use ($expect, $col, $sql, $params) {
+        self::eachDb(function (Database $db, $driver) use ($expect, $col, $sql, $params): void {
             $rs = $db->query($sql, $params)->allOf($col);
             $this->assertSame($expect, $rs->toArray(), "on {$driver}");
         });
     }
 
-    public function test_execute()
+    public function test_execute(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $user = User::find(3);
             $this->assertSame('Damien Kling', $user->name);
 
@@ -414,10 +414,10 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_select()
+    public function test_select(): void
     {
         DateTime::setTestNow('2019-09-01');
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $users = $db->select("SELECT * FROM users WHERE gender = 1");
             $this->assertEquals([2, 3, 4, 5, 7, 9, 10, 17, 19, 23, 28, 29, 30], Arrays::pluck($users->toArray(), 'user_id'));
 
@@ -1004,9 +1004,9 @@ class DatabaseTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataPaginates')]
-    public function test_paginate($expect, $expect_total, $expect_next_page_count, $expect_cursor, $sql, $order_by, $params = [], $pager = null, $cursor = null, $class = 'stdClass', $count_optimised_sql = null)
+    public function test_paginate($expect, $expect_total, $expect_next_page_count, $expect_cursor, $sql, $order_by, $params = [], $pager = null, $cursor = null, $class = 'stdClass', $count_optimised_sql = null): void
     {
-        self::eachDb(function (Database $db) use ($expect, $expect_total, $expect_next_page_count, $expect_cursor, $sql, $order_by, $params, $pager, $cursor, $class, $count_optimised_sql) {
+        self::eachDb(function (Database $db) use ($expect, $expect_total, $expect_next_page_count, $expect_cursor, $sql, $order_by, $params, $pager, $cursor, $class, $count_optimised_sql): void {
             Cursor::clear();
             if ($cursor) {
                 $cursor->save();
@@ -1035,9 +1035,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_find()
+    public function test_find(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $user = $db->find("SELECT * FROM users WHERE user_id = 0");
             $this->assertNull($user);
 
@@ -1068,9 +1068,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_extract()
+    public function test_extract(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $user_ids = $db->extract("user_id", "SELECT * FROM users WHERE user_id = 0");
             $this->assertSame([], $user_ids->toArray());
 
@@ -1106,9 +1106,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_get()
+    public function test_get(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $user_id = $db->get("user_id", "SELECT * FROM users WHERE user_id = 0");
             $this->assertNull($user_id);
 
@@ -1142,9 +1142,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_exists()
+    public function test_exists(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertFalse($db->exists("SELECT * FROM users WHERE user_id = 0"));
             $this->assertTrue($db->exists("SELECT * FROM users WHERE user_id = 1"));
             $this->assertTrue($db->exists("SELECT * FROM users WHERE user_id = :user_id", ['user_id' => 1]));
@@ -1153,9 +1153,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_count()
+    public function test_count(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertSame(0, $db->count("SELECT * FROM users WHERE user_id = 0"));
             $this->assertSame(1, $db->count("SELECT * FROM users WHERE user_id = 1"));
             $this->assertSame(3, $db->count("SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [1, 2, 3]]));
@@ -1163,22 +1163,22 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_each()
+    public function test_each(): void
     {
-        self::eachDb(function (Database $db) {
-            $db->each(function (User $user) {
+        self::eachDb(function (Database $db): void {
+            $db->each(function (User $user): void {
                 $this->assertSame(0, $user->user_id % 2);
             }, "SELECT * FROM users WHERE user_id % 2 = 0", null, []);
 
-            $db->each(function (User $user) {
+            $db->each(function (User $user): void {
                 $this->assertSame(Gender::MALE(), $user->gender);
             }, "SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::MALE()]);
         });
     }
 
-    public function test_filter()
+    public function test_filter(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertEquals(
                 $db->select("SELECT * FROM users WHERE gender = 1", null, [], null, false, User::class),
                 $db->filter(function (User $user) { return $user->gender == Gender::MALE(); }, "SELECT * FROM users"),
@@ -1186,9 +1186,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_map()
+    public function test_map(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertEquals(
                 $db->select("SELECT * FROM users", ['user_id' => 'asc'], [], null, false, User::class)->all(),
                 $db->map(function (User $user) { return $user; }, "SELECT * FROM users", ['user_id' => 'asc'])->all(),
@@ -1196,9 +1196,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_reduce()
+    public function test_reduce(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertEquals(
                 Decimal::of($db->get(0, "SELECT SUM(user_id) FROM users")),
                 Decimal::of($db->reduce(function (User $user, $carry) { return $carry + $user->user_id; }, 0, "SELECT * FROM users")),
@@ -1206,11 +1206,11 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_create()
+    public function test_create(): void
     {
         $creating_event_called = false;
         $created_event_called  = false;
-        Event::listen(function (Creating $event) use (&$creating_event_called) {
+        Event::listen(function (Creating $event) use (&$creating_event_called): void {
             $creating_event_called = true;
             switch (get_class($event->new)) {
                 case Article::class:
@@ -1218,7 +1218,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                     break;
             }
         });
-        Event::listen(function (Created $event) use (&$created_event_called) {
+        Event::listen(function (Created $event) use (&$created_event_called): void {
             $created_event_called = true;
             switch (get_class($event->new)) {
                 case Article::class:
@@ -1227,7 +1227,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             }
         });
 
-        self::eachDb(function (Database $db) use (&$creating_event_called, &$created_event_called) {
+        self::eachDb(function (Database $db) use (&$creating_event_called, &$created_event_called): void {
             $creating_event_called = false;
             $created_event_called  = false;
 
@@ -1304,11 +1304,11 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_update()
+    public function test_update(): void
     {
         $updating_event_called = false;
         $updated_event_called  = false;
-        Event::listen(function (Updating $event) use (&$updating_event_called) {
+        Event::listen(function (Updating $event) use (&$updating_event_called): void {
             $updating_event_called = true;
             switch (get_class($event->new)) {
                 case Article::class:
@@ -1316,7 +1316,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                     break;
             }
         });
-        Event::listen(function (Updated $event) use (&$updated_event_called) {
+        Event::listen(function (Updated $event) use (&$updated_event_called): void {
             $updated_event_called = true;
             switch (get_class($event->new)) {
                 case Article::class:
@@ -1325,7 +1325,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             }
         });
 
-        self::eachDb(function (Database $db) use (&$updating_event_called, &$updated_event_called) {
+        self::eachDb(function (Database $db) use (&$updating_event_called, &$updated_event_called): void {
             $article          = new Article();
             $article->user_id = 1;
             $article->subject = 'Test';
@@ -1377,11 +1377,11 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_save()
+    public function test_save(): void
     {
         $creating_event_called = false;
         $created_event_called  = false;
-        Event::listen(function (Creating $event) use (&$creating_event_called) {
+        Event::listen(function (Creating $event) use (&$creating_event_called): void {
             $creating_event_called = true;
             switch (get_class($event->new)) {
                 case Article::class:
@@ -1389,7 +1389,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                     break;
             }
         });
-        Event::listen(function (Created $event) use (&$created_event_called) {
+        Event::listen(function (Created $event) use (&$created_event_called): void {
             $created_event_called = true;
             switch (get_class($event->new)) {
                 case Article::class:
@@ -1399,7 +1399,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
         $updating_event_called = false;
         $updated_event_called  = false;
-        Event::listen(function (Updating $event) use (&$updating_event_called) {
+        Event::listen(function (Updating $event) use (&$updating_event_called): void {
             $updating_event_called = true;
             switch (get_class($event->new)) {
                 case Article::class:
@@ -1407,7 +1407,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                     break;
             }
         });
-        Event::listen(function (Updated $event) use (&$updated_event_called) {
+        Event::listen(function (Updated $event) use (&$updated_event_called): void {
             $updated_event_called = true;
             switch (get_class($event->new)) {
                 case Article::class:
@@ -1416,7 +1416,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             }
         });
 
-        self::eachDb(function (Database $db) use (&$creating_event_called, &$created_event_called, &$updating_event_called, &$updated_event_called) {
+        self::eachDb(function (Database $db) use (&$creating_event_called, &$created_event_called, &$updating_event_called, &$updated_event_called): void {
             $creating_event_called = false;
             $created_event_called  = false;
             $updating_event_called = false;
@@ -1457,18 +1457,18 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_delete()
+    public function test_delete(): void
     {
         $deleting_event_called = false;
         $deleted_event_called  = false;
-        Event::listen(function (Deleting $event) use (&$deleting_event_called) {
+        Event::listen(function (Deleting $event) use (&$deleting_event_called): void {
             $deleting_event_called = true;
         });
-        Event::listen(function (Deleted $event) use (&$deleted_event_called) {
+        Event::listen(function (Deleted $event) use (&$deleted_event_called): void {
             $deleted_event_called = true;
         });
 
-        self::eachDb(function (Database $db) use (&$deleting_event_called, &$deleted_event_called) {
+        self::eachDb(function (Database $db) use (&$deleting_event_called, &$deleted_event_called): void {
             $article          = new Article();
             $article->user_id = 1;
             $article->subject = 'Test';
@@ -1496,18 +1496,18 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_updateBy()
+    public function test_updateBy(): void
     {
         $updating_event_called = false;
         $updated_event_called  = false;
-        Event::listen(function (BatchUpdating $event) use (&$updating_event_called) {
+        Event::listen(function (BatchUpdating $event) use (&$updating_event_called): void {
             $updating_event_called = true;
         });
-        Event::listen(function (BatchUpdated $event) use (&$updated_event_called) {
+        Event::listen(function (BatchUpdated $event) use (&$updated_event_called): void {
             $updated_event_called = true;
         });
 
-        self::eachDb(function (Database $db) use (&$updating_event_called, &$updated_event_called) {
+        self::eachDb(function (Database $db) use (&$updating_event_called, &$updated_event_called): void {
             $updating_event_called = false;
             $updated_event_called  = false;
 
@@ -1539,18 +1539,18 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_deleteBy()
+    public function test_deleteBy(): void
     {
         $deleting_event_called = false;
         $deleted_event_called  = false;
-        Event::listen(function (BatchDeleting $event) use (&$deleting_event_called) {
+        Event::listen(function (BatchDeleting $event) use (&$deleting_event_called): void {
             $deleting_event_called = true;
         });
-        Event::listen(function (BatchDeleted $event) use (&$deleted_event_called) {
+        Event::listen(function (BatchDeleted $event) use (&$deleted_event_called): void {
             $deleted_event_called = true;
         });
 
-        self::eachDb(function (Database $db) use (&$deleting_event_called, &$deleted_event_called) {
+        self::eachDb(function (Database $db) use (&$deleting_event_called, &$deleted_event_called): void {
             $deleting_event_called = false;
             $deleted_event_called  = false;
 
@@ -1578,9 +1578,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_existsBy()
+    public function test_existsBy(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertFalse($db->existsBy(User::class, ['user_id' => 9999]));
             $this->assertTrue($db->existsBy(User::class, ['user_id' => 1]));
             $this->assertTrue($db->existsBy(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
@@ -1589,9 +1589,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_countBy()
+    public function test_countBy(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertEquals(0, $db->countBy(User::class, ['user_id' => 9999]));
             $this->assertEquals(1, $db->countBy(User::class, ['user_id' => 1]));
             $this->assertEquals(1, $db->countBy(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
@@ -1601,9 +1601,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_close()
+    public function test_close(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertInstanceOf(\PDO::class, $db->pdo());
             $db->close();
             try {
@@ -1617,9 +1617,9 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_sql()
+    public function test_sql(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $query = $db->sql("SELECT * FROM users WHERE gender = :gender", ['gender' => 1]);
             $this->assertInstanceOf(Query::class, $query);
             $this->assertSame($db->driver(), $query->driver());

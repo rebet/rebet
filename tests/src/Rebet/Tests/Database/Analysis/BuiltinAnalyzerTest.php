@@ -21,7 +21,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataIsUnions')]
-    public function test_isUnion(bool $expect, string $sql)
+    public function test_isUnion(bool $expect, string $sql): void
     {
         $analyser = new BuiltinAnalyzer($sql);
         $this->assertSame($expect, $analyser->isUnion());
@@ -40,7 +40,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataHasWheres')]
-    public function test_hasWhere(bool $expect, string $sql)
+    public function test_hasWhere(bool $expect, string $sql): void
     {
         $analyser = new BuiltinAnalyzer($sql);
         $this->assertSame($expect, $analyser->hasWhere());
@@ -59,7 +59,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataHasHavings')]
-    public function test_hasHaving(bool $expect, string $sql)
+    public function test_hasHaving(bool $expect, string $sql): void
     {
         $analyser = new BuiltinAnalyzer($sql);
         $this->assertSame($expect, $analyser->hasHaving());
@@ -76,7 +76,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataHasGroupBys')]
-    public function test_hasGroupBy(bool $expect, string $sql)
+    public function test_hasGroupBy(bool $expect, string $sql): void
     {
         $analyser = new BuiltinAnalyzer($sql);
         $this->assertSame($expect, $analyser->hasGroupBy());
@@ -93,7 +93,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataHasOrderBys')]
-    public function test_hasOrderBy(bool $expect, string $sql)
+    public function test_hasOrderBy(bool $expect, string $sql): void
     {
         $analyser = new BuiltinAnalyzer($sql);
         $this->assertSame($expect, $analyser->hasOrderBy());
@@ -125,7 +125,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataExtractAliasSelectColumns')]
-    public function test_extractAliasSelectColumn(string $expect, string $sql, string $alias)
+    public function test_extractAliasSelectColumn(string $expect, string $sql, string $alias): void
     {
         $analyser = new BuiltinAnalyzer($sql);
         $this->assertSame($expect, $analyser->extractAliasSelectColumn($alias));

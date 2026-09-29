@@ -12,12 +12,12 @@ use Rebet\View\View;
 
 class RestoreInheritDataTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(RestoreInheritData::class, new RestoreInheritData());
     }
 
-    public function test_handle()
+    public function test_handle(): void
     {
         $middleware  = new RestoreInheritData();
         $destination = function ($request) { return Responder::toResponse('OK'); };

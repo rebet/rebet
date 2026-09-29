@@ -36,12 +36,12 @@ class ArrayProviderTest extends RebetTestCase
         $this->provider_with_aliases     = new ArrayProvider($this->users, 'email', 'api_token', null, ['mail_address' => 'email', 'foo' => '@bar']);
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(ArrayProvider::class, new ArrayProvider([]));
     }
 
-    public function test_findById()
+    public function test_findById(): void
     {
         $user = $this->provider->findById(null);
         $this->assertNull($user);
@@ -68,7 +68,7 @@ class ArrayProviderTest extends RebetTestCase
         }
     }
 
-    public function test_findByToken()
+    public function test_findByToken(): void
     {
         $user = $this->provider->findByToken(null);
         $this->assertNull($user);
@@ -106,7 +106,7 @@ class ArrayProviderTest extends RebetTestCase
         $this->assertNull($user);
     }
 
-    public function test_findByCredentials()
+    public function test_findByCredentials(): void
     {
         $user = $this->provider->findByCredentials(null, null);
         $this->assertNull($user);
@@ -162,7 +162,7 @@ class ArrayProviderTest extends RebetTestCase
         $this->assertNull($user);
     }
 
-    public function test_rehashPassword()
+    public function test_rehashPassword(): void
     {
         $user         = $this->provider->findById(1);
         $old_password = $user->password;
@@ -176,33 +176,33 @@ class ArrayProviderTest extends RebetTestCase
         $this->assertSame($old_password, $new_password);
     }
 
-    public function test_supportRememberToken()
+    public function test_supportRememberToken(): void
     {
         // supportRememberToken() is not supported.
         $this->assertFalse($this->provider->supportRememberToken());
     }
 
-    public function test_findByRememberToken()
+    public function test_findByRememberToken(): void
     {
         // findByRememberToken() is not supported.
         $this->assertNull($this->provider->findByRememberToken(null));
         $this->assertNull($this->provider->findByRememberToken('remember_token'));
     }
 
-    public function test_issuingRememberToken()
+    public function test_issuingRememberToken(): void
     {
         // issuingRememberToken() is not supported.
         $this->assertNull($this->provider->issuingRememberToken(1, 30));
     }
 
-    public function test_removeRememberToken()
+    public function test_removeRememberToken(): void
     {
         // removeRememberToken() is not supported.
         $this->provider->removeRememberToken('remember_token');
         $this->assertTrue(true);
     }
 
-    public function test_name()
+    public function test_name(): void
     {
         $this->assertNull($this->provider->name());
         $this->assertInstanceOf(ArrayProvider::class, $this->provider->name('web'));

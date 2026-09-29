@@ -11,7 +11,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 {
     public const AVIRABLE_COMMANDS = [[ProjectInitCommand::class, __DIR__ . '/../../../../../../../../skeltons']];
 
-    public function test_execute()
+    public function test_execute(): void
     {
         // $this->execute('init');
         $this->assertTrue(true);
@@ -45,9 +45,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         }
     }
 
-    public function test_execute_noInteraction()
+    public function test_execute_noInteraction(): void
     {
-        $this->runInFreshWorkDir('project_init_no_interaction', function (string $work_dir) {
+        $this->runInFreshWorkDir('project_init_no_interaction', function (string $work_dir): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute([], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -63,9 +63,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_database()
+    public function test_execute_noInteraction_database(): void
     {
-        $this->runInFreshWorkDir('project_init_no_interaction_database', function () {
+        $this->runInFreshWorkDir('project_init_no_interaction_database', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--database' => 'mysql'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -75,12 +75,12 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_invalidDatabase()
+    public function test_execute_noInteraction_invalidDatabase(): void
     {
         // Regression check: Command::choice() silently falls back to null (instead of failing)
         // when the given option value does not resolve and the question is not interactive, so
         // ProjectInitCommand must reject it explicitly instead of proceeding with `database=null`.
-        $this->runInFreshWorkDir('project_init_no_interaction_invalid_database', function () {
+        $this->runInFreshWorkDir('project_init_no_interaction_invalid_database', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--database' => 'oracle'], ['interactive' => false]);
             $this->assertSame(1, $status);
@@ -91,10 +91,10 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_invalidCache()
+    public function test_execute_noInteraction_invalidCache(): void
     {
         // Same regression check as test_execute_noInteraction_invalidDatabase, but for --cache.
-        $this->runInFreshWorkDir('project_init_no_interaction_invalid_cache', function () {
+        $this->runInFreshWorkDir('project_init_no_interaction_invalid_cache', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--cache' => 'oracle'], ['interactive' => false]);
             $this->assertSame(1, $status);
@@ -105,9 +105,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_authWithoutDatabase_requiresOptions()
+    public function test_execute_noInteraction_authWithoutDatabase_requiresOptions(): void
     {
-        $this->runInFreshWorkDir('project_init_no_interaction_auth_missing', function () {
+        $this->runInFreshWorkDir('project_init_no_interaction_auth_missing', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--auth' => true], ['interactive' => false]);
             $this->assertSame(1, $status);
@@ -118,9 +118,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_authWithoutDatabase()
+    public function test_execute_noInteraction_authWithoutDatabase(): void
     {
-        $this->runInFreshWorkDir('project_init_no_interaction_auth', function () {
+        $this->runInFreshWorkDir('project_init_no_interaction_auth', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute([
                 '--auth'          => true,
@@ -134,9 +134,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_dryRun()
+    public function test_execute_dryRun(): void
     {
-        $this->runInFreshWorkDir('project_init_dry_run', function (string $work_dir) {
+        $this->runInFreshWorkDir('project_init_dry_run', function (string $work_dir): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--dry-run' => true], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -154,9 +154,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_dryRun_excludesUnselectedDatabaseDirs()
+    public function test_execute_dryRun_excludesUnselectedDatabaseDirs(): void
     {
-        $this->runInFreshWorkDir('project_init_dry_run_database', function (string $work_dir) {
+        $this->runInFreshWorkDir('project_init_dry_run_database', function (string $work_dir): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--dry-run' => true, '--database' => 'mysql'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -169,11 +169,11 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_alreadyInitialized_anyTopLevelSkeltonEntry()
+    public function test_execute_alreadyInitialized_anyTopLevelSkeltonEntry(): void
     {
         // Not just `app/`: any top-level skelton entry (eg. `tests/`, `.devcontainer/`)
         // already existing must also refuse to run.
-        $this->runInFreshWorkDir('project_init_already_initialized', function (string $work_dir) {
+        $this->runInFreshWorkDir('project_init_already_initialized', function (string $work_dir): void {
             mkdir("{$work_dir}/tests");
 
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
@@ -189,11 +189,11 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_appDirWithOnlyVendorDir_isNotAlreadyInitialized()
+    public function test_execute_appDirWithOnlyVendorDir_isNotAlreadyInitialized(): void
     {
         // An `app/` directory that only has `vendor/` (eg. from a devcontainer running
         // `composer install` ahead of time) must not be treated as already initialized.
-        $this->runInFreshWorkDir('project_init_app_vendor_only', function (string $work_dir) {
+        $this->runInFreshWorkDir('project_init_app_vendor_only', function (string $work_dir): void {
             mkdir("{$work_dir}/app/vendor", 0o755, true);
 
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
@@ -203,10 +203,10 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_appDirWithMoreThanVendorDir_isAlreadyInitialized()
+    public function test_execute_appDirWithMoreThanVendorDir_isAlreadyInitialized(): void
     {
         // But if `app/` has anything else besides `vendor/`, it is still considered initialized.
-        $this->runInFreshWorkDir('project_init_app_vendor_and_more', function (string $work_dir) {
+        $this->runInFreshWorkDir('project_init_app_vendor_and_more', function (string $work_dir): void {
             mkdir("{$work_dir}/app/vendor", 0o755, true);
             touch("{$work_dir}/app/other-file.txt");
 
@@ -220,7 +220,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noComposerJson_refusesToRun()
+    public function test_execute_noComposerJson_refusesToRun(): void
     {
         // Unlike runInFreshWorkDir(), this deliberately does NOT create a composer.json.
         $work_dir = static::makeSubWorkingDir('project_init_no_composer_json');
@@ -239,12 +239,12 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         }
     }
 
-    public function test_execute_composerRequire_default()
+    public function test_execute_composerRequire_default(): void
     {
         // RebetTestCase enables System::testing() for every test, so ProjectInitCommand::
         // composerRequire() never actually shells out to Composer here; it only prints the
         // command it would have run.
-        $this->runInFreshWorkDir('project_init_composer_require_default', function () {
+        $this->runInFreshWorkDir('project_init_composer_require_default', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute([], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -262,9 +262,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_composerRequire_viewBlade()
+    public function test_execute_composerRequire_viewBlade(): void
     {
-        $this->runInFreshWorkDir('project_init_composer_require_blade', function () {
+        $this->runInFreshWorkDir('project_init_composer_require_blade', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--view' => 'blade'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -275,9 +275,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_composerRequire_cacheRedis()
+    public function test_execute_composerRequire_cacheRedis(): void
     {
-        $this->runInFreshWorkDir('project_init_composer_require_redis', function () {
+        $this->runInFreshWorkDir('project_init_composer_require_redis', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--cache' => 'redis'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -287,9 +287,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_session_defaultsToNative()
+    public function test_execute_noInteraction_session_defaultsToNative(): void
     {
-        $this->runInFreshWorkDir('project_init_session_default', function () {
+        $this->runInFreshWorkDir('project_init_session_default', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute([], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -297,9 +297,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_session_redis()
+    public function test_execute_noInteraction_session_redis(): void
     {
-        $this->runInFreshWorkDir('project_init_session_redis', function () {
+        $this->runInFreshWorkDir('project_init_session_redis', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--session' => 'redis'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -310,9 +310,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_session_mongodb()
+    public function test_execute_noInteraction_session_mongodb(): void
     {
-        $this->runInFreshWorkDir('project_init_session_mongodb', function () {
+        $this->runInFreshWorkDir('project_init_session_mongodb', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--session' => 'mongodb'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -323,10 +323,10 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_session_databaseRequiresDatabase()
+    public function test_execute_noInteraction_session_databaseRequiresDatabase(): void
     {
         // 'database' is only a valid --session choice when a database is actually used.
-        $this->runInFreshWorkDir('project_init_session_database_without_db', function () {
+        $this->runInFreshWorkDir('project_init_session_database_without_db', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--session' => 'database'], ['interactive' => false]);
             $this->assertSame(1, $status);
@@ -337,9 +337,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_session_databaseWithDatabase()
+    public function test_execute_noInteraction_session_databaseWithDatabase(): void
     {
-        $this->runInFreshWorkDir('project_init_session_database_with_db', function () {
+        $this->runInFreshWorkDir('project_init_session_database_with_db', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--session' => 'database', '--database' => 'mysql'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -347,9 +347,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_invalidSession()
+    public function test_execute_noInteraction_invalidSession(): void
     {
-        $this->runInFreshWorkDir('project_init_invalid_session', function () {
+        $this->runInFreshWorkDir('project_init_invalid_session', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--session' => 'oracle'], ['interactive' => false]);
             $this->assertSame(1, $status);
@@ -375,9 +375,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         );
     }
 
-    public function test_execute_interactive_reviewConfirmYes()
+    public function test_execute_interactive_reviewConfirmYes(): void
     {
-        $this->runInFreshWorkDir('project_init_review_yes', function () {
+        $this->runInFreshWorkDir('project_init_review_yes', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $tester->setInputs($this->minimalInteractiveInputs([
                 '', // Are these settings OK? -> yes (default)
@@ -394,9 +394,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_interactive_reviewRedoStep()
+    public function test_execute_interactive_reviewRedoStep(): void
     {
-        $this->runInFreshWorkDir('project_init_review_redo', function () {
+        $this->runInFreshWorkDir('project_init_review_redo', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $tester->setInputs($this->minimalInteractiveInputs([
                 '5',     // Are these settings OK? -> type the step number to fix -> 5) View
@@ -413,9 +413,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_interactive_reviewAbort()
+    public function test_execute_interactive_reviewAbort(): void
     {
-        $this->runInFreshWorkDir('project_init_review_abort', function () {
+        $this->runInFreshWorkDir('project_init_review_abort', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $tester->setInputs($this->minimalInteractiveInputs([
                 'abort', // Are these settings OK? -> abort
@@ -430,9 +430,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_interactive_reviewAbort_declinedKeepsReviewing()
+    public function test_execute_interactive_reviewAbort_declinedKeepsReviewing(): void
     {
-        $this->runInFreshWorkDir('project_init_review_abort_declined', function () {
+        $this->runInFreshWorkDir('project_init_review_abort_declined', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $tester->setInputs($this->minimalInteractiveInputs([
                 'abort', // Are these settings OK? -> abort

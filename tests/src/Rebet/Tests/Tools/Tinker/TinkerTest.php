@@ -72,12 +72,12 @@ class TinkerTest extends RebetTestCase
         $this->safty       = Tinker::with("Hello Rebet", true);
     }
 
-    public function test_with()
+    public function test_with(): void
     {
         $this->assertInstanceOf(Tinker::class, Tinker::with(123));
     }
 
-    public function test_peel()
+    public function test_peel(): void
     {
         $this->assertSame(123, Tinker::peel(123));
         $this->assertSame(123, Tinker::peel(Tinker::with(123)));
@@ -87,14 +87,14 @@ class TinkerTest extends RebetTestCase
         $this->assertSame([1, 2], Tinker::peel(Tinker::with([1, 2])));
     }
 
-    public function test_peelAll()
+    public function test_peelAll(): void
     {
         $this->assertSame([1, 2], Tinker::peelAll([1, 2]));
         $this->assertSame([1, 2], Tinker::peelAll([Tinker::with(1), Tinker::with(2)]));
         $this->assertSame(['a', 'b'], Tinker::peelAll([Tinker::with('a'), 'b']));
     }
 
-    public function test_promise()
+    public function test_promise(): void
     {
         $source = null;
         $value  = Tinker::promise(function () use (&$source) { return $source; });
@@ -107,7 +107,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame(1, $value->return());
     }
 
-    public function test_addFilter()
+    public function test_addFilter(): void
     {
         $this->assertSame("Hello Rebet", $this->string->wrap()->return());
         $this->assertSame("Hello Rebet", $this->safty->wrap()->return());
@@ -122,14 +122,14 @@ class TinkerTest extends RebetTestCase
         $this->assertSame("HELLO REBET", $this->safty->upper()->return());
     }
 
-    public function test_return()
+    public function test_return(): void
     {
         $this->assertSame(123, $this->int->return());
         $this->assertSame("Hello Rebet", $this->string->return());
         $this->assertSame(Gender::MALE(), $this->enum->return());
     }
 
-    public function test___get()
+    public function test___get(): void
     {
         $this->assertNull($this->null->nothing->return());
         $this->assertNull($this->int->nothing->return());
@@ -151,7 +151,7 @@ class TinkerTest extends RebetTestCase
         $this->assertTrue($this->map->boolean);
     }
 
-    public function test___call()
+    public function test___call(): void
     {
         $this->assertNull($this->null->nothing()->return());
         $this->assertSame(123, $this->int->nothing()->return());
@@ -187,7 +187,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame(true, $this->destructive->add_nohint_bool(0));
     }
 
-    public function test___set()
+    public function test___set(): void
     {
         $this->assertSame(0, $this->destructive->count->return());
         $this->destructive->count = 12;
@@ -209,7 +209,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame(12, $this->map->nothing->return());
     }
 
-    public function test_offsetSet()
+    public function test_offsetSet(): void
     {
         $this->assertSame(null, $this->null->return());
         $this->null[] = 4;
@@ -244,7 +244,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame(12, $this->destructive['count']->return());
     }
 
-    public function test_offsetExists()
+    public function test_offsetExists(): void
     {
         $this->assertFalse(isset($this->null[0]));
         $this->assertFalse(isset($this->int[0]));
@@ -261,7 +261,7 @@ class TinkerTest extends RebetTestCase
         $this->assertFalse(isset($this->map['parent']['nothing']['bar']));
     }
 
-    public function test_offsetUnset()
+    public function test_offsetUnset(): void
     {
         $this->assertFalse(isset($this->null[0]));
         unset($this->null[0]);
@@ -288,7 +288,7 @@ class TinkerTest extends RebetTestCase
         $this->assertFalse(isset($this->map['parent.child.bar']));
     }
 
-    public function test_offsetGet()
+    public function test_offsetGet(): void
     {
         $this->assertSame(null, $this->null[0]->return());
         $this->assertSame(1, $this->array[0]->return());
@@ -300,7 +300,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame(true, $this->map['boolean']);
     }
 
-    public function test_count()
+    public function test_count(): void
     {
         $this->assertSame(0, count($this->null));
         $this->assertSame(1, count($this->int));
@@ -308,7 +308,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame(1, count($this->enum));
     }
 
-    public function test_getIterator()
+    public function test_getIterator(): void
     {
         foreach ($this->null as $key => $value) {
             fail('Never execute');
@@ -360,7 +360,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame(count($expects), $count);
     }
 
-    public function test___toString()
+    public function test___toString(): void
     {
         $this->assertSame('', "{$this->null}");
         $this->assertSame('123', "{$this->int}");
@@ -371,7 +371,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame('{"foo":"FOO","parent":{"child":{"bar":"BAR"}},"number":123,"gender":1,"boolean":true}', "{$this->map}");
     }
 
-    public function test___jsonSerialize()
+    public function test___jsonSerialize(): void
     {
         $this->assertSame(null, $this->null->jsonSerialize());
         $this->assertSame(123, $this->int->jsonSerialize());
@@ -382,7 +382,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame(['foo' => 'FOO', 'parent' => ['child' => ['bar' => 'BAR']], 'number' => 123, 'gender' => 1, 'boolean' => true], $this->map->jsonSerialize());
     }
 
-    public function test_filters()
+    public function test_filters(): void
     {
         // Call filter using method
         $this->assertNull($this->null->_('convert', 'string')->return());
@@ -964,7 +964,7 @@ class TinkerTest extends RebetTestCase
         $this->assertFalse($this->int->isCallable());
     }
 
-    public function test_filters_php()
+    public function test_filters_php(): void
     {
         $this->assertFalse($this->null->isInt());
         $this->assertFalse($this->null->is_int());
@@ -977,7 +977,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame([1, 2, 3, 0, 0], $this->array->arrayPad(5, 0)->return());
     }
 
-    public function test_filters_escapeError()
+    public function test_filters_escapeError(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Invalid escape type [xml] given. The type must be html or url");
@@ -985,7 +985,7 @@ class TinkerTest extends RebetTestCase
         $this->string->escape('xml');
     }
 
-    public function test_filters_convertError()
+    public function test_filters_convertError(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Apply datetimef filter failed. The origin type 'Closure' can not convert to Rebet\Tools\DateTime\DateTime.");

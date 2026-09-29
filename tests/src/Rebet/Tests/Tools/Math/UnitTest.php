@@ -12,7 +12,7 @@ use Rebet\Tools\Math\Unit;
 
 class UnitTest extends RebetTestCase
 {
-    public function test_factorsOf()
+    public function test_factorsOf(): void
     {
         $factors = Unit::factorsOf(UNIT::TIME);
         $this->assertTrue(array_key_exists('c', $factors));
@@ -37,7 +37,7 @@ class UnitTest extends RebetTestCase
         $this->assertSame('3153600000', $factors['c'][0]);
     }
 
-    public function test_baseUnitOf()
+    public function test_baseUnitOf(): void
     {
         $this->assertSame('s', Unit::baseUnitOf(Unit::TIME));
         $this->assertSame('K', Unit::baseUnitOf(Unit::TEMPERATURE));
@@ -233,12 +233,12 @@ class UnitTest extends RebetTestCase
     }
 
     #[DataProvider('dataExchanges')]
-    public function test_exchange($expect, $units, $value, string|null $to = null, int|null $precision = 2, array $options = [])
+    public function test_exchange($expect, $units, $value, string|null $to = null, int|null $precision = 2, array $options = []): void
     {
         $this->assertSame($expect, Unit::of($units)->exchange($value, $to, $precision, $options));
     }
 
-    public function test_exchange_reversible()
+    public function test_exchange_reversible(): void
     {
         foreach (Unit::config('factors') as $unit_name => $flactors) {
             $base_unit = Unit::baseUnitOf($flactors);
@@ -277,7 +277,7 @@ class UnitTest extends RebetTestCase
     }
 
     #[DataProvider('dataConverts')]
-    public function test_convert(string $expect, string $units, string $value, string|null $to = null, array $options = [])
+    public function test_convert(string $expect, string $units, string $value, string|null $to = null, array $options = []): void
     {
         $decimal = Unit::of($units)->convert($value, $to, $options);
         $this->assertInstanceOf(Decimal::class, $decimal);

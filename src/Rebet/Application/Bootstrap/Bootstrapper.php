@@ -22,5 +22,5 @@ interface Bootstrapper
      * @param  Kernel<mixed, mixed> $kernel of this application
      * @return void
      */
-    public function bootstrap(Kernel $kernel);
+    public function bootstrap(Kernel $kernel): void;
 }

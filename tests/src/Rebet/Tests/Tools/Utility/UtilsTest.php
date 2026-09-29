@@ -12,7 +12,7 @@ class UtilsTest extends RebetTestCase
 {
     public const TEST_VALUE = "UtilsTest::TEST_VALUE";
 
-    public function test_equivalent()
+    public function test_equivalent(): void
     {
         $this->assertSame(true, Utils::equivalent(null, null));
         $this->assertSame(true, Utils::equivalent(0, 0));
@@ -54,7 +54,7 @@ class UtilsTest extends RebetTestCase
         $this->assertSame(true, Utils::equivalent([1, [Gender::FEMALE(), 3]], [Gender::MALE(), new \ArrayObject([2, 3])]));
     }
 
-    public function test_when()
+    public function test_when(): void
     {
         $this->assertSame('no', Utils::when(null, 'yes', 'no'));
         $this->assertSame('no', Utils::when(0, 'yes', 'no'));
@@ -63,14 +63,14 @@ class UtilsTest extends RebetTestCase
         $this->assertSame('no', Utils::when(1 === 2, 'yes', 'no'));
     }
 
-    public function test_coalesce()
+    public function test_coalesce(): void
     {
         $this->assertSame(3, Utils::coalesce(null, [], '', 3, 'a'));
         $this->assertSame(0, Utils::coalesce(null, [], '', 0, 3, 'a'));
         $this->assertSame('a', Utils::coalesce('a', null, [], '', 0, 3));
     }
 
-    public function test_isBlank()
+    public function test_isBlank(): void
     {
         $this->assertTrue(Utils::isBlank(null));
         $this->assertFalse(Utils::isBlank(false));
@@ -84,7 +84,7 @@ class UtilsTest extends RebetTestCase
         $this->assertFalse(Utils::isBlank('abc'));
     }
 
-    public function test_bvl()
+    public function test_bvl(): void
     {
         $this->assertSame('default', Utils::bvl(null, 'default'));
         $this->assertSame(false, Utils::bvl(false, 'default'));
@@ -97,7 +97,7 @@ class UtilsTest extends RebetTestCase
         $this->assertSame('abc', Utils::bvl('abc', 'default'));
     }
 
-    public function test_isEmpty()
+    public function test_isEmpty(): void
     {
         $this->assertTrue(Utils::isEmpty(null));
         $this->assertFalse(Utils::isEmpty(false));
@@ -111,7 +111,7 @@ class UtilsTest extends RebetTestCase
         $this->assertFalse(Utils::isEmpty('abc'));
     }
 
-    public function test_evl()
+    public function test_evl(): void
     {
         $this->assertSame('default', Utils::evl(null, 'default'));
         $this->assertSame(false, Utils::evl(false, 'default'));
@@ -124,7 +124,7 @@ class UtilsTest extends RebetTestCase
         $this->assertSame('abc', Utils::evl('abc', 'default'));
     }
 
-    public function test_heredocImplanter()
+    public function test_heredocImplanter(): void
     {
         $_        = Utils::heredocImplanter();
         $expected = <<<EOS
@@ -141,7 +141,7 @@ class UtilsTest extends RebetTestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function test_intval()
+    public function test_intval(): void
     {
         $this->assertNull(Utils::intval(null));
         $this->assertNull(Utils::intval(''));
@@ -155,7 +155,7 @@ class UtilsTest extends RebetTestCase
         $this->assertSame(0xF, Utils::intval('F', 16));
     }
 
-    public function test_floatval()
+    public function test_floatval(): void
     {
         $this->assertNull(Utils::floatval(null));
         $this->assertNull(Utils::floatval(''));

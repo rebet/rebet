@@ -11,7 +11,7 @@ use Rebet\Application\Console\CliExceptionHandler;
  */
 class AppCliExceptionHandler extends CliExceptionHandler
 {
-    public function handle($input, \Throwable $e)
+    public function handle($input, \Throwable $e): void
     {
         throw $e;
     }

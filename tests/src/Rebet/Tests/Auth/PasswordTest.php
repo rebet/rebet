@@ -11,7 +11,7 @@ use Rebet\Tests\RebetTestCase;
 class PasswordTest extends RebetTestCase
 {
     #[DataProvider('dataPasswords')]
-    public function test_hashAndVerify(string|null $password, $algorithm = null, array|null $options = null)
+    public function test_hashAndVerify(string|null $password, $algorithm = null, array|null $options = null): void
     {
         $hash = Password::hash($password, $algorithm, $options);
         $this->assertTrue(Password::verify($password, $hash));
@@ -29,13 +29,13 @@ class PasswordTest extends RebetTestCase
         ];
     }
 
-    public function test_hash()
+    public function test_hash(): void
     {
         $this->assertNull(Password::hash(null));
         $this->assertNotNull(Password::hash('password'));
     }
 
-    public function test_verify()
+    public function test_verify(): void
     {
         $password = 'password';
         $hash     = Password::hash($password);
@@ -45,7 +45,7 @@ class PasswordTest extends RebetTestCase
         $this->assertFalse(Password::verify(null, null));
     }
 
-    public function test_needsRehash()
+    public function test_needsRehash(): void
     {
         $hash = Password::hash('password', PASSWORD_BCRYPT, ['cost' => 5]);
         $this->assertTrue(Password::needsRehash($hash, PASSWORD_BCRYPT, ['cost' => 4]));

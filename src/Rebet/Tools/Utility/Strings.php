@@ -519,7 +519,7 @@ class Strings
     public static function traceToString(array $trace): string
     {
         $trace = array_reverse($trace);
-        array_walk($trace, function (&$value, $key) {
+        array_walk($trace, function (&$value, $key): void {
             $value = "#{$key} "
             . (empty($value['file']) ? "" : " " . $value['file'] . "(" . $value['line'] . "): ")
             . (empty($value['class']) ? "" : $value['class'] . "::")

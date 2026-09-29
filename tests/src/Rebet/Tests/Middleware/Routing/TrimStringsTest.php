@@ -11,12 +11,12 @@ use Rebet\Tests\RebetTestCase;
 
 class TrimStringsTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(TrimStrings::class, new TrimStrings());
     }
 
-    public function test_handle()
+    public function test_handle(): void
     {
         $middleware  = new TrimStrings();
         $destination = function ($request) { return Responder::toResponse('OK'); };

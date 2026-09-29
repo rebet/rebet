@@ -15,7 +15,7 @@ use Rebet\Tools\Reflection\Reflector;
 
 class RouteTest extends RebetTestCase
 {
-    public function test_where()
+    public function test_where(): void
     {
         $route = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
         $this->assertSame([], Reflector::get($route, 'wheres', null, true));
@@ -25,7 +25,7 @@ class RouteTest extends RebetTestCase
         $this->assertSame(['id' => '/[0-9]+/', 'page' => '/[0-9]+/'], Reflector::get($route, 'wheres', null, true));
     }
 
-    public function test___invoke()
+    public function test___invoke(): void
     {
         $route   = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
         $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
@@ -35,7 +35,7 @@ class RouteTest extends RebetTestCase
         $this->assertSame('Hello World.', $response->getContent());
     }
 
-    public function test_getAttributedMethod()
+    public function test_getAttributedMethod(): void
     {
         $route = new ConventionalRoute();
         $this->assertNull($route->getAttributedMethod());
@@ -46,7 +46,7 @@ class RouteTest extends RebetTestCase
         $this->assertInstanceOf(Method::class, $am->attribute(Method::class));
     }
 
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $route = new ConventionalRoute();
         $this->assertNull($route->attribute(Method::class));
@@ -55,7 +55,7 @@ class RouteTest extends RebetTestCase
         $this->assertInstanceOf(Method::class, $route->attribute(Method::class));
     }
 
-    public function test_middlewares()
+    public function test_middlewares(): void
     {
         $route = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
         $this->assertSame([], $route->middlewares());
@@ -64,7 +64,7 @@ class RouteTest extends RebetTestCase
         $this->assertSame([$middleware], $route->middlewares());
     }
 
-    public function test_roles()
+    public function test_roles(): void
     {
         $route = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
         $this->assertSame([], $route->roles());
@@ -79,7 +79,7 @@ class RouteTest extends RebetTestCase
         $this->assertSame(['user'], $route->roles());
     }
 
-    public function test_guard()
+    public function test_guard(): void
     {
         $route = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
         $this->assertSame(null, $route->guard());

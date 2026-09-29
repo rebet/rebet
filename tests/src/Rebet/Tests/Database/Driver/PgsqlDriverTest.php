@@ -21,7 +21,7 @@ class PgsqlDriverTest extends RebetDatabaseTestCase
         DateTime::setTestNow('2001-02-03 04:05:06');
     }
 
-    public function test_toPhpType()
+    public function test_toPhpType(): void
     {
         $db = Dao::db('pgsql');
         $db->execute("DROP TABLE IF EXISTS native_types;");

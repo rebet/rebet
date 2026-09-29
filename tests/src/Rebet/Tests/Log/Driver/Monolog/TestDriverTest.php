@@ -19,7 +19,7 @@ class TestDriverTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $driver = new TestDriver(LogLevel::DEBUG);
         $this->assertInstanceOf(TestDriver::class, $driver);
@@ -29,7 +29,7 @@ class TestDriverTest extends RebetTestCase
         $this->assertInstanceOf(TestHandler::class, $handler);
     }
 
-    public function test___call()
+    public function test___call(): void
     {
         $driver = new TestDriver(LogLevel::DEBUG);
         $this->assertFalse($driver->hasDebugRecords());
@@ -37,7 +37,7 @@ class TestDriverTest extends RebetTestCase
         $this->assertTRue($driver->hasDebugRecords());
     }
 
-    public function test_formatted()
+    public function test_formatted(): void
     {
         $process_id = getmypid();
         $driver     = new TestDriver(LogLevel::DEBUG);
@@ -53,7 +53,7 @@ class TestDriverTest extends RebetTestCase
         );
     }
 
-    public function test_formatted_with_setName()
+    public function test_formatted_with_setName(): void
     {
         $process_id = getmypid();
         $driver     = new TestDriver(LogLevel::DEBUG);

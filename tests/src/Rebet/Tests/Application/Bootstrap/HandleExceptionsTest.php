@@ -10,7 +10,7 @@ use Rebet\Tests\RebetTestCase;
 
 class HandleExceptionsTest extends RebetTestCase
 {
-    public function test_bootstrap()
+    public function test_bootstrap(): void
     {
         $fallbacked_exception = null;
         $reported_exception   = null;
@@ -20,8 +20,8 @@ class HandleExceptionsTest extends RebetTestCase
             $fallbacked_exception = $e;
             return 1;
         });
-        $kernel->method('report')->willReturnCallback(function ($e) use (&$reported_exception) { $reported_exception = $e; });
-        $kernel->method('terminate')->willReturnCallback(function () use (&$is_terminated) { $is_terminated = true; });
+        $kernel->method('report')->willReturnCallback(function ($e) use (&$reported_exception): void { $reported_exception = $e; });
+        $kernel->method('terminate')->willReturnCallback(function () use (&$is_terminated): void { $is_terminated = true; });
 
         $bootstrapper = new HandleExceptions();
         $bootstrapper->bootstrap($kernel);

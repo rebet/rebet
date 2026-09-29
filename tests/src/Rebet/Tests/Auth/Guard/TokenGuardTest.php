@@ -12,12 +12,12 @@ use Rebet\Tests\RebetTestCase;
 
 class TokenGuardTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(TokenGuard::class, new TokenGuard('user'));
     }
 
-    public function test_authenticate()
+    public function test_authenticate(): void
     {
         $guard = (new TokenGuard('user', 'api_token', $request = $this->createRequestMock('/user/mypage', 'user')))->name('web');
 

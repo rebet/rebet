@@ -30,7 +30,7 @@ class HashPasswordCommandTest extends RebetConsoleTestCase
     }
 
     #[DataProvider('dataExecutes')]
-    public function test_execute(string $password, array $options = [])
+    public function test_execute(string $password, array $options = []): void
     {
         $tester = $this->getCommandTester(HashPasswordCommand::NAME);
         $status = $tester->execute(array_merge(['password' => $password], $options));
@@ -40,7 +40,7 @@ class HashPasswordCommandTest extends RebetConsoleTestCase
         $this->assertTrue(Password::verify($password, Strings::ltrim(trim($display), "Hashed password: ")));
     }
 
-    public function test_execute_jsonError()
+    public function test_execute_jsonError(): void
     {
         $tester = $this->getCommandTester(HashPasswordCommand::NAME);
         $status = $tester->execute(['password' => 'foobar', '--option' => '{cost: 8}']);

@@ -50,7 +50,7 @@ class CliKernelTest extends RebetTestCase
         parent::tearDown();
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $kernel = new CliKernel(App::structure());
         $this->assertInstanceOf(CliKernel::class, $kernel);
@@ -60,17 +60,17 @@ class CliKernelTest extends RebetTestCase
         $this->assertSame('other', $kernel->channel());
     }
 
-    public function test_structure()
+    public function test_structure(): void
     {
         $this->assertSame(App::structure(), $this->kernel->structure());
     }
 
-    public function test_channel()
+    public function test_channel(): void
     {
         $this->assertSame('cli', $this->kernel->channel());
     }
 
-    public function test_bootstrap()
+    public function test_bootstrap(): void
     {
         $kernel = new CliKernel(App::structure(), 'cli', new BufferedOutput());
         Letterpress::reset();
@@ -80,35 +80,35 @@ class CliKernelTest extends RebetTestCase
         restore_exception_handler();
     }
 
-    public function test_assistant()
+    public function test_assistant(): void
     {
         $assistant = $this->kernel->assistant();
         $this->assertInstanceOf(Assistant::class, $assistant);
         $this->assertTrue($assistant->has('env'));
     }
 
-    public function test_handle()
+    public function test_handle(): void
     {
         $status = $this->kernel->handle(new ArrayInput(['command' => 'env']));
         $this->assertSame(0, $status);
         $this->assertStringContainsString('Current application environment:', $this->output->fetch());
     }
 
-    public function test_call()
+    public function test_call(): void
     {
         $status = $this->kernel->call('env');
         $this->assertSame(0, $status);
         $this->assertStringContainsString('Current application environment:', $this->output->fetch());
     }
 
-    public function test_terminate()
+    public function test_terminate(): void
     {
         $this->kernel->handle(new ArrayInput(['command' => 'env']));
         $this->kernel->terminate();
         $this->assertTrue(true); // No exception raised.
     }
 
-    public function test_fallback()
+    public function test_fallback(): void
     {
         $code = $this->kernel->fallback(new \Exception('Kernel fallback test'));
         $this->assertSame(1, $code);
@@ -117,7 +117,7 @@ class CliKernelTest extends RebetTestCase
         $this->assertStringContainsString('Kernel fallback test', $console);
     }
 
-    public function test_report()
+    public function test_report(): void
     {
         $this->kernel->report(new \Exception('Kernel report test'));
         $driver = Log::channel()->driver();
@@ -125,7 +125,7 @@ class CliKernelTest extends RebetTestCase
         $this->assertStringContainsString('Console unhandled exception occurred.', $driver->formatted());
     }
 
-    public function test_exceptionHandler()
+    public function test_exceptionHandler(): void
     {
         $handler = $this->kernel->exceptionHandler();
         $this->assertInstanceOf(CliExceptionHandler::class, $handler);

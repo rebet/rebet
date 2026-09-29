@@ -21,7 +21,7 @@ class FileDriverTest extends RebetTestCase
         ]);
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $today = DateTime::today();
 

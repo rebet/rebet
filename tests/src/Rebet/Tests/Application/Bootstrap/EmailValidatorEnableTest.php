@@ -36,7 +36,7 @@ class EmailValidatorEnableTest extends RebetTestCase
         parent::tearDown();
     }
 
-    public function test_bootstrap()
+    public function test_bootstrap(): void
     {
         // App::init() already ran this bootstrapper once, so force back to the pre-enable state
         // first in order to verify bootstrap() actually installs the validator itself.

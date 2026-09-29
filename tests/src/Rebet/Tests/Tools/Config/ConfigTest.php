@@ -26,7 +26,7 @@ class ConfigTest extends RebetTestCase
         parent::tearDown();
     }
 
-    public function test_instantiate()
+    public function test_instantiate(): void
     {
         $this->assertSame('default', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate')->value);
         $this->assertSame('arg', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_arg')->value);
@@ -37,7 +37,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('runtime_arg', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_map', ['value' => 'runtime_arg'])->value);
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
@@ -80,7 +80,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'map.b'));
     }
 
-    public function test_get()
+    public function test_get(): void
     {
         $this->assertSame(
             [
@@ -185,7 +185,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('refer_database', Config::get(ConfigTest_MockRefer::class, 'database'));
     }
 
-    public function test_get_blank()
+    public function test_get_blank(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigTest_Mock.database is blank or not define.");
@@ -193,7 +193,7 @@ class ConfigTest extends RebetTestCase
         Config::get(ConfigTest_Mock::class, 'database');
     }
 
-    public function test_get_undfine()
+    public function test_get_undfine(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigTest_Mock.undfine is blank or not define.");
@@ -201,7 +201,7 @@ class ConfigTest extends RebetTestCase
         Config::get(ConfigTest_Mock::class, 'undfine');
     }
 
-    public function test_get_frameworkOrverrideBlank()
+    public function test_get_frameworkOrverrideBlank(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigTest_Mock.driver is blank or not define.");
@@ -217,7 +217,7 @@ class ConfigTest extends RebetTestCase
         Config::get(ConfigTest_Mock::class, 'driver');
     }
 
-    public function test_get_applicationOrverrideBlank()
+    public function test_get_applicationOrverrideBlank(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigTest_Mock.driver is blank or not define.");
@@ -233,7 +233,7 @@ class ConfigTest extends RebetTestCase
         Config::get(ConfigTest_Mock::class, 'driver');
     }
 
-    public function test_get_runtimeOrverrideBlank()
+    public function test_get_runtimeOrverrideBlank(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigTest_Mock.driver is blank or not define.");
@@ -249,7 +249,7 @@ class ConfigTest extends RebetTestCase
         Config::get(ConfigTest_Mock::class, 'driver');
     }
 
-    public function test_get_optionNothing()
+    public function test_get_optionNothing(): void
     {
         $this->assertSame(
             [
@@ -313,7 +313,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('cc', Config::get(ConfigTest_MockOption::class, 'parent.map.c'));
     }
 
-    public function test_get_optionMapReplace()
+    public function test_get_optionMapReplace(): void
     {
         $this->assertSame(
             [
@@ -377,7 +377,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('cc', Config::get(ConfigTest_MockOption::class, 'parent.map.c'));
     }
 
-    public function test_get_optionArrayReplace()
+    public function test_get_optionArrayReplace(): void
     {
         $this->assertSame(
             [
@@ -441,7 +441,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('cc', Config::get(ConfigTest_MockOption::class, 'parent.map.c'));
     }
 
-    public function test_get_optionParentReplace()
+    public function test_get_optionParentReplace(): void
     {
         $this->assertSame(
             [
@@ -505,7 +505,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('cc', Config::get(ConfigTest_MockOption::class, 'parent.map.c'));
     }
 
-    public function test_get_optionArrayPrepend()
+    public function test_get_optionArrayPrepend(): void
     {
         $this->assertSame(
             [
@@ -569,7 +569,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('cc', Config::get(ConfigTest_MockOption::class, 'parent.map.c'));
     }
 
-    public function test_get_optionMixed()
+    public function test_get_optionMixed(): void
     {
         $this->assertSame(
             [
@@ -659,7 +659,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('cc', Config::get(ConfigTest_MockOption::class, 'parent.map.c'));
     }
 
-    public function test_get_all()
+    public function test_get_all(): void
     {
         Config::reset();
 
@@ -675,7 +675,7 @@ class ConfigTest extends RebetTestCase
         );
     }
 
-    public function test_has_digitKeyAccessLast()
+    public function test_has_digitKeyAccessLast(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid config key access, the key 'array.1' contains digit only part.");
@@ -690,7 +690,7 @@ class ConfigTest extends RebetTestCase
         Config::has(ConfigTest_Mock::class, 'array.1');
     }
 
-    public function test_has_digitKeyAccessOnly()
+    public function test_has_digitKeyAccessOnly(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid config key access, the key '1' contains digit only part.");
@@ -698,7 +698,7 @@ class ConfigTest extends RebetTestCase
         Config::has(ConfigTest_Mock::class, '1');
     }
 
-    public function test_has_digitKeyAccessMiddle()
+    public function test_has_digitKeyAccessMiddle(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid config key access, the key 'driver.123.dummy' contains digit only part.");
@@ -706,7 +706,7 @@ class ConfigTest extends RebetTestCase
         Config::has(ConfigTest_Mock::class, 'driver.123.dummy');
     }
 
-    public function test_get_promise()
+    public function test_get_promise(): void
     {
         ConfigTest_MockPromise::config('dummy', false);
 
@@ -725,7 +725,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('2', ConfigTest_MockPromiseReferrer::config('refer_promise_every', false));
     }
 
-    public function test_get_anonymousClass()
+    public function test_get_anonymousClass(): void
     {
         $a = new class {
             use Configurable;
@@ -748,7 +748,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('b', Config::get(get_class($b), 'key'));
     }
 
-    public function test_has()
+    public function test_has(): void
     {
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'database'));

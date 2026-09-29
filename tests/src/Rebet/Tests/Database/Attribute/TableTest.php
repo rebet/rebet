@@ -11,7 +11,7 @@ use TestApp\Stub\AttributedStub;
 
 class TableTest extends RebetTestCase
 {
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $attribute = Table::class;
         $ac        = new AttributedClass(AttributedStub::class);

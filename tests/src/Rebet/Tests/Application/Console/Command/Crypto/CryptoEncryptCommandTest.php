@@ -26,7 +26,7 @@ class CryptoEncryptCommandTest extends RebetConsoleTestCase
     }
 
     #[DataProvider('dataExecutes')]
-    public function test_execute(string $plain, array $options = [])
+    public function test_execute(string $plain, array $options = []): void
     {
         $tester = $this->getCommandTester(CryptoEncryptCommand::NAME);
         $status = $tester->execute(array_merge(['plain' => $plain], $options));

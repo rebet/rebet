@@ -163,7 +163,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
-    public function registerConfiguredProviders()
+    public function registerConfiguredProviders(): void
     {
         $this->unsupported(__FUNCTION__);
     }
@@ -179,7 +179,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
-    public function registerDeferredProvider($provider, $service = null)
+    public function registerDeferredProvider($provider, $service = null): void
     {
         $this->unsupported(__FUNCTION__);
     }
@@ -195,7 +195,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
-    public function boot()
+    public function boot(): void
     {
         $this->unsupported(__FUNCTION__);
     }
@@ -203,7 +203,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
-    public function booting($callback)
+    public function booting($callback): void
     {
         $this->unsupported(__FUNCTION__);
     }
@@ -211,7 +211,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
-    public function booted($callback)
+    public function booted($callback): void
     {
         $this->unsupported(__FUNCTION__);
     }
@@ -221,7 +221,7 @@ class Application extends Container implements ApplicationContract
      *
      * @param array<int, string> $bootstrappers
      */
-    public function bootstrapWith(array $bootstrappers)
+    public function bootstrapWith(array $bootstrappers): void
     {
         $this->unsupported(__FUNCTION__);
     }
@@ -263,7 +263,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
-    public function loadDeferredProviders()
+    public function loadDeferredProviders(): void
     {
         $this->unsupported(__FUNCTION__);
     }
@@ -271,7 +271,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
-    public function setLocale($locale)
+    public function setLocale($locale): void
     {
         $this->unsupported(__FUNCTION__);
     }
@@ -295,7 +295,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
-    public function terminate()
+    public function terminate(): void
     {
         $this->unsupported(__FUNCTION__);
     }

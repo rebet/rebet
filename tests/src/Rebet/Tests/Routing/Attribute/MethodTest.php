@@ -11,7 +11,7 @@ use TestApp\Stub\AttributedStub;
 
 class MethodTest extends RebetTestCase
 {
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $attribute = Method::class;
         $ac        = new AttributedClass(AttributedStub::class);
@@ -39,7 +39,7 @@ class MethodTest extends RebetTestCase
         $this->assertFalse($a->reject('OPTION'));
     }
 
-    public function test_allow_empty()
+    public function test_allow_empty(): void
     {
         $a = new Method();
         $this->assertSame([], $a->allows);
@@ -48,7 +48,7 @@ class MethodTest extends RebetTestCase
         $this->assertFalse($a->reject('GET'));
     }
 
-    public function test_allow_caseInsensitive()
+    public function test_allow_caseInsensitive(): void
     {
         $a = new Method('GET');
         $this->assertTrue($a->allow('get'));

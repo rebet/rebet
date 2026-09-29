@@ -20,7 +20,7 @@ class LoadEnvironmentVariables implements Bootstrapper
     /**
      * {@inheritDoc}
      */
-    public function bootstrap(Kernel $kernel)
+    public function bootstrap(Kernel $kernel): void
     {
         Dotenv::load($kernel->structure()->env());
     }

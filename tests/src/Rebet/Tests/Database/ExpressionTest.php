@@ -12,12 +12,12 @@ use Rebet\Tests\RebetDatabaseTestCase;
 
 class ExpressionTest extends RebetDatabaseTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(Expression::class, new Expression('now()'));
     }
 
-    public function test_of()
+    public function test_of(): void
     {
         $expression = Expression::of('GeomFromText({0})', 'POINT(1 1)');
         $this->assertInstanceOf(Expression::class, $expression);
@@ -48,7 +48,7 @@ class ExpressionTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataCompiles')]
-    public function test_compile($expect_sql, $expect_params, $placeholder, Expression $expression)
+    public function test_compile($expect_sql, $expect_params, $placeholder, Expression $expression): void
     {
         $query = $expression->compile(Dao::db('mysql')->driver(), $placeholder);
         $this->assertSame($expect_sql, $query->sql());

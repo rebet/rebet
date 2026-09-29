@@ -16,7 +16,7 @@ class DateTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $date = new Date();
         $this->assertInstanceOf(Date::class, $date);
@@ -39,7 +39,7 @@ class DateTest extends RebetTestCase
         $this->assertSame('2010-10-20 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
     }
 
-    public function test_timeModification()
+    public function test_timeModification(): void
     {
         $date = Date::now();
         $this->assertSame('2010-10-20 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
@@ -152,13 +152,13 @@ class DateTest extends RebetTestCase
         $this->assertSame('2010-10-18 00:00:00.000000', $now->sub('PT25H')->format('Y-m-d H:i:s.u'));
     }
 
-    public function test_toDate()
+    public function test_toDate(): void
     {
         $date = new Date();
         $this->assertSame($date, $date->toDate());
     }
 
-    public function test_toDateTime()
+    public function test_toDateTime(): void
     {
         $date     = new Date();
         $datetime = $date->toDateTime();

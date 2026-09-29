@@ -16,35 +16,35 @@ class DecimalTest extends RebetTestCase
         Decimal::setMaxScale(30);
     }
 
-    public function test_setMode()
+    public function test_setMode(): void
     {
         $this->assertSame(Decimal::MODE_AUTO_PRECISION_SCALING, Decimal::config('mode'));
         Decimal::setMode(Decimal::MODE_FIXED_DECIMAL_PLACES);
         $this->assertSame(Decimal::MODE_FIXED_DECIMAL_PLACES, Decimal::config('mode'));
     }
 
-    public function test_setFixedScale()
+    public function test_setFixedScale(): void
     {
         $this->assertSame(2, Decimal::config('options.fixed_scale'));
         Decimal::setFixedScale(3);
         $this->assertSame(3, Decimal::config('options.fixed_scale'));
     }
 
-    public function test_setGuardDigits()
+    public function test_setGuardDigits(): void
     {
         $this->assertSame(4, Decimal::config('options.guard_digits'));
         Decimal::setGuardDigits(2);
         $this->assertSame(2, Decimal::config('options.guard_digits'));
     }
 
-    public function test_setMaxScale()
+    public function test_setMaxScale(): void
     {
         $this->assertSame(30, Decimal::config('options.max_scale'));
         Decimal::setMaxScale(10);
         $this->assertSame(10, Decimal::config('options.max_scale'));
     }
 
-    public function test_value()
+    public function test_value(): void
     {
         Decimal::setMode(Decimal::MODE_SIGNIFICANCE_ARITHMETIC);
 
@@ -68,7 +68,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame('5', $result->value(false));
     }
 
-    public function test_scale()
+    public function test_scale(): void
     {
         Decimal::setMode(Decimal::MODE_SIGNIFICANCE_ARITHMETIC);
 
@@ -94,7 +94,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(0, $result->scale(false));
     }
 
-    public function test_significantFigures()
+    public function test_significantFigures(): void
     {
         Decimal::setMode(Decimal::MODE_SIGNIFICANCE_ARITHMETIC);
 
@@ -122,7 +122,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(1, $result->significantFigures(false));
     }
 
-    public function test_guardDigits()
+    public function test_guardDigits(): void
     {
         Decimal::setMode(Decimal::MODE_SIGNIFICANCE_ARITHMETIC);
 
@@ -146,7 +146,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(4, $result->guardDigits());
     }
 
-    public function test_isDirty()
+    public function test_isDirty(): void
     {
         $string = Decimal::of('1.1');
         $int    = Decimal::of(1);
@@ -188,7 +188,7 @@ class DecimalTest extends RebetTestCase
         $this->assertTrue($float->powmod($int, $string)->isDirty());
     }
 
-    public function test___toString()
+    public function test___toString(): void
     {
         Decimal::setMode(Decimal::MODE_SIGNIFICANCE_ARITHMETIC);
 
@@ -206,14 +206,14 @@ class DecimalTest extends RebetTestCase
         $this->assertSame('4.7778 (1 sf)', $result->__toString());
     }
 
-    public function test_compact()
+    public function test_compact(): void
     {
         $decimal = Decimal::of('0.01000');
         $this->assertSame('0.01000', $decimal->value());
         $this->assertSame('0.01', $decimal->compact()->value());
     }
 
-    public function test_normalize()
+    public function test_normalize(): void
     {
         Decimal::setMode(Decimal::MODE_SIGNIFICANCE_ARITHMETIC);
 
@@ -234,7 +234,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame('5', $result->normalize()->__toString());
     }
 
-    public function test_scaleOf()
+    public function test_scaleOf(): void
     {
         $delegator = new class ('1') extends Decimal {
             public function invoke($value)
@@ -253,7 +253,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(0, $delegator->invoke('1000'));
     }
 
-    public function test_significantFiguresOf()
+    public function test_significantFiguresOf(): void
     {
         $delegator = new class ('1') extends Decimal {
             public function invoke($value)
@@ -320,7 +320,7 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataConstructs')]
-    public function test___construct($expect, int $expect_sf, $value, string $decimal_point = ".", string $thousands_separator = ",")
+    public function test___construct($expect, int $expect_sf, $value, string $decimal_point = ".", string $thousands_separator = ","): void
     {
         $decimal = new Decimal($value, $decimal_point, $thousands_separator);
         $this->assertInstanceOf(Decimal::class, $decimal);
@@ -344,7 +344,7 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataOfs')]
-    public function test_of($expect, $value, string $decimal_point = ".", string $thousands_separator = ",")
+    public function test_of($expect, $value, string $decimal_point = ".", string $thousands_separator = ","): void
     {
         $decimal = Decimal::of($value, $decimal_point, $thousands_separator);
         $this->assertInstanceOf(Decimal::class, $decimal);
@@ -352,12 +352,12 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(is_float($value), $decimal->isDirty());
     }
 
-    public function test_of_null()
+    public function test_of_null(): void
     {
         $this->assertNull(Decimal::of(null));
     }
 
-    public function test_abs()
+    public function test_abs(): void
     {
         $this->assertSame('123', Decimal::of('123')->abs()->value());
         $this->assertSame('123', Decimal::of('-123')->abs()->value());
@@ -366,7 +366,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame('0.001', Decimal::of('-1e-3')->abs()->value());
     }
 
-    public function test_comp()
+    public function test_comp(): void
     {
         $this->assertSame(0, Decimal::of('1')->comp('1'));
         $this->assertSame(0, Decimal::of('1')->comp('1.0'));
@@ -378,7 +378,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(0, Decimal::of('0.00001')->comp('0', 3));
     }
 
-    public function test_eq()
+    public function test_eq(): void
     {
         $this->assertSame(false, Decimal::of('1')->eq('0.9'));
         $this->assertSame(true, Decimal::of('1')->eq('1.0'));
@@ -389,7 +389,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(true, Decimal::of('1')->eq('1.1', 0));
     }
 
-    public function test_lt()
+    public function test_lt(): void
     {
         $this->assertSame(false, Decimal::of('1')->lt('0.9'));
         $this->assertSame(false, Decimal::of('1')->lt('1.0'));
@@ -400,7 +400,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(false, Decimal::of('1')->lt('1.1', 0));
     }
 
-    public function test_lte()
+    public function test_lte(): void
     {
         $this->assertSame(false, Decimal::of('1')->lte('0.9'));
         $this->assertSame(true, Decimal::of('1')->lte('1.0'));
@@ -411,7 +411,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(true, Decimal::of('1')->lte('1.1', 0));
     }
 
-    public function test_gte()
+    public function test_gte(): void
     {
         $this->assertSame(true, Decimal::of('1')->gte('0.9'));
         $this->assertSame(true, Decimal::of('1')->gte('1.0'));
@@ -422,7 +422,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(true, Decimal::of('1')->gte('1.1', 0));
     }
 
-    public function test_gt()
+    public function test_gt(): void
     {
         $this->assertSame(true, Decimal::of('1')->gt('0.9'));
         $this->assertSame(false, Decimal::of('1')->gt('1.0'));
@@ -433,7 +433,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(false, Decimal::of('1')->gt('1.1', 0));
     }
 
-    public function test_isNegative()
+    public function test_isNegative(): void
     {
         $this->assertTrue(Decimal::of('-123.1')->isNegative());
         $this->assertTrue(Decimal::of('-1')->isNegative());
@@ -447,7 +447,7 @@ class DecimalTest extends RebetTestCase
         $this->assertFalse(Decimal::of('123.1')->isNegative());
     }
 
-    public function test_shift()
+    public function test_shift(): void
     {
         $this->assertSame('0.012345', Decimal::of('123.45')->shift(-4)->value());
         $this->assertSame('0.12345', Decimal::of('123.45')->shift(-3)->value());
@@ -460,20 +460,20 @@ class DecimalTest extends RebetTestCase
         $this->assertSame('1234500', Decimal::of('123.45')->shift(4)->value());
     }
 
-    public function test_unshift()
+    public function test_unshift(): void
     {
         $this->assertSame('1234.5', Decimal::of('123.45')->unshift(-1)->value());
         $this->assertSame('123.45', Decimal::of('123.45')->unshift(0)->value());
         $this->assertSame('12.345', Decimal::of('123.45')->unshift(1)->value());
     }
 
-    public function test_integers()
+    public function test_integers(): void
     {
         $this->assertSame('123', Decimal::of('123.45')->integers());
         $this->assertSame('-123', Decimal::of('-123.45')->integers());
     }
 
-    public function test_decimals()
+    public function test_decimals(): void
     {
         $this->assertSame('0', Decimal::of('123')->decimals());
         $this->assertSame('00', Decimal::of('123.00')->decimals());
@@ -518,7 +518,7 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataFloors')]
-    public function test_floor($expect, $value, $precision = 0)
+    public function test_floor($expect, $value, $precision = 0): void
     {
         $this->assertSame($expect, Decimal::of($value)->floor($precision)->value());
     }
@@ -561,7 +561,7 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataCeils')]
-    public function test_ceil($expect, $value, $precision = 0)
+    public function test_ceil($expect, $value, $precision = 0): void
     {
         $this->assertSame($expect, Decimal::of($value)->ceil($precision)->value());
     }
@@ -642,7 +642,7 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataRounds')]
-    public function test_round($expect, $value, $precision = 0, $type = Decimal::TYPE_DECIMAL_PLACES)
+    public function test_round($expect, $value, $precision = 0, $type = Decimal::TYPE_DECIMAL_PLACES): void
     {
         $this->assertSame($expect, Decimal::of($value)->round($precision, 0, $type)->value());
     }
@@ -686,7 +686,7 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataAdds')]
-    public function test_add($mode, $expect, $left, $right, $scale = null)
+    public function test_add($mode, $expect, $left, $right, $scale = null): void
     {
         Decimal::setMode($mode);
         $this->assertSame($expect, Decimal::of($left)->add($right, $scale)->value());
@@ -731,7 +731,7 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataSubs')]
-    public function test_sub($mode, $expect, $left, $right, $scale = null)
+    public function test_sub($mode, $expect, $left, $right, $scale = null): void
     {
         Decimal::setMode($mode);
         $this->assertSame($expect, Decimal::of($left)->sub($right, $scale)->value());
@@ -787,7 +787,7 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataMuls')]
-    public function test_mul($mode, $expect, $left, $right, $scale = null)
+    public function test_mul($mode, $expect, $left, $right, $scale = null): void
     {
         Decimal::setMode($mode);
         $this->assertSame($expect, Decimal::of($left)->mul($right, $scale)->value());
@@ -860,7 +860,7 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataDivs')]
-    public function test_div($mode, $expect, $left, $right, $scale = null)
+    public function test_div($mode, $expect, $left, $right, $scale = null): void
     {
         Decimal::setMode($mode);
         $this->assertSame($expect, Decimal::of($left)->div($right, $scale)->value());
@@ -884,7 +884,7 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataPows')]
-    public function test_pow($mode, $expect, $left, $right, $scale = null)
+    public function test_pow($mode, $expect, $left, $right, $scale = null): void
     {
         Decimal::setMode($mode);
         $this->assertSame($expect, Decimal::of($left)->pow($right, $scale)->value());
@@ -909,13 +909,13 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataSqrts')]
-    public function test_sqrt($mode, $expect, $left, $scale = null)
+    public function test_sqrt($mode, $expect, $left, $scale = null): void
     {
         Decimal::setMode($mode);
         $this->assertSame($expect, Decimal::of($left)->sqrt($scale)->value());
     }
 
-    public function test_mod()
+    public function test_mod(): void
     {
         $this->assertSame('3', Decimal::of('123')->mod('10')->value());
         $this->assertSame('3', Decimal::of('123.45')->mod('10')->value());
@@ -923,7 +923,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame('24', Decimal::of('1024')->mod('1000')->value());
     }
 
-    public function test_powmod()
+    public function test_powmod(): void
     {
         $this->assertSame('24', Decimal::of('2')->powmod('10', '100')->value());
         $this->assertSame('76', Decimal::of('2')->powmod('20', '100')->value());
@@ -949,26 +949,26 @@ class DecimalTest extends RebetTestCase
     }
 
     #[DataProvider('dataFormats')]
-    public function test_format($expect, $value, $omit_zero = false, $decimal_point = '.', $thousands_separator = ',')
+    public function test_format($expect, $value, $omit_zero = false, $decimal_point = '.', $thousands_separator = ','): void
     {
         $this->assertSame($expect, Decimal::of($value)->format($omit_zero, $decimal_point, $thousands_separator));
     }
 
-    public function test_min()
+    public function test_min(): void
     {
         $this->assertSame('0.001', Decimal::min('1', '1.02', '1.1', '03', '1e-3')->value());
         $this->assertSame('0.001', Decimal::min(['1', '1.02', '1.1', '03', '1e-3'])->value());
         $this->assertSame('999999999999999983222783', Decimal::min('999999999999999983222784', '999999999999999983222783', '999999999999999983222785')->value());
     }
 
-    public function test_max()
+    public function test_max(): void
     {
         $this->assertSame('3', Decimal::max('1', '1.02', '1.1', '03', '1e-3')->value());
         $this->assertSame('3', Decimal::max(['1', '1.02', '1.1', '03', '1e-3'])->value());
         $this->assertSame('999999999999999983222785', Decimal::max('999999999999999983222784', '999999999999999983222783', '999999999999999983222785')->value());
     }
 
-    public function test_toInt()
+    public function test_toInt(): void
     {
         $this->assertSame(1, Decimal::of('1')->toInt());
         $this->assertSame(123, Decimal::of('123')->toInt());
@@ -979,7 +979,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(PHP_INT_MAX, Decimal::of(PHP_INT_MAX)->add(1)->toInt());
     }
 
-    public function test_toFloat()
+    public function test_toFloat(): void
     {
         $this->assertSame(1.0, Decimal::of('1')->toFloat());
         $this->assertSame(123.0, Decimal::of('123')->toFloat());

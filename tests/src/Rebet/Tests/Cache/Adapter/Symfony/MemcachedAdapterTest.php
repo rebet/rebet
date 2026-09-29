@@ -33,7 +33,7 @@ class MemcachedAdapterTest extends RebetTestCase
         parent::setUp();
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $dsn = 'memcached://localhost:11211';
         $this->assertInstanceOf(MemcachedAdapter::class, new MemcachedAdapter($dsn, []));

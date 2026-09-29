@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class DatabaseExceptionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $e = new DatabaseException('test');
         $this->assertInstanceOf(DatabaseException::class, $e);

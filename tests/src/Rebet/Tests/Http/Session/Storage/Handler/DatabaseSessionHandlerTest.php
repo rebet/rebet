@@ -9,7 +9,7 @@ use Rebet\Tests\RebetDatabaseTestCase;
 
 class DatabaseSessionHandlerTest extends RebetDatabaseTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(DatabaseSessionHandler::class, new DatabaseSessionHandler());
     }

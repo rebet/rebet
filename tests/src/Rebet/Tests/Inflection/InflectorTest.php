@@ -22,7 +22,7 @@ class InflectorTest extends RebetTestCase
         parent::setUp();
     }
 
-    public function test_pascalize()
+    public function test_pascalize(): void
     {
         $this->assertNull(Inflector::pascalize(null));
         $this->assertSame('', Inflector::pascalize(''));
@@ -35,7 +35,7 @@ class InflectorTest extends RebetTestCase
         $this->assertSame('HumanReadableCase', Inflector::pascalize('human readable case'));
     }
 
-    public function test_camelize()
+    public function test_camelize(): void
     {
         $this->assertNull(Inflector::camelize(null));
         $this->assertSame('', Inflector::camelize(''));
@@ -48,7 +48,7 @@ class InflectorTest extends RebetTestCase
         $this->assertSame('humanReadableCase', Inflector::camelize('human readable case'));
     }
 
-    public function test_snakize()
+    public function test_snakize(): void
     {
         $this->assertNull(Inflector::snakize(null));
         $this->assertSame('', Inflector::snakize(''));
@@ -61,7 +61,7 @@ class InflectorTest extends RebetTestCase
         $this->assertSame('human_readable_case', Inflector::snakize('human readable case'));
     }
 
-    public function test_kebabize()
+    public function test_kebabize(): void
     {
         $this->assertNull(Inflector::kebabize(null));
         $this->assertSame('', Inflector::kebabize(''));
@@ -74,7 +74,7 @@ class InflectorTest extends RebetTestCase
         $this->assertSame('human-readable-case', Inflector::kebabize('human readable case'));
     }
 
-    public function test_humanize()
+    public function test_humanize(): void
     {
         $this->assertNull(Inflector::humanize(null));
         $this->assertSame('', Inflector::humanize(''));
@@ -87,7 +87,7 @@ class InflectorTest extends RebetTestCase
         $this->assertSame('Human Readable Case', Inflector::humanize('human readable case'));
     }
 
-    public function test_capitalize()
+    public function test_capitalize(): void
     {
         $this->assertNull(Inflector::capitalize(null));
         $this->assertSame('', Inflector::capitalize(''));
@@ -100,7 +100,7 @@ class InflectorTest extends RebetTestCase
         $this->assertSame('Human Readable Case', Inflector::capitalize('human readable case'));
     }
 
-    public function test_tableize()
+    public function test_tableize(): void
     {
         $this->assertNull(Inflector::tableize(null));
         $this->assertSame('', Inflector::tableize(''));
@@ -113,7 +113,7 @@ class InflectorTest extends RebetTestCase
         $this->assertSame('human_readable_cases', Inflector::tableize('human readable case'));
     }
 
-    public function test_pivotize()
+    public function test_pivotize(): void
     {
         $this->assertNull(Inflector::pivotize(null));
         $this->assertSame('', Inflector::pivotize(''));
@@ -137,7 +137,7 @@ class InflectorTest extends RebetTestCase
         $this->assertSame('human_readable_case_human_readable_case', Inflector::pivotize(['Human Readable Cases', 'human readable cases']));
     }
 
-    public function test_primarize()
+    public function test_primarize(): void
     {
         $this->assertNull(Inflector::primarize(null));
         $this->assertSame('', Inflector::primarize(''));
@@ -150,7 +150,7 @@ class InflectorTest extends RebetTestCase
         $this->assertSame('human_readable_case_id', Inflector::primarize('human readable case'));
     }
 
-    public function test_classify()
+    public function test_classify(): void
     {
         $this->assertNull(Inflector::classify(null));
         $this->assertSame('', Inflector::classify(''));

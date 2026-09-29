@@ -27,7 +27,7 @@ use Symfony\Component\Mime\Part\TextPart;
 
 class EmailTest extends RebetTestCase
 {
-    public function test_mailer()
+    public function test_mailer(): void
     {
         $mailer = Email::mailer('unittest');
         $this->assertInstanceOf(Mailer::class, $mailer);
@@ -107,26 +107,26 @@ class EmailTest extends RebetTestCase
         $this->assertInstanceOf(NullTransport::class, $transports[2]);
     }
 
-    public function test_mailer_not_configured()
+    public function test_mailer_not_configured(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         Email::mailer('non_existent');
     }
 
-    public function test_transport()
+    public function test_transport(): void
     {
         $transport = Email::transport('unittest');
         $this->assertInstanceOf(TransportInterface::class, $transport);
         $this->assertInstanceOf(InMemoryTransport::class, $transport);
     }
 
-    public function test_transport_not_configured()
+    public function test_transport_not_configured(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         Email::transport('non_existent');
     }
 
-    public function test_reset()
+    public function test_reset(): void
     {
         $mailer = Email::mailer('unittest');
         $this->assertSame(['unittest' => $mailer], $this->inspect(Email::class, 'mailers'));
@@ -134,7 +134,7 @@ class EmailTest extends RebetTestCase
         $this->assertSame([], $this->inspect(Email::class, 'mailers'));
     }
 
-    public function test_generateTextBodyFromHtml()
+    public function test_generateTextBodyFromHtml(): void
     {
         $html = '<html><head></head><body><h1>Subject</h1><div>Text <b>bold</b> <i>italic</i></div></body></html>';
         $mail = (new Email())
@@ -152,7 +152,7 @@ class EmailTest extends RebetTestCase
         $this->assertStringContainsString("Subject\n----------\n\nText bold italic", $mail->getTextBody());
     }
 
-    public function test_build()
+    public function test_build(): void
     {
         Config::runtime([
             DateTime::class => [
@@ -235,7 +235,7 @@ class EmailTest extends RebetTestCase
      *   "Subject: =?utf-8?B?44K/44Kk44OI44Or?=\r\n =?utf-8?B??=\r\n"
      * even though the whole value fit well within the 76 character line limit.
      */
-    public function test_build_withShortMultibyteSubject()
+    public function test_build_withShortMultibyteSubject(): void
     {
         $mail = (new Email())
             ->subject('タイトル')
@@ -261,7 +261,7 @@ class EmailTest extends RebetTestCase
         $this->assertStringNotContainsString("\r\n", $rendered);
     }
 
-    public function test_build_withQuotedPrintableHeaderEncoder()
+    public function test_build_withQuotedPrintableHeaderEncoder(): void
     {
         Config::runtime([
             Email::class => [
@@ -288,7 +288,7 @@ class EmailTest extends RebetTestCase
         $this->assertSame('差出人 <from@test.local>', mb_decode_mimeheader($from_header));
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $mail = new Email();
         $this->assertInstanceOf(Email::class, $mail);
@@ -297,7 +297,7 @@ class EmailTest extends RebetTestCase
         $this->assertNull($mail->getHtmlBody());
     }
 
-    public function test_text()
+    public function test_text(): void
     {
         $mail  = (new Email())->html('<b>html</b>');
         $body1 = $mail->getBody();
@@ -309,7 +309,7 @@ class EmailTest extends RebetTestCase
         $this->assertInstanceOf(AlternativePart::class, $body2);
     }
 
-    public function test_html()
+    public function test_html(): void
     {
         $mail  = (new Email())->text('text body');
         $body1 = $mail->getBody();
@@ -320,7 +320,7 @@ class EmailTest extends RebetTestCase
         $this->assertInstanceOf(AlternativePart::class, $body2);
     }
 
-    public function test_addPart()
+    public function test_addPart(): void
     {
         $mail  = (new Email())->text('text body');
         $body1 = $mail->getBody();
@@ -331,7 +331,7 @@ class EmailTest extends RebetTestCase
         $this->assertInstanceOf(MixedPart::class, $body2);
     }
 
-    public function test_getBody_textOnly()
+    public function test_getBody_textOnly(): void
     {
         $mail = (new Email())->text('plain text');
         $body = $mail->getBody();
@@ -339,7 +339,7 @@ class EmailTest extends RebetTestCase
         $this->assertSame('plain text', $body->getBody());
     }
 
-    public function test_getBody_htmlOnly()
+    public function test_getBody_htmlOnly(): void
     {
         $mail = (new Email())->html('<b>html</b>');
         $body = $mail->getBody();
@@ -347,19 +347,19 @@ class EmailTest extends RebetTestCase
         $this->assertSame('html', $body->getMediaSubtype());
     }
 
-    public function test_getBody_textAndHtml_isAlternative()
+    public function test_getBody_textAndHtml_isAlternative(): void
     {
         $mail = (new Email())->text('plain text')->html('<b>html</b>');
         $this->assertInstanceOf(AlternativePart::class, $mail->getBody());
     }
 
-    public function test_getBody_withAttachment_isMixed()
+    public function test_getBody_withAttachment_isMixed(): void
     {
         $mail = (new Email())->text('plain text')->attach('file content', 'file.txt', 'text/plain');
         $this->assertInstanceOf(MixedPart::class, $mail->getBody());
     }
 
-    public function test_getBody_withInlineCidImage_isRelated()
+    public function test_getBody_withInlineCidImage_isRelated(): void
     {
         $mail = (new Email())
             ->html('<img src="cid:logo">')
@@ -368,14 +368,14 @@ class EmailTest extends RebetTestCase
         $this->assertInstanceOf(RelatedPart::class, $mail->getBody());
     }
 
-    public function test_getBody_usesConfiguredBodyEncoder()
+    public function test_getBody_usesConfiguredBodyEncoder(): void
     {
         $mail = (new Email())->text('plain text');
         $body = $mail->getBody();
         $this->assertSame('base64', $body->getPreparedHeaders()->get('Content-Transfer-Encoding')->getBodyAsString());
     }
 
-    public function test_getBody_usesExplicitlySetBody()
+    public function test_getBody_usesExplicitlySetBody(): void
     {
         $explicit = new TextPart('explicit body');
         $mail     = new Email();
@@ -383,13 +383,13 @@ class EmailTest extends RebetTestCase
         $this->assertSame($explicit, $mail->getBody());
     }
 
-    public function test_getBody_throwsWhenEmpty()
+    public function test_getBody_throwsWhenEmpty(): void
     {
         $this->expectException(LogicException::class);
         (new Email())->getBody();
     }
 
-    public function test_send()
+    public function test_send(): void
     {
         $mail = (new Email())
             ->subject('Subject')
@@ -408,7 +408,7 @@ class EmailTest extends RebetTestCase
         $this->assertStringContainsString(base64_encode('text body'), $sent->getMessage()->toString());
     }
 
-    public function test_send_withMultipleEncodedHeaders()
+    public function test_send_withMultipleEncodedHeaders(): void
     {
         $mail = (new Email())
             ->subject('タイトル長い場合はどうなる長い場合はどうなる長い場合はどうなる長い場合はどうなる')

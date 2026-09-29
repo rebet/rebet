@@ -14,7 +14,7 @@ use Rebet\Tools\Config\Layer;
 
 class LoadApplicationConfigurationTest extends RebetTestCase
 {
-    public function test_bootstrap()
+    public function test_bootstrap(): void
     {
         $structure = $this->createMock(Structure::class);
         $structure->method('configs')->willReturn(App::structure()->resources('/adhoc/Application/Bootstrap/LoadApplicationConfiguration'));

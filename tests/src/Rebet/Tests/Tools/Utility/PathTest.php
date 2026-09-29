@@ -10,7 +10,7 @@ use Rebet\Tools\Utility\Path;
 
 class PathTest extends RebetTestCase
 {
-    public function test_normalizePath()
+    public function test_normalizePath(): void
     {
         $this->assertSame('var/www/app', Path::normalize('var/www/app'));
         $this->assertSame('/var/www/app', Path::normalize('/var/www/app'));
@@ -35,7 +35,7 @@ class PathTest extends RebetTestCase
         $this->assertSame('file://c:/', Path::normalize('file://c:/var/..'));
     }
 
-    public function test_normalizePath_invalid()
+    public function test_normalizePath_invalid(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid path format: c:/invalid/../../path");

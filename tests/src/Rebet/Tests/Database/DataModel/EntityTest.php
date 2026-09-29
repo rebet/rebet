@@ -39,14 +39,14 @@ class EntityTest extends RebetDatabaseTestCase
         ]);
     }
 
-    public function test_tabelName()
+    public function test_tabelName(): void
     {
         $this->assertSame('users', User::tabelName());
         $this->assertSame('users', UserWithAnnot::tabelName());
         $this->assertSame('group_user', GroupUser::tabelName()); // This is pivot tabel entity
     }
 
-    public function test_originAndRemoveOrigin()
+    public function test_originAndRemoveOrigin(): void
     {
         $user  = new User();
         $clone = clone $user;
@@ -57,7 +57,7 @@ class EntityTest extends RebetDatabaseTestCase
         $this->assertSame(null, $user->origin());
     }
 
-    public function test_origin_diffrentClass()
+    public function test_origin_diffrentClass(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Origin must be same class of [TestApp\Model\User].");
@@ -67,7 +67,7 @@ class EntityTest extends RebetDatabaseTestCase
         $user->origin($othre);
     }
 
-    public function test_unmaps()
+    public function test_unmaps(): void
     {
         $base_protected = ['_origin', '_attributed_class', '_meta', '_belongs_result_set', '_eager_loads', '_relations'];
         $this->assertSame($base_protected, Article::unmaps());
@@ -75,7 +75,7 @@ class EntityTest extends RebetDatabaseTestCase
         $this->assertSame(array_merge(['foo', 'bar'], $base_protected), UserWithAnnot::unmaps());
     }
 
-    public function test_defaults()
+    public function test_defaults(): void
     {
         $this->assertSame([], Article::defaults());
         $this->assertSame(['role' => ['user', null]], User::defaults());
@@ -94,7 +94,7 @@ class EntityTest extends RebetDatabaseTestCase
         ], GroupUser::defaults());
     }
 
-    public function test_changes()
+    public function test_changes(): void
     {
         $user = new User();
         $this->assertSame([], $user->changes());
@@ -119,7 +119,7 @@ class EntityTest extends RebetDatabaseTestCase
         $this->assertSame(['name' => null, 'birthday' => $user->birthday], $user->changes());
     }
 
-    public function test_isDirty()
+    public function test_isDirty(): void
     {
         $user = new User();
         $this->assertSame(false, $user->isDirty());
@@ -137,7 +137,7 @@ class EntityTest extends RebetDatabaseTestCase
         $this->assertSame(true, $user->isDirty());
     }
 
-    public function test_isDynamicProperty()
+    public function test_isDynamicProperty(): void
     {
         $user      = new User();
         $user->foo = 1;
@@ -148,9 +148,9 @@ class EntityTest extends RebetDatabaseTestCase
         $this->assertSame(true, $user->isDynamicProperty('nothing'));
     }
 
-    public function test_exists()
+    public function test_exists(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $user = new User();
             $this->assertSame(false, $user->exists());
             $user->user_id = 1;
@@ -173,9 +173,9 @@ class EntityTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_create()
+    public function test_create(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $now = DateTime::now()->startsOfSecond();
 
             $user           = new UserWithAnnot();
@@ -208,9 +208,9 @@ class EntityTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_update()
+    public function test_update(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $now = DateTime::now()->startsOfSecond();
 
             $user = User::find(1);
@@ -261,9 +261,9 @@ class EntityTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_save()
+    public function test_save(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $now = DateTime::now()->startsOfSecond();
 
             $user           = new UserWithAnnot();
@@ -305,9 +305,9 @@ class EntityTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_delete()
+    public function test_delete(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $now = DateTime::now()->startsOfSecond();
 
             $user          = new UserWithAnnot();
@@ -327,18 +327,18 @@ class EntityTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_updateBy()
+    public function test_updateBy(): void
     {
         $updating_event_called = false;
         $updated_event_called  = false;
-        Event::listen(function (BatchUpdating $event) use (&$updating_event_called) {
+        Event::listen(function (BatchUpdating $event) use (&$updating_event_called): void {
             $updating_event_called = true;
         });
-        Event::listen(function (BatchUpdated $event) use (&$updated_event_called) {
+        Event::listen(function (BatchUpdated $event) use (&$updated_event_called): void {
             $updated_event_called = true;
         });
 
-        self::eachDb(function (Database $db) use (&$updating_event_called, &$updated_event_called) {
+        self::eachDb(function (Database $db) use (&$updating_event_called, &$updated_event_called): void {
             $updating_event_called = false;
             $updated_event_called  = false;
 
@@ -367,18 +367,18 @@ class EntityTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_deleteBy()
+    public function test_deleteBy(): void
     {
         $deleting_event_called = false;
         $deleted_event_called  = false;
-        Event::listen(function (BatchDeleting $event) use (&$deleting_event_called) {
+        Event::listen(function (BatchDeleting $event) use (&$deleting_event_called): void {
             $deleting_event_called = true;
         });
-        Event::listen(function (BatchDeleted $event) use (&$deleted_event_called) {
+        Event::listen(function (BatchDeleted $event) use (&$deleted_event_called): void {
             $deleted_event_called = true;
         });
 
-        self::eachDb(function (Database $db) use (&$deleting_event_called, &$deleted_event_called) {
+        self::eachDb(function (Database $db) use (&$deleting_event_called, &$deleted_event_called): void {
             $deleting_event_called = false;
             $deleted_event_called  = false;
 
@@ -404,9 +404,9 @@ class EntityTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_existsBy()
+    public function test_existsBy(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertFalse(User::existsBy(['user_id' => 9999]));
             $this->assertTrue(User::existsBy(['user_id' => 1]));
             $this->assertTrue(User::existsBy(['user_id' => 1, 'gender' => Gender::FEMALE()]));
@@ -415,9 +415,9 @@ class EntityTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_count()
+    public function test_count(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertEquals(0, User::count(['user_id' => 9999]));
             $this->assertEquals(1, User::count(['user_id' => 1]));
             $this->assertEquals(1, User::count(['user_id' => 1, 'gender' => Gender::FEMALE()]));

@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class OrderByTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $order_by = new OrderBy(['foo' => 'asc', 'bar' => 'desc']);
         $this->assertInstanceOf(OrderBy::class, $order_by);
@@ -17,7 +17,7 @@ class OrderByTest extends RebetTestCase
         $this->assertSame('DESC', $order_by['bar']);
     }
 
-    public function test_reverse()
+    public function test_reverse(): void
     {
         $order_by = (new OrderBy(['foo' => 'asc', 'bar' => 'desc']))->reverse();
         $this->assertInstanceOf(OrderBy::class, $order_by);
@@ -25,7 +25,7 @@ class OrderByTest extends RebetTestCase
         $this->assertSame('ASC', $order_by['bar']);
     }
 
-    public function test_valueOf()
+    public function test_valueOf(): void
     {
         $order_by = new OrderBy(['foo' => 'asc', 'bar' => 'desc']);
         $this->assertNull(OrderBy::valueOf(null));

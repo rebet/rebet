@@ -11,12 +11,12 @@ use Rebet\Tests\RebetTestCase;
 
 class PaginatorTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(Paginator::class, new Paginator([], 0, 10, 1, null, 1));
     }
 
-    public function test___construct_error()
+    public function test___construct_error(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Invalid paginator arguments. Argument total or next_page_count may not be null at least one.");
@@ -25,7 +25,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(1, $paginator->nextPageCount());
     }
 
-    public function test_action()
+    public function test_action(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertInstanceOf(Paginator::class, $paginator->action('/foo'));
@@ -39,7 +39,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame('top', $this->inspect($paginator, 'anchor'));
     }
 
-    public function test_with()
+    public function test_with(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertInstanceOf(Paginator::class, $paginator->with(['gender' => 1]));
@@ -52,7 +52,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(['gender' => 2, 'foo' => 'bar'], $this->inspect($paginator, 'queries'));
     }
 
-    public function test_count()
+    public function test_count(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(0, $paginator->count());
@@ -61,7 +61,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(3, $paginator->count());
     }
 
-    public function test_total()
+    public function test_total(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(null, $paginator->total());
@@ -73,7 +73,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(100, $paginator->total());
     }
 
-    public function test_hasPages()
+    public function test_hasPages(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(true, $paginator->hasPages());
@@ -94,7 +94,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(false, $paginator->hasPages());
     }
 
-    public function test_page()
+    public function test_page(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(1, $paginator->page());
@@ -115,7 +115,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(8, $paginator->page());
     }
 
-    public function test_prevPage()
+    public function test_prevPage(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(1, $paginator->prevPage());
@@ -136,7 +136,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(7, $paginator->prevPage());
     }
 
-    public function test_nextPage()
+    public function test_nextPage(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(2, $paginator->nextPage());
@@ -160,7 +160,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(9, $paginator->nextPage());
     }
 
-    public function test_pageUrl()
+    public function test_pageUrl(): void
     {
         $paginator = new Paginator([], 0, 10, 5, 100);
         $this->assertSame(null, $paginator->pageUrl(1));
@@ -193,7 +193,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame('/foo?gender=1&_page=3#top', $paginator->pageUrl(3));
     }
 
-    public function test_firstPageUrl()
+    public function test_firstPageUrl(): void
     {
         $paginator = new Paginator([], 0, 10, 5, 100);
         $this->assertSame(null, $paginator->firstPageUrl());
@@ -202,7 +202,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame('/foo/bar?page=1', $paginator->firstPageUrl());
     }
 
-    public function test_prevPageUrl()
+    public function test_prevPageUrl(): void
     {
         $paginator = new Paginator([], 0, 10, 5, 100);
         $this->assertSame(null, $paginator->prevPageUrl());
@@ -215,7 +215,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(null, $paginator->prevPageUrl());
     }
 
-    public function test_nextPageUrl()
+    public function test_nextPageUrl(): void
     {
         $paginator = new Paginator([], 0, 10, 5, 100);
         $this->assertSame(null, $paginator->nextPageUrl());
@@ -232,7 +232,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(null, $paginator->nextPageUrl());
     }
 
-    public function test_lastPageUrl()
+    public function test_lastPageUrl(): void
     {
         $paginator = new Paginator([], 0, 10, 5, 100);
         $this->assertSame(null, $paginator->lastPageUrl());
@@ -249,7 +249,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(null, $paginator->lastPageUrl());
     }
 
-    public function test_pageSize()
+    public function test_pageSize(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(10, $paginator->pageSize());
@@ -264,7 +264,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(25, $paginator->pageSize());
     }
 
-    public function test_onFirstPage()
+    public function test_onFirstPage(): void
     {
         $paginator = new Paginator([], 0, 10, -1, null, 1);
         $this->assertSame(true, $paginator->onFirstPage());
@@ -276,7 +276,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(false, $paginator->onFirstPage());
     }
 
-    public function test_onLastPage()
+    public function test_onLastPage(): void
     {
         $paginator = new Paginator([], 0, 10, 5, null, 1);
         $this->assertSame(false, $paginator->onLastPage());
@@ -300,7 +300,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(true, $paginator->onLastPage());
     }
 
-    public function test_nextPageCount()
+    public function test_nextPageCount(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(1, $paginator->nextPageCount());
@@ -321,7 +321,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(0, $paginator->nextPageCount());
     }
 
-    public function test_lastPage()
+    public function test_lastPage(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(null, $paginator->lastPage());
@@ -342,7 +342,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(null, $paginator->lastPage());
     }
 
-    public function test_from()
+    public function test_from(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(0, $paginator->from());
@@ -360,7 +360,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(25, $paginator->from());
     }
 
-    public function test_to()
+    public function test_to(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(0, $paginator->to());
@@ -378,7 +378,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(27, $paginator->to());
     }
 
-    public function test_eachSide()
+    public function test_eachSide(): void
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertSame(0, $paginator->eachSide());
@@ -387,7 +387,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(3, $paginator->eachSide());
     }
 
-    public function test_hasNext()
+    public function test_hasNext(): void
     {
         $paginator = new Paginator([1, 2, 3], 0, 3, 1, null, 0);
         $this->assertSame(false, $paginator->hasNext());
@@ -402,7 +402,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(false, $paginator->hasNext());
     }
 
-    public function test_hasPrev()
+    public function test_hasPrev(): void
     {
         $paginator = new Paginator([1, 2, 3], 0, 3, 1, null, 0);
         $this->assertSame(false, $paginator->hasPrev());
@@ -420,7 +420,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(true, $paginator->hasPrev());
     }
 
-    public function test_hasTotal()
+    public function test_hasTotal(): void
     {
         $paginator = new Paginator([1, 2, 3], 0, 3, 1, null, 0);
         $this->assertSame(false, $paginator->hasTotal());
@@ -429,7 +429,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(true, $paginator->hasTotal());
     }
 
-    public function test_hasLastPage()
+    public function test_hasLastPage(): void
     {
         $paginator = new Paginator([1, 2, 3], 0, 3, 1, null, 0);
         $this->assertSame(false, $paginator->hasLastPage());
@@ -484,7 +484,7 @@ class PaginatorTest extends RebetTestCase
     }
 
     #[DataProvider('dataFocusPages')]
-    public function test_focusPages(array $expect, int $each_side, int $page, int|null $total, int|null $next_page_count = null)
+    public function test_focusPages(array $expect, int $each_side, int $page, int|null $total, int|null $next_page_count = null): void
     {
         $paginator   = new Paginator([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $each_side, 10, $page, $total, $next_page_count);
         $focus_pages = $paginator->focusPages();
@@ -493,7 +493,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertEquals(end($focus_pages), $paginator->endOfFocusPage());
     }
 
-    public function test_jsonSerialize()
+    public function test_jsonSerialize(): void
     {
         $paginator = new Paginator([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 10, 5, 100);
         $paginator->action('/foo')->with(['gender' => 1]);

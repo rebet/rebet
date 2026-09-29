@@ -14,7 +14,7 @@ use Rebet\Tests\RebetTestCase;
 
 class AttributedClassTest extends RebetTestCase
 {
-    public function test_construct()
+    public function test_construct(): void
     {
         $ac = new AttributedClass(AttributedClassTest_Mock::class);
         $this->assertInstanceOf(AttributedClass::class, $ac);
@@ -24,7 +24,7 @@ class AttributedClassTest extends RebetTestCase
         $this->assertInstanceOf(AttributedClass::class, $ac);
     }
 
-    public function test_of()
+    public function test_of(): void
     {
         $ac = AttributedClass::of(AttributedClassTest_Mock::class);
         $this->assertInstanceOf(AttributedClass::class, $ac);
@@ -34,7 +34,7 @@ class AttributedClassTest extends RebetTestCase
         $this->assertInstanceOf(AttributedClass::class, $ac);
     }
 
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $ac      = AttributedClass::of(AttributedClassTest_Mock::class);
         $channel = $ac->attribute(Channel::class);
@@ -46,13 +46,13 @@ class AttributedClassTest extends RebetTestCase
         $this->assertSame(['id' => '[0-9]+', 'code' => '[a-zA-Z]+'], $where->wheres);
     }
 
-    public function test_nonAttribute()
+    public function test_nonAttribute(): void
     {
         $ac = AttributedClass::of(AttributedClassTest_Mock::class);
         $this->assertNull($ac->attribute(Method::class));
     }
 
-    public function test_attributes()
+    public function test_attributes(): void
     {
         $ac         = AttributedClass::of(AttributedClassTest_Mock::class);
         $attributes = $ac->attributes();
@@ -66,19 +66,19 @@ class AttributedClassTest extends RebetTestCase
         $this->assertSame(['id' => '[0-9]+', 'code' => '[a-zA-Z]+'], $where->wheres);
     }
 
-    public function test_method()
+    public function test_method(): void
     {
         $am = AttributedClass::of(AttributedClassTest_Mock::class)->method('bar');
         $this->assertInstanceOf(AttributedMethod::class, $am);
     }
 
-    public function test_property()
+    public function test_property(): void
     {
         $ap = AttributedClass::of(AttributedClassTest_Mock::class)->property('foo');
         $this->assertInstanceOf(AttributedProperty::class, $ap);
     }
 
-    public function test_properties()
+    public function test_properties(): void
     {
         $aps = AttributedClass::of(AttributedClassTest_Mock::class)->properties();
         $this->assertCount(1, $aps);
@@ -86,13 +86,13 @@ class AttributedClassTest extends RebetTestCase
         $this->assertSame('foo', $aps[0]->reflector()->getName());
     }
 
-    public function test_reflector()
+    public function test_reflector(): void
     {
         $ac = AttributedClass::of(AttributedClassTest_Mock::class);
         $this->assertInstanceOf(\ReflectionClass::class, $ac->reflector());
     }
 
-    public function test_subClass()
+    public function test_subClass(): void
     {
         $ac = AttributedClass::of(AttributedClassTest_Mock_Sub::class);
 
@@ -125,7 +125,7 @@ class AttributedClassTest_Mock
     public $foo;
 
     #[Channel("web")]
-    public function bar() {}
+    public function bar(): void {}
 }
 
 class AttributedClassTest_Mock_Sub extends AttributedClassTest_Mock {}

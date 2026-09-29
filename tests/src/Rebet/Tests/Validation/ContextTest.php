@@ -93,7 +93,7 @@ class ContextTest extends RebetTestCase
         ];
     }
 
-    public function test___cunstract()
+    public function test___cunstract(): void
     {
         $c = new Context(
             'C',
@@ -105,7 +105,7 @@ class ContextTest extends RebetTestCase
         $this->assertInstanceOf(Context::class, $c);
     }
 
-    public function test_initBy()
+    public function test_initBy(): void
     {
         $c = new Context(
             'C',
@@ -130,7 +130,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame('Dummy', $c->label);
     }
 
-    public function test_hasError()
+    public function test_hasError(): void
     {
         $c = new Context(
             'C',
@@ -163,7 +163,7 @@ class ContextTest extends RebetTestCase
         $this->assertTrue($c->hasError('other'));
     }
 
-    public function test_isQuietAndQuiet()
+    public function test_isQuietAndQuiet(): void
     {
         $c = new Context(
             'C',
@@ -176,7 +176,7 @@ class ContextTest extends RebetTestCase
         $this->assertTrue($c->isQuiet());
     }
 
-    public function test_blank()
+    public function test_blank(): void
     {
         $c = new Context(
             'C',
@@ -193,7 +193,7 @@ class ContextTest extends RebetTestCase
         $this->assertTrue($c->blank());
     }
 
-    public function test_isBlank()
+    public function test_isBlank(): void
     {
         $this->assertSame(true, Context::isBlank(null));
         $this->assertSame(true, Context::isBlank(''));
@@ -201,7 +201,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame(false, Context::isBlank(0));
     }
 
-    public function test_count()
+    public function test_count(): void
     {
         $c = new Context(
             'C',
@@ -215,7 +215,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame(3, $c->count('array'));
     }
 
-    public function test_appendError()
+    public function test_appendError(): void
     {
         $c = new Context(
             'C',
@@ -234,7 +234,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame(['氏名を入力して下さい。'], $this->errors['name'] ?? null);
     }
 
-    public function test_appendError_withParam()
+    public function test_appendError_withParam(): void
     {
         $c = new Context(
             'C',
@@ -249,7 +249,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame(['氏名は12文字以下で入力して下さい。'], $this->errors['name'] ?? null);
     }
 
-    public function test_appendError_withAt()
+    public function test_appendError_withAt(): void
     {
         $c = new Context(
             'C',
@@ -270,7 +270,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame(['Name error 1', 'Name error 2'], $this->errors['name'] ?? null);
     }
 
-    public function test_appendError_customMessageInRule()
+    public function test_appendError_customMessageInRule(): void
     {
         $c = new Context(
             'C',
@@ -285,7 +285,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame(['カスタムメッセージ[12]'], $this->errors['name'] ?? null);
     }
 
-    public function test_value()
+    public function test_value(): void
     {
         $c = new Context(
             'C',
@@ -305,7 +305,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame(null, $c->value('invalid'));
     }
 
-    public function test_label()
+    public function test_label(): void
     {
         $c = new Context(
             'C',
@@ -381,7 +381,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame('ネストされた親の子', $parent->label('child'));
     }
 
-    public function test_labels()
+    public function test_labels(): void
     {
         $c = new Context(
             'C',
@@ -415,7 +415,7 @@ class ContextTest extends RebetTestCase
         );
     }
 
-    public function test_resolve()
+    public function test_resolve(): void
     {
         $c = new Context(
             'C',
@@ -445,7 +445,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame([1, '男性'], $c->resolve(Gender::MALE()));
     }
 
-    public function test_pluck()
+    public function test_pluck(): void
     {
         $c = new Context(
             'C',
@@ -513,7 +513,7 @@ class ContextTest extends RebetTestCase
         );
     }
 
-    public function test_ordinalize()
+    public function test_ordinalize(): void
     {
         App::setLocale('en');
         $c = new Context(
@@ -525,7 +525,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame('1st', $c->ordinalize(1));
     }
 
-    public function test_grammar()
+    public function test_grammar(): void
     {
         App::setLocale('en');
         $c = new Context(
@@ -537,7 +537,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame(', ', $c->grammar('delimiter'));
     }
 
-    public function test_crud()
+    public function test_crud(): void
     {
         $c = new Context(
             'C',
@@ -548,7 +548,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame('C', $c->crud());
     }
 
-    public function test_parent()
+    public function test_parent(): void
     {
         $c = new Context(
             'C',
@@ -566,7 +566,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame($c, $nest->parent());
     }
 
-    public function test_hasParent()
+    public function test_hasParent(): void
     {
         $c = new Context(
             'C',
@@ -584,7 +584,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame(true, $nest->hasParent());
     }
 
-    public function test_nest()
+    public function test_nest(): void
     {
         $c = new Context(
             'C',
@@ -708,7 +708,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame('送付先郵便番号', $n1->label('zip'));
     }
 
-    public function test_setExtra()
+    public function test_setExtra(): void
     {
         $c = new Context(
             'C',

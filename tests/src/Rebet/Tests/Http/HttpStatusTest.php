@@ -11,7 +11,7 @@ use Rebet\Tests\RebetTestCase;
 
 class HttpStatusTest extends RebetTestCase
 {
-    public function test_reasonPhraseOf()
+    public function test_reasonPhraseOf(): void
     {
         $this->assertSame(null, HttpStatus::reasonPhraseOf(999));
         $this->assertSame('Continue', HttpStatus::reasonPhraseOf(100));
@@ -19,7 +19,7 @@ class HttpStatusTest extends RebetTestCase
         $this->assertSame('Not Found', HttpStatus::reasonPhraseOf(404));
     }
 
-    public function test_exists()
+    public function test_exists(): void
     {
         $this->assertSame(false, HttpStatus::exists(999));
         $this->assertSame(true, HttpStatus::exists(100));
@@ -27,7 +27,7 @@ class HttpStatusTest extends RebetTestCase
         $this->assertSame(true, HttpStatus::exists(404));
     }
 
-    public function test_classOf()
+    public function test_classOf(): void
     {
         $this->assertSame(null, HttpStatus::classOf(999));
         $this->assertSame(null, HttpStatus::classOf(199));
@@ -36,7 +36,7 @@ class HttpStatusTest extends RebetTestCase
         $this->assertSame(HttpStatus::CLIENT_ERROR, HttpStatus::classOf(404));
     }
 
-    public function test_isInformational()
+    public function test_isInformational(): void
     {
         $this->assertSame(false, HttpStatus::isInformational(999));
         $this->assertSame(false, HttpStatus::isInformational(199));
@@ -48,7 +48,7 @@ class HttpStatusTest extends RebetTestCase
         $this->assertSame(false, HttpStatus::isInformational(500));
     }
 
-    public function test_isSuccessful()
+    public function test_isSuccessful(): void
     {
         $this->assertSame(false, HttpStatus::isSuccessful(999));
         $this->assertSame(false, HttpStatus::isSuccessful(299));
@@ -60,7 +60,7 @@ class HttpStatusTest extends RebetTestCase
         $this->assertSame(false, HttpStatus::isSuccessful(500));
     }
 
-    public function test_isRedirection()
+    public function test_isRedirection(): void
     {
         $this->assertSame(false, HttpStatus::isRedirection(999));
         $this->assertSame(false, HttpStatus::isRedirection(399));
@@ -72,7 +72,7 @@ class HttpStatusTest extends RebetTestCase
         $this->assertSame(false, HttpStatus::isRedirection(500));
     }
 
-    public function test_isClientError()
+    public function test_isClientError(): void
     {
         $this->assertSame(false, HttpStatus::isClientError(999));
         $this->assertSame(false, HttpStatus::isClientError(499));
@@ -84,7 +84,7 @@ class HttpStatusTest extends RebetTestCase
         $this->assertSame(false, HttpStatus::isClientError(500));
     }
 
-    public function test_isServerError()
+    public function test_isServerError(): void
     {
         $this->assertSame(false, HttpStatus::isServerError(999));
         $this->assertSame(false, HttpStatus::isServerError(599));
@@ -96,7 +96,7 @@ class HttpStatusTest extends RebetTestCase
         $this->assertSame(true, HttpStatus::isServerError(500));
     }
 
-    public function test_abort_en()
+    public function test_abort_en(): void
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage("404 Custom Not Found");
@@ -104,7 +104,7 @@ class HttpStatusTest extends RebetTestCase
         HttpStatus::abort(404);
     }
 
-    public function test_abort_ja()
+    public function test_abort_ja(): void
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage("404 指定のページが見つかりません");
@@ -113,7 +113,7 @@ class HttpStatusTest extends RebetTestCase
         HttpStatus::abort(404);
     }
 
-    public function test_abort_none()
+    public function test_abort_none(): void
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage("404 Not Found");
@@ -122,7 +122,7 @@ class HttpStatusTest extends RebetTestCase
         HttpStatus::abort(404);
     }
 
-    public function test_abort_detail()
+    public function test_abort_detail(): void
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage("404 Not Found: This is detail.");
@@ -131,7 +131,7 @@ class HttpStatusTest extends RebetTestCase
         HttpStatus::abort(404, 'This is detail.');
     }
 
-    public function test_abort_detailAndTitle()
+    public function test_abort_detailAndTitle(): void
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage("New Title: This is detail.");

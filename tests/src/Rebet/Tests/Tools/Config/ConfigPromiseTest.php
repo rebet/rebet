@@ -30,7 +30,7 @@ class ConfigPromiseTest extends RebetTestCase
         parent::tearDown();
     }
 
-    public function test_get()
+    public function test_get(): void
     {
         \putenv('PROMISE_TEST=1');
         $this->assertSame('1', $this->promise_once->get());
@@ -41,7 +41,7 @@ class ConfigPromiseTest extends RebetTestCase
         $this->assertSame('2', $this->promise_every->get());
     }
 
-    public function test___toString()
+    public function test___toString(): void
     {
         $this->assertSame("<Promise: once>", $this->promise_once->__toString());
         $this->assertSame("<Promise: dynamic>", $this->promise_every->__toString());

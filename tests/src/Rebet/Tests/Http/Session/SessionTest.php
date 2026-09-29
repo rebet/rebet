@@ -14,12 +14,12 @@ use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
 class SessionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(Session::class, new Session());
     }
 
-    public function test_reset()
+    public function test_reset(): void
     {
         $this->assertSame(null, Session::current());
         $session = new Session();
@@ -32,7 +32,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame([], $attribute->all());
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $session = new Session();
         $session->set('foo', 'Foo');
@@ -41,14 +41,14 @@ class SessionTest extends RebetTestCase
         $this->assertSame([], $session->all());
     }
 
-    public function test_current()
+    public function test_current(): void
     {
         $this->assertSame(null, Session::current());
         $session = new Session();
         $this->assertSame($session, Session::current());
     }
 
-    public function test_has()
+    public function test_has(): void
     {
         $session = new Session();
         $session->set('foo', 'Foo');
@@ -60,7 +60,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame(false, $session->has('baz.b'));
     }
 
-    public function test_get()
+    public function test_get(): void
     {
         $session = new Session();
         $session->set('foo', 'Foo');
@@ -72,7 +72,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame(null, $session->get('baz.b'));
     }
 
-    public function test_set()
+    public function test_set(): void
     {
         $session = new Session();
 
@@ -90,7 +90,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame(['a' => 'A', 'b' => 'B'], $session->get('baz'));
     }
 
-    public function test_remove()
+    public function test_remove(): void
     {
         $session = new Session();
         $session->set('foo', 'Foo');
@@ -113,26 +113,26 @@ class SessionTest extends RebetTestCase
         $this->assertSame(null, $session->get('baz'));
     }
 
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $session = new Session();
         $this->assertInstanceOf(AttributeBag::class, $session->attribute());
     }
 
-    public function test_flash()
+    public function test_flash(): void
     {
         $session = new Session();
         $this->assertInstanceOf(FlashBag::class, $session->flash());
     }
 
-    public function test_meta()
+    public function test_meta(): void
     {
         $session = new Session();
         $this->assertInstanceOf(MetadataBag::class, $session->meta());
         $this->assertSame($session->getMetadataBag(), $session->meta());
     }
 
-    public function test_all()
+    public function test_all(): void
     {
         $session = new Session();
         $session->set('foo', 'Foo');
@@ -140,7 +140,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame(['foo' => 'Foo', 'baz' => ['a' => 'A']], $session->all());
     }
 
-    public function test_replace()
+    public function test_replace(): void
     {
         $session = new Session();
         $session->set('foo', 'Foo');
@@ -148,7 +148,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame(['baz' => 'Baz'], $session->all());
     }
 
-    public function test_getNameAndSetName()
+    public function test_getNameAndSetName(): void
     {
         $session = new Session();
         $default = $session->getName();
@@ -157,7 +157,7 @@ class SessionTest extends RebetTestCase
         $this->assertNotSame($default, $session->getName());
     }
 
-    public function test_registerBagAndGetBag()
+    public function test_registerBagAndGetBag(): void
     {
         $session = new Session();
         $bag     = new AttributeBag('others');
@@ -165,7 +165,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame($bag, $session->getBag('others'));
     }
 
-    public function test_startAndIsStarted()
+    public function test_startAndIsStarted(): void
     {
         $session = new Session();
         $this->assertSame('', $session->id());
@@ -175,7 +175,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame(true, $session->isStarted());
     }
 
-    public function test_invalidate()
+    public function test_invalidate(): void
     {
         $session = new Session();
         $session->start();
@@ -196,7 +196,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame(null, $session->get('foo'));
     }
 
-    public function test_migrate()
+    public function test_migrate(): void
     {
         $session = new Session();
         $session->start();
@@ -225,7 +225,7 @@ class SessionTest extends RebetTestCase
         $this->assertFalse($session->migrate(true, 1200));
     }
 
-    public function test_save()
+    public function test_save(): void
     {
         $mock = $this->getMockBuilder(SessionStorageInterface::class)->getMock();
         $mock->expects($this->once())->method('save');
@@ -233,7 +233,7 @@ class SessionTest extends RebetTestCase
         $session->save();
     }
 
-    public function test_id()
+    public function test_id(): void
     {
         $mock = $this->getMockBuilder(SessionStorageInterface::class)->getMock();
         $mock->expects($this->once())->method('getId')->willReturn('ANY_SESSION_ID');
@@ -246,7 +246,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame('new_Id', $session->id());
     }
 
-    public function test_createTokenKey_invalidScopeName()
+    public function test_createTokenKey_invalidScopeName(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid token scope name 'invalid:name' found. Token scope can not contains ':'.");
@@ -254,7 +254,7 @@ class SessionTest extends RebetTestCase
         Session::createTokenKey('invalid:name');
     }
 
-    public function test_createTokenKey()
+    public function test_createTokenKey(): void
     {
         $this->assertSame('_token', Session::createTokenKey());
         $this->assertSame('_token:article', Session::createTokenKey('article'));
@@ -262,7 +262,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame('_token:article:edit:1', Session::createTokenKey('article', 'edit', 1));
     }
 
-    public function test_analyzeTokenScope_invalidKeyName()
+    public function test_analyzeTokenScope_invalidKeyName(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid token key 'invalid:name' was given. Token key must be starts with '_token'.");
@@ -270,7 +270,7 @@ class SessionTest extends RebetTestCase
         Session::analyzeTokenScope('invalid:name');
     }
 
-    public function test_analyzeTokenScope()
+    public function test_analyzeTokenScope(): void
     {
         $this->assertSame([], Session::analyzeTokenScope('_token'));
         $this->assertSame(['article'], Session::analyzeTokenScope('_token:article'));
@@ -278,7 +278,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame(['article', 'edit', '1'], Session::analyzeTokenScope('_token:article:edit:1'));
     }
 
-    public function test_tokenAndGenerateTokenAndVerifyToken()
+    public function test_tokenAndGenerateTokenAndVerifyToken(): void
     {
         $session = new Session();
         $this->assertSame(null, $session->token());
@@ -311,7 +311,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame(true, $session->verifyToken($token));
     }
 
-    private function setInheritDataTo(Session $session)
+    private function setInheritDataTo(Session $session): void
     {
         $session->saveInheritData('input', ['a' => 'A']);
         $session->saveInheritData('input', ['b' => 'B']);
@@ -320,7 +320,7 @@ class SessionTest extends RebetTestCase
         $session->saveInheritData('input', ['d' => 'D'], ['/blog/register', '/blog/copy']);
     }
 
-    public function test_initReusableToken()
+    public function test_initReusableToken(): void
     {
         $session = new Session();
         $this->assertSame(null, $session->token());
@@ -337,7 +337,7 @@ class SessionTest extends RebetTestCase
         $this->assertSame($new_token, $session->token());
     }
 
-    public function test_saveAndLoadInheritData()
+    public function test_saveAndLoadInheritData(): void
     {
         $session = new Session();
         $this->setInheritDataTo($session);

@@ -13,7 +13,7 @@ use Rebet\Tools\Utility\Dsn;
 class DsnTest extends RebetTestCase
 {
     #[DataProvider('dataParses')]
-    public function test_parse($dsn, $expect)
+    public function test_parse($dsn, $expect): void
     {
         try {
             $this->assertSame($expect, Dsn::parse($dsn));

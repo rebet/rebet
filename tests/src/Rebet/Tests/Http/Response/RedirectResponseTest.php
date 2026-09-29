@@ -10,14 +10,14 @@ use Rebet\Tests\RebetTestCase;
 
 class RedirectResponseTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $response = new RedirectResponse('/');
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertInstanceOf(Response::class, $response);
     }
 
-    public function test_with()
+    public function test_with(): void
     {
         $request  = $this->createRequestMock('/');
         $response = (new RedirectResponse('/user/edit'))->with(['name' => 'Name']);
@@ -26,7 +26,7 @@ class RedirectResponseTest extends RebetTestCase
         $this->assertSame(['name' => 'Name'], $request->session()->loadInheritData('input', '/user/edit'));
     }
 
-    public function test_errors()
+    public function test_errors(): void
     {
         $request  = $this->createRequestMock('/');
         $response = (new RedirectResponse('/user/edit'))->errors(['name' => 'Invalid']);

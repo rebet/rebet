@@ -50,7 +50,7 @@ class ConfigReferrerTest extends RebetTestCase
         $this->ref_user     = new ConfigReferrer(ConfigReferrerTest_Mock::class, 'user', 'default_user');
     }
 
-    public function test_get()
+    public function test_get(): void
     {
         $this->assertSame('mysql', $this->ref_driver->get());
         $this->assertNull($this->ref_database->get());
@@ -75,7 +75,7 @@ class ConfigReferrerTest extends RebetTestCase
         $this->assertSame('test', ConfigReferrerTest_Mock::config('user', false, 'default_user'));
     }
 
-    public function test___toString()
+    public function test___toString(): void
     {
         $this->assertSame("<Referrer: Rebet\Tests\Tools\Config\ConfigReferrerTest_Mock.driver (default: null)>", $this->ref_driver->__toString());
         $this->assertSame("<Referrer: Rebet\Tests\Tools\Config\ConfigReferrerTest_Mock.user (default: default_user)>", $this->ref_user->__toString());

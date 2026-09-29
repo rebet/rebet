@@ -125,7 +125,7 @@ class BuiltinTagProcessors
      */
     public static function endfield(): Processor
     {
-        $processor = function () {
+        $processor = function (): void {
             BuiltinTagProcessors::$field = null;
         };
 

@@ -45,14 +45,14 @@ class LogTest extends RebetTestCase
         Log::channel('test')->driver()->clear();
     }
 
-    public function test_channel()
+    public function test_channel(): void
     {
         $this->assertInstanceOf(TestDriver::class, Log::channel()->driver());
         $this->assertInstanceOf(TestDriver::class, Log::channel('test')->driver());
         $this->assertInstanceOf(StderrDriver::class, Log::channel('stderr')->driver());
     }
 
-    public function test_channel_invliad()
+    public function test_channel_invliad(): void
     {
         $process_id = getmypid();
         $this->assertStderrContainsAll(
@@ -60,7 +60,7 @@ class LogTest extends RebetTestCase
                 "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'nothing' channel logger",
                 "Unable to instantiate 'channels.nothing.driver' in Log. Undefined configure 'Rebet\Log\Log.channels.nothing.driver'.",
             ],
-            function () {
+            function (): void {
                 $this->assertInstanceOf(NullDriver::class, Log::channel('nothing')->driver());
             },
         );
@@ -69,18 +69,18 @@ class LogTest extends RebetTestCase
                 "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'missing_driver' channel logger",
                 "Unable to instantiate 'channels.missing_driver.driver' in Log. Undefined configure 'Rebet\Log\Log.channels.missing_driver.driver'.",
             ],
-            function () {
+            function (): void {
                 $this->assertInstanceOf(NullDriver::class, Log::channel('missing_driver')->driver());
             },
         );
     }
 
-    public function test_stack()
+    public function test_stack(): void
     {
         $process_id = getmypid();
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.040050 [stderr.ERROR] {$process_id} Somthing error happened.\n",
-            function () {
+            function (): void {
                 Log::stack('test', 'stderr')->error('Somthing error happened.');
             },
         );
@@ -91,14 +91,14 @@ class LogTest extends RebetTestCase
 
         $this->assertStderrEquals(
             "2010-10-20 10:20:30.040050 [stderr.INFO] {$process_id} Somthing infomation.\n",
-            function () {
+            function (): void {
                 Log::stack('test', 'stderr')->info('Somthing infomation.');
             },
         );
         $this->assertFalse(Log::channel('test')->driver()->hasInfoRecords());
     }
 
-    public function test_log_lebel()
+    public function test_log_lebel(): void
     {
         $driver = Log::channel()->driver();
 
@@ -135,7 +135,7 @@ class LogTest extends RebetTestCase
         $this->assertStringContainsString('EMERGENCY', $driver->formatted());
     }
 
-    public function test_memory()
+    public function test_memory(): void
     {
         $driver = Log::channel()->driver();
         $driver->clear();
@@ -143,7 +143,7 @@ class LogTest extends RebetTestCase
         $this->assertStringContainsString('Memory', $driver->formatted());
     }
 
-    public function test_log()
+    public function test_log(): void
     {
         $this->assertFalse(Log::channel()->driver()->hasErrorRecords());
         Log::log(LogLevel::ERROR, 'message.');

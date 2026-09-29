@@ -28,7 +28,7 @@ class EmbedNodeTest extends RebetTestCase
         $this->lexer    = new Lexer($this->env);
     }
 
-    public function test_addCallbackAndExecuteAndClear()
+    public function test_addCallbackAndExecuteAndClear(): void
     {
         EmbedNode::reset();
         $this->assertNull(EmbedNode::execute('hello'));
@@ -40,12 +40,12 @@ class EmbedNodeTest extends RebetTestCase
         $this->assertNull(EmbedNode::execute('hello'));
     }
 
-    public function test___constract()
+    public function test___constract(): void
     {
         $this->assertInstanceOf(EmbedNode::class, new EmbedNode('echo', 'hello', [], ';'));
     }
 
-    public function test_compile()
+    public function test_compile(): void
     {
         $node = new EmbedNode('echo', 'hello', [], ';');
         $src  = $this->compiler->compile($node)->getSource();

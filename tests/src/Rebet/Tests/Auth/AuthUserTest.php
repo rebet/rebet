@@ -57,7 +57,7 @@ class AuthUserTest extends RebetTestCase
         $this->array_user_source['bank'] = $bank;
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $user = new AuthUser($this->array_user_source);
         $this->assertInstanceOf(AuthUser::class, $user);
@@ -73,7 +73,7 @@ class AuthUserTest extends RebetTestCase
         $this->assertSame('admin', $user->role);
     }
 
-    public function test_guest()
+    public function test_guest(): void
     {
         $user = AuthUser::guest();
         $this->assertTrue($user->isGuest());
@@ -97,7 +97,7 @@ class AuthUserTest extends RebetTestCase
         $this->assertSame('user@rebet.local', $user->charengedSigninId());
     }
 
-    public function test_provider()
+    public function test_provider(): void
     {
         $user = new AuthUser($this->object_user_source);
         $this->assertNull($user->provider());
@@ -106,7 +106,7 @@ class AuthUserTest extends RebetTestCase
         $this->assertInstanceOf(ArrayProvider::class, $user->provider());
     }
 
-    public function test_refresh()
+    public function test_refresh(): void
     {
         $this->signin();
         $user = Auth::user();
@@ -120,20 +120,20 @@ class AuthUserTest extends RebetTestCase
         $this->assertSame('User', $user->name);
     }
 
-    public function test_isGuest()
+    public function test_isGuest(): void
     {
         $this->assertTrue(AuthUser::guest()->isGuest());
         $this->signin();
         $this->assertFalse(Auth::user()->isGuest());
     }
 
-    public function test_charengedSigninId()
+    public function test_charengedSigninId(): void
     {
         $this->assertNull(AuthUser::guest()->charengedSigninId());
         $this->assertSame(1, AuthUser::guest(1)->charengedSigninId());
     }
 
-    public function test_is()
+    public function test_is(): void
     {
         $user = Auth::user();
         $this->assertTrue($user->isGuest());
@@ -157,7 +157,7 @@ class AuthUserTest extends RebetTestCase
         $this->assertTrue($user->is('guest', 'user'));
     }
 
-    public function test_isnot()
+    public function test_isnot(): void
     {
         $user = Auth::user();
         $this->assertTrue($user->isGuest());
@@ -165,7 +165,7 @@ class AuthUserTest extends RebetTestCase
         $this->assertTrue($user->isnot('user'));
     }
 
-    public function test_can()
+    public function test_can(): void
     {
         $user          = new User();
         $user->user_id = 2;
@@ -190,7 +190,7 @@ class AuthUserTest extends RebetTestCase
         $this->assertTrue(Auth::user()->can('update', $user));
     }
 
-    public function test_cannot()
+    public function test_cannot(): void
     {
         $user          = new User();
         $user->user_id = 2;
@@ -215,7 +215,7 @@ class AuthUserTest extends RebetTestCase
         $this->assertFalse(Auth::user()->cannot('update', $user));
     }
 
-    public function test_raw()
+    public function test_raw(): void
     {
         $this->assertNull(AuthUser::guest()->raw());
         $this->signin();
@@ -228,7 +228,7 @@ class AuthUserTest extends RebetTestCase
         $this->assertSame(999, Auth::user()->id);
     }
 
-    public function test___get()
+    public function test___get(): void
     {
         foreach ([$this->array_user_source, $this->object_user_source] as $user_source) {
             $user = new AuthUser($user_source);
@@ -257,7 +257,7 @@ class AuthUserTest extends RebetTestCase
         }
     }
 
-    public function test___getInfiniteRecursionAliases()
+    public function test___getInfiniteRecursionAliases(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Too many (over 20) aliases recursion depth.");
@@ -266,7 +266,7 @@ class AuthUserTest extends RebetTestCase
         $name = $user->name;
     }
 
-    public function test___set()
+    public function test___set(): void
     {
         foreach ([$this->array_user_source, $this->object_user_source] as $user_source) {
             $user = new AuthUser($user_source);

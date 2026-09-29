@@ -9,12 +9,12 @@ use Rebet\Tests\RebetTestCase;
 
 class PdoParameterTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(PdoParameter::class, new PdoParameter('foo'));
     }
 
-    public function test___toString()
+    public function test___toString(): void
     {
         $p = new PdoParameter('foo');
         $this->assertSame('[STR] foo', $p->__toString());
@@ -23,31 +23,31 @@ class PdoParameterTest extends RebetTestCase
         $this->assertSame('[INT] 123', $p->__toString());
     }
 
-    public function test_str()
+    public function test_str(): void
     {
         $p = PdoParameter::str('foo');
         $this->assertSame(\PDO::PARAM_STR, $p->type);
     }
 
-    public function test_int()
+    public function test_int(): void
     {
         $p = PdoParameter::int('foo');
         $this->assertSame(\PDO::PARAM_INT, $p->type);
     }
 
-    public function test_bool()
+    public function test_bool(): void
     {
         $p = PdoParameter::bool(true);
         $this->assertSame(\PDO::PARAM_BOOL, $p->type);
     }
 
-    public function test_lob()
+    public function test_lob(): void
     {
         $p = PdoParameter::lob('foo');
         $this->assertSame(\PDO::PARAM_LOB, $p->type);
     }
 
-    public function test_null()
+    public function test_null(): void
     {
         $p = PdoParameter::null();
         $this->assertSame(\PDO::PARAM_NULL, $p->type);

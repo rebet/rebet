@@ -23,7 +23,7 @@ class EnvCommand extends Command
     /**
      * {@inheritDoc}
      */
-    protected function handle()
+    protected function handle(): void
     {
         $this->writeln('<info>Current application environment:</info> <comment>' . App::env() . '.</comment>');
     }

@@ -10,13 +10,13 @@ use Rebet\Tests\RebetTestCase;
 
 class UserAgentTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(UserAgent::class, new UserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'));
         $this->assertInstanceOf(UserAgent::class, new UserAgent(new DeviceDetector('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36')));
     }
 
-    public function test_valueOf()
+    public function test_valueOf(): void
     {
         $ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36';
         $this->assertNull(UserAgent::valueOf(null));
@@ -26,7 +26,7 @@ class UserAgentTest extends RebetTestCase
         $this->assertInstanceOf(UserAgent::class, UserAgent::valueOf(new UserAgent($ua)));
     }
 
-    public function test___toString()
+    public function test___toString(): void
     {
         $ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36';
         $this->assertSame($ua, (new UserAgent($ua))->__toString());

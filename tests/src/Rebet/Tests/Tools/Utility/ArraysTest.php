@@ -24,7 +24,7 @@ class ArraysTest extends RebetTestCase
         ]);
     }
 
-    public function test_random()
+    public function test_random(): void
     {
         $list = ['a', 'b', 'c', 'd', 'e', 'f'];
         sort($list);
@@ -39,7 +39,7 @@ class ArraysTest extends RebetTestCase
         }
     }
 
-    public function test_isSequential()
+    public function test_isSequential(): void
     {
         $this->assertFalse(Arrays::isSequential(null));
 
@@ -55,7 +55,7 @@ class ArraysTest extends RebetTestCase
         $this->assertFalse(Arrays::isSequential(['a' => 'a', 'b' => 'b']));
     }
 
-    public function test_flatten()
+    public function test_flatten(): void
     {
         $this->assertNull(Arrays::flatten(null));
         $this->assertSame([], Arrays::flatten([]));
@@ -95,7 +95,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(['#foo', '#bar', '#zap', '#baz'], Arrays::flatten($array));
     }
 
-    public function test_pluck()
+    public function test_pluck(): void
     {
         $list = [
             ['user_id' => 21, 'name' => 'John'],
@@ -126,7 +126,7 @@ class ArraysTest extends RebetTestCase
         );
     }
 
-    public function test_override()
+    public function test_override(): void
     {
         $this->assertSame(1, Arrays::override(null, 1));
         $this->assertNull(Arrays::override(1, null));
@@ -216,7 +216,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals([3, 1, 2], $merged);
     }
 
-    public function test_override_option()
+    public function test_override_option(): void
     {
         $this->assertSame(
             [
@@ -240,7 +240,7 @@ class ArraysTest extends RebetTestCase
         );
     }
 
-    public function test_override_optionInline()
+    public function test_override_optionInline(): void
     {
         $this->assertSame(
             [
@@ -260,7 +260,7 @@ class ArraysTest extends RebetTestCase
         );
     }
 
-    public function test_override_defaultModePrepend()
+    public function test_override_defaultModePrepend(): void
     {
         $this->assertSame(
             [
@@ -375,7 +375,7 @@ class ArraysTest extends RebetTestCase
         );
     }
 
-    public function test_override_defaultModeReplace()
+    public function test_override_defaultModeReplace(): void
     {
         $this->assertSame(
             [
@@ -394,7 +394,7 @@ class ArraysTest extends RebetTestCase
         );
     }
 
-    public function test_override_defaultModeMerge()
+    public function test_override_defaultModeMerge(): void
     {
         $this->assertSame(
             [
@@ -445,7 +445,7 @@ class ArraysTest extends RebetTestCase
         );
     }
 
-    public function test_override_wildCard()
+    public function test_override_wildCard(): void
     {
         $this->assertSame(
             [
@@ -496,7 +496,7 @@ class ArraysTest extends RebetTestCase
         );
     }
 
-    public function test_duplicate()
+    public function test_duplicate(): void
     {
         $this->assertNull(Arrays::duplicate(null));
         $this->assertSame([], Arrays::duplicate([]));
@@ -506,7 +506,7 @@ class ArraysTest extends RebetTestCase
         ));
     }
 
-    public function test_shuffleWithSeed()
+    public function test_shuffleWithSeed(): void
     {
         $this->assertNull(Arrays::shuffle(null, 1234));
         $this->assertEquals([], Arrays::shuffle([], 1234));
@@ -517,7 +517,7 @@ class ArraysTest extends RebetTestCase
         );
     }
 
-    public function test_pull()
+    public function test_pull(): void
     {
         $array = ['name' => 'Desk', 'price' => 100];
         $name  = Arrays::pull($array, 'name');
@@ -540,7 +540,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(['joe@example.com' => ['name' => 'Joe']], $array);
     }
 
-    public function test_prepend()
+    public function test_prepend(): void
     {
         $array = Arrays::prepend(['one', 'two', 'three', 'four'], 'zero');
         $this->assertEquals(['zero', 'one', 'two', 'three', 'four'], $array);
@@ -548,14 +548,14 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(['zero' => 0, 'one' => 1, 'two' => 2], $array);
     }
 
-    public function test_only()
+    public function test_only(): void
     {
         $array = ['name' => 'Desk', 'price' => 100, 'orders' => 10];
         $array = Arrays::only($array, ['name', 'price']);
         $this->assertEquals(['name' => 'Desk', 'price' => 100], $array);
     }
 
-    public function test_last()
+    public function test_last(): void
     {
         $array = [100, 200, 300];
         $last  = Arrays::last($array, function ($value) {
@@ -569,7 +569,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(300, Arrays::last($array));
     }
 
-    public function test_find()
+    public function test_find(): void
     {
         $array = ['a' => 100, 'b' => 200, 'c' => 300];
         $this->assertEquals('b', Arrays::find($array, function ($value) {
@@ -577,7 +577,7 @@ class ArraysTest extends RebetTestCase
         }));
     }
 
-    public function test_first()
+    public function test_first(): void
     {
         $array = [100, 200, 300];
         $value = Arrays::first($array, function ($value) {
@@ -587,7 +587,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(100, Arrays::first($array));
     }
 
-    public function test_where()
+    public function test_where(): void
     {
         $array = [100, '200', 300, '400', 500];
         $array = Arrays::where($array, null);
@@ -600,21 +600,21 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals([1 => 200, 3 => 400], $array);
     }
 
-    public function test_compact()
+    public function test_compact(): void
     {
         $array = [0, null, [], '', false, 500];
         $array = Arrays::compact($array);
         $this->assertEquals([0 => 0, 4 => false, 5 => 500], $array);
     }
 
-    public function test_unique()
+    public function test_unique(): void
     {
         $array = [1, 1, 2, 3, 2, '3', 4];
         $array = Arrays::unique($array);
         $this->assertEquals([0 => 1, 2 => 2, 3 => 3, 6 => 4], $array);
     }
 
-    public function test_remove()
+    public function test_remove(): void
     {
         $array = ['foo' => 'F', 'bar' => 'B'];
         $this->assertSame(null, Arrays::remove($array, null));
@@ -630,7 +630,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals([], $array);
     }
 
-    public function test_forget()
+    public function test_forget(): void
     {
         $array = ['products' => ['desk' => ['price' => 100]]];
         Arrays::forget($array, null);
@@ -669,14 +669,14 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(['emails' => ['joe@example.com' => ['name' => 'Joe']]], $array);
     }
 
-    public function test_except()
+    public function test_except(): void
     {
         $array = ['name' => 'Desk', 'price' => 100];
         $array = Arrays::except($array, ['price']);
         $this->assertEquals(['name' => 'Desk'], $array);
     }
 
-    public function test_exists()
+    public function test_exists(): void
     {
         $this->assertTrue(Arrays::exists([1], 0));
         $this->assertTrue(Arrays::exists([null], 0));
@@ -689,7 +689,7 @@ class ArraysTest extends RebetTestCase
         $this->assertFalse(Arrays::exists(new \ArrayObject(['a' => null]), 'b'));
     }
 
-    public function test_crossJoin()
+    public function test_crossJoin(): void
     {
         // Single dimension
         $this->assertSame(
@@ -728,13 +728,13 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([[]], Arrays::crossJoin());
     }
 
-    public function test_collapse()
+    public function test_collapse(): void
     {
         $data = [['foo', 'bar'], ['baz']];
         $this->assertEquals(['foo', 'bar', 'baz'], Arrays::collapse($data));
     }
 
-    public function test_count()
+    public function test_count(): void
     {
         $this->assertSame(0, Arrays::count(null));
         $this->assertSame(1, Arrays::count(''));
@@ -749,7 +749,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame(3, Arrays::count(new IteratorAggregateStub([1, 2, 3, 4, 5]), $odd_counter));
     }
 
-    public function test_toArray()
+    public function test_toArray(): void
     {
         $this->assertNull(Arrays::toArray(null));
 
@@ -784,7 +784,7 @@ class ArraysTest extends RebetTestCase
         fclose($resource);
     }
 
-    public function test_diff()
+    public function test_diff(): void
     {
         $this->assertNull(Arrays::diff(null, null));
 
@@ -804,7 +804,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(['en_GB', 'fr', 'HR'], Arrays::diff($array, null, 'strcasecmp'));
     }
 
-    public function test_intersect()
+    public function test_intersect(): void
     {
         $this->assertNull(Arrays::intersect(null, null));
 
@@ -821,7 +821,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(['first_word' => 'Hello'], Arrays::intersect($array, $other, 'strcasecmp'));
     }
 
-    public function test_every()
+    public function test_every(): void
     {
         $array = null;
         $this->assertTrue(Arrays::every($array, function () {
@@ -849,7 +849,7 @@ class ArraysTest extends RebetTestCase
         }));
     }
 
-    public function test_groupByAttribute()
+    public function test_groupByAttribute(): void
     {
         $this->assertNull(Arrays::groupBy(null, 'rating'));
 
@@ -882,7 +882,7 @@ class ArraysTest extends RebetTestCase
         ], $result);
     }
 
-    public function test_groupByAttributePreservingKeys()
+    public function test_groupByAttributePreservingKeys(): void
     {
         $data = [
             10 => ['rating' => 1, 'url' => 'a'],
@@ -905,7 +905,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals($expected_result, $result);
     }
 
-    public function test_groupByClosureWhereItemsHaveSingleGroup()
+    public function test_groupByClosureWhereItemsHaveSingleGroup(): void
     {
         $data = [
             ['rating' => 1, 'url' => 'a'],
@@ -928,7 +928,7 @@ class ArraysTest extends RebetTestCase
         ], $result);
     }
 
-    public function test_groupByClosureWhereItemsHaveSingleGroupPreservingKeys()
+    public function test_groupByClosureWhereItemsHaveSingleGroupPreservingKeys(): void
     {
         $data = [
             10 => ['rating' => 1, 'url' => 'a'],
@@ -953,7 +953,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals($expected_result, $result);
     }
 
-    public function test_groupByClosureWhereItemsHaveMultipleGroups()
+    public function test_groupByClosureWhereItemsHaveMultipleGroups(): void
     {
         $data = [
             ['user' => 1, 'roles' => ['Role_1', 'Role_3']],
@@ -980,7 +980,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals($expected_result, $result);
     }
 
-    public function test_groupByClosureWhereItemsHaveMultipleGroupsPreservingKeys()
+    public function test_groupByClosureWhereItemsHaveMultipleGroupsPreservingKeys(): void
     {
         $data = [
             10 => ['user' => 1, 'roles' => ['Role_1', 'Role_3']],
@@ -1007,7 +1007,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals($expected_result, $result);
     }
 
-    public function test_groupByMultiLevelAndClosurePreservingKeys()
+    public function test_groupByMultiLevelAndClosurePreservingKeys(): void
     {
         $data = [
             10 => ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
@@ -1044,7 +1044,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals($expected_result, $result);
     }
 
-    public function test_groupByObjects()
+    public function test_groupByObjects(): void
     {
         $data = [
             10 => $user_1 = (object) ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
@@ -1081,7 +1081,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals($expected_result, $result);
     }
 
-    public function test_union()
+    public function test_union(): void
     {
         $array = ['name' => 'Hello'];
         $this->assertNull(Arrays::union(null, null));
@@ -1094,7 +1094,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(['name' => 'Hello', 'id' => 1], Arrays::union($array, ['name' => 'World', 'id' => 1]));
     }
 
-    public function test_min()
+    public function test_min(): void
     {
         $this->assertNull(Arrays::min(null));
 
@@ -1117,7 +1117,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame('44', Arrays::min($array, 'mb_strlen', '44'));
     }
 
-    public function test_max()
+    public function test_max(): void
     {
         $this->assertNull(Arrays::max(null));
 
@@ -1140,7 +1140,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame('1111', Arrays::max($array, 'mb_strlen', '44'));
     }
 
-    public function test_sort()
+    public function test_sort(): void
     {
         $this->assertEquals([2 => 1, 3 => 2, 1 => 3, 4 => 4, 0 => 5], Arrays::sort([5, 3, 1, 2, 4]));
         $this->assertEquals([0 => 5, 4 => 4, 1 => 3, 3 => 2, 2 => 1], Arrays::sort([5, 3, 1, 2, 4], SORT_DESC));
@@ -1167,7 +1167,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals([2 => '123', 4 => '44', 3 => '22', 0 => '5', 1 => '3'], Arrays::sort(['5', '3', '123', '22', '44'], SORT_DESC, $comparator));
     }
 
-    public function test_sortBy()
+    public function test_sortBy(): void
     {
         $data      = ['23', '8', '14'];
         $retriever = function ($x) { return $x; };
@@ -1221,7 +1221,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(['b' => ['age' => '14'], 'c' => ['age' => '23'], 'a' => ['age' => '8']], Arrays::sortBy($data, $retriever));
     }
 
-    public function test_sortKeys()
+    public function test_sortKeys(): void
     {
         $data = ['c' => 'C', 'a' => 'A', 'b' => 'B'];
         $this->assertEquals(['a' => 'A', 'b' => 'B', 'c' => 'C'], Arrays::sortKeys($data));
@@ -1242,7 +1242,7 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(['22' => 'C', '14' => 'B', '8' => 'A'], Arrays::sortKeys($data, SORT_ASC, $comparator));
     }
 
-    public function test_sum()
+    public function test_sum(): void
     {
         $this->assertNull(Arrays::sum(null));
         $this->assertSame('0', Arrays::sum([])->value());
@@ -1264,7 +1264,7 @@ class ArraysTest extends RebetTestCase
         $this->assertTrue(100 == Arrays::sum($data, null, true)->value());
     }
 
-    public function test_avg()
+    public function test_avg(): void
     {
         $this->assertNull(Arrays::avg(null));
         $this->assertNull(Arrays::avg([]));
@@ -1286,7 +1286,7 @@ class ArraysTest extends RebetTestCase
         $this->assertTrue(0.1 == Arrays::avg($data, null, true)->value());
     }
 
-    public function test_median()
+    public function test_median(): void
     {
         $this->assertNull(Arrays::median(null));
         $this->assertNull(Arrays::median([]));
@@ -1304,7 +1304,7 @@ class ArraysTest extends RebetTestCase
         $this->assertTrue(0.15 == Arrays::median([0.1, 0.2], null, true)->value());
     }
 
-    public function test_mode()
+    public function test_mode(): void
     {
         $this->assertNull(Arrays::mode(null));
         $this->assertNull(Arrays::mode([]));
@@ -1316,7 +1316,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([4], Arrays::mode([['no' => 1], ['no' => 2], ['no' => 3], ['no' => 4], ['no' => 4], ['no' => 5]], 'no'));
     }
 
-    public function test_peel()
+    public function test_peel(): void
     {
         $this->assertNull(Arrays::peel(null));
         $this->assertNull(Arrays::peel([]));
@@ -1327,7 +1327,7 @@ class ArraysTest extends RebetTestCase
         $this->assertNull(Arrays::peel(new \ArrayObject([])));
     }
 
-    public function test_implode()
+    public function test_implode(): void
     {
         $this->assertNull(Arrays::implode(null));
         $this->assertSame('', Arrays::implode([]));
@@ -1338,7 +1338,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame('foo=1 bar=2', Arrays::implode(['foo' => 1, 'bar' => 2], ' ', '='));
     }
 
-    public function test_pop()
+    public function test_pop(): void
     {
         $array = ['a' => 'A', 'b' => 'B', 'c' => 'C'];
         $this->assertSame(['key' => 'c', 'value' => 'C'], Arrays::pop($array));
@@ -1351,7 +1351,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([], $array);
     }
 
-    public function test_toQuery()
+    public function test_toQuery(): void
     {
         $array = ['a' => 'A', 'b' => 'B b', 'c' => ['foo' => 'foo', 'bar' => 'bar']];
         $this->assertSame(null, Arrays::toQuery(null));
@@ -1362,14 +1362,14 @@ class ArraysTest extends RebetTestCase
         $this->assertSame('a=A&b=B+b&c%5Bfoo%5D=foo&c%5Bbar%5D=bar', Arrays::toQuery(['a' => 'A', 'b' => 'B b', 'c' => ['foo' => 'foo', 'bar' => 'bar']]));
     }
 
-    public function test_map()
+    public function test_map(): void
     {
         $this->assertSame(null, Arrays::map(null, function ($v, $k) { return $v; }));
         $this->assertSame([2, 4], Arrays::map([1, 2], function ($v, $k) { return $v * 2; }));
         $this->assertSame(["0 : 1", "1 : 2"], Arrays::map([1, 2], function ($v, $k) { return "{$k} : {$v}"; }));
     }
 
-    public function test_reduce()
+    public function test_reduce(): void
     {
         $this->assertSame(null, Arrays::reduce(null, function ($c, $i) { return $c + $i; }));
         $this->assertSame(6, Arrays::reduce([1, 2, 3], function ($c, $i) { return $c + $i; }, 0));

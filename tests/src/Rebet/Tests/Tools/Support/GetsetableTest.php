@@ -9,7 +9,7 @@ use TestApp\Stub\GetsetableStub;
 
 class GetsetableTest extends RebetTestCase
 {
-    public function test_getset()
+    public function test_getset(): void
     {
         $item = new GetsetableStub();
         $this->assertNull($item->value());

@@ -9,7 +9,7 @@ use Rebet\Tools\Utility\Env;
 
 class EnvTest extends RebetTestCase
 {
-    public function test_get()
+    public function test_get(): void
     {
         putenv('FOO');
         $this->assertSame(null, Env::get('FOO'));
@@ -33,7 +33,7 @@ class EnvTest extends RebetTestCase
         $this->assertSame("string", Env::get('FOO'));
     }
 
-    public function test_promise()
+    public function test_promise(): void
     {
         putenv('FOO');
         $promise = Env::promise('FOO');

@@ -13,7 +13,7 @@ use Rebet\Tools\Config\Layer;
 
 class PropertiesMaskingConfigurationTest extends RebetTestCase
 {
-    public function test_bootstrap()
+    public function test_bootstrap(): void
     {
         Config::reset(TextFormatter::class, Layer::FRAMEWORK);
         $this->assertSame([], TextFormatter::config('masks', false));

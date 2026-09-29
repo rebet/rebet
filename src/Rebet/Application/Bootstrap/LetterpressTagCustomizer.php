@@ -23,7 +23,7 @@ class LetterpressTagCustomizer implements Bootstrapper
     /**
      * {@inheritDoc}
      */
-    public function bootstrap(Kernel $kernel)
+    public function bootstrap(Kernel $kernel): void
     {
         // ------------------------------------------------
         // [env/envnot] Check current environment

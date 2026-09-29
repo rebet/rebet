@@ -40,7 +40,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
     {
         Config::runtime([
             Database::class => [
-                'log_handler' => function (Database $db, Query $query) {
+                'log_handler' => function (Database $db, Query $query): void {
                     static::$executed_queries[] = $query ;
                 },
             ],
@@ -54,7 +54,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      */
     public static function tearDownDatabase(): void
     {
-        static::eachDb(function (Database $db) {
+        static::eachDb(function (Database $db): void {
             $db->close();
         });
         Dao::clear();
@@ -97,7 +97,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
     public static function setUpDataSet(array $data, bool $with_truncate = true): void
     {
         Dao::clear();
-        static::eachDb(function (Database $db) use ($data, $with_truncate) {
+        static::eachDb(function (Database $db) use ($data, $with_truncate): void {
             // NOTE: TRUNCATE TABLE causes an implicit COMMIT on MySQL/MariaDB, so it must be executed
             //       outside of the transaction, otherwise the commit() below fails because the
             //       transaction was already implicitly closed by the TRUNCATE statement.

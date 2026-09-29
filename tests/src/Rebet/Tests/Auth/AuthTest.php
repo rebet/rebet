@@ -34,14 +34,14 @@ class AuthTest extends RebetTestCase
         $this->signout();
     }
 
-    public function test_provider()
+    public function test_provider(): void
     {
         $provider = Auth::provider('user');
         $this->assertInstanceOf(AuthProvider::class, $provider);
         $this->assertSame('user', $provider->name());
     }
 
-    public function test_guard()
+    public function test_guard(): void
     {
         $guard = Auth::guard(null);
         $this->assertNull($guard);
@@ -55,7 +55,7 @@ class AuthTest extends RebetTestCase
         $this->assertSame('api', $guard->name());
     }
 
-    public function test_guard_invalid()
+    public function test_guard_invalid(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         $this->expectExceptionMessage("Unable to instantiate 'guards.invalid' in Auth. Undefined configure 'Rebet\Auth\Auth.guards.invalid'.");
@@ -63,7 +63,7 @@ class AuthTest extends RebetTestCase
         $guard = Auth::guard('invalid');
     }
 
-    public function test_user()
+    public function test_user(): void
     {
         $user = Auth::user();
         $this->assertTrue($user->isGuest());
@@ -81,7 +81,7 @@ class AuthTest extends RebetTestCase
         $this->assertTrue($user->isGuest());
     }
 
-    public function test_attempt()
+    public function test_attempt(): void
     {
         $request  = $this->createRequestMock('/');
         $user     = Auth::attempt($request, 'user@rebet.local', 'user');
@@ -118,10 +118,10 @@ class AuthTest extends RebetTestCase
         $this->assertTrue($user->is('admin'));
     }
 
-    public function test_signin_success()
+    public function test_signin_success(): void
     {
         $signined_user_id = null;
-        Event::listen(function (Signined $event) use (&$signined_user_id) { $signined_user_id = $event->user->id; });
+        Event::listen(function (Signined $event) use (&$signined_user_id): void { $signined_user_id = $event->user->id; });
 
         $user = Auth::user();
         $this->assertTrue($user->isGuest());
@@ -147,10 +147,10 @@ class AuthTest extends RebetTestCase
         $this->assertSame('/admin/dashboard', $response->getTargetUrl());
     }
 
-    public function test_signin_failed()
+    public function test_signin_failed(): void
     {
         $charenged_signin_id = null;
-        Event::listen(function (SigninFailed $event) use (&$charenged_signin_id) { $charenged_signin_id = $event->charenged_signin_id; });
+        Event::listen(function (SigninFailed $event) use (&$charenged_signin_id): void { $charenged_signin_id = $event->charenged_signin_id; });
 
         $user = Auth::user();
         $this->assertTrue($user->isGuest());
@@ -175,10 +175,10 @@ class AuthTest extends RebetTestCase
         $this->assertSame('/user/signin', $response->getTargetUrl());
     }
 
-    public function test_signout()
+    public function test_signout(): void
     {
         $signouted_user_id = 'dummy';
-        Event::listen(function (Signouted $event) use (&$signouted_user_id) { $signouted_user_id = $event->user->id; });
+        Event::listen(function (Signouted $event) use (&$signouted_user_id): void { $signouted_user_id = $event->user->id; });
 
 
         $user = Auth::user();
@@ -204,12 +204,12 @@ class AuthTest extends RebetTestCase
         $this->assertSame('/signouted', $response->getTargetUrl());
     }
 
-    public function test_authenticate()
+    public function test_authenticate(): void
     {
         $authenticate_user_id        = 'not set';
         $authenticate_failed_user_id = 'not set';
-        Event::listen(function (Authenticated $event) use (&$authenticate_user_id) { $authenticate_user_id = $event->user->id; });
-        Event::listen(function (AuthenticateFailed $event) use (&$authenticate_failed_user_id) { $authenticate_failed_user_id = $event->user->id; });
+        Event::listen(function (Authenticated $event) use (&$authenticate_user_id): void { $authenticate_user_id = $event->user->id; });
+        Event::listen(function (AuthenticateFailed $event) use (&$authenticate_failed_user_id): void { $authenticate_failed_user_id = $event->user->id; });
 
         $this->assertTrue(Auth::user()->isGuest());
 
@@ -257,7 +257,7 @@ class AuthTest extends RebetTestCase
         $this->assertNull($response);
     }
 
-    public function test_defineRole()
+    public function test_defineRole(): void
     {
         $user = Auth::user();
         $this->assertTrue($user->isGuest());
@@ -290,7 +290,7 @@ class AuthTest extends RebetTestCase
         $this->assertInstanceOf(RedirectResponse::class, $response);
     }
 
-    public function test_definePolicy()
+    public function test_definePolicy(): void
     {
         $this->signin();
         $this->assertSame(2, Auth::user()->id);
@@ -312,7 +312,7 @@ class AuthTest extends RebetTestCase
         $this->assertFalse(Auth::policy(Auth::user(), 'create', Address::class, [1, 2, 3, 4, 5]));
     }
 
-    public function test_defineBeforePolicy()
+    public function test_defineBeforePolicy(): void
     {
         $this->signin(null, 'admin@rebet.local', 'admin');
         $this->assertTrue(Auth::user()->is('admin'));
@@ -327,7 +327,7 @@ class AuthTest extends RebetTestCase
         $this->assertTrue(Auth::policy(Auth::user(), 'update', $bank));
     }
 
-    public function test_policy()
+    public function test_policy(): void
     {
         $user          = new User();
         $user->user_id = 2;
@@ -366,7 +366,7 @@ class AuthTest extends RebetTestCase
         $this->assertFalse(Auth::policy(Auth::user(), 'update', $user));
     }
 
-    public function test_role()
+    public function test_role(): void
     {
         $user = Auth::user();
         $this->assertTrue($user->isGuest());

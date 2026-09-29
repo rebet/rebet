@@ -151,7 +151,7 @@ class Responder
             'Content-Disposition' => $disposition,
         ]);
 
-        $response->setCallback(function () use ($filesystem, $path) {
+        $response->setCallback(function () use ($filesystem, $path): void {
             $stream = $filesystem->readStream($path);
 
             while (!feof($stream)) {

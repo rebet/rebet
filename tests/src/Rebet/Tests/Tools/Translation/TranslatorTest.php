@@ -17,19 +17,19 @@ class TranslatorTest extends RebetTestCase
         App::setLocale('ja');
     }
 
-    public function test_addResourceTo()
+    public function test_addResourceTo(): void
     {
         $this->assertFalse(in_array('/path/to/resource', FileDictionary::config('resources.i18n'), true));
         Translator::addResourceTo(FileDictionary::class, '/path/to/resource');
         $this->assertTrue(in_array('/path/to/resource', FileDictionary::config('resources.i18n'), true));
     }
 
-    public function test_dictionary()
+    public function test_dictionary(): void
     {
         $this->assertInstanceOf(FileDictionary::class, Translator::dictionary());
     }
 
-    public function test_getLocale()
+    public function test_getLocale(): void
     {
         $this->assertSame('ja', Translator::getLocale());
         App::setLocale('en');
@@ -38,7 +38,7 @@ class TranslatorTest extends RebetTestCase
         $this->assertSame('de', Translator::getLocale());
     }
 
-    public function test_setLocale()
+    public function test_setLocale(): void
     {
         $this->assertSame('ja', Translator::getLocale());
         Translator::setLocale('en');
@@ -47,7 +47,7 @@ class TranslatorTest extends RebetTestCase
         $this->assertSame('en', Translator::getLocale());
     }
 
-    public function test_getFallbackLocale()
+    public function test_getFallbackLocale(): void
     {
         $this->assertSame('en', Translator::getFallbackLocale());
         App::setLocale('ja', 'ja');
@@ -60,7 +60,7 @@ class TranslatorTest extends RebetTestCase
         $this->assertSame('en', Translator::getFallbackLocale());
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $old = Translator::dictionary();
         Translator::reset();
@@ -68,14 +68,14 @@ class TranslatorTest extends RebetTestCase
         $this->assertNotSame($old, $new);
     }
 
-    public function test_grammar()
+    public function test_grammar(): void
     {
         $this->assertSame(':last_name :first_name', Translator::grammar('message', 'full_name'));
         $this->assertSame(':first_name :last_name', Translator::grammar('message', 'full_name', null, 'en'));
         $this->assertSame(':first_name :last_name', Translator::grammar('message', 'full_name', null, 'en_AU'));
     }
 
-    public function test_get()
+    public function test_get(): void
     {
         $this->assertNull(Translator::get(null));
         $this->assertNull(Translator::get('message'));
@@ -86,7 +86,7 @@ class TranslatorTest extends RebetTestCase
         $this->assertSame('Hello, Bob.', Translator::get('message.welcome', ['name' => 'Bob'], null, true, 'de'));
     }
 
-    public function test_replace()
+    public function test_replace(): void
     {
         $this->assertSame(':last_name :first_name', Translator::replace(':last_name :first_name', []));
         $this->assertSame('山田 太郎', Translator::replace(':last_name :first_name', ['first_name' => '太郎', 'last_name' => '山田']));
@@ -97,7 +97,7 @@ class TranslatorTest extends RebetTestCase
         $this->assertSame('1, 2, 3', Translator::replace(':array', ['array' => new \ArrayObject([1, 2, 3])]));
     }
 
-    public function test_setOrdinalize()
+    public function test_setOrdinalize(): void
     {
         $this->assertSame('1', Translator::ordinalize(1));
         $this->assertSame('2', Translator::ordinalize(2));
@@ -108,7 +108,7 @@ class TranslatorTest extends RebetTestCase
         $this->assertSame('3番目', Translator::ordinalize(3));
     }
 
-    public function test_ordinalize()
+    public function test_ordinalize(): void
     {
         //en
         App::setLocale('en');

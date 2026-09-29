@@ -18,7 +18,7 @@ use Symfony\Component\Mime\RawMessage;
 
 class FailoverTransportTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $transport = new FailoverTransport([
             InMemoryTransport::class,
@@ -35,14 +35,14 @@ class FailoverTransportTest extends RebetTestCase
         $this->assertInstanceOf(NullLogger::class, $this->inspect($transport, 'logger'));
     }
 
-    public function test___construct_defaults()
+    public function test___construct_defaults(): void
     {
         $transport = new FailoverTransport([new NullTransport()]);
         $this->assertSame(60, $this->inspect($transport, 'retryPeriod'));
         $this->assertInstanceOf(NullLogger::class, $this->inspect($transport, 'logger'));
     }
 
-    public function test_send_failsOverToNextTransport()
+    public function test_send_failsOverToNextTransport(): void
     {
         $failing = $this->createFailingTransport();
         $t2      = new InMemoryTransport();
@@ -58,7 +58,7 @@ class FailoverTransportTest extends RebetTestCase
         $this->assertSame('message 2', $t2->getSentMessage()->getOriginalMessage()->toString());
     }
 
-    public function test_send_throwsWhenAllTransportsFail()
+    public function test_send_throwsWhenAllTransportsFail(): void
     {
         $transport = new FailoverTransport([$this->createFailingTransport(), $this->createFailingTransport()]);
         $envelope  = new Envelope(new Address('from@test.local'), [new Address('to@test.local')]);

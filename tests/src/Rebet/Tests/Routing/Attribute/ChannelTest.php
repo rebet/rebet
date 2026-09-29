@@ -11,7 +11,7 @@ use TestApp\Stub\AttributedStub;
 
 class ChannelTest extends RebetTestCase
 {
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $attribute = Channel::class;
         $ac        = new AttributedClass(AttributedStub::class);
@@ -37,7 +37,7 @@ class ChannelTest extends RebetTestCase
         $this->assertTrue($a->reject('cli'));
     }
 
-    public function test_allow_empty()
+    public function test_allow_empty(): void
     {
         $a = new Channel();
         $this->assertSame([], $a->allows);

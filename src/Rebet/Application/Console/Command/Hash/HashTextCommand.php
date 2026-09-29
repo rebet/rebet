@@ -34,7 +34,7 @@ class HashTextCommand extends Command
     /**
      * {@inheritDoc}
      */
-    protected function handle()
+    protected function handle(): void
     {
         $stretching = $this->option('stretching');
 

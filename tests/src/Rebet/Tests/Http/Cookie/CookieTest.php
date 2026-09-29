@@ -17,7 +17,7 @@ class CookieTest extends RebetTestCase
         parent::setUp();
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $cookie = new Cookie('key');
         $this->assertInstanceOf(Cookie::class, $cookie);
@@ -67,12 +67,12 @@ class CookieTest extends RebetTestCase
         $this->assertSame('/test/path', $cookie->getPath());
     }
 
-    public function test_create()
+    public function test_create(): void
     {
         $this->assertInstanceOf(Cookie::class, Cookie::create('key', 'value'));
     }
 
-    public function test_has_requestNotInit()
+    public function test_has_requestNotInit(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Request has not been initialized.");
@@ -81,7 +81,7 @@ class CookieTest extends RebetTestCase
         Cookie::has('key');
     }
 
-    public function test_has()
+    public function test_has(): void
     {
         $request = $this->createRequestMock('/');
         $this->assertFalse(Cookie::has('key'));
@@ -89,7 +89,7 @@ class CookieTest extends RebetTestCase
         $this->assertTrue(Cookie::has('key'));
     }
 
-    public function test_get_requestNotInit()
+    public function test_get_requestNotInit(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Request has not been initialized.");
@@ -98,7 +98,7 @@ class CookieTest extends RebetTestCase
         Cookie::get('key');
     }
 
-    public function test_get()
+    public function test_get(): void
     {
         $request = $this->createRequestMock('/');
         $this->assertSame(null, Cookie::get('key'));
@@ -108,13 +108,13 @@ class CookieTest extends RebetTestCase
         $this->assertSame('value', Cookie::get('key'));
     }
 
-    public function test_set()
+    public function test_set(): void
     {
         Cookie::set('key', 'value', '1 day');
         $this->assertEquals(Cookie::create('key', 'value', '1 day'), Cookie::dequeue('key'));
     }
 
-    public function test_remove()
+    public function test_remove(): void
     {
         Cookie::set('key', 'value', '1 day');
         $this->assertEquals(['key' => Cookie::create('key', 'value', '1 day')], Cookie::queued());
@@ -122,13 +122,13 @@ class CookieTest extends RebetTestCase
         $this->assertEquals(['key' => Cookie::create('key', null, 0)], Cookie::queued());
     }
 
-    public function test_enqueue()
+    public function test_enqueue(): void
     {
         Cookie::enqueue(new Cookie('key', 'value', '1 day'));
         $this->assertEquals(['key' => Cookie::create('key', 'value', '1 day')], Cookie::queued());
     }
 
-    public function test_dequeue()
+    public function test_dequeue(): void
     {
         Cookie::enqueue(new Cookie('key', 'value', '1 day'));
         $this->assertEquals(['key' => $cookie = Cookie::create('key', 'value', '1 day')], Cookie::queued());
@@ -136,7 +136,7 @@ class CookieTest extends RebetTestCase
         $this->assertEquals([], Cookie::queued());
     }
 
-    public function test_peek()
+    public function test_peek(): void
     {
         Cookie::enqueue(new Cookie('key', 'value', '1 day'));
         $this->assertEquals(['key' => $cookie = Cookie::create('key', 'value', '1 day')], Cookie::queued());
@@ -144,7 +144,7 @@ class CookieTest extends RebetTestCase
         $this->assertEquals(['key' => $cookie], Cookie::queued());
     }
 
-    public function test_queued()
+    public function test_queued(): void
     {
         Cookie::enqueue(new Cookie('key', 'value', '1 day'));
         $this->assertEquals(['key' => Cookie::create('key', 'value', '1 day')], Cookie::queued());

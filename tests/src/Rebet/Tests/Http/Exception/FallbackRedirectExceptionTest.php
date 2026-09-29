@@ -13,34 +13,34 @@ use Rebet\Tools\Reflection\Reflector;
 
 class FallbackRedirectExceptionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $e = new FallbackRedirectException('test');
         $this->assertInstanceOf(FallbackRedirectException::class, $e);
     }
 
-    public function test_to()
+    public function test_to(): void
     {
         $e = new FallbackRedirectException('test');
         $this->assertInstanceOf(FallbackRedirectException::class, $e->to('/redirect/path'));
         $this->assertSame('/redirect/path', Reflector::get($e, 'fallback', null, true));
     }
 
-    public function test_with()
+    public function test_with(): void
     {
         $e = new FallbackRedirectException('test');
         $this->assertInstanceOf(FallbackRedirectException::class, $e->with(['name' => 'rebet']));
         $this->assertSame(['name' => 'rebet'], Reflector::get($e, 'input', null, true));
     }
 
-    public function test_errors()
+    public function test_errors(): void
     {
         $e = new FallbackRedirectException('test');
         $this->assertInstanceOf(FallbackRedirectException::class, $e->errors(['name' => ['failed']]));
         $this->assertSame(['name' => ['failed']], Reflector::get($e, 'errors', null, true));
     }
 
-    public function test_redirect()
+    public function test_redirect(): void
     {
         $session = new Session();
         $session->start();
@@ -53,7 +53,7 @@ class FallbackRedirectExceptionTest extends RebetTestCase
         $this->assertSame(['name' => ['failed']], $session->loadInheritData('errors', '/redirect/path'));
     }
 
-    public function test_problem()
+    public function test_problem(): void
     {
         $e = (new FallbackRedirectException('test'))->to('/redirect/path')->with(['name' => 'rebet'])->errors(['name' => ['failed']]);
 

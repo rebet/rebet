@@ -17,14 +17,14 @@ class AppTest extends RebetTestCase
         parent::setUp();
     }
 
-    public function test_init()
+    public function test_init(): void
     {
         $kernel = App::init(new KernelStub(new AppStructure('/var/www/app'), 'web'));
         $this->assertSame($kernel, App::kernel());
         $this->assertSame('web', App::channel());
     }
 
-    public function test_root()
+    public function test_root(): void
     {
         App::init(new KernelStub(new AppStructure('/var/www/app'), 'web'));
         $this->assertSame('/var/www/app', App::root());
@@ -36,7 +36,7 @@ class AppTest extends RebetTestCase
         $this->assertSame('vfs://var/www/app', App::root());
     }
 
-    public function test_path()
+    public function test_path(): void
     {
         App::init(new KernelStub(new AppStructure('/var/www/app'), 'web'));
         $this->assertSame('/var/www/app/var/logs', App::path('/var/logs'));
@@ -57,7 +57,7 @@ class AppTest extends RebetTestCase
         $this->assertSame('file://c:/var/www/.env', App::path('../.env'));
     }
 
-    public function test_getLocale()
+    public function test_getLocale(): void
     {
         $this->assertSame('en', App::getLocale());
 
@@ -70,7 +70,7 @@ class AppTest extends RebetTestCase
         $this->assertSame('ja', App::getLocale());
     }
 
-    public function test_getFallbackLocale()
+    public function test_getFallbackLocale(): void
     {
         $this->assertSame('en', App::getFallbackLocale());
 
@@ -83,7 +83,7 @@ class AppTest extends RebetTestCase
         $this->assertSame('ja', App::getFallbackLocale());
     }
 
-    public function test_setLocale()
+    public function test_setLocale(): void
     {
         $this->assertSame('en', App::getLocale());
         $this->assertSame('en', App::getFallbackLocale());
@@ -95,37 +95,37 @@ class AppTest extends RebetTestCase
         $this->assertSame('ja', App::getFallbackLocale());
     }
 
-    public function test_localeIn()
+    public function test_localeIn(): void
     {
         $this->assertTrue(App::localeIn('en'));
         $this->assertFalse(App::localeIn('ja', 'de'));
     }
 
-    public function test_env()
+    public function test_env(): void
     {
         $this->assertSame('unittest', App::env());
         \putenv("APP_ENV=production");
         $this->assertSame('production', App::env());
     }
 
-    public function test_envIn()
+    public function test_envIn(): void
     {
         $this->assertTrue(App::envIn('unittest', 'local'));
         $this->assertFalse(App::envIn('production', 'staging'));
     }
 
-    public function test_channel()
+    public function test_channel(): void
     {
         $this->assertSame('web', App::channel());
     }
 
-    public function test_ChannelIn()
+    public function test_ChannelIn(): void
     {
         $this->assertTrue(App::ChannelIn('web'));
         $this->assertFalse(App::ChannelIn('console', 'api'));
     }
 
-    public function test_when()
+    public function test_when(): void
     {
         $case = [
             'console@unittest' => 'console@unittest',
@@ -157,7 +157,7 @@ class AppTest extends RebetTestCase
         $this->assertSame('default', App::when($case)->get());
     }
 
-    public function test_getTimezone()
+    public function test_getTimezone(): void
     {
         Config::reset();
         Config::framework([
@@ -177,7 +177,7 @@ class AppTest extends RebetTestCase
         $this->assertSame('Asia/Tokyo', App::getTimezone());
     }
 
-    public function test_setTimezone()
+    public function test_setTimezone(): void
     {
         App::setTimezone('Asia/Tokyo');
         $this->assertSame('Asia/Tokyo', App::getTimezone());

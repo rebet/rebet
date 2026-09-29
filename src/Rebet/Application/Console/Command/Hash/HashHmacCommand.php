@@ -32,7 +32,7 @@ class HashHmacCommand extends Command
     /**
      * {@inheritDoc}
      */
-    protected function handle()
+    protected function handle(): void
     {
         $this->writeln('<info>HMAC:</info> ' . Securities::hmac(
             $this->argument('text'),

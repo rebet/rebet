@@ -491,7 +491,7 @@ return [
         */
         'dictionary'      => FileDictionary::class,
         'resource_adder'  => [
-            FileDictionary::class => function (FileDictionary $dictionary, ...$args) { $dictionary->addLibraryResource(...$args); },
+            FileDictionary::class => function (FileDictionary $dictionary, ...$args): void { $dictionary->addLibraryResource(...$args); },
         ],
 
 

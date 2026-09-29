@@ -21,18 +21,18 @@ class RuleTest extends RebetTestCase
         $this->errors = [];
     }
 
-    public function test_cunstract()
+    public function test_cunstract(): void
     {
         $this->assertInstanceOf(Rule::class, $this->rule);
     }
 
-    public function test_hasCustomValidation()
+    public function test_hasCustomValidation(): void
     {
         $this->assertFalse($this->rule->hasCustomValidation('Dummy'));
         $this->assertTrue($this->rule->hasCustomValidation('MailAddressExists'));
     }
 
-    public function test_validate()
+    public function test_validate(): void
     {
         $c = new Context(
             'C',

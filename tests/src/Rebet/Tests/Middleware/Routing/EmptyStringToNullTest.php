@@ -11,12 +11,12 @@ use Rebet\Tests\RebetTestCase;
 
 class EmptyStringToNullTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(EmptyStringToNull::class, new EmptyStringToNull());
     }
 
-    public function test_handle()
+    public function test_handle(): void
     {
         $middleware  = new EmptyStringToNull();
         $destination = function ($request) { return Responder::toResponse('OK'); };

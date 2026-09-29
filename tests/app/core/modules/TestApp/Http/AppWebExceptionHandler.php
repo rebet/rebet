@@ -11,7 +11,7 @@ use Rebet\Application\Http\WebExceptionHandler;
  */
 class AppWebExceptionHandler extends WebExceptionHandler
 {
-    public function handle($input, \Throwable $e)
+    public function handle($input, \Throwable $e): void
     {
         throw $e;
     }

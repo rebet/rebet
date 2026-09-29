@@ -9,18 +9,18 @@ use Rebet\Tests\RebetTestCase;
 
 class AttributeBagTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(AttributeBag::class, new AttributeBag('test'));
     }
 
-    public function test_getName()
+    public function test_getName(): void
     {
         $bag = new AttributeBag('foo');
         $this->assertSame('foo', $bag->getName());
     }
 
-    public function test_initialize()
+    public function test_initialize(): void
     {
         $src = [];
         $bag = new AttributeBag('foo');
@@ -32,7 +32,7 @@ class AttributeBagTest extends RebetTestCase
         $this->assertSame('value', $src['name'] ?? null);
     }
 
-    public function test_getStorageKey()
+    public function test_getStorageKey(): void
     {
         $bag = new AttributeBag('foo');
         $this->assertSame('_rebet_foo', $bag->getStorageKey());
@@ -41,7 +41,7 @@ class AttributeBagTest extends RebetTestCase
         $this->assertSame('bar', $bag->getStorageKey());
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $src = [];
         $bag = new AttributeBag('foo');
@@ -57,7 +57,7 @@ class AttributeBagTest extends RebetTestCase
         $this->assertSame('value', $deleted['name'] ?? null);
     }
 
-    public function test_has()
+    public function test_has(): void
     {
         $bag = new AttributeBag('foo');
         $bag->set('name', 'value');
@@ -70,7 +70,7 @@ class AttributeBagTest extends RebetTestCase
         $this->assertFalse($bag->has('map.c'));
     }
 
-    public function test_get()
+    public function test_get(): void
     {
         $bag = new AttributeBag('foo');
         $bag->set('name', 'value');
@@ -84,7 +84,7 @@ class AttributeBagTest extends RebetTestCase
         $this->assertSame('C', $bag->get('map.c', 'C'));
     }
 
-    public function test_set()
+    public function test_set(): void
     {
         $src = [];
         $bag = new AttributeBag('foo');
@@ -105,7 +105,7 @@ class AttributeBagTest extends RebetTestCase
         $this->assertSame('C', $src['map']['c'] ?? null);
     }
 
-    public function test_all()
+    public function test_all(): void
     {
         $bag = new AttributeBag('foo');
         $bag->set('name', 'value');
@@ -116,7 +116,7 @@ class AttributeBagTest extends RebetTestCase
         ], $bag->all());
     }
 
-    public function test_remove()
+    public function test_remove(): void
     {
         $bag = new AttributeBag('foo');
         $bag->set('name', 'value');
@@ -143,7 +143,7 @@ class AttributeBagTest extends RebetTestCase
         ], $bag->all());
     }
 
-    public function test_getIterator()
+    public function test_getIterator(): void
     {
         $bag = new AttributeBag('foo');
         $this->assertInstanceOf(\ArrayIterator::class, $bag->getIterator());
@@ -159,7 +159,7 @@ class AttributeBagTest extends RebetTestCase
         }
     }
 
-    public function test_count()
+    public function test_count(): void
     {
         $bag = new AttributeBag('foo');
         $this->assertSame(0, $bag->count());

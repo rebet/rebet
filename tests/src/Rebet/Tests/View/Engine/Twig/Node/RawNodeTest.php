@@ -22,12 +22,12 @@ class RawNodeTest extends RebetTestCase
         $this->compiler = new Compiler($this->env);
     }
 
-    public function test___constract()
+    public function test___constract(): void
     {
         $this->assertInstanceOf(RawNode::class, new RawNode('echo("foo");'));
     }
 
-    public function test_compile()
+    public function test_compile(): void
     {
         $node = new RawNode('echo("foo");');
         $src  = $this->compiler->compile($node)->getSource();

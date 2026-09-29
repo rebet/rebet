@@ -58,7 +58,7 @@ class LetterpressTagCustomizerTest extends RebetTestCase
     }
 
     #[DataProvider('dataBootstrapWithWebKernels')]
-    public function test_bootstrap_withWebKernel($expect, $template, $params = [])
+    public function test_bootstrap_withWebKernel($expect, $template, $params = []): void
     {
         $request = $this->createRequestMock('/', 'user', 'web', 'web', 'GET', '/prefix');
         $this->signin($request);

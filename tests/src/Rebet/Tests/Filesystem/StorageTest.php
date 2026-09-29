@@ -18,7 +18,7 @@ class StorageTest extends RebetTestCase
         parent::tearDown();
     }
 
-    public function test_disk()
+    public function test_disk(): void
     {
         $this->assertInstanceOf(Filesystem::class, Storage::disk('private'));
         $this->assertInstanceOf(Filesystem::class, Storage::disk('public'));
@@ -29,7 +29,7 @@ class StorageTest extends RebetTestCase
         $this->assertSame(false, Storage::disk('public')->exists('foo.txt'));
     }
 
-    public function test_disk_failed()
+    public function test_disk_failed(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         $this->expectExceptionMessage("Unable to instantiate 'disks.nothing.adapter' in Storage. Undefined configure 'Rebet\Filesystem\Storage.disks.nothing.adapter'.");
@@ -37,7 +37,7 @@ class StorageTest extends RebetTestCase
         $this->assertInstanceOf(Filesystem::class, Storage::disk('nothing'));
     }
 
-    public function test_clean()
+    public function test_clean(): void
     {
         Storage::private()->put('foo.txt', 'foo');
         Storage::public()->put('bar.txt', 'bar');
@@ -54,7 +54,7 @@ class StorageTest extends RebetTestCase
         $this->assertSame(false, Storage::public()->exists('bar.txt'));
     }
 
-    public function test_copy_failed()
+    public function test_copy_failed(): void
     {
         $this->expectException(FilesystemException::class);
         $this->expectExceptionMessage("Can not copy `private:foo.txt` to `public:foo.txt`, `public:foo.txt` already exists.");
@@ -64,7 +64,7 @@ class StorageTest extends RebetTestCase
         Storage::copy('private', 'foo.txt', 'public');
     }
 
-    public function test_copy()
+    public function test_copy(): void
     {
         Storage::private()->put('foo.txt', 'foo');
         $this->assertSame(true, Storage::private()->exists('foo.txt'));
@@ -145,7 +145,7 @@ class StorageTest extends RebetTestCase
         Storage::reset();
     }
 
-    public function test_move()
+    public function test_move(): void
     {
         Storage::private()->put('foo.txt', 'foo');
         $this->assertSame(true, Storage::private()->exists('foo.txt'));
@@ -155,7 +155,7 @@ class StorageTest extends RebetTestCase
         $this->assertSame(true, Storage::public()->exists('foo.txt'));
     }
 
-    public function test_publish()
+    public function test_publish(): void
     {
         Storage::private()->put('foo.txt', 'foo');
         $this->assertSame(true, Storage::private()->exists('foo.txt'));

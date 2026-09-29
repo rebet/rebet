@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class ArrayAdapterTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(ArrayAdapter::class, new ArrayAdapter());
         $this->assertInstanceOf(ArrayAdapter::class, new ArrayAdapter('', 5));

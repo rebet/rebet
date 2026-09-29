@@ -11,7 +11,7 @@ use Rebet\Tests\RebetTestCase;
 
 class RedirectRouteTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(RedirectRoute::class, new RedirectRoute('/from', '/redirect/to'));
     }
@@ -45,7 +45,7 @@ class RedirectRouteTest extends RebetTestCase
     }
 
     #[DataProvider('dataRoutings')]
-    public function test_routing($expect, $uri, $destination, $request_uri, $query = [], $status = 302)
+    public function test_routing($expect, $uri, $destination, $request_uri, $query = [], $status = 302): void
     {
         $route   = new RedirectRoute($uri, $destination, $query, $status);
         $request = $this->createRequestMock($request_uri, null, 'web', 'web', 'GET', '', $route);
@@ -56,7 +56,7 @@ class RedirectRouteTest extends RebetTestCase
         $this->assertSame($status, $response->getStatusCode());
     }
 
-    public function test___toString()
+    public function test___toString(): void
     {
         $route = new RedirectRoute('/from', '/redirect/to');
         $this->assertSame('RedirectRoute: [ALL] /from redirect to /redirect/to (status: 302)', $route->__toString());

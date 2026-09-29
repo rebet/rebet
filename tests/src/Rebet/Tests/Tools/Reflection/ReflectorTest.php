@@ -91,7 +91,7 @@ class ReflectorTest extends RebetTestCase
         ]);
     }
 
-    public function test_instantiate()
+    public function test_instantiate(): void
     {
         $this->assertNull(Reflector::instantiate(null));
         $this->assertNull(Reflector::instantiate(''));
@@ -124,7 +124,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('instantiated', Reflector::instantiate(new ReflectorTest_Mock('instantiated'))->value);
     }
 
-    public function test_get()
+    public function test_get(): void
     {
         $this->assertSame($this->array, Reflector::get($this->array, null));
         $this->assertSame($this->array, Reflector::get($this->array, ''));
@@ -220,7 +220,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(null, Reflector::get("NothingClass", 'foo', null, true));
     }
 
-    public function test_has()
+    public function test_has(): void
     {
         $this->assertFalse(Reflector::has(null, 'invalid_key'));
         $this->assertFalse(Reflector::has('string', 'invalid_key'));
@@ -278,7 +278,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertFalse(Reflector::has("NothingClass", 'foo', true));
     }
 
-    public function test_set()
+    public function test_set(): void
     {
         Reflector::set($this->array, null, 'd');
         $this->assertSame('d', $this->array[4]);
@@ -339,7 +339,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(Reflector::get($class, 'static_protected', null, true), 'updated');
     }
 
-    public function test_remove()
+    public function test_remove(): void
     {
         $this->assertTrue(isset($this->array[0]));
         $this->assertSame('a', Reflector::remove($this->array, 0));
@@ -398,7 +398,7 @@ class ReflectorTest extends RebetTestCase
      *
      * An array item that genuinely exists must still take priority over a same-named property.
      */
-    public function test_get_arrayAccessibleObjectFallsBackToProperty()
+    public function test_get_arrayAccessibleObjectFallsBackToProperty(): void
     {
         $target    = new ReflectorTest_ArrayAccessible();
         $target[0] = 'item0';
@@ -418,7 +418,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('default', Reflector::get($target, 'nothing', 'default'));
     }
 
-    public function test_has_arrayAccessibleObjectFallsBackToProperty()
+    public function test_has_arrayAccessibleObjectFallsBackToProperty(): void
     {
         $target    = new ReflectorTest_ArrayAccessible();
         $target[0] = 'item0';
@@ -430,7 +430,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertFalse(Reflector::has($target, 'nothing'));
     }
 
-    public function test_set_arrayAccessibleObjectFallsBackToProperty()
+    public function test_set_arrayAccessibleObjectFallsBackToProperty(): void
     {
         $target    = new ReflectorTest_ArrayAccessible();
         $target[0] = 'item0';
@@ -466,7 +466,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('updated item public', Reflector::get($target, 'public'));
     }
 
-    public function test_remove_arrayAccessibleObjectFallsBackToProperty()
+    public function test_remove_arrayAccessibleObjectFallsBackToProperty(): void
     {
         $target    = new ReflectorTest_ArrayAccessible();
         $target[0] = 'item0';
@@ -486,13 +486,13 @@ class ReflectorTest extends RebetTestCase
         Reflector::remove($target, 'protected', true);
     }
 
-    public function test_set_undefindKeyArray()
+    public function test_set_undefindKeyArray(): void
     {
         Reflector::set($this->array, 'undefind_key', 'value');
         $this->assertSame('value', Reflector::get($this->array, 'undefind_key'));
     }
 
-    public function test_set_nestedUndefindKeyArray()
+    public function test_set_nestedUndefindKeyArray(): void
     {
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage("Nested parent key 'undefind_key' does not exist.");
@@ -500,13 +500,13 @@ class ReflectorTest extends RebetTestCase
         Reflector::set($this->map, 'undefind_key.name', 'value');
     }
 
-    public function test_set_nestedTerminateUndefindKeyArray()
+    public function test_set_nestedTerminateUndefindKeyArray(): void
     {
         Reflector::set($this->map, 'partner.undefind_key', 'value');
         $this->assertSame('value', Reflector::get($this->map, 'partner.undefind_key'));
     }
 
-    public function test_set_undefindKeyObject()
+    public function test_set_undefindKeyObject(): void
     {
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage("Nested key 'undefind_key' does not exist.");
@@ -514,7 +514,7 @@ class ReflectorTest extends RebetTestCase
         Reflector::set($this->object, 'undefind_key', 'value');
     }
 
-    public function test_set_nestedTerminateUndefindKeyObject()
+    public function test_set_nestedTerminateUndefindKeyObject(): void
     {
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage("Nested key 'undefind_key' does not exist.");
@@ -522,7 +522,7 @@ class ReflectorTest extends RebetTestCase
         Reflector::set($this->object, 'partner.undefind_key', 'value');
     }
 
-    public function test_set_nestedUndefindKeyObject()
+    public function test_set_nestedUndefindKeyObject(): void
     {
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage("Nested key 'undefind_key' does not exist.");
@@ -530,7 +530,7 @@ class ReflectorTest extends RebetTestCase
         Reflector::set($this->object, 'undefind_key.partner', 'value');
     }
 
-    public function test_set_accessible()
+    public function test_set_accessible(): void
     {
         Reflector::set($this->accessible, 'public', 'value');
         $this->assertSame('value', Reflector::get($this->accessible, 'public'));
@@ -557,7 +557,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('value', Reflector::get($this->accessible, 'private_parent.private', null, true));
     }
 
-    public function test_set_accessible_child()
+    public function test_set_accessible_child(): void
     {
         Reflector::set($this->accessible_child, 'public', 'value');
         $this->assertSame('value', Reflector::get($this->accessible_child, 'public'));
@@ -584,7 +584,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('value', Reflector::get($this->accessible_child, 'private_parent.private', null, true));
     }
 
-    public function test_invoke()
+    public function test_invoke(): void
     {
         $this->assertSame('public', Reflector::invoke($this->accessible, 'callPublic'));
         $this->assertSame('protected', Reflector::invoke($this->accessible, 'callProtected', [], true));
@@ -600,7 +600,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', [1, '20'], false, true));
     }
 
-    public function test_invoke_child()
+    public function test_invoke_child(): void
     {
         $this->assertSame('public', Reflector::invoke($this->accessible_child, 'callPublic'));
         $this->assertSame('protected', Reflector::invoke($this->accessible_child, 'callProtected', [], true));
@@ -616,7 +616,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible_child, 'callPublicWithTypeHintingArgs', [1, '20'], false, true));
     }
 
-    public function test_evaluate()
+    public function test_evaluate(): void
     {
         $function = function () { return 'foo'; };
         $this->assertSame('foo', Reflector::evaluate($function));
@@ -636,7 +636,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('18 years old 男性', Reflector::evaluate($function, ['age' => 18]));
     }
 
-    public function test_create()
+    public function test_create(): void
     {
         $instance = Reflector::create(ReflectorTest_CreateDefault::class);
         $this->assertInstanceOf(ReflectorTest_CreateDefault::class, $instance);
@@ -669,7 +669,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('BAR', $instance->bar);
     }
 
-    public function test_typeOf()
+    public function test_typeOf(): void
     {
         $this->assertTrue(Reflector::typeOf(null, null));
         $this->assertFalse(Reflector::typeOf(null, 'int'));
@@ -738,57 +738,57 @@ class ReflectorTest extends RebetTestCase
         $this->assertFalse(Reflector::typeOf($object, \stdClass::class));
     }
 
-    public function test_toArgs_error()
+    public function test_toArgs_error(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Parameter 'mixed' is requierd.");
 
-        $function = function ($mixed) { return; };
+        $function = function ($mixed): void { return; };
         $rf       = new \ReflectionFunction($function);
         $args     = Reflector::toArgs($rf->getParameters(), []);
     }
 
-    public function test_toArgs_errorNullable()
+    public function test_toArgs_errorNullable(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Parameter 'nullable' is requierd.");
 
-        $function = function (int|null $nullable) { return; };
+        $function = function (int|null $nullable): void { return; };
         $rf       = new \ReflectionFunction($function);
         $args     = Reflector::toArgs($rf->getParameters(), []);
     }
 
-    public function test_toArgs_errorConvert()
+    public function test_toArgs_errorConvert(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Parameter gender(=3) can not convert to TestApp\Enum\Gender.");
 
-        $function = function (Gender $gender) { return; };
+        $function = function (Gender $gender): void { return; };
         $rf       = new \ReflectionFunction($function);
         $this->assertSame([Gender::MALE()], Reflector::toArgs($rf->getParameters(), ['gender' => 1], true));
 
         Reflector::toArgs($rf->getParameters(), ['gender' => 3], true);
     }
 
-    public function test_toArgs()
+    public function test_toArgs(): void
     {
-        $function   = function () { return; };
+        $function   = function (): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame([], Reflector::toArgs($reflection->getParameters(), []));
 
-        $function   = function ($mixed, $foo = 'foo', $bar = 'bar') { return; };
+        $function   = function ($mixed, $foo = 'foo', $bar = 'bar'): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame([[], 'foo', 'BAR'], Reflector::toArgs($reflection->getParameters(), [[], 'bar' => 'BAR']));
 
-        $function   = function (string ...$variadic) { return; };
+        $function   = function (string ...$variadic): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame([], Reflector::toArgs($reflection->getParameters(), []));
 
-        $function   = function (string $optional = 'default') { return; };
+        $function   = function (string $optional = 'default'): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(['default'], Reflector::toArgs($reflection->getParameters(), []));
 
-        $function   = function ($mixed, string $string, string|null $nullable, string $optional = 'default', string ...$variadic) { return; };
+        $function   = function ($mixed, string $string, string|null $nullable, string $optional = 'default', string ...$variadic): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(
             ['a', 'b', 'c', 'd', 'e'],
@@ -832,25 +832,25 @@ class ReflectorTest extends RebetTestCase
             Reflector::toArgs($reflection->getParameters(), ['a', 'b', 'c', 'd', ['e', 'f']]),
         );
 
-        $function   = function (int $convert) { return; };
+        $function   = function (int $convert): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(['1'], Reflector::toArgs($reflection->getParameters(), ['convert' => '1']));
         $this->assertSame([1], Reflector::toArgs($reflection->getParameters(), ['convert' => '1'], true));
 
-        $function   = function (int ...$convert) { return; };
+        $function   = function (int ...$convert): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(['1', '2', '3'], Reflector::toArgs($reflection->getParameters(), ['convert' => ['1', '2', '3']]));
         $this->assertSame([1, 2, 3], Reflector::toArgs($reflection->getParameters(), ['convert' => ['1', '2', '3']], true));
     }
 
-    public function test_toNamedArgs()
+    public function test_toNamedArgs(): void
     {
-        $function   = function () { return; };
+        $function   = function (): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame([], Reflector::toNamedArgs($reflection->getParameters(), []));
         $this->assertSame([], Reflector::toNamedArgs($reflection->getParameters(), [1, 2, 3]));
 
-        $function   = function (string ...$variadic) { return; };
+        $function   = function (string ...$variadic): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame([], Reflector::toNamedArgs($reflection->getParameters(), []));
         $this->assertSame(['variadic' => [1]], Reflector::toNamedArgs($reflection->getParameters(), [1]));
@@ -858,18 +858,18 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(['variadic' => [[1, 2, 3]]], Reflector::toNamedArgs($reflection->getParameters(), [[1, 2, 3]]));
         $this->assertSame(['variadic' => [1, 'a' => 2, 'b' => 3]], Reflector::toNamedArgs($reflection->getParameters(), [1, 'a' => 2, 'b' => 3]));
 
-        $function   = function ($foo, $bar = 'bar', string ...$variadic) { return; };
+        $function   = function ($foo, $bar = 'bar', string ...$variadic): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(['foo' => 1], Reflector::toNamedArgs($reflection->getParameters(), [1]));
         $this->assertSame(['foo' => 1, 'bar' => 2, 'variadic' => [3, 4]], Reflector::toNamedArgs($reflection->getParameters(), [1, 2, 3, 4]));
         $this->assertSame(['foo' => 4, 'bar' => 3, 'variadic' => ['qux' => 1, 'baz' => 2]], Reflector::toNamedArgs($reflection->getParameters(), ['qux' => 1, 'baz' => 2, 'bar' => 3, 'foo' => 4]));
 
-        $function   = function (string $optional = 'default') { return; };
+        $function   = function (string $optional = 'default'): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame([], Reflector::toNamedArgs($reflection->getParameters(), []));
         $this->assertSame(['optional' => 1], Reflector::toNamedArgs($reflection->getParameters(), [1, 2, 3]));
 
-        $function   = function ($mixed, string $string, string|null $nullable, string $optional = 'default', string ...$variadic) { return; };
+        $function   = function ($mixed, string $string, string|null $nullable, string $optional = 'default', string ...$variadic): void { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(
             [
@@ -916,29 +916,29 @@ class ReflectorTest extends RebetTestCase
         );
     }
 
-    public function test_toNamedArgs_invalidArgsOrder()
+    public function test_toNamedArgs_invalidArgsOrder(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Named arguments must come after positional arguments.");
 
-        $function   = function () { return; };
+        $function   = function (): void { return; };
         $reflection = new \ReflectionFunction($function);
         Reflector::toNamedArgs($reflection->getParameters(), [1, 'a' => 2, 3]);
     }
 
-    public function test_toNamedArgs_duplicateArgsPositionalAndNamed()
+    public function test_toNamedArgs_duplicateArgsPositionalAndNamed(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Named arguments of 'foo' duplicate to 1st positional arguments.");
 
-        $function   = function ($foo) { return; };
+        $function   = function ($foo): void { return; };
         $reflection = new \ReflectionFunction($function);
         Reflector::toNamedArgs($reflection->getParameters(), [1, 'foo' => 2]);
     }
 
-    public function test_mergeArgs()
+    public function test_mergeArgs(): void
     {
-        $function   = function ($mixed, string $string, string|null $nullable, string $optional = 'default', string ...$variadic) { return; };
+        $function   = function ($mixed, string $string, string|null $nullable, string $optional = 'default', string ...$variadic): void { return; };
         $reflection = new \ReflectionFunction($function);
         $parameters = $reflection->getParameters();
         $this->assertSame([], Reflector::mergeArgs($parameters, [], []));
@@ -1029,7 +1029,7 @@ class ReflectorTest extends RebetTestCase
         );
     }
 
-    public function test_convert_array()
+    public function test_convert_array(): void
     {
         $type = 'array';
         $this->assertNull(Reflector::convert(null, $type));
@@ -1065,7 +1065,7 @@ class ReflectorTest extends RebetTestCase
         fclose($resource);
     }
 
-    public function test_convert_string()
+    public function test_convert_string(): void
     {
         $type = 'string';
         $this->assertNull(Reflector::convert(null, $type));
@@ -1103,7 +1103,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(null, Reflector::convert(new ToArrayStub([1, 2]), $type));
     }
 
-    public function test_convert_callable()
+    public function test_convert_callable(): void
     {
         $type = 'callable';
         $this->assertNull(Reflector::convert(null, $type));
@@ -1125,7 +1125,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(null, Reflector::convert('1', $type));
     }
 
-    public function test_convert_closure()
+    public function test_convert_closure(): void
     {
         $type = \Closure::class;
         $this->assertNull(Reflector::convert(null, $type));
@@ -1149,7 +1149,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(null, Reflector::convert('1', $type));
     }
 
-    public function test_convert_int()
+    public function test_convert_int(): void
     {
         $type = 'int';
         $this->assertNull(Reflector::convert(null, $type));
@@ -1181,7 +1181,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(123, Reflector::convert($toType, $type));
     }
 
-    public function test_convert_float()
+    public function test_convert_float(): void
     {
         $type = 'float';
         $this->assertNull(Reflector::convert(null, $type));
@@ -1213,7 +1213,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(1.23, Reflector::convert($toType, $type));
     }
 
-    public function test_convert_bool()
+    public function test_convert_bool(): void
     {
         $type = 'bool';
         $this->assertNull(Reflector::convert(null, $type));
@@ -1247,7 +1247,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(true, Reflector::convert($toType, $type));
     }
 
-    public function test_convert_object()
+    public function test_convert_object(): void
     {
         $this->assertNull(Reflector::convert(null, Gender::class));
         $this->assertSame(Gender::MALE(), Reflector::convert(1, Gender::class));
@@ -1265,16 +1265,16 @@ class ReflectorTest extends RebetTestCase
         $this->assertEquals(null, Reflector::convert($toType, Gender::class));
     }
 
-    public function test_convert_not()
+    public function test_convert_not(): void
     {
         $this->assertNull(Reflector::convert(null, null));
         $this->assertSame(123, Reflector::convert(123, null));
         $this->assertSame([1, 2], Reflector::convert([1, 2], null));
     }
 
-    public function test_getTypeHint()
+    public function test_getTypeHint(): void
     {
-        $closure = function ($none, int $int, string $string, callable $callable, \Closure $closure, ReflectorTest_Mock $mock) {};
+        $closure = function ($none, int $int, string $string, callable $callable, \Closure $closure, ReflectorTest_Mock $mock): void {};
         $rf      = new \ReflectionFunction($closure);
         $params  = $rf->getParameters();
         $this->assertSame(null, Reflector::getTypeHint(null));
@@ -1286,9 +1286,9 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(ReflectorTest_Mock::class, Reflector::getTypeHint($params[5]));
     }
 
-    public function test_getParameterTypeHintOf()
+    public function test_getParameterTypeHintOf(): void
     {
-        $closure = function ($none, int $int, string $string, callable $callable, \Closure $closure, ReflectorTest_Mock $mock) {};
+        $closure = function ($none, int $int, string $string, callable $callable, \Closure $closure, ReflectorTest_Mock $mock): void {};
         $this->assertSame(null, Reflector::getParameterTypeHintOf(null, 0));
         $this->assertSame(null, Reflector::getParameterTypeHintOf($closure, 0));
         $this->assertSame('int', Reflector::getParameterTypeHintOf($closure, 1));
@@ -1299,7 +1299,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(null, Reflector::getParameterTypeHintOf($closure, 6));
     }
 
-    public function test_getPropertyTypeHintOf()
+    public function test_getPropertyTypeHintOf(): void
     {
         $class = new class {
             public $none;
@@ -1317,7 +1317,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(null, Reflector::getPropertyTypeHintOf($class, 'nothing'));
     }
 
-    public function test_uses()
+    public function test_uses(): void
     {
         $parent = new ReflectorTest_TraitParent();
         $child  = new ReflectorTest_TraitChild();
@@ -1332,7 +1332,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertFalse(Reflector::uses(ReflectorTest_TraitChild::class, Configurable::class));
     }
 
-    public function test_caller()
+    public function test_caller(): void
     {
         $this->assertEquals('test_caller', $this->colledFromTestCaller());
     }
@@ -1451,7 +1451,7 @@ class ReflectorTest_Accessible
         $this->dinamic = 'dinamic';
     }
 
-    public function setPrivateParent($private_parent)
+    public function setPrivateParent($private_parent): void
     {
         $this->private_parent = $private_parent;
     }

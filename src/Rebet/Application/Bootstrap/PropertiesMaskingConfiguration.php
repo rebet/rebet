@@ -36,7 +36,7 @@ class PropertiesMaskingConfiguration implements Bootstrapper
     /**
      * {@inheritDoc}
      */
-    public function bootstrap(Kernel $kernel)
+    public function bootstrap(Kernel $kernel): void
     {
         Config::framework([
             //---------------------------------------------

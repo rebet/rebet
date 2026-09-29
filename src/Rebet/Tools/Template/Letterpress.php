@@ -374,7 +374,7 @@ class Letterpress implements Renderable, \JsonSerializable
      *
      * @return void
      */
-    public static function init()
+    public static function init(): void
     {
         // ====================================================================
         // Define 'if' block tag
@@ -394,7 +394,7 @@ class Letterpress implements Renderable, \JsonSerializable
                         return Letterpress::process($node['nodes'], $vars);
                     }
 
-                    $vars['__callback'] = function ($vars) use (&$contents, $node) {
+                    $vars['__callback'] = function ($vars) use (&$contents, $node): void {
                         $vars = Arrays::where($vars, function ($v, $k) { return !Strings::startsWith($k, '__'); });
                         $contents .= Letterpress::process($node['nodes'], $vars);
                     };

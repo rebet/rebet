@@ -14,7 +14,7 @@ class PdoAdapterTest extends RebetDatabaseTestCase
         parent::setUp();
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(PdoAdapter::class, new PdoAdapter('mysql'));
     }

@@ -293,7 +293,7 @@ return [
         | The log handler defined here can be overwritten individually in configuration of
         | `Dao.dbs.{db_name}.log_handler`.
         */
-        'log_handler' => function (Database $db, Query $query) { Log::debug("[" . $db->name() . "] SQL: " . $query->emulate()); },
+        'log_handler' => function (Database $db, Query $query): void { Log::debug("[" . $db->name() . "] SQL: " . $query->emulate()); },
     ],
 
 

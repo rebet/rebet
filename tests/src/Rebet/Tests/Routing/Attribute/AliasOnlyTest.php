@@ -11,7 +11,7 @@ use TestApp\Stub\AttributedStub;
 
 class AliasOnlyTest extends RebetTestCase
 {
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $attribute = AliasOnly::class;
         $ac        = new AttributedClass(AttributedStub::class);

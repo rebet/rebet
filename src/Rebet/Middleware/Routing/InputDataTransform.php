@@ -54,7 +54,7 @@ abstract class InputDataTransform
      * @param  ParameterBag $bag
      * @return void
      */
-    protected function transformBag(ParameterBag $bag)
+    protected function transformBag(ParameterBag $bag): void
     {
         $bag->replace($this->transformArray($bag->all()));
     }

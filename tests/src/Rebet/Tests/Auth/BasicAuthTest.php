@@ -16,7 +16,7 @@ class BasicAuthTest extends RebetTestCase
         parent::setUp();
     }
 
-    public function test_authenticate()
+    public function test_authenticate(): void
     {
         $this->expectException(AuthenticateException::class);
         $this->expectExceptionMessage("Authenticate Failed.");
@@ -31,7 +31,7 @@ class BasicAuthTest extends RebetTestCase
         }
     }
 
-    public function test_authenticate_pass()
+    public function test_authenticate_pass(): void
     {
         $_SERVER['PHP_AUTH_USER'] = 'id';
         $_SERVER['PHP_AUTH_PW']   = 'password';
@@ -39,7 +39,7 @@ class BasicAuthTest extends RebetTestCase
         $this->assertSame('id', $id);
     }
 
-    public function test_authenticate_faled()
+    public function test_authenticate_faled(): void
     {
         $this->expectException(AuthenticateException::class);
         $this->expectExceptionMessage("Authenticate Failed.");
@@ -56,7 +56,7 @@ class BasicAuthTest extends RebetTestCase
         }
     }
 
-    public function test_authenticate_hash()
+    public function test_authenticate_hash(): void
     {
         $_SERVER['PHP_AUTH_USER'] = 'id';
         $_SERVER['PHP_AUTH_PW']   = 'password';

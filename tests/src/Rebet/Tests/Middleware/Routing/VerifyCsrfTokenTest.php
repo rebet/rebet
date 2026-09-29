@@ -18,7 +18,7 @@ use Rebet\Tools\Utility\Strings;
 
 class VerifyCsrfTokenTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(VerifyCsrfToken::class, new VerifyCsrfToken());
         $this->assertInstanceOf(VerifyCsrfToken::class, new VerifyCsrfToken(['/exclude/path/*']));
@@ -62,7 +62,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
     }
 
     #[DataProvider('dataHandles')]
-    public function test_handle(bool $expect, string $path, string $method, array $excludes = [], bool $token_match = true, array $scope = [], bool $scope_match = true)
+    public function test_handle(bool $expect, string $path, string $method, array $excludes = [], bool $token_match = true, array $scope = [], bool $scope_match = true): void
     {
         $middleware  = new VerifyCsrfToken($excludes);
         $destination = function ($request) { return Responder::toResponse('OK'); };
@@ -105,7 +105,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
         }
     }
 
-    public function test_handle_multiOnetimeTocken()
+    public function test_handle_multiOnetimeTocken(): void
     {
         $middleware  = new VerifyCsrfToken();
         $destination = function ($request) { return Responder::toResponse('OK'); };
@@ -143,7 +143,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
         }
     }
 
-    public function test_handle_xcsrf()
+    public function test_handle_xcsrf(): void
     {
         $middleware  = new VerifyCsrfToken();
         $destination = function ($request) { return Responder::toResponse('OK'); };
@@ -156,7 +156,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
-    public function test_handle_xxsrf()
+    public function test_handle_xxsrf(): void
     {
         $middleware  = new VerifyCsrfToken([], true);
         $destination = function ($request) { return Responder::toResponse('OK'); };
@@ -170,7 +170,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
         $this->assertSame($token, Securities::decrypt(Nets::decodeBase64Url($response->getCookie('XSRF-TOKEN')->getValue())));
     }
 
-    public function test_handle_xxsrf_unsupport()
+    public function test_handle_xxsrf_unsupport(): void
     {
         $this->expectException(TokenMismatchException::class);
 

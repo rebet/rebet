@@ -12,12 +12,12 @@ use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 
 class UploadedFileTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(UploadedFile::class, new UploadedFile(App::structure()->public('/assets/img/72x72.png'), '72x72.png'));
     }
 
-    public function test_valueOf()
+    public function test_valueOf(): void
     {
         $file = App::structure()->public('/assets/img/72x72.png');
         $this->assertNull(UploadedFile::valueOf(null));
@@ -32,7 +32,7 @@ class UploadedFileTest extends RebetTestCase
         ]));
     }
 
-    public function test_getWidth()
+    public function test_getWidth(): void
     {
         $this->assertSame(72, (new UploadedFile(App::structure()->public('/assets/img/72x72.png'), '72x72.png'))->getWidth());
         $this->assertSame(120, (new UploadedFile(App::structure()->public('/assets/img/120x60.png'), '120x60.png'))->getWidth());
@@ -40,7 +40,7 @@ class UploadedFileTest extends RebetTestCase
         $this->assertSame(null, (new UploadedFile(App::structure()->env('.env'), '.env'))->getWidth());
     }
 
-    public function test_getHeight()
+    public function test_getHeight(): void
     {
         $this->assertSame(72, (new UploadedFile(App::structure()->public('/assets/img/72x72.png'), '72x72.png'))->getHeight());
         $this->assertSame(60, (new UploadedFile(App::structure()->public('/assets/img/120x60.png'), '120x60.png'))->getHeight());
@@ -48,7 +48,7 @@ class UploadedFileTest extends RebetTestCase
         $this->assertSame(null, (new UploadedFile(App::structure()->env('.env'), '.env'))->getHeight());
     }
 
-    public function test_store()
+    public function test_store(): void
     {
         Storage::private()->put('/unittest/foo.csv', '1,2,3');
         $upload_file = new UploadedFile(Storage::private()->path('/unittest/foo.csv'), 'foo.csv');

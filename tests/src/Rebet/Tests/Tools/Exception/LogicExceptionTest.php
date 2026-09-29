@@ -10,7 +10,7 @@ use Rebet\Tools\Exception\RebetException;
 
 class LogicExceptionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $e = new LogicException('test');
         $this->assertInstanceOf(LogicException::class, $e);

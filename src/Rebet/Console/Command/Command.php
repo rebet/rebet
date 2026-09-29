@@ -111,7 +111,7 @@ abstract class Command extends SymfonyCommand
      *
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName(static::NAME);
         $this->setDescription(static::DESCRIPTION);
@@ -396,7 +396,7 @@ abstract class Command extends SymfonyCommand
      * @param  array<int, \Symfony\Component\Console\Helper\TableStyle|string> $column_styles (default: [])
      * @return void
      */
-    protected function table(array $headers, array $rows, $table_style = 'default', array $column_styles = [])
+    protected function table(array $headers, array $rows, $table_style = 'default', array $column_styles = []): void
     {
         $table = new Table($this->output);
         $table->setHeaders($headers)->setRows($rows)->setStyle($table_style);

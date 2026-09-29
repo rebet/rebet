@@ -16,7 +16,7 @@ class OverrideOptionTest extends RebetTestCase
     }
 
     #[DataProvider('dataSplits')]
-    public function test_split($value, $expect)
+    public function test_split($value, $expect): void
     {
         $this->assertSame($expect, OverrideOption::split($value));
     }

@@ -28,7 +28,7 @@ class ResponderTest extends RebetTestCase
         Storage::reset();
     }
 
-    public function test_toResponse()
+    public function test_toResponse(): void
     {
         $response = Responder::toResponse('text');
         $this->assertInstanceOf(BasicResponse::class, $response);
@@ -82,7 +82,7 @@ class ResponderTest extends RebetTestCase
     }
 
     #[DataProvider('dataRedirects')]
-    public function test_redirect($expect, $path, $query, $status, $prefix)
+    public function test_redirect($expect, $path, $query, $status, $prefix): void
     {
         $request  = $this->createRequestMock("{$prefix}/", null, 'web', 'web', 'GET', $prefix);
         $response = Responder::redirect($path, $query, $status, [], $request);
@@ -91,12 +91,12 @@ class ResponderTest extends RebetTestCase
         $this->assertSame($status, $response->getStatusCode());
     }
 
-    public function test_problem()
+    public function test_problem(): void
     {
         $this->assertInstanceOf(ProblemResponse::class, Responder::problem(500));
     }
 
-    public function test_file_nothing()
+    public function test_file_nothing(): void
     {
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage("File not found at path: nothing.txt");
@@ -105,26 +105,26 @@ class ResponderTest extends RebetTestCase
         $response->sendContent();
     }
 
-    public function test_file()
+    public function test_file(): void
     {
         Storage::private()->put('foo.txt', 'foo');
         $response = Responder::file('foo.txt');
         $this->assertSame('text/plain', $response->getHeader('Content-Type'));
         $this->assertSame('3', $response->getHeader('Content-Length'));
         $this->assertSame("inline; filename=" . md5('foo.txt') . ".txt; filename*=utf-8''foo.txt", $response->getHeader('Content-Disposition'));
-        $this->assertStdoutEquals('foo', function () use ($response) {
+        $this->assertStdoutEquals('foo', function () use ($response): void {
             $response->sendContent();
         });
     }
 
-    public function test_download()
+    public function test_download(): void
     {
         Storage::private()->put('foo.csv', '1,2,3');
         $response = Responder::download('foo.csv');
         $this->assertSame('text/csv', $response->getHeader('Content-Type'));
         $this->assertSame('5', $response->getHeader('Content-Length'));
         $this->assertSame("attachment; filename=" . md5('foo.csv') . ".csv; filename*=utf-8''foo.csv", $response->getHeader('Content-Disposition'));
-        $this->assertStdoutEquals('1,2,3', function () use ($response) {
+        $this->assertStdoutEquals('1,2,3', function () use ($response): void {
             $response->sendContent();
         });
     }

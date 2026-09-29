@@ -11,7 +11,7 @@ use Rebet\Tests\RebetTestCase;
 
 class MigratingSessionHandlerTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $current = new NullSessionHandler();
         $new     = new MemcachedSessionHandler($this->getMockBuilder('Memcached')->getMock());

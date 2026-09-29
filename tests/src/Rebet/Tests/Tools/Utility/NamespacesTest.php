@@ -25,13 +25,13 @@ class NamespacesTest extends RebetTestCase
         ]);
     }
 
-    public function test_setAlias()
+    public function test_setAlias(): void
     {
         Namespaces::setAlias('@new', 'TestApp\\New\\Test');
         $this->assertSame('TestApp\\New\\Test\\HelloWorld', Namespaces::resolve('@new\\HelloWorld'));
     }
 
-    public function test_resolve()
+    public function test_resolve(): void
     {
         $this->assertSame(null, Namespaces::resolve(null));
         $this->assertSame('HelloWorld', Namespaces::resolve('HelloWorld'));

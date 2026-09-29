@@ -10,12 +10,12 @@ use Rebet\Tests\RebetTestCase;
 
 class ArraySessionStorageTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(ArraySessionStorage::class, new ArraySessionStorage());
     }
 
-    public function test_regenerate()
+    public function test_regenerate(): void
     {
         $storage = new ArraySessionStorage();
         $storage->start();

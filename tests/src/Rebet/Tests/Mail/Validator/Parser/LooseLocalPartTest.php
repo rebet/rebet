@@ -18,12 +18,12 @@ use Rebet\Tests\RebetTestCase;
 
 class LooseLocalPartTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(LooseLocalPart::class, new LooseLocalPart(new EmailLexer()));
     }
 
-    public function test_ignores()
+    public function test_ignores(): void
     {
         $this->assertSame([], (new LooseLocalPart(new EmailLexer()))->ignores());
         $this->assertSame([DotAtEnd::class, DotAtStart::class], (new LooseLocalPart(new EmailLexer(), [DotAtEnd::class, DotAtStart::class]))->ignores());
@@ -57,7 +57,7 @@ class LooseLocalPartTest extends RebetTestCase
     }
 
     #[DataProvider('dataParses')]
-    public function test_parse($expect, string|null $mail_address, array $ignores, array|null $warnings = null)
+    public function test_parse($expect, string|null $mail_address, array $ignores, array|null $warnings = null): void
     {
         $lexer = new EmailLexer();
         $lexer->setInput($mail_address);

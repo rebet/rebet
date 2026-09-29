@@ -20,9 +20,9 @@ class MysqlDriverTest extends RebetDatabaseTestCase
         DateTime::setTestNow('2001-02-03 04:05:06');
     }
 
-    public function test_toPhpType()
+    public function test_toPhpType(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $db->execute("DROP TABLE IF EXISTS native_types;");
             $dml = <<<EOS
                                 CREATE TABLE IF NOT EXISTS native_types (

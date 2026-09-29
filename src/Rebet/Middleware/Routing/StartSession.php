@@ -43,7 +43,7 @@ class StartSession
      * @param  Response $response
      * @return void
      */
-    public function terminate(Request $request, Response $response)
+    public function terminate(Request $request, Response $response): void
     {
         $request->session()->save();
     }

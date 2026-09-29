@@ -46,7 +46,7 @@ class FilesTest extends RebetTestCase
         file_put_contents("{$this->test_dir}/parent/child/baz.log", "baz");
     }
 
-    public function test_removeDir()
+    public function test_removeDir(): void
     {
         $this->assertFileExists('vfs://root/public/css/normalize.css');
         $this->assertFileExists('vfs://root/public/js/underscore/underscore.min.js');
@@ -67,7 +67,7 @@ class FilesTest extends RebetTestCase
         $this->assertFileExists('vfs://root');
     }
 
-    public function test_removeDir_onlyIncludeContents()
+    public function test_removeDir_onlyIncludeContents(): void
     {
         $this->assertFileExists('vfs://root/public/css/normalize.css');
         $this->assertFileExists('vfs://root/public/js/underscore/underscore.min.js');
@@ -88,7 +88,7 @@ class FilesTest extends RebetTestCase
         $this->assertFileExists('vfs://root');
     }
 
-    public function test_zip()
+    public function test_zip(): void
     {
         $this->assertFileDoesNotExist("{$this->test_dir}/parent.zip");
         Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/parent.zip");
@@ -113,7 +113,7 @@ class FilesTest extends RebetTestCase
         $this->assertFileExists("{$this->test_dir}/archives/3/child/baz.log");
     }
 
-    public function test_unzip()
+    public function test_unzip(): void
     {
         $this->assertFileDoesNotExist("{$this->test_dir}/parent.zip");
         $this->assertFileExists("{$this->test_dir}/parent");
@@ -174,7 +174,7 @@ class FilesTest extends RebetTestCase
     }
 
     #[DataProvider('dataZipErrorChecks')]
-    public function test_zipErrorCheck($expect, $code)
+    public function test_zipErrorCheck($expect, $code): void
     {
         try {
             $this->invoke(Files::class, 'zipErrorCheck', [$code, 'ZipArchive error.']);

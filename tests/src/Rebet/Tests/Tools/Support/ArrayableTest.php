@@ -22,21 +22,21 @@ class ArrayableTest extends RebetTestCase
         $this->map   = new ArrayableTest_Mock(['a' => 'A', 'b' => 'B', 'c' => 'C']);
     }
 
-    public function test_all()
+    public function test_all(): void
     {
         $this->assertSame([], $this->empty->all());
         $this->assertSame([1, 2, 3, 4, 5], $this->array->all());
         $this->assertSame(['a' => 'A', 'b' => 'B', 'c' => 'C'], $this->map->all());
     }
 
-    public function test_empty()
+    public function test_empty(): void
     {
         $this->assertSame(true, $this->empty->empty());
         $this->assertSame(false, $this->array->empty());
         $this->assertSame(false, $this->map->empty());
     }
 
-    public function test_has()
+    public function test_has(): void
     {
         $this->assertSame(false, $this->empty->has('a'));
         $this->assertSame(false, $this->array->has('a'));
@@ -49,21 +49,21 @@ class ArrayableTest extends RebetTestCase
         $this->assertSame(true, $map->has('c'));
     }
 
-    public function test_count()
+    public function test_count(): void
     {
         $this->assertSame(0, $this->empty->count());
         $this->assertSame(5, $this->array->count());
         $this->assertSame(3, $this->map->count());
     }
 
-    public function test_getIterator()
+    public function test_getIterator(): void
     {
         $this->assertInstanceOf(\ArrayIterator::class, $this->empty->getIterator());
         $this->assertInstanceOf(\ArrayIterator::class, $this->array->getIterator());
         $this->assertInstanceOf(\ArrayIterator::class, $this->map->getIterator());
     }
 
-    public function test_offsetSet()
+    public function test_offsetSet(): void
     {
         $this->assertSame([], $this->empty->all());
         $this->empty->offsetSet(null, 'a');
@@ -78,7 +78,7 @@ class ArrayableTest extends RebetTestCase
         $this->assertSame(['a', 'b', 'c' => 'cc', 'd' => 'D'], $this->empty->all());
     }
 
-    public function test_offsetExists()
+    public function test_offsetExists(): void
     {
         $this->assertFalse($this->empty->offsetExists(0));
         $this->assertTrue($this->array->offsetExists(0));
@@ -86,7 +86,7 @@ class ArrayableTest extends RebetTestCase
         $this->assertTrue($this->map->offsetExists('a'));
     }
 
-    public function test_offsetUnset()
+    public function test_offsetUnset(): void
     {
         $this->assertSame([1, 2, 3, 4, 5], $this->array->all());
         $this->array->offsetUnset(0);
@@ -95,7 +95,7 @@ class ArrayableTest extends RebetTestCase
         $this->assertSame([1 => 2, 2 => 3, 4 => 5], $this->array->all());
     }
 
-    public function test_offsetGet()
+    public function test_offsetGet(): void
     {
         $this->assertSame(3, $this->array->offsetGet(2));
         $this->assertSame(3, $this->array[2]);
@@ -103,7 +103,7 @@ class ArrayableTest extends RebetTestCase
         $this->assertSame('A', $this->map['a']);
     }
 
-    public function test_toArray()
+    public function test_toArray(): void
     {
         $this->assertSame([], $this->empty->toArray());
         $this->assertSame([1, 2, 3, 4, 5], $this->array->toArray());
@@ -114,7 +114,7 @@ class ArrayableTest extends RebetTestCase
         $this->assertSame(['a' => 'A', 'b' => 'B', 'c' => 'C', 'array' => [1, 2, 3, 4, 5, []]], $this->map->toArray());
     }
 
-    public function test_jsonSerialize()
+    public function test_jsonSerialize(): void
     {
         $this->assertSame([], $this->empty->jsonSerialize());
         $this->assertSame([1, 2, 3, 4, 5], $this->array->jsonSerialize());

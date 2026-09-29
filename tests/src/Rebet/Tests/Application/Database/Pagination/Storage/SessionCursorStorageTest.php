@@ -23,7 +23,7 @@ class SessionCursorStorageTest extends RebetTestCase
         $this->strage = new SessionCursorStorage();
     }
 
-    public function test_saveAndLoadAndRemove()
+    public function test_saveAndLoadAndRemove(): void
     {
         $request = $this->createRequestMock('/');
         $cursor  = Cursor::create(['user_id' => 'asc'], new Pager(), ['user_id' => 12], 3);

@@ -11,7 +11,7 @@ use TestApp\Stub\AttributedStub;
 
 class PrimaryKeyTest extends RebetTestCase
 {
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $attribute = PrimaryKey::class;
         $ac        = new AttributedClass(AttributedStub::class);

@@ -12,23 +12,23 @@ use TestApp\Enum\Gender;
 
 class BuiltinRansackerTest extends RebetDatabaseTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertInstanceOf(BuiltinRansacker::class, new BuiltinRansacker($db->driver()));
         });
     }
 
-    public function test_of()
+    public function test_of(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $this->assertInstanceOf(BuiltinRansacker::class, BuiltinRansacker::of($db->driver()));
         });
     }
 
-    public function test_resolve()
+    public function test_resolve(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $driver = $db->driver();
             $this->assertEquals($db->sql($driver->quoteIdentifier('name') . ' = :name', ['name' => 'foo']), BuiltinRansacker::of($driver)->resolve('name', 'foo'));
         });
@@ -72,9 +72,9 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataBuilds')]
-    public function test_build($expect_sql, $expect_params, $ransack, $alias = [], $extention = null, $dbs = [])
+    public function test_build($expect_sql, $expect_params, $ransack, $alias = [], $extention = null, $dbs = []): void
     {
-        self::eachDb(function (Database $db) use ($expect_sql, $expect_params, $ransack, $alias, $extention) {
+        self::eachDb(function (Database $db) use ($expect_sql, $expect_params, $ransack, $alias, $extention): void {
             $condition = BuiltinRansacker::of($db->driver())->build($ransack, $alias, $extention);
             $this->assertStringWildcardAll($expect_sql, $condition->sql());
             $this->assertEquals($expect_params, $condition->params());

@@ -11,7 +11,7 @@ use TestApp\Stub\AttributedStub;
 
 class UnmapTest extends RebetTestCase
 {
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $attribute = Unmap::class;
         $ac        = new AttributedClass(AttributedStub::class);

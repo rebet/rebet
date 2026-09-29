@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 
 class FileBagTest extends RebetTestCase
 {
-    public function test_convert()
+    public function test_convert(): void
     {
         $file_info = [
             'tmp_name' => App::structure()->public('/assets/img/72x72.png'),

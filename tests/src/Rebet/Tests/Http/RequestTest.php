@@ -42,12 +42,12 @@ class RequestTest extends RebetTestCase
         ]);
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(Request::class, new Request());
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $request = new Request();
         $this->assertNotNull(Request::current());
@@ -55,7 +55,7 @@ class RequestTest extends RebetTestCase
         $this->assertNull(Request::current());
     }
 
-    public function test_current()
+    public function test_current(): void
     {
         Request::reset();
         $this->assertNull(Request::current());
@@ -63,7 +63,7 @@ class RequestTest extends RebetTestCase
         $this->assertSame($request, Request::current());
     }
 
-    public function test_validate()
+    public function test_validate(): void
     {
         $rule = [
             'name' => [
@@ -81,7 +81,7 @@ class RequestTest extends RebetTestCase
         $this->assertSame('John Smith', $valid_data->name);
     }
 
-    public function test_validate_error()
+    public function test_validate_error(): void
     {
         $this->expectException(FallbackRedirectException::class);
         $this->expectExceptionMessage("Validate Failed.");
@@ -111,7 +111,7 @@ class RequestTest extends RebetTestCase
         }
     }
 
-    public function test_all()
+    public function test_all(): void
     {
         $request = Request::create('/');
         $this->assertSame([], $request->all());
@@ -127,7 +127,7 @@ class RequestTest extends RebetTestCase
         ], $request->all());
     }
 
-    public function test_input()
+    public function test_input(): void
     {
         $request = Request::create('/');
         $this->assertSame([], $request->all());
@@ -142,7 +142,7 @@ class RequestTest extends RebetTestCase
         ], $request->input());
     }
 
-    public function test_files()
+    public function test_files(): void
     {
         $request = Request::create('/');
         $this->assertSame([], $request->all());
@@ -156,7 +156,7 @@ class RequestTest extends RebetTestCase
         ], $request->files());
     }
 
-    public function test_initialize()
+    public function test_initialize(): void
     {
         $request = Request::create('/');
         $this->assertInstanceOf(FileBag::class, $request->files);
@@ -170,7 +170,7 @@ class RequestTest extends RebetTestCase
         $this->assertInstanceOf(UploadedFile::class, $request->files->get('file'));
     }
 
-    public function test_duplicate()
+    public function test_duplicate(): void
     {
         $request = Request::create('/');
         $this->assertInstanceOf(FileBag::class, $request->files);
@@ -184,7 +184,7 @@ class RequestTest extends RebetTestCase
         $this->assertInstanceOf(UploadedFile::class, $copy->files->get('file'));
     }
 
-    public function test_getSession()
+    public function test_getSession(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage("Request::getSession() method is unspported in Rebet. You can use Request::session() method to get the session instead.");
@@ -193,7 +193,7 @@ class RequestTest extends RebetTestCase
         $request->getSession();
     }
 
-    public function test_setSession()
+    public function test_setSession(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage("Request::setSession() method is unspported in Rebet. You can use Request::session() method to set the session instead.");
@@ -202,7 +202,7 @@ class RequestTest extends RebetTestCase
         $request->setSession(new SymfonySession());
     }
 
-    public function test_setSessionFactory()
+    public function test_setSessionFactory(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage("Request::setSessionFactory() method is unspported in Rebet. You can use Request::session() method to set the session factory instead.");
@@ -211,7 +211,7 @@ class RequestTest extends RebetTestCase
         $request->setSessionFactory(function () { return null; });
     }
 
-    public function test_session_notSet()
+    public function test_session_notSet(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage("Session has not been set");
@@ -220,7 +220,7 @@ class RequestTest extends RebetTestCase
         $request->session();
     }
 
-    public function test_session()
+    public function test_session(): void
     {
         $request = Request::create('/');
         $session = new Session();
@@ -234,7 +234,7 @@ class RequestTest extends RebetTestCase
         $this->assertSame($session, $request->session());
     }
 
-    public function test_bearerToken()
+    public function test_bearerToken(): void
     {
         $request = Request::create('/');
         $this->assertNull($request->bearerToken());
@@ -260,19 +260,19 @@ class RequestTest extends RebetTestCase
     }
 
     #[DataProvider('dataGetRequestPaths')]
-    public function test_getRequestPath($expect, $path, $prefix, bool $withoutPrefix)
+    public function test_getRequestPath($expect, $path, $prefix, bool $withoutPrefix): void
     {
         $request = $this->createRequestMock($path, null, 'web', 'web', 'GET', $prefix);
         $this->assertSame($expect, $request->getRequestPath($withoutPrefix));
     }
 
-    public function test_getRoutePrefix()
+    public function test_getRoutePrefix(): void
     {
         $request = Request::create('/prefix/foo');
         $this->assertSame('', $request->getRoutePrefix());
 
         Router::setCurrentChannel('web');
-        Router::rules('web')->prefix('/prefix')->routing(function () {
+        Router::rules('web')->prefix('/prefix')->routing(function (): void {
             Router::get('/foo', function () { return 'foo'; });
         });
 
@@ -288,13 +288,13 @@ class RequestTest extends RebetTestCase
         }
     }
 
-    public function test_getUserAgent()
+    public function test_getUserAgent(): void
     {
         $request = Request::create('/');
         $this->assertInstanceOf(UserAgent::class, $request->getUserAgent());
     }
 
-    public function test_saveAs()
+    public function test_saveAs(): void
     {
         $request = $this->createRequestMock('/path/to/page');
         $request->query->set('query', 1);
@@ -310,7 +310,7 @@ class RequestTest extends RebetTestCase
         ], $session->flash()->get('_request_test.input'));
     }
 
-    public function test_isSaved()
+    public function test_isSaved(): void
     {
         $request = $this->createRequestMock('/path/to/page');
         $this->assertFalse($request->isSaved('test'));
@@ -318,7 +318,7 @@ class RequestTest extends RebetTestCase
         $this->assertTrue($request->isSaved('test'));
     }
 
-    public function test_replay()
+    public function test_replay(): void
     {
         $request  = $this->createRequestMock('/path/to/page');
         $response = $request->replay('test');
@@ -341,7 +341,7 @@ class RequestTest extends RebetTestCase
         ], $request->session()->flash()->peek('_inherit_input'));
     }
 
-    public function test_restoreInheritData()
+    public function test_restoreInheritData(): void
     {
         $request = $this->createRequestMock('/');
         $request->query->set('query', 1);
@@ -387,7 +387,7 @@ class RequestTest extends RebetTestCase
         $this->assertSame(3, $request->input('request'));
     }
 
-    public function test_inheritInputTo()
+    public function test_inheritInputTo(): void
     {
         $request = $this->createRequestMock('/');
         $request->query->set('query', 1);
@@ -426,7 +426,7 @@ class RequestTest extends RebetTestCase
         ], $request->session()->flash()->peek('_inherit_input'));
     }
 
-    public function test_expectsJson()
+    public function test_expectsJson(): void
     {
         $request = Request::create('/');
         $this->assertFalse($request->isAjax());
@@ -471,7 +471,7 @@ class RequestTest extends RebetTestCase
         $this->assertTrue($request->expectsJson());
     }
 
-    public function test_wantsJson()
+    public function test_wantsJson(): void
     {
         $request = Request::create('/');
         $request->setHeader('Accept', 'text/json');
@@ -490,7 +490,7 @@ class RequestTest extends RebetTestCase
         $this->assertFalse($request->wantsJson());
     }
 
-    public function test_isAjax()
+    public function test_isAjax(): void
     {
         $request = Request::create('/');
         $this->assertFalse($request->isAjax());
@@ -498,7 +498,7 @@ class RequestTest extends RebetTestCase
         $this->assertTrue($request->isAjax());
     }
 
-    public function test_isPjax()
+    public function test_isPjax(): void
     {
         $request = Request::create('/');
         $this->assertFalse($request->isPjax());
@@ -511,7 +511,7 @@ class RequestTest extends RebetTestCase
         $this->assertTrue($request->isPjax());
     }
 
-    public function test_acceptsAnyContentType()
+    public function test_acceptsAnyContentType(): void
     {
         $request = Request::create('/');
         $request->setHeader('Accept', '*/*');
@@ -531,7 +531,7 @@ class RequestTest extends RebetTestCase
         $this->assertFalse($request->acceptsAnyContentType());
     }
 
-    public function test_getHeader()
+    public function test_getHeader(): void
     {
         $request = Request::create('/');
         $request->headers->add([
@@ -543,7 +543,7 @@ class RequestTest extends RebetTestCase
         $this->assertSame(null, $request->getHeader('X-Nothing'));
     }
 
-    public function test_setHeader()
+    public function test_setHeader(): void
     {
         $request = Request::create('/');
         $this->assertSame(null, $request->getHeader('X-Test'));

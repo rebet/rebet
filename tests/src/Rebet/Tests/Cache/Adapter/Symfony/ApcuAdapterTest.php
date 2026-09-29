@@ -36,7 +36,7 @@ class ApcuAdapterTest extends RebetTestCase
         parent::setUp();
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(ApcuAdapter::class, new ApcuAdapter());
         $this->assertInstanceOf(ApcuAdapter::class, new ApcuAdapter('', 5));

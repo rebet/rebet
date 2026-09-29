@@ -14,7 +14,7 @@ class NetsTest extends RebetTestCase
         parent::setUp();
     }
 
-    public function test_encodeBase64Url()
+    public function test_encodeBase64Url(): void
     {
         foreach ([
             // inclued '='
@@ -35,7 +35,7 @@ class NetsTest extends RebetTestCase
         }
     }
 
-    public function test_decodeBase64Url()
+    public function test_decodeBase64Url(): void
     {
         foreach ([
             // inclued '='
@@ -56,7 +56,7 @@ class NetsTest extends RebetTestCase
         }
     }
 
-    public function test_urlGetContents()
+    public function test_urlGetContents(): void
     {
         $content = Nets::urlGetContents('https://raw.githubusercontent.com/rebet/rebet/master/LICENSE');
         $this->assertMatchesRegularExpression('/^MIT License/', $content);

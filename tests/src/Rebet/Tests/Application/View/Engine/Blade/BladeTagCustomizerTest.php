@@ -29,7 +29,7 @@ class BladeTagCustomizerTest extends EngineCustomizerTestCase
         return new Blade(true);
     }
 
-    public function test_disabled_tag_auth()
+    public function test_disabled_tag_auth(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Unsupported directive '@auth' found. In Rebet, you should use '@role' directive instead.");
@@ -37,7 +37,7 @@ class BladeTagCustomizerTest extends EngineCustomizerTestCase
         $this->engine->render('disabled/auth');
     }
 
-    public function test_disabled_tag_guest()
+    public function test_disabled_tag_guest(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Unsupported directive '@guest' found. In Rebet, you should use '@role' directive instead.");

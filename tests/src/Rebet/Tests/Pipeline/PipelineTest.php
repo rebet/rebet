@@ -18,7 +18,7 @@ class PipelineTest extends RebetTestCase
         $this->pipeline = new Pipeline();
     }
 
-    public function test_send_beforePipelineBuild()
+    public function test_send_beforePipelineBuild(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Pipeline not build yet. You shold buld a pipeline using then() first.");
@@ -26,7 +26,7 @@ class PipelineTest extends RebetTestCase
         $output = $this->pipeline->send('onion');
     }
 
-    public function test_usage_basic()
+    public function test_usage_basic(): void
     {
         $this->pipeline->through([
             PipelineTest_Wrapper::class,
@@ -47,7 +47,7 @@ class PipelineTest extends RebetTestCase
         $this->assertSame('((onion)!)', $output);
     }
 
-    public function test_usage_objectAndArray()
+    public function test_usage_objectAndArray(): void
     {
         $this->pipeline->through(
             function ($input, $next) {
@@ -66,7 +66,7 @@ class PipelineTest extends RebetTestCase
         $this->assertSame('([ONION!])', $output);
     }
 
-    public function test_getDestination()
+    public function test_getDestination(): void
     {
         $this->assertNull($this->pipeline->getDestination());
         $destination = function ($input) {
@@ -76,7 +76,7 @@ class PipelineTest extends RebetTestCase
         $this->assertSame($destination, $this->pipeline->getDestination());
     }
 
-    public function test_invoke()
+    public function test_invoke(): void
     {
         $this->pipeline->through(
             new PipelineTest_Wrapper(),
@@ -90,7 +90,7 @@ class PipelineTest extends RebetTestCase
 
         $this->assertStdoutEquals(
             '[terminate](terminate)',
-            function () {
+            function (): void {
                 $this->pipeline->invoke('terminate');
             },
         );
@@ -136,12 +136,12 @@ class PipelineTest_Wrapper
         return $this->open . $output . $this->close;
     }
 
-    public function terminate()
+    public function terminate(): void
     {
         echo $this->open . 'terminate' . $this->close;
     }
 
-    public function set($open, $close)
+    public function set($open, $close): void
     {
         $this->open  = $open;
         $this->close = $close;

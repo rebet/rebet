@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class NullSessionHandlerTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(NullSessionHandler::class, new NullSessionHandler());
     }

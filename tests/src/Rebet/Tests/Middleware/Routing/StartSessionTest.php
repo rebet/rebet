@@ -13,12 +13,12 @@ use Rebet\Tests\RebetTestCase;
 
 class StartSessionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(StartSession::class, new StartSession());
     }
 
-    public function test_handleAndTerminate()
+    public function test_handleAndTerminate(): void
     {
         $middleware  = new StartSession();
         $destination = function ($request) { return Responder::toResponse('OK'); };

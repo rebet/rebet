@@ -25,7 +25,7 @@ class HashTextCommandTest extends RebetConsoleTestCase
     }
 
     #[DataProvider('dataExecutes')]
-    public function test_execute(string $text, array $options = [])
+    public function test_execute(string $text, array $options = []): void
     {
         $tester = $this->getCommandTester(HashTextCommand::NAME);
         $status = $tester->execute(array_merge(['text' => $text], $options));

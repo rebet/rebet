@@ -29,13 +29,13 @@ class ViewRouteTest extends RebetTestCase
         ]);
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $route = new ViewRoute('/welcome/{name}', '/welcome');
         $this->assertInstanceOf(ViewRoute::class, $route);
     }
 
-    public function test_routing()
+    public function test_routing(): void
     {
         $route = new ViewRoute('/welcome/{name}', '/welcome');
         $this->assertInstanceOf(ViewRoute::class, $route);
@@ -46,7 +46,7 @@ class ViewRouteTest extends RebetTestCase
         $this->assertSame('Hello, Bob.', $response->getContent());
     }
 
-    public function test_routing_viewNotFound()
+    public function test_routing_viewNotFound(): void
     {
         $this->expectException(RouteNotFoundException::class);
 

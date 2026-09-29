@@ -29,7 +29,7 @@ class CommandTest extends RebetTestCase
                 ['command', 'c', InputArgument::OPTIONAL, 'Command to display', 'comment'],
             ];
 
-            protected function handle()
+            protected function handle(): void
             {
                 switch ($this->option('meeting-time') ?? 'unknown') {
                     case 'morning': $hello = "Good morning";
@@ -50,7 +50,7 @@ class CommandTest extends RebetTestCase
         };
     }
 
-    public function test_configure()
+    public function test_configure(): void
     {
         $tester = new CommandTester($this->hello);
 
@@ -117,7 +117,7 @@ class CommandTest extends RebetTestCase
         $this->assertSame("Hello." . PHP_EOL, $tester->getDisplay());
     }
 
-    public function test_choice_viaOption()
+    public function test_choice_viaOption(): void
     {
         $choice = new class extends Command {
             public const NAME        = 'Choice';
@@ -126,7 +126,7 @@ class CommandTest extends RebetTestCase
                 ['fruit', 'f', InputOption::VALUE_OPTIONAL, 'Favorite fruit.'],
             ];
 
-            protected function handle()
+            protected function handle(): void
             {
                 $this->writeln($this->choice("Favorite fruit : ", ['apple' => 'Apple', 'banana' => 'Banana'], 'fruit', 'apple'));
             }
@@ -145,7 +145,7 @@ class CommandTest extends RebetTestCase
         $this->assertSame("Favorite fruit : Apple (via option)\nApple" . PHP_EOL, $tester->getDisplay());
     }
 
-    public function test_option_aliases()
+    public function test_option_aliases(): void
     {
         $aliased = new class extends Command {
             public const NAME        = 'Aliased';
@@ -155,7 +155,7 @@ class CommandTest extends RebetTestCase
                 [['dry-run', 'dr'], null, InputOption::VALUE_NONE, 'A flag option with a long alias.'],
             ];
 
-            protected function handle()
+            protected function handle(): void
             {
                 $this->writeln(var_export($this->option('long-name'), true));
                 $this->writeln(var_export($this->option('ln'), true));

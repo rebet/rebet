@@ -25,7 +25,7 @@ class EnvironmentTest extends RebetTestCase
         $this->env = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock());
     }
 
-    public function test_raw()
+    public function test_raw(): void
     {
         $this->env->raw('hello', "echo('Hello');");
         $source = '{% hello %}';
@@ -47,7 +47,7 @@ class EnvironmentTest extends RebetTestCase
         return $compiler->compile($parser->parse($stream)->getNode('body')->getNode('0'))->getSource();
     }
 
-    public function test_embed()
+    public function test_embed(): void
     {
         $this->env->embed('hello', null, [], 'echo(', new CallbackProcessor(function (string $name = 'everyone', string $greet = 'Hello') { return "{$greet} {$name}."; }), ');');
 
@@ -84,7 +84,7 @@ class EnvironmentTest extends RebetTestCase
         );
     }
 
-    public function test_case()
+    public function test_case(): void
     {
         $this->env->case('env', 'is', ['...' => [',', 'or']], new CallbackProcessor(function ($env) { return true; }));
 

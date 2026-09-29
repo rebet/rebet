@@ -24,7 +24,7 @@ class EnumTest extends RebetTestCase
         $this->female = Gender::FEMALE();
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $reflection = new \ReflectionProperty(Enum::class, 'enum_data_cache');
         $reflection->setAccessible(true);
@@ -56,7 +56,7 @@ class EnumTest extends RebetTestCase
         $this->assertTrue(isset($reflection->getValue()[EnumTest_AcceptStatus::class]));
     }
 
-    public function test_callStatic()
+    public function test_callStatic(): void
     {
         $this->assertInstanceOf(Gender::class, $this->male);
         $this->assertSame(1, $this->male->value);
@@ -72,7 +72,7 @@ class EnumTest extends RebetTestCase
         $this->assertSame('fas fa-check-circle', $status->icon);
     }
 
-    public function test_callStatic_undefine()
+    public function test_callStatic_undefine(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid enum const. TestApp\Enum\Gender::INVALID is not defined.");
@@ -80,7 +80,7 @@ class EnumTest extends RebetTestCase
         $invalid = Gender::INVALID();
     }
 
-    public function test_equals()
+    public function test_equals(): void
     {
         $male2 = Gender::MALE();
 
@@ -94,7 +94,7 @@ class EnumTest extends RebetTestCase
         $this->assertFalse($this->male->equals($this->female));
     }
 
-    public function test_in()
+    public function test_in(): void
     {
         $this->assertTrue($this->male->in(1, 2));
         $this->assertTrue($this->male->in('1', '2'));
@@ -104,7 +104,7 @@ class EnumTest extends RebetTestCase
         $this->assertFalse($this->male->in($this->female));
     }
 
-    public function test_toString()
+    public function test_toString(): void
     {
         $this->assertSame('男性', "{$this->male}");
 
@@ -114,12 +114,12 @@ class EnumTest extends RebetTestCase
         $this->assertSame('Male', "{$this->male}");
     }
 
-    public function test_jsonSerialize()
+    public function test_jsonSerialize(): void
     {
         $this->assertSame(1, $this->male->jsonSerialize());
     }
 
-    public function test_lists()
+    public function test_lists(): void
     {
         $this->assertSame(
             [
@@ -139,7 +139,7 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    public function test_maps()
+    public function test_maps(): void
     {
         $this->assertSame(
             [
@@ -183,7 +183,7 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    public function test_maps_invalid()
+    public function test_maps_invalid(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid property access. Property TestApp\Enum\Gender->invalid is not exists.");
@@ -191,7 +191,7 @@ class EnumTest extends RebetTestCase
         Gender::maps('invalid');
     }
 
-    public function test_fieldOf()
+    public function test_fieldOf(): void
     {
         $this->assertSame(Gender::MALE(), Gender::fieldOf('value', 1));
         $this->assertSame(Gender::MALE(), Gender::fieldOf('name', 'MALE'));
@@ -208,7 +208,7 @@ class EnumTest extends RebetTestCase
         $this->assertNull(EnumTest_AcceptStatus::fieldOf('value', 1));
     }
 
-    public function test_fieldOf_invalid()
+    public function test_fieldOf_invalid(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid property access. Property TestApp\Enum\Gender->invalid is not exists.");
@@ -216,7 +216,7 @@ class EnumTest extends RebetTestCase
         $this->assertNull(Gender::fieldOf('invalid', 1));
     }
 
-    public function test_valueOf()
+    public function test_valueOf(): void
     {
         $this->assertSame(Gender::MALE(), Gender::valueOf(1));
         $this->assertSame(Gender::MALE(), Gender::valueOf('1'));
@@ -227,7 +227,7 @@ class EnumTest extends RebetTestCase
         $this->assertSame(null, EnumTest_CODE::valueOf(2));
     }
 
-    public function test_convertTo()
+    public function test_convertTo(): void
     {
         $gender = Gender::MALE();
         $this->assertSame(1, $gender->convertTo('int'));
@@ -254,7 +254,7 @@ class EnumTest extends RebetTestCase
         $this->assertSame($ratio, $ratio->convertTo(EnumTest_Ratio::class));
     }
 
-    public function test_labelOf()
+    public function test_labelOf(): void
     {
         $this->assertSame(Gender::MALE(), Gender::labelOf('Male'));
         $this->assertSame(Gender::MALE(), Gender::labelOf('男性', true));
@@ -262,13 +262,13 @@ class EnumTest extends RebetTestCase
         $this->assertSame(EnumTest_AcceptStatus::REJECTED(), EnumTest_AcceptStatus::labelOf('却下'));
     }
 
-    public function test_nameOf()
+    public function test_nameOf(): void
     {
         $this->assertSame(Gender::MALE(), Gender::nameOf('MALE'));
         $this->assertSame(EnumTest_AcceptStatus::REJECTED(), EnumTest_AcceptStatus::nameOf('REJECTED'));
     }
 
-    public function test_listOf()
+    public function test_listOf(): void
     {
         $this->assertSame(
             [1, 2],
@@ -313,7 +313,7 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    public function test_listOf_invalid()
+    public function test_listOf_invalid(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid property access. Property TestApp\Enum\Gender->invalid is not exists.");
@@ -321,7 +321,7 @@ class EnumTest extends RebetTestCase
         $this->assertNull(Gender::listOf('invalid'));
     }
 
-    public function test_values()
+    public function test_values(): void
     {
         $this->assertSame(
             [1, 2],
@@ -341,7 +341,7 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    public function test_labels()
+    public function test_labels(): void
     {
         $this->assertSame(
             ['Male', 'Female'],
@@ -371,7 +371,7 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    public function test_names()
+    public function test_names(): void
     {
         $this->assertSame(
             ['MALE', 'FEMALE'],
@@ -384,7 +384,7 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    public function test_translate()
+    public function test_translate(): void
     {
         $this->assertSame('男性', Gender::MALE()->translate());
         $this->assertSame('女性', Gender::FEMALE()->translate());
@@ -404,7 +404,7 @@ class EnumTest extends RebetTestCase
         $this->assertSame('Female', Gender::FEMALE()->translate());
     }
 
-    public function test_nexts()
+    public function test_nexts(): void
     {
         $this->assertSame(
             [
@@ -457,7 +457,7 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    public function test_nextOf()
+    public function test_nextOf(): void
     {
         $this->assertSame(
             ['W', 'A', 'R'],
@@ -490,7 +490,7 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    public function test_nextOf_invalid()
+    public function test_nextOf_invalid(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid property access. Property TestApp\Enum\Gender->invalid is not exists.");
@@ -498,7 +498,7 @@ class EnumTest extends RebetTestCase
         $this->assertNull(Gender::listOf('invalid'));
     }
 
-    public function test_nextValues()
+    public function test_nextValues(): void
     {
         $this->assertSame(
             ['W', 'A', 'R'],
@@ -516,7 +516,7 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    public function test_nextLabels()
+    public function test_nextLabels(): void
     {
         $this->assertSame(
             ['待機中', '受理', '却下'],

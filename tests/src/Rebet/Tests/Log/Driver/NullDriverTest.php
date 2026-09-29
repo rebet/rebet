@@ -10,12 +10,12 @@ use Rebet\Tests\RebetTestCase;
 
 class NullDriverTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(NullDriver::class, new NullDriver());
     }
 
-    public function test_log()
+    public function test_log(): void
     {
         $driver = new NullDriver();
         $driver->log(LogLevel::DEBUG, 'Nothing happens.');

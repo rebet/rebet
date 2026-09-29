@@ -17,7 +17,7 @@ class SqliteDriverTest extends RebetDatabaseTestCase
         DateTime::setTestNow('2001-02-03 04:05:06');
     }
 
-    public function test_toPhpType()
+    public function test_toPhpType(): void
     {
         $db  = Dao::db('sqlite');
         $dml = <<<EOS

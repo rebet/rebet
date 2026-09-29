@@ -10,13 +10,13 @@ use Rebet\Tests\RebetTestCase;
 
 class TokenMismatchExceptionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $e = new TokenMismatchException('Message');
         $this->assertInstanceOf(TokenMismatchException::class, $e);
     }
 
-    public function test_problem()
+    public function test_problem(): void
     {
         $e        = new TokenMismatchException('Message');
         $response = $e->problem();

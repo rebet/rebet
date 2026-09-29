@@ -37,7 +37,7 @@ class ViewTest extends RebetTestCase
         ]);
     }
 
-    public function test_isEnabled()
+    public function test_isEnabled(): void
     {
         $this->assertTrue(View::isEnabled());
         Config::application([
@@ -48,21 +48,21 @@ class ViewTest extends RebetTestCase
         $this->assertFalse(View::isEnabled());
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(View::class, new View('welcom'));
         $this->assertInstanceOf(View::class, new View('welcom', null, new Blade(true)));
         $this->assertInstanceOf(View::class, new View('welcom', null, new Twig(true)));
     }
 
-    public function test_of()
+    public function test_of(): void
     {
         $this->assertInstanceOf(View::class, View::of('welcom'));
     }
 
-    public function test_shareAndSharedAndComposerAndClear()
+    public function test_shareAndSharedAndComposerAndClear(): void
     {
-        View::composer('/welcome/', function (View $view) {
+        View::composer('/welcome/', function (View $view): void {
             $view->with('name', 'from composer');
         });
         $view = View::of('welcome');
@@ -80,7 +80,7 @@ class ViewTest extends RebetTestCase
         $this->assertSame(null, View::shared('name'));
     }
 
-    public function test_with()
+    public function test_with(): void
     {
         $this->assertSame('Hello, Bob.', View::of('welcome')->with('name', 'Bob')->render());
         $this->assertSame('Hello, Bob.', View::of('welcome')->with(['name' => 'Bob'])->render());
@@ -88,7 +88,7 @@ class ViewTest extends RebetTestCase
         $this->assertInstanceOf(Tinker::class, Reflector::get($view, 'data.name', null, true));
     }
 
-    public function test_eof()
+    public function test_eof(): void
     {
         $view = View::of('welcome')->eof(EofLineFeed::ONE());
         $this->assertInstanceOf(View::class, $view);
@@ -99,12 +99,12 @@ class ViewTest extends RebetTestCase
         $this->assertSame("Hello, Bob.\n\n", View::of('welcome')->eof(EofLineFeed::KEEP())->with('name', 'Bob')->render());
     }
 
-    public function test_render()
+    public function test_render(): void
     {
         $this->assertSame('Hello, Bob.', View::of('welcome')->with('name', 'Bob')->render());
     }
 
-    public function test_render_notExists()
+    public function test_render_notExists(): void
     {
         $this->expectException(ViewRenderFailedException::class);
         $this->expectExceptionMessage("The view [nothing] (possible: nothing) render failed because of all of view templates not exists.");
@@ -112,7 +112,7 @@ class ViewTest extends RebetTestCase
         View::of('nothing')->render();
     }
 
-    public function test_render_notExistsMultiPosible()
+    public function test_render_notExistsMultiPosible(): void
     {
         $this->expectException(ViewRenderFailedException::class);
         $this->expectExceptionMessage("The view [nothing] (possible: ja/nothing, en/nothing) render failed because of all of view templates not exists.");
@@ -120,14 +120,14 @@ class ViewTest extends RebetTestCase
         View::of('nothing', function (string $name) { return ["ja/{$name}", "en/{$name}"] ;})->render();
     }
 
-    public function test_exists()
+    public function test_exists(): void
     {
         $this->assertTrue(View::of('welcome')->exists());
         $this->assertFalse(View::of('nothing')->exists());
         $this->assertTrue(View::of('nothing', function ($name) { return [$name, 'welcome']; })->exists());
     }
 
-    public function test_getPossibleNames()
+    public function test_getPossibleNames(): void
     {
         $this->assertSame(['nothing'], View::of('nothing')->getPossibleNames());
         $this->assertSame(['nothing', 'welcome'], View::of('nothing', function ($name) { return [$name, 'welcome']; })->getPossibleNames());

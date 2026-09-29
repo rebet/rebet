@@ -31,7 +31,7 @@ class Translator
         return [
             'dictionary'      => FileDictionary::class,
             'resource_adder'  => [
-                FileDictionary::class => function (FileDictionary $dictionary, ...$args) { $dictionary->addLibraryResource(...$args); },
+                FileDictionary::class => function (FileDictionary $dictionary, ...$args): void { $dictionary->addLibraryResource(...$args); },
             ],
             'locale'          => \locale_get_default(),
             'fallback_locale' => 'en',

@@ -11,7 +11,7 @@ use Rebet\Tests\RebetTestCase;
 
 class SigninFailedTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $request = Request::create('/');
         $event   = new SigninFailed($request, 'charenged-signin-id');

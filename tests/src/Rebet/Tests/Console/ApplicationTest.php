@@ -22,7 +22,7 @@ class ApplicationTest extends RebetTestCase
         $this->app->setAutoExit(false);
     }
 
-    public function test_call()
+    public function test_call(): void
     {
         $buffer = new BufferedOutput();
         $return = $this->app->call('env', [], $buffer);
@@ -30,7 +30,7 @@ class ApplicationTest extends RebetTestCase
         $this->assertSame($return, 0);
     }
 
-    public function test_execute()
+    public function test_execute(): void
     {
         $buffer = new BufferedOutput();
         $return = $this->app->execute('env', $buffer);

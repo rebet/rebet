@@ -32,7 +32,7 @@ class DescribableTest extends RebetTestCase
         ];
     }
 
-    public function test_inject()
+    public function test_inject(): void
     {
         $this->assertNull($this->dest_a->foo);
         $this->assertNull($this->dest_a->bar);
@@ -65,7 +65,7 @@ class DescribableTest extends RebetTestCase
         $this->assertNull($this->dest_array['private'] ?? null);
     }
 
-    public function test_describe()
+    public function test_describe(): void
     {
         $dest_a = $this->src->describe(DescribableTest_MockA::class);
         $this->assertSame('foo', $dest_a->foo);
@@ -74,7 +74,7 @@ class DescribableTest extends RebetTestCase
         $this->assertSame('private', Reflector::get($dest_a, 'private', null, true));
     }
 
-    public function test_inject_optionIncludes()
+    public function test_inject_optionIncludes(): void
     {
         $this->src->inject($this->dest_a, ['includes' => ['bar']]);
         $this->assertNull($this->dest_a->foo);
@@ -83,7 +83,7 @@ class DescribableTest extends RebetTestCase
         $this->assertNull(Reflector::get($this->dest_a, 'private', null, true));
     }
 
-    public function test_inject_optionExcludes()
+    public function test_inject_optionExcludes(): void
     {
         $this->src->inject($this->dest_a, ['excludes' => ['bar']]);
         $this->assertSame('foo', $this->dest_a->foo);
@@ -92,28 +92,28 @@ class DescribableTest extends RebetTestCase
         $this->assertSame('private', Reflector::get($this->dest_a, 'private', null, true));
     }
 
-    public function test_inject_optionAliasesOneway()
+    public function test_inject_optionAliasesOneway(): void
     {
         $this->src->inject($this->dest_a, ['aliases' => ['foo' => 'bar']]);
         $this->assertSame('bar', $this->dest_a->foo);
         $this->assertSame('bar', $this->dest_a->bar);
     }
 
-    public function test_inject_optionAliasesNull()
+    public function test_inject_optionAliasesNull(): void
     {
         $this->src->inject($this->dest_a, ['aliases' => ['foo' => null]]);
         $this->assertNull($this->dest_a->foo);
         $this->assertSame('bar', $this->dest_a->bar);
     }
 
-    public function test_inject_optionAliasesCross()
+    public function test_inject_optionAliasesCross(): void
     {
         $this->src->inject($this->dest_a, ['aliases' => ['foo' => 'bar', 'bar' => 'foo']]);
         $this->assertSame('bar', $this->dest_a->foo);
         $this->assertSame('foo', $this->dest_a->bar);
     }
 
-    public function test_inject_optionAliasesInvalid()
+    public function test_inject_optionAliasesInvalid(): void
     {
         $this->src->inject($this->dest_a, ['aliases' => ['foo' => 'invalid']]);
         $this->assertNull($this->dest_a->foo);

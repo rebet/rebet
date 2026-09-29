@@ -48,7 +48,7 @@ class PopulatableTest extends RebetTestCase
         ]);
     }
 
-    public function test_populate()
+    public function test_populate(): void
     {
         $customer = new Customer();
         $customer->populate($this->valid_data);
@@ -60,7 +60,7 @@ class PopulatableTest extends RebetTestCase
         $this->assertNull($customer->shipping_addresses ?? null);
     }
 
-    public function test_populateOptionEmbeds()
+    public function test_populateOptionEmbeds(): void
     {
         $customer = new Customer();
         $customer->populate($this->valid_data, [
@@ -146,7 +146,7 @@ class PopulatableTest extends RebetTestCase
         $this->assertNull($customer->shipping_addresses[1]->bank->location ?? null);
     }
 
-    public function test_populateOptionAlias()
+    public function test_populateOptionAlias(): void
     {
         $customer = new Customer();
         $customer->populate($this->valid_data, [
@@ -171,7 +171,7 @@ class PopulatableTest extends RebetTestCase
         $this->assertSame('31', $customer->shipping_addresses[1]->prefecture);
     }
 
-    public function test_populateOptionInclude()
+    public function test_populateOptionInclude(): void
     {
         $customer = new Customer();
         $customer->populate($this->valid_data, [
@@ -198,7 +198,7 @@ class PopulatableTest extends RebetTestCase
         $this->assertSame(null, $customer->shipping_addresses);
     }
 
-    public function test_populateOptionExclude()
+    public function test_populateOptionExclude(): void
     {
         $customer = new Customer();
         $customer->populate($this->valid_data, [

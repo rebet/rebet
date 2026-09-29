@@ -17,13 +17,13 @@ use Rebet\Tools\Config\Config;
 
 class SessionGuardTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $guard = new SessionGuard('user');
         $this->assertInstanceOf(SessionGuard::class, $guard);
     }
 
-    public function test_name()
+    public function test_name(): void
     {
         $guard = new SessionGuard('user', '/user/signin', 30, $request = $this->createRequestMock('/user/mypage'));
         $this->assertNull($guard->name());
@@ -31,14 +31,14 @@ class SessionGuardTest extends RebetTestCase
         $this->assertSame('user', $guard->name());
     }
 
-    public function test_provider()
+    public function test_provider(): void
     {
         $guard = (new SessionGuard('user', '/user/signin', 30, $request = $this->createRequestMock('/user/mypage')))->name('user');
         $this->assertInstanceOf(AuthProvider::class, $provider = $guard->provider());
         $this->assertSame('user', $provider->name());
     }
 
-    public function test_attempt()
+    public function test_attempt(): void
     {
         $guard = (new SessionGuard('user', '/user/signin', 30, $request = $this->createRequestMock('/user/mypage')))->name('user');
         $user  = $guard->attempt('invalid', 'invalid');
@@ -52,7 +52,7 @@ class SessionGuardTest extends RebetTestCase
         $this->assertTrue($user->isGuest());
     }
 
-    public function test_signin_byDifferentProvider()
+    public function test_signin_byDifferentProvider(): void
     {
         $this->expectException(AuthenticateException::class);
         $this->expectExceptionMessage("Can not sign-in by authenticated user who is got by different provider.");
@@ -61,7 +61,7 @@ class SessionGuardTest extends RebetTestCase
         $response = $guard->signin(Auth::provider('admin')->findById(1));
     }
 
-    public function test_signin_guest()
+    public function test_signin_guest(): void
     {
         $guard    = (new SessionGuard('user', '/user/signin', 30, $request = $this->createRequestMock('/user/mypage')))->name('user');
         $response = $guard->signin(AuthUser::guest());
@@ -69,7 +69,7 @@ class SessionGuardTest extends RebetTestCase
         $this->assertSame('/user/signin', $response->getTargetUrl());
     }
 
-    public function test_signin_user()
+    public function test_signin_user(): void
     {
         $guard = (new SessionGuard('user', '/user/signin', 30, $request = $this->createRequestMock('/user/mypage')))->name('user');
         $user  = $guard->attempt('admin@rebet.local', 'admin');
@@ -83,7 +83,7 @@ class SessionGuardTest extends RebetTestCase
         $this->assertEquals($user, $guard->user());
     }
 
-    public function test_signin_userAfterFallback()
+    public function test_signin_userAfterFallback(): void
     {
         $guard    = (new SessionGuard('user', '/user/signin', 30, $request = $this->createRequestMock('/user/mypage?foo=bar', 'user')))->name('user');
         $fallback = $guard->authenticate();
@@ -101,7 +101,7 @@ class SessionGuardTest extends RebetTestCase
         $this->assertEquals($user, $guard->user());
     }
 
-    public function test_signin_userWithRemember()
+    public function test_signin_userWithRemember(): void
     {
         $mock = $this->createMock(ArrayProvider::class);
         $mock->method('findByCredentials')->willReturn(new AuthUser(Auth::provider('user')->findById(1)->raw(), [], $mock));
@@ -132,14 +132,14 @@ class SessionGuardTest extends RebetTestCase
         $this->assertEquals($user, $guard->user());
     }
 
-    public function test_signout()
+    public function test_signout(): void
     {
         $removed = null;
         $mock    = $this->createMock(ArrayProvider::class);
         $mock->method('findByCredentials')->willReturn(new AuthUser(Auth::provider('user')->findById(1)->raw(), [], $mock));
         $mock->method('supportRememberToken')->willReturn(true);
         $mock->method('issuingRememberToken')->willReturn('MOCKED_TOKEN');
-        $mock->method('removeRememberToken')->willReturnCallback(function ($token) use (&$removed) { $removed = $token; });
+        $mock->method('removeRememberToken')->willReturnCallback(function ($token) use (&$removed): void { $removed = $token; });
         $mock->method('name')->willReturn($mock);
 
         Config::runtime([
@@ -176,7 +176,7 @@ class SessionGuardTest extends RebetTestCase
         $this->assertSame('MOCKED_TOKEN', $removed);
     }
 
-    public function test_authenticate()
+    public function test_authenticate(): void
     {
         $mock = $this->createMock(ArrayProvider::class);
         $mock->method('findByCredentials')->willReturn(new AuthUser(Auth::provider('user')->findById(1)->raw(), [], $mock));
@@ -218,7 +218,7 @@ class SessionGuardTest extends RebetTestCase
         $this->assertEquals(Auth::provider('user')->findById(2)->raw(), $guard->user()->raw());
     }
 
-    public function test_getRememberDays()
+    public function test_getRememberDays(): void
     {
         $guard = (new SessionGuard('user', '/user/signin', 30, $request = $this->createRequestMock('/user/mypage')))->name('remember');
         $this->assertSame(30, $guard->getRememberDays());

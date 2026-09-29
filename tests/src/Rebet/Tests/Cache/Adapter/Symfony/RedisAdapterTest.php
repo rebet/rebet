@@ -30,7 +30,7 @@ use Rebet\Tests\RebetTestCase;
 #[RequiresPhpExtension('redis')]
 class RedisAdapterTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(RedisAdapter::class, new RedisAdapter('redis://redis'));
     }

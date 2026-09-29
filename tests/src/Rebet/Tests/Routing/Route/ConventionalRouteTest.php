@@ -17,7 +17,7 @@ use TestApp\Controller\TopController;
 
 class ConventionalRouteTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(ConventionalRoute::class, new ConventionalRoute());
 
@@ -43,7 +43,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertSame(true, Reflector::get($route, 'accessible', null, true));
     }
 
-    public function test_terminate()
+    public function test_terminate(): void
     {
         $route   = new ConventionalRoute();
         $request = $this->createRequestMock('/test', null, 'web', 'web', 'GET', '', $route);
@@ -68,7 +68,7 @@ class ConventionalRouteTest extends RebetTestCase
     }
 
     #[DataProvider('dataRoutings')]
-    public function test_routing($expect, $request_path, $option = [], $channel = 'web', $method = 'GET', $setuper = null)
+    public function test_routing($expect, $request_path, $option = [], $channel = 'web', $method = 'GET', $setuper = null): void
     {
         $route   = new ConventionalRoute($option);
         $request = $this->createRequestMock($request_path, null, $channel, $channel, $method, '', $route);
@@ -81,7 +81,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertSame($expect, $response->getContent());
     }
 
-    public function test_routing_notFound()
+    public function test_routing_notFound(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Controller [ TestApp\Controller\InvalidController ] can not instantiate.");
@@ -91,7 +91,7 @@ class ConventionalRouteTest extends RebetTestCase
         $route->match($request);
     }
 
-    public function test_routing_actionNotFound()
+    public function test_routing_actionNotFound(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Action [ TestApp\Controller\TestController::invalid ] not exists.");
@@ -101,7 +101,7 @@ class ConventionalRouteTest extends RebetTestCase
         $route->match($request);
     }
 
-    public function test_routing_actionNotAccessible()
+    public function test_routing_actionNotAccessible(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Action [ TestApp\Controller\TestController::privateCall ] not accessible.");
@@ -111,7 +111,7 @@ class ConventionalRouteTest extends RebetTestCase
         $route->match($request);
     }
 
-    public function test_routing_annotationNotRouting()
+    public function test_routing_annotationNotRouting(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Action [ TestApp\Controller\TestController::annotationNotRouting ] is not routing.");
@@ -121,7 +121,7 @@ class ConventionalRouteTest extends RebetTestCase
         $route->match($request);
     }
 
-    public function test_routing_accesptOnlyAliasAccess()
+    public function test_routing_accesptOnlyAliasAccess(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Action [ TestApp\Controller\TestController::annotationAliasOnly ] accespt only alias access.");
@@ -131,7 +131,7 @@ class ConventionalRouteTest extends RebetTestCase
         $route->match($request);
     }
 
-    public function test_routing_invlidRouteParameter_requierd()
+    public function test_routing_invlidRouteParameter_requierd(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Requierd parameter 'id' on [ TestApp\Controller\TestController::withParam ] not supplied.");
@@ -141,7 +141,7 @@ class ConventionalRouteTest extends RebetTestCase
         $route->match($request);
     }
 
-    public function test_routing_invlidRouteParameter_where()
+    public function test_routing_invlidRouteParameter_where(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::withParam not found. Routing parameter 'id' value '123' not match /^[a-z]*$/.");
@@ -152,7 +152,7 @@ class ConventionalRouteTest extends RebetTestCase
         $route->match($request);
     }
 
-    public function test_routing_invlidRouteParameter_annotationWhere()
+    public function test_routing_invlidRouteParameter_annotationWhere(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::annotationWhere not found. Routing parameter 'id' value '123' not match /^[a-zA-Z]+$/.");
@@ -162,7 +162,7 @@ class ConventionalRouteTest extends RebetTestCase
         $route->match($request);
     }
 
-    public function test_routing_invlidChannel()
+    public function test_routing_invlidChannel(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::annotationChannelApi not found. Routing channel 'web' not allowed or not annotated channel meta info.");
@@ -172,7 +172,7 @@ class ConventionalRouteTest extends RebetTestCase
         $route->match($request);
     }
 
-    public function test_routing_invlidMethod()
+    public function test_routing_invlidMethod(): void
     {
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: TestApp\Controller\TestController::annotationMethodGet not found. Routing method 'POST' not allowed.");
@@ -192,7 +192,7 @@ class ConventionalRouteTest extends RebetTestCase
     }
 
     #[DataProvider('dataDefaultViews')]
-    public function test_defaultView($expect, $uri, $option = [])
+    public function test_defaultView($expect, $uri, $option = []): void
     {
         $route   = new ConventionalRoute($option);
         $request = $this->createRequestMock($uri, null, 'web', 'web', 'GET', '', $route);
@@ -212,7 +212,7 @@ class ConventionalRouteTest extends RebetTestCase
     }
 
     #[DataProvider('dataGetControllerNames')]
-    public function test_getControllerName($expect, $uri, $with_namespace = true, $option = [])
+    public function test_getControllerName($expect, $uri, $with_namespace = true, $option = []): void
     {
         $route   = new ConventionalRoute($option);
         $request = $this->createRequestMock($uri, null, 'web', 'web', 'GET', '', $route);
@@ -231,7 +231,7 @@ class ConventionalRouteTest extends RebetTestCase
     }
 
     #[DataProvider('dataGetActionNames')]
-    public function test_getActionName($expect, $uri, $option = [])
+    public function test_getActionName($expect, $uri, $option = []): void
     {
         $route   = new ConventionalRoute($option);
         $request = $this->createRequestMock($uri, null, 'web', 'web', 'GET', '', $route);
@@ -250,7 +250,7 @@ class ConventionalRouteTest extends RebetTestCase
     }
 
     #[DataProvider('dataGetAliasNames')]
-    public function test_getAliasName($expect, $uri, $option = [])
+    public function test_getAliasName($expect, $uri, $option = []): void
     {
         $route   = new ConventionalRoute($option);
         $request = $this->createRequestMock($uri, null, 'web', 'web', 'GET', '', $route);
@@ -258,7 +258,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertSame($expect, $route->getAliasName());
     }
 
-    public function test___toString()
+    public function test___toString(): void
     {
         $route   = new ConventionalRoute();
         $request = $this->createRequestMock('/test/public-call', null, 'web', 'web', 'GET', '', $route);
@@ -266,7 +266,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertSame('Route: TestApp\Controller\TestController::publicCall', $route->__toString());
     }
 
-    public function test_accessible()
+    public function test_accessible(): void
     {
         $route = new ConventionalRoute();
         $this->assertFalse(Reflector::get($route, 'accessible', null, true));
@@ -274,7 +274,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertTrue(Reflector::get($route, 'accessible', null, true));
     }
 
-    public function test_aliases()
+    public function test_aliases(): void
     {
         $route = new ConventionalRoute();
         $this->assertSame([], Reflector::get($route, 'aliases', null, true));

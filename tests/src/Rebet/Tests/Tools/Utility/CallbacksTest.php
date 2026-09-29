@@ -20,7 +20,7 @@ class CallbacksTest extends RebetTestCase
     }
 
     #[DataProvider('dataTests')]
-    public function test_test($item, $key, $operator, $value, bool $result)
+    public function test_test($item, $key, $operator, $value, bool $result): void
     {
         $test = Callbacks::test($key, $operator, $value);
         $this->assertTrue($test($item) === $result);
@@ -111,7 +111,7 @@ class CallbacksTest extends RebetTestCase
         ];
     }
 
-    public function test_test_iInvalidOperator()
+    public function test_test_iInvalidOperator(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid operator <=> given.");
@@ -121,7 +121,7 @@ class CallbacksTest extends RebetTestCase
     }
 
     #[DataProvider('dataCompares')]
-    public function test_compare($a, $b, $key, $invert, int $result)
+    public function test_compare($a, $b, $key, $invert, int $result): void
     {
         $comparator = Callbacks::compare($key, $invert);
         $this->assertSame($result, $comparator($a, $b));
@@ -168,7 +168,7 @@ class CallbacksTest extends RebetTestCase
     }
 
     #[DataProvider('dataRetrievers')]
-    public function test_retriever($value, $retriever, $except)
+    public function test_retriever($value, $retriever, $except): void
     {
         $retriever = Callbacks::retriever($retriever);
         $this->assertEquals($except, $retriever($value));
@@ -207,7 +207,7 @@ class CallbacksTest extends RebetTestCase
     }
 
     #[DataProvider('dataStringifis')]
-    public function test_stringify($expect, $callable, $verbose)
+    public function test_stringify($expect, $callable, $verbose): void
     {
         $this->assertSame($expect, Callbacks::stringify($callable, $verbose));
     }
@@ -239,14 +239,14 @@ class CallbacksTest extends RebetTestCase
         ];
     }
 
-    public function test_echoBack()
+    public function test_echoBack(): void
     {
         $echo_back = Callbacks::echoBack();
         $value     = 'foo';
         $this->assertSame($value, $echo_back($value));
     }
 
-    public function test_compareLength()
+    public function test_compareLength(): void
     {
         $comparator = Callbacks::compareLength();
         $this->assertSame(-1, $comparator('123', '1234'));

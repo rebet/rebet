@@ -11,12 +11,12 @@ use Rebet\Tools\DateTime\DateTime;
 
 class CursorTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(Cursor::class, new Cursor(Pager::resolve(), ['user_id' => 123]));
     }
 
-    public function test_create()
+    public function test_create(): void
     {
         DateTime::setTestNow('2001-02-03 04:05:06');
         $now   = DateTime::now();
@@ -28,7 +28,7 @@ class CursorTest extends RebetTestCase
         );
     }
 
-    public function test_expired()
+    public function test_expired(): void
     {
         $pager  = Pager::resolve();
         $cursor = new Cursor($pager, ['user_id' => 123], $pager->eachSide());
@@ -42,14 +42,14 @@ class CursorTest extends RebetTestCase
         $this->assertTrue($cursor->expired());
     }
 
-    public function test_pager()
+    public function test_pager(): void
     {
         $pager  = Pager::resolve();
         $cursor = new Cursor($pager, ['user_id' => 123], $pager->eachSide());
         $this->assertSame($pager, $cursor->pager());
     }
 
-    public function test_saveAndLoad()
+    public function test_saveAndLoad(): void
     {
         $this->assertEquals(null, Cursor::load('unittest'));
 
@@ -69,7 +69,7 @@ class CursorTest extends RebetTestCase
         $this->assertEquals(null, Cursor::load(''));
     }
 
-    public function test_equals()
+    public function test_equals(): void
     {
         $pager = Pager::resolve()->size(3)->page(5);
         $a     = new Cursor($pager, ['gender' => 1, 'user_id' => 123], 1);

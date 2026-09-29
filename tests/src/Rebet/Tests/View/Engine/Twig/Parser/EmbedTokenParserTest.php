@@ -18,12 +18,12 @@ use Twig\TokenParser\TokenParserInterface;
 
 class EmbedTokenParserTest extends RebetTestCase
 {
-    public function test___constract()
+    public function test___constract(): void
     {
         $this->assertInstanceOf(EmbedTokenParser::class, new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'));
     }
 
-    public function test_getTag()
+    public function test_getTag(): void
     {
         $paser = new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';');
         $this->assertSame('hello', $paser->getTag());
@@ -283,12 +283,12 @@ class EmbedTokenParserTest extends RebetTestCase
     }
 
     #[DataProvider('dataParses')]
-    public function test_parse(TokenParserInterface $parser, string $source, string $expect)
+    public function test_parse(TokenParserInterface $parser, string $source, string $expect): void
     {
         $this->assertSame($expect, $this->renderPhpCode($parser, $source));
     }
 
-    public function test_parse_faile_empty()
+    public function test_parse_faile_empty(): void
     {
         $this->expectException(SyntaxError::class);
         $this->expectExceptionMessage("Too many code arguments. The code tag 'hello' takes no arguments at line 1.");
@@ -299,7 +299,7 @@ class EmbedTokenParserTest extends RebetTestCase
         );
     }
 
-    public function test_parse_faile_one()
+    public function test_parse_faile_one(): void
     {
         $this->expectException(SyntaxError::class);
         $this->expectExceptionMessage("Too many code arguments. The code tag 'hello' takes only one argument at line 1.");
@@ -310,7 +310,7 @@ class EmbedTokenParserTest extends RebetTestCase
         );
     }
 
-    public function test_parse_faile_1st()
+    public function test_parse_faile_1st(): void
     {
         $this->expectException(SyntaxError::class);
         $this->expectExceptionMessage("1st and 2nd arguments of the code tag 'hello' must be separated by 'with' at line 1.");
@@ -321,7 +321,7 @@ class EmbedTokenParserTest extends RebetTestCase
         );
     }
 
-    public function test_parse_faile_1st2()
+    public function test_parse_faile_1st2(): void
     {
         $this->expectException(SyntaxError::class);
         $this->expectExceptionMessage("1st and 2nd arguments of the code tag 'hello' must be separated by ',' or 'or' at line 1.");
@@ -332,7 +332,7 @@ class EmbedTokenParserTest extends RebetTestCase
         );
     }
 
-    public function test_parse_faile_2nd()
+    public function test_parse_faile_2nd(): void
     {
         $this->expectException(SyntaxError::class);
         $this->expectExceptionMessage("Too many code arguments. The code tag 'hello' takes up to 2 arguments at line 1.");

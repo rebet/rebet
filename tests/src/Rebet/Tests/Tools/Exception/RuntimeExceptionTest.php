@@ -10,7 +10,7 @@ use Rebet\Tools\Exception\RuntimeException;
 
 class RuntimeExceptionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $e = new RuntimeException('test');
         $this->assertInstanceOf(RuntimeException::class, $e);

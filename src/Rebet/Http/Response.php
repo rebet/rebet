@@ -562,7 +562,7 @@ interface Response
      * @return void
      * @final
      */
-    public static function closeOutputBuffers(int $targetLevel, bool $flush);
+    public static function closeOutputBuffers(int $targetLevel, bool $flush): void;
 
     /**
      * Marks a response as safe according to RFC8674.

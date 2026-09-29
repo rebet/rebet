@@ -15,7 +15,7 @@ use TestApp\Stub\ToStringStub;
 
 class StringsTest extends RebetTestCase
 {
-    public function test_lbtrim()
+    public function test_lbtrim(): void
     {
         $this->assertNull(Strings::lbtrim(null, '.'));
         $this->assertSame('', Strings::lbtrim('', '.'));
@@ -28,7 +28,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('1.2.3', Strings::lbtrim('1.2.3', ',', false));
     }
 
-    public function test_latrim()
+    public function test_latrim(): void
     {
         $this->assertNull(Strings::latrim(null, '.'));
         $this->assertSame('', Strings::latrim('', '.'));
@@ -41,7 +41,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('1.2.3', Strings::latrim('1.2.3', ',', false));
     }
 
-    public function test_rbtrim()
+    public function test_rbtrim(): void
     {
         $this->assertNull(Strings::rbtrim(null, '.'));
         $this->assertSame('', Strings::rbtrim('', '.'));
@@ -54,7 +54,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('1.2.3', Strings::rbtrim('1.2.3', ',', false));
     }
 
-    public function test_ratrim()
+    public function test_ratrim(): void
     {
         $this->assertNull(Strings::ratrim(null, '.'));
         $this->assertSame('', Strings::ratrim('', '.'));
@@ -67,7 +67,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('1.2.3', Strings::ratrim('1.2.3', ',', false));
     }
 
-    public function test_ltrim()
+    public function test_ltrim(): void
     {
         $this->assertNull(Strings::ltrim(null));
         $this->assertSame('', Strings::ltrim(''));
@@ -80,7 +80,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('　全角　　　', Strings::ltrim('　　　全角　　　', '　', 2));
     }
 
-    public function test_rtrim()
+    public function test_rtrim(): void
     {
         $this->assertNull(Strings::rtrim(null));
         $this->assertSame('', Strings::rtrim(''));
@@ -93,7 +93,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('　　　全角　', Strings::rtrim('　　　全角　　　', '　', 2));
     }
 
-    public function test_trim()
+    public function test_trim(): void
     {
         $this->assertNull(Strings::trim(null));
         $this->assertSame('', Strings::trim(''));
@@ -106,7 +106,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('　全角　', Strings::trim('　　　全角　　　', '　', 2));
     }
 
-    public function test_mbtrim()
+    public function test_mbtrim(): void
     {
         $this->assertNull(Strings::mbtrim(null));
         $this->assertSame('', Strings::mbtrim(''));
@@ -115,7 +115,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('a b　c', Strings::mbtrim('     　 a b　c 　    '));
     }
 
-    public function test_startsWith()
+    public function test_startsWith(): void
     {
         $this->assertFalse(Strings::startsWith(null, 'abc'));
         $this->assertFalse(Strings::startsWith('', 'abc'));
@@ -123,7 +123,7 @@ class StringsTest extends RebetTestCase
         $this->assertTrue(Strings::startsWith('abc123', 'abc'));
     }
 
-    public function test_endsWith()
+    public function test_endsWith(): void
     {
         $this->assertFalse(Strings::endsWith(null, 'abc'));
         $this->assertFalse(Strings::endsWith('', 'abc'));
@@ -131,7 +131,7 @@ class StringsTest extends RebetTestCase
         $this->assertFalse(Strings::endsWith('abc123', 'abc'));
     }
 
-    public function test_checkDependenceChar()
+    public function test_checkDependenceChar(): void
     {
         $this->assertSame([], Strings::checkDependenceChar(null));
         $this->assertSame([2 => '♬', 4 => '♥'], Strings::checkDependenceChar('あ①♬㈱♥'));
@@ -139,7 +139,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame([], Strings::checkDependenceChar('あ①♬㈱♥', 'UTF-8'));
     }
 
-    public function test_toCharArray()
+    public function test_toCharArray(): void
     {
         $this->assertSame([], Strings::toCharArray(null));
         $this->assertSame([], Strings::toCharArray(''));
@@ -147,7 +147,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame(['あ', 'い', 'う'], Strings::toCharArray('あいう'));
     }
 
-    public function test_indent()
+    public function test_indent(): void
     {
         $this->assertNull(Strings::indent(null));
         $this->assertSame("\t", Strings::indent(''));
@@ -171,7 +171,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame(">>>>1st\n>>>>2nd\n>>>>3rd\n", Strings::indent("1st\n2nd\n3rd\n", '>>', 2));
     }
 
-    public function test_contains()
+    public function test_contains(): void
     {
         $this->assertFalse(Strings::contains(null, ''));
         $this->assertTrue(Strings::contains('', ''));
@@ -189,7 +189,7 @@ class StringsTest extends RebetTestCase
         $this->assertFalse(Strings::contains('123abcABC', ['234', 'DEF']));
     }
 
-    public function test_lcut()
+    public function test_lcut(): void
     {
         $this->assertNull(Strings::lcut(null, 10));
         $this->assertSame('', Strings::lcut('', 10));
@@ -203,7 +203,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('', Strings::lcut('12345', 6));
     }
 
-    public function test_rcut()
+    public function test_rcut(): void
     {
         $this->assertNull(Strings::rcut(null, 10));
         $this->assertSame('', Strings::rcut('', 10));
@@ -217,7 +217,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('', Strings::rcut('12345', 6));
     }
 
-    public function test_clip()
+    public function test_clip(): void
     {
         $this->assertNull(Strings::clip(null, 10));
         $this->assertSame('', Strings::clip('', 10));
@@ -227,7 +227,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('123456789*', Strings::clip('1234567890+', 10, '*'));
     }
 
-    public function test_clip_exception()
+    public function test_clip_exception(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid clip length and ellipsis. The length must be longer than ellipsis.");
@@ -235,7 +235,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame('', Strings::clip('1234567890', 2));
     }
 
-    public function test_match()
+    public function test_match(): void
     {
         $this->assertFalse(Strings::match(null, '/[0-9]{3}/'));
         $this->assertFalse(Strings::match('', '/[0-9]{3}/'));
@@ -246,7 +246,7 @@ class StringsTest extends RebetTestCase
         $this->assertTrue(Strings::match('12ab', ['/[0-9]{3}/', '/ab/']));
     }
 
-    public function test_wildmatch()
+    public function test_wildmatch(): void
     {
         $this->assertFalse(Strings::wildmatch(null, '*'));
         $this->assertTrue(Strings::wildmatch('', '*'));
@@ -262,7 +262,7 @@ class StringsTest extends RebetTestCase
         $this->assertTrue(Strings::wildmatch('/user/profile-confirm', ['/user/profile', '/user/profile-*']));
     }
 
-    public function test_split()
+    public function test_split(): void
     {
         $this->assertSame([null, null], Strings::split(null, ',', 2));
         $this->assertSame(['', null], Strings::split('', ',', 2));
@@ -434,7 +434,7 @@ class StringsTest extends RebetTestCase
     }
 
     #[DataProvider('dataStringifis')]
-    public function test_stringify($expect, $value, array $masks = [], string $masked_label = '********')
+    public function test_stringify($expect, $value, array $masks = [], string $masked_label = '********'): void
     {
         if ($expect === '*stream*') {
             $value = fopen(App::structure()->public('/assets/img/72x72.png'), 'r');
@@ -442,7 +442,7 @@ class StringsTest extends RebetTestCase
         $this->assertSame($expect, Strings::stringify($value, $masks, $masked_label));
     }
 
-    public function test_traceToString()
+    public function test_traceToString(): void
     {
         $mock  = new StringsTest_Mock();
         $trace = $mock->getTrace();

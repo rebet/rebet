@@ -67,7 +67,7 @@ class Environment extends TwigEnvironment
      * @param  bool                                              $can_omit_first_arg (default: false)
      * @return void
      */
-    public function case(string $name, string|null $verbs, array|null $separators, Processor $processor, array $binds = [], bool $can_omit_first_arg = false)
+    public function case(string $name, string|null $verbs, array|null $separators, Processor $processor, array $binds = [], bool $can_omit_first_arg = false): void
     {
         $this->embed($name, $verbs, $separators, 'if(', $processor, ") {\n", $binds, $can_omit_first_arg);
         $this->embed("else{$name}", $verbs, $separators, '} elseif(', $processor, ") {\n", $binds, $can_omit_first_arg);

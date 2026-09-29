@@ -32,13 +32,13 @@ class CliExceptionHandlerTest extends RebetTestCase
         };
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(CliExceptionHandler::class, new CliExceptionHandler());
         $this->assertInstanceOf(CliExceptionHandler::class, new CliExceptionHandler(new BufferedOutput()));
     }
 
-    public function test_handle()
+    public function test_handle(): void
     {
         $reported_count = 0;
         $this->assertSame($reported_count, $this->handler->reported_count);
@@ -60,7 +60,7 @@ class CliExceptionHandlerTest extends RebetTestCase
         $this->assertStringContainsString('Another error', $console);
     }
 
-    public function test___invoke()
+    public function test___invoke(): void
     {
         $status = $this->handler->__invoke(null, new \Exception('Detail message'));
         $this->assertSame(1, $this->handler->reported_count);
@@ -70,7 +70,7 @@ class CliExceptionHandlerTest extends RebetTestCase
         $this->assertStringContainsString('Detail message', $console);
     }
 
-    public function test_handle_report()
+    public function test_handle_report(): void
     {
         $output  = new BufferedOutput();
         $handler = new CliExceptionHandler($output);
@@ -93,7 +93,7 @@ class CliExceptionHandlerTest extends RebetTestCase
         $this->assertStringContainsString('Exception: Detail message in', $log);
     }
 
-    public function test_report()
+    public function test_report(): void
     {
         $handler = new CliExceptionHandler(new BufferedOutput());
         $input   = new ArrayInput([]);

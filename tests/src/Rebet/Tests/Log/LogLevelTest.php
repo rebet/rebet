@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class LogLevelTest extends RebetTestCase
 {
-    public function test_errorTypeOf()
+    public function test_errorTypeOf(): void
     {
         foreach ([
             E_CORE_ERROR,

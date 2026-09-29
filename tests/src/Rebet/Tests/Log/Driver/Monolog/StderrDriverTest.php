@@ -12,7 +12,7 @@ use Rebet\Tests\RebetTestCase;
 
 class StderrDriverTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $driver = new StderrDriver(LogLevel::DEBUG);
         $this->assertInstanceOf(StderrDriver::class, $driver);

@@ -23,13 +23,13 @@ class ControllerTest extends RebetTestCase
         };
     }
 
-    public function test_before()
+    public function test_before(): void
     {
         $request = $this->createRequestMock('/');
         $this->assertSame($request, $this->controller->before($request));
     }
 
-    public function test_after()
+    public function test_after(): void
     {
         $request  = $this->createRequestMock('/');
         $response = Responder::toResponse('Hello');

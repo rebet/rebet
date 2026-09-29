@@ -17,7 +17,7 @@ class LocaleResourceTest extends RebetTestCase
         parent::setUp();
     }
 
-    public function test_load()
+    public function test_load(): void
     {
         $resources = LocaleResource::load(App::structure()->resources('/i18n'), 'ja', 'invalid');
         $this->assertSame([], $resources);

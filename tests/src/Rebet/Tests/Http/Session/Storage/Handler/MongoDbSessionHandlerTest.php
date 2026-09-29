@@ -17,7 +17,7 @@ class MongoDbSessionHandlerTest extends RebetTestCase
         }
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $mongo = $this->getMockBuilder('\MongoDB\Client')->getMock();
         $mongo->method('getManager')->willReturn(new \MongoDB\Driver\Manager('mongodb://localhost:27017'));

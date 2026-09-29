@@ -32,7 +32,7 @@ class RawNode extends Node
     /**
      * {@inheritDoc}
      */
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler->raw($this->getAttribute('code'));
     }

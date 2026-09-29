@@ -33,7 +33,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         return EofLineFeed::TRIM()->process($this->engine->render($name, $args));
     }
 
-    public function test_tag_env()
+    public function test_tag_env(): void
     {
         \putenv("APP_ENV=unittest");
         $this->assertSame(
@@ -55,14 +55,14 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
     }
 
-    public function test_tag_prefix()
+    public function test_tag_prefix(): void
     {
         $this->assertSame('/controller/action/arg1', $this->render('custom/prefix'));
         $this->assertSame('/controller/action/arg1', $this->render('custom/prefix', ['prefix' => null]));
         $this->assertSame('/rebet/controller/action/arg1', $this->render('custom/prefix', ['prefix' => '/rebet']));
     }
 
-    public function test_tag_role()
+    public function test_tag_role(): void
     {
         $this->assertSame(
             <<<EOS
@@ -107,7 +107,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
     }
 
-    public function test_tag_can()
+    public function test_tag_can(): void
     {
         $user          = new User();
         $user->user_id = 2;
@@ -169,7 +169,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
     }
 
-    public function test_tag_field()
+    public function test_tag_field(): void
     {
         $this->assertSame(
             <<<EOS
@@ -183,7 +183,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
     }
 
-    public function test_tag_errors()
+    public function test_tag_errors(): void
     {
         $errors = [];
 
@@ -245,7 +245,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
     }
 
-    public function test_tag_error()
+    public function test_tag_error(): void
     {
         $errors = [];
 
@@ -345,7 +345,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
     }
 
-    public function test_tag_iferror()
+    public function test_tag_iferror(): void
     {
         $errors = [];
 
@@ -415,7 +415,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
     }
 
-    public function test_tag_e()
+    public function test_tag_e(): void
     {
         $errors = [];
 
@@ -481,7 +481,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
     }
 
-    public function test_tag_input()
+    public function test_tag_input(): void
     {
         $input = [];
 
@@ -540,7 +540,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
     }
 
-    public function test_tag_csrf_token()
+    public function test_tag_csrf_token(): void
     {
         $session = new Session();
         $session->start();
@@ -575,7 +575,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
     }
 
-    public function test_tag_csrf()
+    public function test_tag_csrf(): void
     {
         $session = new Session();
         $session->start();
@@ -616,7 +616,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
     }
 
-    public function test_tag_lang()
+    public function test_tag_lang(): void
     {
         App::setLocale('ja');
         $validator = new BuiltinValidations(); // load validation translate file
@@ -717,7 +717,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
     }
 
     #[DataProvider('dataPaginates')]
-    public function test_tag_paginate(string $locale, array $expect, array $not_expect, string $action, array $options, int $each_side = 3, int $page_size = 3, int|null $page = 1, int|null $total = null, int|null $next_page_count = 4)
+    public function test_tag_paginate(string $locale, array $expect, array $not_expect, string $action, array $options, int $each_side = 3, int $page_size = 3, int|null $page = 1, int|null $total = null, int|null $next_page_count = 4): void
     {
         // @todo
         App::setLocale($locale);

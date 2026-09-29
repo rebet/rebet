@@ -24,12 +24,12 @@ class FileDictionaryTest extends RebetTestCase
         $this->dictionary = new FileDictionary();
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(FileDictionary::class, new FileDictionary());
     }
 
-    public function test_addLibraryResource()
+    public function test_addLibraryResource(): void
     {
         $label_key = Gender::class . '.label.1';
         $mark_key  = Gender::class . '.mark.1';
@@ -57,7 +57,7 @@ class FileDictionaryTest extends RebetTestCase
         $this->assertTrue($this->dictionary->isLoaded('attribute', 'ja'));
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $label_key = Gender::class . '.label.1';
         $label     = $this->dictionary->sentence('enum', $label_key, ['ja', 'en']);
@@ -94,7 +94,7 @@ class FileDictionaryTest extends RebetTestCase
         $this->assertFalse($this->dictionary->isLoaded('attribute', 'ja'));
     }
 
-    public function test_isLoaded()
+    public function test_isLoaded(): void
     {
         $this->assertFalse($this->dictionary->isLoaded('enum', 'ja'));
         $this->assertFalse($this->dictionary->isLoaded('enum', 'de'));
@@ -108,7 +108,7 @@ class FileDictionaryTest extends RebetTestCase
         $this->assertFalse($this->dictionary->isLoaded('attribute', 'ja'));
     }
 
-    public function test_grammar()
+    public function test_grammar(): void
     {
         $this->dictionary->addLibraryResource(App::structure()->resources('/adhoc/Tools/Translation/FileDictionary'));
         $this->assertSame(', ', $this->dictionary->grammar('unittest', 'delimiter', 'en'));
@@ -119,7 +119,7 @@ class FileDictionaryTest extends RebetTestCase
     }
 
     #[DataProvider('dataSentences')]
-    public function test_sentence($expect, string $key, array $locales, $selector = null, bool $recursive = true)
+    public function test_sentence($expect, string $key, array $locales, $selector = null, bool $recursive = true): void
     {
         $this->dictionary->addLibraryResource(App::structure()->resources('/adhoc/Tools/Translation/FileDictionary'));
         $this->assertSame($expect, $this->dictionary->sentence('unittest', $key, $locales, $selector, $recursive));

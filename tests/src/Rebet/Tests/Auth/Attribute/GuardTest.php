@@ -11,7 +11,7 @@ use TestApp\Stub\AttributedStub;
 
 class GuardTest extends RebetTestCase
 {
-    public function test_attribute()
+    public function test_attribute(): void
     {
         $attribute = Guard::class;
         $ac        = new AttributedClass(AttributedStub::class);

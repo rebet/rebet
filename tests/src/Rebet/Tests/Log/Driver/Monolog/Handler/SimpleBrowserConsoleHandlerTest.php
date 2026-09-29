@@ -19,7 +19,7 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(SimpleBrowserConsoleHandler::class, new SimpleBrowserConsoleHandler());
     }
@@ -53,11 +53,11 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
     }
 
     #[DataProvider('dataSends')]
-    public function test_send($expect, $record)
+    public function test_send($expect, $record): void
     {
         $handler = new SimpleBrowserConsoleHandler();
         $handler->handle($this->record($record));
-        $this->assertStdoutContainsAll($expect, function () use ($handler) { $handler->send(); });
+        $this->assertStdoutContainsAll($expect, function () use ($handler): void { $handler->send(); });
     }
 
     protected function record(array $diff = []): LogRecord
@@ -86,27 +86,27 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
         );
     }
 
-    public function test_close()
+    public function test_close(): void
     {
         $handler = new SimpleBrowserConsoleHandler();
         $handler->handle($this->record());
         $handler->close();
-        $this->assertStdoutEquals('', function () use ($handler) { $handler->send(); });
+        $this->assertStdoutEquals('', function () use ($handler): void { $handler->send(); });
     }
 
-    public function test_reset()
+    public function test_reset(): void
     {
         $handler = new SimpleBrowserConsoleHandler();
         $handler->handle($this->record());
         $handler->reset();
-        $this->assertStdoutEquals('', function () use ($handler) { $handler->send(); });
+        $this->assertStdoutEquals('', function () use ($handler): void { $handler->send(); });
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $handler = new SimpleBrowserConsoleHandler();
         $handler->handle($this->record());
         SimpleBrowserConsoleHandler::clear();
-        $this->assertStdoutEquals('', function () use ($handler) { $handler->send(); });
+        $this->assertStdoutEquals('', function () use ($handler): void { $handler->send(); });
     }
 }

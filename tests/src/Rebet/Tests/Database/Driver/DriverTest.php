@@ -51,9 +51,9 @@ class DriverTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataToPdoTypes')]
-    public function test_toPdoType(array $target_db, PdoParameter $expect, $value)
+    public function test_toPdoType(array $target_db, PdoParameter $expect, $value): void
     {
-        self::eachDb(function (Database $db) use ($target_db, $expect, $value) {
+        self::eachDb(function (Database $db) use ($target_db, $expect, $value): void {
             if (!in_array($db->name(), $target_db)) {
                 return;
             }
@@ -75,16 +75,16 @@ class DriverTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataAppendLimitOffers')]
-    public function test_appendLimitOffset(string $expect, string $sql, int|null $limit = null, int|null $offset = null, array $dbs = ['sqlite', 'mysql', 'mariadb', 'pgsql'])
+    public function test_appendLimitOffset(string $expect, string $sql, int|null $limit = null, int|null $offset = null, array $dbs = ['sqlite', 'mysql', 'mariadb', 'pgsql']): void
     {
-        self::eachDb(function (Database $db) use ($expect, $sql, $limit, $offset) {
+        self::eachDb(function (Database $db) use ($expect, $sql, $limit, $offset): void {
             $this->assertSame($expect, $db->driver()->appendLimitOffset($sql, $limit, $offset));
         }, ...$dbs);
     }
 
-    public function test_sql()
+    public function test_sql(): void
     {
-        self::eachDb(function (Database $db) {
+        self::eachDb(function (Database $db): void {
             $query = $db->driver()->sql("SELECT * FROM users WHERE gender = :gender", ['gender' => 1]);
             $this->assertInstanceOf(Query::class, $query);
             $this->assertSame("SELECT * FROM users WHERE gender = :gender", $query->sql());

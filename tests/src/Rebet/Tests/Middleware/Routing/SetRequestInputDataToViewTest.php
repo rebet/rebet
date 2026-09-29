@@ -13,12 +13,12 @@ use Rebet\View\View;
 
 class SetRequestInputDataToViewTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(SetRequestInputDataToView::class, new SetRequestInputDataToView());
     }
 
-    public function test_handle()
+    public function test_handle(): void
     {
         $middleware  = new SetRequestInputDataToView();
         $destination = function ($request) { return Responder::toResponse('OK'); };

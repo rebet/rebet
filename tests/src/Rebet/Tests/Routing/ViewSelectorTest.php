@@ -32,7 +32,7 @@ class ViewSelectorTest extends RebetTestCase
         ]);
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $request = $this->createRequestMock('/');
         $this->assertInstanceOf(ViewSelector::class, new ViewSelector());
@@ -49,7 +49,7 @@ class ViewSelectorTest extends RebetTestCase
     }
 
     #[DataProvider('dataViewDirectoryChangers')]
-    public function test_view_directoryChanger($expect, $locale, $url)
+    public function test_view_directoryChanger($expect, $locale, $url): void
     {
         Config::application([
             ViewSelector::class => [
@@ -77,7 +77,7 @@ class ViewSelectorTest extends RebetTestCase
     }
 
     #[DataProvider('dataViewFilenameChangers')]
-    public function test_view_filenameChanger($expect, $ua, $url)
+    public function test_view_filenameChanger($expect, $ua, $url): void
     {
         Config::application([
             ViewSelector::class => [

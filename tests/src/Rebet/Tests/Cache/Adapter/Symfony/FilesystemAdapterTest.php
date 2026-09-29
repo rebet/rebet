@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class FilesystemAdapterTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(FilesystemAdapter::class, new FilesystemAdapter());
         $this->assertInstanceOf(FilesystemAdapter::class, new FilesystemAdapter('', 5));

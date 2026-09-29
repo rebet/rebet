@@ -12,12 +12,12 @@ use Rebet\Tests\RebetCacheTestCase;
 
 class CacheTest extends RebetCacheTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(Store::class, new Store('test', new ArrayAdapter()));
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $this->assertEmpty($this->inspect(Cache::class, 'stores'));
         $store = Cache::store();
@@ -26,13 +26,13 @@ class CacheTest extends RebetCacheTestCase
         $this->assertEmpty($this->inspect(Cache::class, 'stores'));
     }
 
-    public function test_store()
+    public function test_store(): void
     {
         $this->assertSame('array', Cache::store()->name());
         $this->assertInstanceOf(FilesystemAdapter::class, Cache::store('file')->adapter());
     }
 
-    public function test___callStatic()
+    public function test___callStatic(): void
     {
         $this->assertSame('array', Cache::name());
     }

@@ -12,12 +12,12 @@ use Rebet\View\View;
 
 class AddGlobalShareVariableToViewTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(AddGlobalShareVariableToView::class, new AddGlobalShareVariableToView());
     }
 
-    public function test_handle()
+    public function test_handle(): void
     {
         $middleware  = new AddGlobalShareVariableToView();
         $destination = function ($request) { return Responder::toResponse('OK'); };

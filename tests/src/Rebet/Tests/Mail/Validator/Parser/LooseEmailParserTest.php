@@ -12,12 +12,12 @@ use Rebet\Tests\RebetTestCase;
 
 class LooseEmailParserTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(LooseEmailParser::class, new LooseEmailParser(new EmailLexer()));
     }
 
-    public function test_ignores()
+    public function test_ignores(): void
     {
         $this->assertSame([], (new LooseEmailParser(new EmailLexer()))->ignores());
         $this->assertSame([DotAtEnd::class, DotAtStart::class], (new LooseEmailParser(new EmailLexer(), [DotAtEnd::class, DotAtStart::class]))->ignores());

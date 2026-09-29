@@ -50,7 +50,7 @@ class WebExceptionHandlerTest extends RebetTestCase
         };
     }
 
-    public function test_handle()
+    public function test_handle(): void
     {
         App::setLocale('ja');
         $reported_count = 0;
@@ -157,7 +157,7 @@ class WebExceptionHandlerTest extends RebetTestCase
         $this->assertStringContainsString('title     : Internal Server Error', $response->getContent());
     }
 
-    public function test___invoke()
+    public function test___invoke(): void
     {
         $request  = $this->createRequestMock('/');
         $response = $this->handler->__invoke($request, new \Exception());
@@ -166,12 +166,12 @@ class WebExceptionHandlerTest extends RebetTestCase
         $this->assertStringContainsString('<h2 class="title"><span class="status">500</span>Internal Server Error</h2>', $response->getContent());
     }
 
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(WebExceptionHandler::class, new WebExceptionHandler());
     }
 
-    public function test_handle_web()
+    public function test_handle_web(): void
     {
         App::setLocale('de', 'de');
         $request = $this->createRequestMock('/');
@@ -210,7 +210,7 @@ class WebExceptionHandlerTest extends RebetTestCase
         $this->assertStringContainsString('Rebet\Tools\Config\Exception\ConfigNotDefineException: unit test in', $log);
     }
 
-    public function test_handle_json()
+    public function test_handle_json(): void
     {
         App::setLocale('en');
         $request = $this->createJsonRequestMock('/');

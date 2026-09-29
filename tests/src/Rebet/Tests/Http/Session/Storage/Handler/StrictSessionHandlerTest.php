@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class StrictSessionHandlerTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(StrictSessionHandler::class, new StrictSessionHandler($this->getMockBuilder('SessionHandlerInterface')->getMock()));
     }

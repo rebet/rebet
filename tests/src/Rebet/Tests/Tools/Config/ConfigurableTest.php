@@ -18,7 +18,7 @@ class ConfigurableTest extends RebetTestCase
         parent::setUp();
     }
 
-    public function test_defaultConfigOverrideOptions()
+    public function test_defaultConfigOverrideOptions(): void
     {
         $options = [
             'override_merge'   => OverrideOption::MERGE,
@@ -31,13 +31,13 @@ class ConfigurableTest extends RebetTestCase
         $this->assertSame([], ConfigurableTest_MockNonOverrideOptions::defaultConfigOverrideOptions());
     }
 
-    public function test_configInstantiate()
+    public function test_configInstantiate(): void
     {
         ConfigurableTest_Mock::setDriver(ConfigurableTest_MockChildInherit::class);
         $this->assertInstanceOf(ConfigurableTest_MockChildInherit::class, ConfigurableTest_Mock::instantiate('driver'));
     }
 
-    public function test_config()
+    public function test_config(): void
     {
         $this->assertSame(
             [
@@ -92,7 +92,7 @@ class ConfigurableTest extends RebetTestCase
         $this->assertSame('new driver', $mock->configInMember('driver'));
     }
 
-    public function test_config_blank()
+    public function test_config_blank(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigurableTest_Mock.database is blank or not define.");
@@ -100,7 +100,7 @@ class ConfigurableTest extends RebetTestCase
         ConfigurableTest_Mock::config('database');
     }
 
-    public function test_config_blankInStatic()
+    public function test_config_blankInStatic(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigurableTest_Mock.database is blank or not define.");
@@ -108,7 +108,7 @@ class ConfigurableTest extends RebetTestCase
         ConfigurableTest_Mock::configInStatic('database');
     }
 
-    public function test_config_blankInMember()
+    public function test_config_blankInMember(): void
     {
         $this->expectException(ConfigNotDefineException::class);
         $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigurableTest_Mock.database is blank or not define.");
@@ -117,7 +117,7 @@ class ConfigurableTest extends RebetTestCase
         $mock->configInMember('database');
     }
 
-    public function test_config_extends()
+    public function test_config_extends(): void
     {
         $mock     = new ConfigurableTest_Mock();
         $inherit  = new ConfigurableTest_MockChildInherit();
@@ -287,7 +287,7 @@ class ConfigurableTest extends RebetTestCase
         $this->assertSame(null, ConfigurableTest_MockChildHide::config('user', false));
     }
 
-    public function test_config_overrideOptions()
+    public function test_config_overrideOptions(): void
     {
         $this->assertSame(
             [
@@ -339,7 +339,7 @@ class ConfigurableTest extends RebetTestCase
         );
     }
 
-    public function test_config_clear()
+    public function test_config_clear(): void
     {
         $this->assertSame('mysql', ConfigurableTest_Mock::config('driver'));
 
@@ -408,7 +408,7 @@ class ConfigurableTest_Mock
         return self::config($key);
     }
 
-    public static function setDriver(string $driver)
+    public static function setDriver(string $driver): void
     {
         static::setConfig(['driver' => $driver]);
     }

@@ -10,7 +10,7 @@ use Rebet\Tests\RebetTestCase;
 
 class SessionHandlerProxyTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(SessionHandlerProxy::class, new SessionHandlerProxy(new NullSessionHandler()));
     }

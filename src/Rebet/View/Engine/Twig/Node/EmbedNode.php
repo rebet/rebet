@@ -101,7 +101,7 @@ class EmbedNode extends Node
     /**
      * {@inheritDoc}
      */
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $invert = $this->getAttribute('invert');
         $compiler

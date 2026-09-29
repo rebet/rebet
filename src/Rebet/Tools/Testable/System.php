@@ -39,7 +39,7 @@ class System
         return [
             'emulators' => [
                 'header'         => [
-                    'emulator' => function (string $header, bool $replace = true, int|null $http_response_code = null) {
+                    'emulator' => function (string $header, bool $replace = true, int|null $http_response_code = null): void {
                         $emulated_header = &System::memory('emulated_header');
                         $http_status     = System::datasets('header', 'http_status');
                         if (\preg_match('/^HTTP\//', $header)) {
@@ -190,7 +190,7 @@ class System
      * @param  array<string, mixed> $datasets
      * @return void
      */
-    public static function emulator(string $function_name, \Closure $emurator, array $datasets = [])
+    public static function emulator(string $function_name, \Closure $emurator, array $datasets = []): void
     {
         static::setConfig([
             'emulators' => [

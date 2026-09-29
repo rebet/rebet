@@ -407,7 +407,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param  mixed  $value
      * @return void
      */
-    public function __set($key, $value)
+    public function __set($key, $value): void
     {
         $origin = &$this->origin();
         if ($origin === null) {

@@ -10,13 +10,13 @@ use Rebet\Tests\RebetTestCase;
 
 class AuthenticateExceptionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $e = new AuthenticateException('test');
         $this->assertInstanceOf(AuthenticateException::class, $e);
     }
 
-    public function test_problem()
+    public function test_problem(): void
     {
         $e       = new AuthenticateException('test');
         $problem = $e->problem();

@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class MetadataBagTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(MetadataBag::class, new MetadataBag('test'));
     }

@@ -11,7 +11,7 @@ use function PHPUnit\Framework\assertEquals;
 
 class StdoutCaptureTest extends RebetTestCase
 {
-    public function test_startAndStop()
+    public function test_startAndStop(): void
     {
         StdoutCapture::start();
         echo 'foo';
@@ -25,9 +25,9 @@ class StdoutCaptureTest extends RebetTestCase
         assertEquals('foobarbazqux', $captured);
     }
 
-    public function test_via()
+    public function test_via(): void
     {
-        $captured = StdoutCapture::via(function () {
+        $captured = StdoutCapture::via(function (): void {
             echo 'foo';
             fputs(STDOUT, 'bar');
             $stdout = fopen('php://stdout', 'w');

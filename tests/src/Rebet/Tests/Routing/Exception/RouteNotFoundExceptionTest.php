@@ -11,13 +11,13 @@ use Rebet\Tests\RebetTestCase;
 
 class RouteNotFoundExceptionTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $e = new RouteNotFoundException('test');
         $this->assertInstanceOf(RouteNotFoundException::class, $e);
     }
 
-    public function test_problem()
+    public function test_problem(): void
     {
         App::setLocale('ja');
         $e       = new RouteNotFoundException('test');

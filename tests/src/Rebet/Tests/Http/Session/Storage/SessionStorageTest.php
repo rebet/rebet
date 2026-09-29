@@ -13,7 +13,7 @@ class SessionStorageTest extends RebetTestCase
 {
     #[RunInSeparateProcess]
     #[PreserveGlobalState(false)]
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(SessionStorage::class, new SessionStorage());
     }

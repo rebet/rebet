@@ -25,7 +25,7 @@ class CryptoDecryptCommandTest extends RebetConsoleTestCase
     }
 
     #[DataProvider('dataExecutes')]
-    public function test_execute(string $plain, array $options = [])
+    public function test_execute(string $plain, array $options = []): void
     {
         $encrypted = Nets::encodeBase64Url(Securities::encrypt(
             $plain,
@@ -41,7 +41,7 @@ class CryptoDecryptCommandTest extends RebetConsoleTestCase
         $this->assertSame("Decrypted: {$plain}\n", $tester->getDisplay());
     }
 
-    public function test_execute_invalid()
+    public function test_execute_invalid(): void
     {
         $tester = $this->getCommandTester(CryptoDecryptCommand::NAME);
         $status = $tester->execute(['encrypted' => 'not-a-valid-encrypted-value']);
@@ -49,7 +49,7 @@ class CryptoDecryptCommandTest extends RebetConsoleTestCase
         $this->assertSame("Decryption failed. The given text is invalid or was encrypted with different keys.\n", $tester->getDisplay());
     }
 
-    public function test_execute_wrongSecretKey()
+    public function test_execute_wrongSecretKey(): void
     {
         $encrypted = Nets::encodeBase64Url(Securities::encrypt('This is pen', 'crypto_secret'));
 

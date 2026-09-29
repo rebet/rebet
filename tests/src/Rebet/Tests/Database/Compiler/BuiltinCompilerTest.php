@@ -420,9 +420,9 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataCompiles')]
-    public function test_compile(array $target_db_kinds, string $expect_sql, array $expect_params, string $sql, array|null $order_by = null, array|null $params = null, Pager|null $pager = null, Cursor|null $cursor = null)
+    public function test_compile(array $target_db_kinds, string $expect_sql, array $expect_params, string $sql, array|null $order_by = null, array|null $params = null, Pager|null $pager = null, Cursor|null $cursor = null): void
     {
-        self::eachDb(function (Database $db) use ($target_db_kinds, $expect_sql, $expect_params, $sql, $order_by, $params, $pager, $cursor) {
+        self::eachDb(function (Database $db) use ($target_db_kinds, $expect_sql, $expect_params, $sql, $order_by, $params, $pager, $cursor): void {
             if (!in_array($db->name(), $target_db_kinds)) {
                 return;
             }
@@ -432,7 +432,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_paging()
+    public function test_paging(): void
     {
         // This test is not need because of BuiltinCoumpiler::paging() method will be covered by DatabaseTest::test_paginate() test.
         $this->assertTrue(true);
@@ -462,9 +462,9 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataConvertParams')]
-    public function test_convertParam(string $expect_sql, array $expect_params, string $key, $value)
+    public function test_convertParam(string $expect_sql, array $expect_params, string $key, $value): void
     {
-        self::eachDb(function (Database $db) use ($expect_sql, $expect_params, $key, $value) {
+        self::eachDb(function (Database $db) use ($expect_sql, $expect_params, $key, $value): void {
             $param = $db->compiler()->convertParam($key, $value);
             $this->assertEquals($expect_sql, $param->sql());
             $this->assertEquals($expect_params, $param->params());

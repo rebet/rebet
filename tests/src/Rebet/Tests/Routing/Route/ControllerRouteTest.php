@@ -12,20 +12,20 @@ use TestApp\Controller\TestController;
 
 class ControllerRouteTest extends RebetTestCase
 {
-    public function test___construct()
+    public function test___construct(): void
     {
         $this->assertInstanceOf(ControllerRoute::class, new ControllerRoute('/test', TestController::class));
         $this->assertInstanceOf(ControllerRoute::class, new ControllerRoute('/test', 'TestController'));
     }
 
-    public function test_terminate()
+    public function test_terminate(): void
     {
         $route   = new ControllerRoute('/test', TestController::class);
         $request = $this->createRequestMock('/test', null, 'web', 'web', 'GET', '', $route);
         $this->assertNull($route->terminate($request, Responder::toResponse('test')));
     }
 
-    public function test_routing()
+    public function test_routing(): void
     {
         $route = new ControllerRoute('/test', TestController::class);
 
@@ -42,7 +42,7 @@ class ControllerRouteTest extends RebetTestCase
         $this->assertSame('Controller: withParam - 123', $response->getContent());
     }
 
-    public function test_getControllerName()
+    public function test_getControllerName(): void
     {
         $route = new ControllerRoute('/test', TestController::class);
         $this->assertSame(TestController::class, $route->getControllerName());

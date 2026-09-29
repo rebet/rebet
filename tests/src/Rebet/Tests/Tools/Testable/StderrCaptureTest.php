@@ -11,7 +11,7 @@ use function PHPUnit\Framework\assertEquals;
 
 class StderrCaptureTest extends RebetTestCase
 {
-    public function test_startAndAppendAndStop()
+    public function test_startAndAppendAndStop(): void
     {
         StderrCapture::start();
         fputs(STDERR, 'foo');
@@ -22,9 +22,9 @@ class StderrCaptureTest extends RebetTestCase
         assertEquals('foobar', $captured);
     }
 
-    public function test_via()
+    public function test_via(): void
     {
-        $captured = StderrCapture::via(function () {
+        $captured = StderrCapture::via(function (): void {
             fputs(STDERR, 'foo');
             $stderr = StderrCapture::append(fopen('php://stderr', 'w'));
             fwrite($stderr, 'bar');

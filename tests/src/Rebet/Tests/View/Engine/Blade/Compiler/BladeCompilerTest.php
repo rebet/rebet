@@ -33,14 +33,14 @@ class BladeCompilerTest extends RebetTestCase
         $this->compiler = $blade->compiler();
     }
 
-    public function test_raw()
+    public function test_raw(): void
     {
         $this->assertSame(null, $this->compiler->getCustomDirectives()['hello'] ?? null);
         $this->compiler->raw('hello', "echo('Hello');");
         $this->assertSame("<?php echo('Hello'); ?>", call_user_func($this->compiler->getCustomDirectives()['hello']));
     }
 
-    public function test_embed()
+    public function test_embed(): void
     {
         $this->assertSame(null, $this->compiler->getCustomDirectives()['hello'] ?? null);
         $this->compiler->embed('hello', "echo(", new CallbackProcessor(function () { return 'Hello'; }), ');');
@@ -59,13 +59,13 @@ class BladeCompilerTest extends RebetTestCase
         $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('welcom', [\$user_name, 'foo' => 'hello']) ); ?>", call_user_func($this->compiler->getCustomDirectives()['welcom'], "'foo' => 'hello'"));
     }
 
-    public function test_execute()
+    public function test_execute(): void
     {
         $this->compiler->embed('say', "echo(", new CallbackProcessor(function ($word) { return $word; }), ');');
         $this->assertSame('Hello', $this->compiler->execute('say', ['Hello']));
     }
 
-    public function test_case()
+    public function test_case(): void
     {
         $this->compiler->case('hello', new CallbackProcessor(function ($word) { return $word === 'hello'; }));
         $directives = $this->compiler->getCustomDirectives();
@@ -90,7 +90,7 @@ class BladeCompilerTest extends RebetTestCase
         $this->assertSame("<?php if (\Illuminate\Support\Facades\Blade::execute('say', [\$word, 'foo' => 'welcom'])): ?>", call_user_func($directives['say'], "'foo' => 'welcom'"));
     }
 
-    public function test_disable()
+    public function test_disable(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("The 'hello' directive is not supported in Rebet.");
