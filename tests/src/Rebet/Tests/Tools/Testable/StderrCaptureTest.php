@@ -14,7 +14,7 @@ class StderrCaptureTest extends RebetTestCase
     public function test_startAndAppendAndStop(): void
     {
         StderrCapture::start();
-        fputs(STDERR, 'foo');
+        fwrite(STDERR, 'foo');
         $stderr = StderrCapture::append(fopen('php://stderr', 'w'));
         fwrite($stderr, 'bar');
         fclose($stderr);
@@ -25,7 +25,7 @@ class StderrCaptureTest extends RebetTestCase
     public function test_via(): void
     {
         $captured = StderrCapture::via(function (): void {
-            fputs(STDERR, 'foo');
+            fwrite(STDERR, 'foo');
             $stderr = StderrCapture::append(fopen('php://stderr', 'w'));
             fwrite($stderr, 'bar');
             fclose($stderr);

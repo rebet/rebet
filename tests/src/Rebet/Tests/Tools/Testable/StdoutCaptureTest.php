@@ -15,7 +15,7 @@ class StdoutCaptureTest extends RebetTestCase
     {
         StdoutCapture::start();
         echo 'foo';
-        fputs(STDOUT, 'bar');
+        fwrite(STDOUT, 'bar');
         $stdout = fopen('php://stdout', 'w');
         StdoutCapture::append($stdout);
         fwrite($stdout, 'baz');
@@ -29,7 +29,7 @@ class StdoutCaptureTest extends RebetTestCase
     {
         $captured = StdoutCapture::via(function (): void {
             echo 'foo';
-            fputs(STDOUT, 'bar');
+            fwrite(STDOUT, 'bar');
             $stdout = fopen('php://stdout', 'w');
             StdoutCapture::append($stdout);
             fwrite($stdout, 'baz');

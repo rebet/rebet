@@ -88,7 +88,7 @@ class RouterTest extends RebetTestCase
 
             Router::get('/parameter/convert/int/{value}', fn(int $value) => "Content: /parameter/convert/int/{value} - {$value} " . (is_int($value) ? 'int' : 'not int'));
 
-            Router::get('/parameter/convert/array/{value}', fn(array $value) => "Content: /parameter/convert/array/{value} - " . join('/', $value));
+            Router::get('/parameter/convert/array/{value}', fn(array $value) => "Content: /parameter/convert/array/{value} - " . implode('/', $value));
 
             Router::get('/parameter/convert/date-time/{value}', fn(DateTime $value) => "Content: /parameter/convert/date-time/{value} - {$value->format('Y-m-d H:i:s.u')}");
 

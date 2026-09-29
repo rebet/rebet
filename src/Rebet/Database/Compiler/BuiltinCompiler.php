@@ -350,6 +350,6 @@ class BuiltinCompiler implements Compiler
             $unfold_keys[]    = $new_key;
             $params[$new_key] = $this->driver->toPdoType($v);
         }
-        return $this->driver->sql(join(', ', $unfold_keys), $params);
+        return $this->driver->sql(implode(', ', $unfold_keys), $params);
     }
 }

@@ -112,7 +112,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
                 $columns    = array_shift($records) ?? [];
                 $table_name = $db->driver()->quoteIdentifier($table_name);
                 foreach ($records as $record) {
-                    $db->execute("INSERT INTO {$table_name} (" . join(',', array_map(fn($v) => $db->driver()->quoteIdentifier($v), $columns)) . ") VALUES (:values)", ['values' => $record]);
+                    $db->execute("INSERT INTO {$table_name} (" . implode(',', array_map(fn($v) => $db->driver()->quoteIdentifier($v), $columns)) . ") VALUES (:values)", ['values' => $record]);
                 }
             }
             $db->commit();

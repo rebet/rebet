@@ -528,7 +528,7 @@ class Strings
             ;
         });
 
-        return empty($trace) ? "" : join("\n", $trace) ;
+        return empty($trace) ? "" : implode("\n", $trace) ;
     }
 
     /**

@@ -365,6 +365,6 @@ abstract class Entity extends DataModel
             $params[$column] = $this->origin() ? $this->origin()->$column : $this->$column ;
         }
 
-        return $driver->sql(join(' AND ', $wheres), $params);
+        return $driver->sql(implode(' AND ', $wheres), $params);
     }
 }

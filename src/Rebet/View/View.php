@@ -227,7 +227,7 @@ class View implements Renderable
             }
         }
 
-        throw new ViewRenderFailedException("The view [{$this->name}] (possible: " . join(', ', $names) . ") render failed because of all of view templates not exists.");
+        throw new ViewRenderFailedException("The view [{$this->name}] (possible: " . implode(', ', $names) . ") render failed because of all of view templates not exists.");
     }
 
     /**

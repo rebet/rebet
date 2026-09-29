@@ -318,7 +318,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                     }
                 }
                 if (!$parsed_test_now) {
-                    throw new DateTimeFormatException("Invalid date time format for `test now`. Acceptable format are [" . join(',', self::config('test_now_format')) . ']');
+                    throw new DateTimeFormatException("Invalid date time format for `test now`. Acceptable format are [" . implode(',', self::config('test_now_format')) . ']');
                 }
                 /** @var \DateTime|false $modified_test_now */
                 $modified_test_now = $parsed_test_now->modify($time);

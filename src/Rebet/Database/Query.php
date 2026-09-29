@@ -139,7 +139,7 @@ class Query
         $sql = $this->sql;
         foreach ($this->params as $key => $value) {
             $key   = Strings::startsWith($key, ':') ? $key : ":{$key}" ;
-            $value = is_array($value) ? join(', ', array_map(fn($v) => $this->convertToSql($v), $value)) : $this->convertToSql($value) ;
+            $value = is_array($value) ? implode(', ', array_map(fn($v) => $this->convertToSql($v), $value)) : $this->convertToSql($value) ;
             $sql   = preg_replace("/" . preg_quote($key, '/') . "(?=[^a-zA-Z0-9_]|$)/", $value, $sql);
         }
 
