@@ -85,7 +85,7 @@ class TextFormatter implements FormatterInterface
 
         foreach (Arrays::sortKeys($record_array['extra'] ?? [], SORT_DESC, Callbacks::compareLength()) as $var => $val) {
             $key = '{extra.' . $var . '}';
-            if (false !== strpos($output, $key)) {
+            if (str_contains($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);
                 unset($record_array['extra'][$var]);
             }
@@ -93,7 +93,7 @@ class TextFormatter implements FormatterInterface
 
         foreach (Arrays::sortKeys($record_array['context'] ?? [], SORT_DESC, Callbacks::compareLength()) as $var => $val) {
             $key = '{context.' . $var . '}';
-            if (false !== strpos($output, $key)) {
+            if (str_contains($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);
                 unset($record_array['context'][$var]);
             }
@@ -101,17 +101,17 @@ class TextFormatter implements FormatterInterface
 
         foreach (Arrays::sortKeys($record_array, SORT_DESC, Callbacks::compareLength()) as $var => $val) {
             $key = '{' . $var . '}';
-            if (false !== strpos($output, $key)) {
+            if (str_contains($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);
             }
         }
 
-        if (false !== strpos($output, '{exception}')) {
+        if (str_contains($output, '{exception}')) {
             $output = str_replace('{exception}', $this->stringify('{exception}', $exception), $output);
         }
 
         // remove leftover {extra.xxx} and {context.xxx} if any
-        if (false !== strpos($output, '{')) {
+        if (str_contains($output, '{')) {
             $output = preg_replace('/\{(?:extra|context)\..+?}/', '', $output);
         }
 

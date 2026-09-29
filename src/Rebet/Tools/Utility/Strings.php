@@ -324,7 +324,7 @@ class Strings
      */
     protected static function _contains(string|null $string, string $search): bool
     {
-        return $search === '' ? true : strpos($string, $search) !== false ;
+        return $search === '' ? true : str_contains($string, $search) ;
     }
 
     /**

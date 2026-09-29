@@ -97,7 +97,7 @@ class ArrayPool implements AdapterInterface
         $prefix = 0 < \func_num_args() ? (string) func_get_arg(0) : '';
         if ('' !== $prefix) {
             foreach ($this->pool as $key => $item) {
-                if (0 === strpos($key, $prefix)) {
+                if (str_starts_with($key, $prefix)) {
                     unset($this->pool[$key]);
                 }
             }

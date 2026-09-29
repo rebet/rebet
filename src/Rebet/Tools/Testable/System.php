@@ -50,7 +50,7 @@ class System
                             $emulated_header['http'] = ['HTTP/1.1 200 OK'];
                         }
 
-                        if (\strpos($header, ':') !== false) {
+                        if (\str_contains($header, ':')) {
                             $parts = \explode(':', $header, 2);
                             $key   = \strtolower($parts[0]);
                             if (!isset($emulated_header[$key])) {
