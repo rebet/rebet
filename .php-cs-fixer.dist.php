@@ -39,6 +39,9 @@ return (new PhpCsFixer\Config())
         'ordered_types' => [
             'null_adjustment' => 'always_last',
         ],
+        'trailing_comma_in_multiline' => [
+            'elements' => ['arrays', 'match'],
+        ],
     ])
     ->setLineEnding("\n")
     ->setFinder(

@@ -20,23 +20,23 @@ class RansackTest extends RebetDatabaseTestCase
             [
                 '?age? > :age_gt',
                 ['age_gt' => 0],
-                'age_gt' , 0
+                'age_gt' , 0,
             ],
             [
                 '((?name? = :name_0 AND ?age? > :age_gt_0) OR (?name? = :name_1 AND ?age? > :age_gt_1))',
                 ['name_0' => 'foo', 'age_gt_0' => 20, 'name_1' => 'bar', 'age_gt_1' => 18],
-                0 , [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]]
+                0 , [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]],
             ],
             [
                 '((((?name? = :name_0_0) OR (?name? = :name_0_1)) AND ?age? > :age_gt_0) OR (?name? = :name_1 AND ?age? > :age_gt_1))',
                 ['name_0_0' => 'foo', 'name_0_1' => 'bar', 'age_gt_0' => 20, 'name_1' => 'baz', 'age_gt_1' => 18],
-                0 , [[[['name' => 'foo'], ['name' => 'bar']], 'age_gt' => 20], ['name' => 'baz', 'age_gt' => 18]]
+                0 , [[[['name' => 'foo'], ['name' => 'bar']], 'age_gt' => 20], ['name' => 'baz', 'age_gt' => 18]],
             ],
             [
                 '(((?last_name? = :name_0_0 OR ?first_name? = :name_0_1) AND ?age? > :age_gt_0) OR ((?last_name? = :name_1_0 OR ?first_name? = :name_1_1) AND ?age? > :age_gt_1))',
                 ['name_0_0' => 'foo', 'name_0_1' => 'foo', 'age_gt_0' => 20, 'name_1_0' => 'bar', 'name_1_1' => 'bar', 'age_gt_1' => 18],
                 0 , [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]],
-                ['name' => ['last_name', 'first_name']]
+                ['name' => ['last_name', 'first_name']],
             ],
             [
                 '?age? > :age_gt',
@@ -44,7 +44,7 @@ class RansackTest extends RebetDatabaseTestCase
                 'age_gt' , 20, [],
                 function (Ransack $ransack) : Query|null {
                     return null;
-                }
+                },
             ],
             [
                 '?age? > :age_gt',
@@ -52,7 +52,7 @@ class RansackTest extends RebetDatabaseTestCase
                 'age_gt' , 20, [],
                 function (Ransack $ransack) : Query|null {
                     return $ransack->convert();
-                }
+                },
             ],
             [
                 '?age? grater than :age_gt',
@@ -63,7 +63,7 @@ class RansackTest extends RebetDatabaseTestCase
                         return $ransack->convert('{col} grater than {val}');
                     }
                     return null;
-                }
+                },
             ],
             [
                 '?age? grater than :age_gt',
@@ -74,7 +74,7 @@ class RansackTest extends RebetDatabaseTestCase
                         return $ransack->convert('{col} grater than {val}', function ($v) { return $v * 2; });
                     }
                     return null;
-                }
+                },
             ],
             [
                 'age <> :bar',
@@ -85,7 +85,7 @@ class RansackTest extends RebetDatabaseTestCase
                         return $ransack->driver()->sql('age <> :bar', ['bar' => $ransack->value(true)]);
                     }
                     return null;
-                }
+                },
             ],
         ];
     }
@@ -359,19 +359,19 @@ class RansackTest extends RebetDatabaseTestCase
                 ['?last_name? COLLATE nocase', '?first_name? COLLATE nocase']
                 , true , 'name_contains_any_ci', 'foo',
                 ['name' => ['last_name', 'first_name']],
-                ['sqlite']
+                ['sqlite'],
             ],
             [
                 ['?name? COLLATE nocase', '?name_ruby? COLLATE nocase']
                 , true , 'name_contains_any_ci', 'foo',
                 ['name' => ['name', 'name_ruby']],
-                ['sqlite']
+                ['sqlite'],
             ],
             [
                 ['CONCAT(last_name,first_name) COLLATE nocase']
                 , true , 'name_contains_any_ci', 'foo',
                 ['name' => "CONCAT(last_name,first_name)"],
-                ['sqlite']
+                ['sqlite'],
             ],
             [
                 [
@@ -382,7 +382,7 @@ class RansackTest extends RebetDatabaseTestCase
                 ]
                 , true , 'full_name_contains_any_ci', 'foo',
                 ['full_name' => ['@name', '@name_ruby'], 'name' => ['last_name', 'first_name'], 'name_ruby' => ['last_name_ruby', 'first_name_ruby']],
-                ['sqlite']
+                ['sqlite'],
             ],
             [
                 [
@@ -393,7 +393,7 @@ class RansackTest extends RebetDatabaseTestCase
                 ]
                 , false, 'full_name_contains_any_ci', 'foo',
                 ['full_name' => ['@name', '@name_ruby'], 'name' => ['last_name', 'first_name'], 'name_ruby' => ['last_name_ruby', 'first_name_ruby']],
-                ['sqlite']
+                ['sqlite'],
             ],
             [
                 [
@@ -402,7 +402,7 @@ class RansackTest extends RebetDatabaseTestCase
                 ]
                 , true , 'full_name_contains_any_ci', 'foo',
                 ['full_name' => ['@name', '@name_ruby'], 'name' => "CONCAT(last_name,first_name)", 'name_ruby' => "CONCAT(last_name_ruby,first_name_ruby)"],
-                ['sqlite']
+                ['sqlite'],
             ],
         ];
         return $data;
@@ -424,156 +424,156 @@ class RansackTest extends RebetDatabaseTestCase
                 '?name? = :name',
                 ['name' => 'foo'],
                 'name', 'foo', [],
-                []
+                [],
             ],
             [
                 '?name? IN (:name)',
                 ['name' => ['foo', 'bar']],
                 'name', ['foo', 'bar'], [],
-                []
+                [],
             ],
             // --------------
             [
                 '?name? COLLATE nocase = :name_ci',
                 ['name_ci' => 'foo'],
                 'name_ci', 'foo', [],
-                ['sqlite']
+                ['sqlite'],
             ],
             [
                 '?name? COLLATE nocase IN (:name_ci)',
                 ['name_ci' => ['foo', 'bar']],
                 'name_ci', ['foo', 'bar'], [],
-                ['sqlite']
+                ['sqlite'],
             ],
             // --------------
             [
                 '?name? = :name_eq',
                 ['name_eq' => 'foo'],
                 'name_eq', 'foo', [],
-                []
+                [],
             ],
             [
                 '?name? COLLATE nocase = :name_eq_ci',
                 ['name_eq_ci' => 'foo'],
                 'name_eq_ci', 'foo', [],
-                ['sqlite']
+                ['sqlite'],
             ],
             // --------------
             [
                 '?name? <> :name_not_eq',
                 ['name_not_eq' => 'foo'],
                 'name_not_eq', 'foo', [],
-                []
+                [],
             ],
             // --------------
             [
                 '?name? IN (:name_in)',
                 ['name_in' => ['foo', 'bar']],
                 'name_in', ['foo', 'bar'], [],
-                []
+                [],
             ],
             // --------------
             [
                 '?name? NOT IN (:name_not_in)',
                 ['name_not_in' => ['foo', 'bar']],
                 'name_not_in', ['foo', 'bar'], [],
-                []
+                [],
             ],
             // --------------
             [
                 '?name? < :name_lt',
                 ['name_lt' => 'foo'],
                 'name_lt', 'foo', [],
-                []
+                [],
             ],
             // --------------
             [
                 '?name? <= :name_lteq',
                 ['name_lteq' => 'foo'],
                 'name_lteq', 'foo', [],
-                []
+                [],
             ],
             // --------------
             [
                 '?name? >= :name_gteq',
                 ['name_gteq' => 'foo'],
                 'name_gteq', 'foo', [],
-                []
+                [],
             ],
             // --------------
             [
                 '?name? > :name_gt',
                 ['name_gt' => 'foo'],
                 'name_gt', 'foo', [],
-                []
+                [],
             ],
             // --------------
             [
                 '?name? >= :name_from',
                 ['name_from' => 'foo'],
                 'name_from', 'foo', [],
-                []
+                [],
             ],
             // --------------
             [
                 '?name? <= :name_to',
                 ['name_to' => 'foo'],
                 'name_to', 'foo', [],
-                []
+                [],
             ],
             // --------------
             [
                 '?name? > :name_after',
                 ['name_after' => 'foo'],
                 'name_after', 'foo', [],
-                []
+                [],
             ],
             // --------------
             [
                 '?name? < :name_before',
                 ['name_before' => 'foo'],
                 'name_before', 'foo', [],
-                []
+                [],
             ],
             // --------------
             [
                 "?name? LIKE :name_contains ESCAPE '|'",
                 ['name_contains' => '%100|%%'],
                 'name_contains', '100%', [],
-                []
+                [],
             ],
             [
                 "?name? LIKE :name_contains_any ESCAPE '|'",
                 ['name_contains_any' => '%100|%%'],
                 'name_contains_any', '100%', [],
-                []
+                [],
             ],
             [
                 "(?name? LIKE :name_contains_any_0 ESCAPE '|' OR ?name? LIKE :name_contains_any_1 ESCAPE '|')",
                 [
                     'name_contains_any_0' => '%100|%%',
-                    'name_contains_any_1' => '%foo%'
+                    'name_contains_any_1' => '%foo%',
                 ],
                 'name_contains_any', ['100%', 'foo'], [],
-                []
+                [],
             ],
             [
                 "(?name? LIKE :name_contains_all_0 ESCAPE '|' AND ?name? LIKE :name_contains_all_1 ESCAPE '|')",
                 [
                     'name_contains_all_0' => '%100|%%',
-                    'name_contains_all_1' => '%foo%'
+                    'name_contains_all_1' => '%foo%',
                 ],
                 'name_contains_all', ['100%', 'foo'], [],
-                []
+                [],
             ],
             [
                 "(?name? COLLATE nocase LIKE :name_contains_any_ci_0 ESCAPE '|' OR ?name? COLLATE nocase LIKE :name_contains_any_ci_1 ESCAPE '|')",
                 [
                     'name_contains_any_ci_0' => '%100|%%',
-                    'name_contains_any_ci_1' => '%foo%'
+                    'name_contains_any_ci_1' => '%foo%',
                 ],
                 'name_contains_any_ci', ['100%', 'foo'], [],
-                ['sqlite']
+                ['sqlite'],
             ],
             [
                 "(?last_name? LIKE :name_contains_0 ESCAPE '|' OR ?first_name? LIKE :name_contains_1 ESCAPE '|')",
@@ -582,7 +582,7 @@ class RansackTest extends RebetDatabaseTestCase
                     'name_contains_1' => '%100|%%',
                 ],
                 'name_contains', '100%', ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             [
                 "((?last_name? LIKE :name_contains_any_0_0 ESCAPE '|' OR ?first_name? LIKE :name_contains_any_0_1 ESCAPE '|') OR (?last_name? LIKE :name_contains_any_1_0 ESCAPE '|' OR ?first_name? LIKE :name_contains_any_1_1 ESCAPE '|'))",
@@ -593,7 +593,7 @@ class RansackTest extends RebetDatabaseTestCase
                     'name_contains_any_1_1' => '%foo%',
                 ],
                 'name_contains_any', ['100%', 'foo'], ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             [
                 "((?last_name? LIKE :name_contains_any_0_0 ESCAPE '|' OR ?first_name? LIKE :name_contains_any_0_1 ESCAPE '|') OR (?last_name? LIKE :name_contains_any_1_0 ESCAPE '|' OR ?first_name? LIKE :name_contains_any_1_1 ESCAPE '|'))",
@@ -604,7 +604,7 @@ class RansackTest extends RebetDatabaseTestCase
                     'name_contains_any_1_1' => '%foo%',
                 ],
                 'name_contains_any', '100% foo', ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             [
                 "((?last_name? COLLATE nocase LIKE :name_contains_all_ci_0_0 ESCAPE '|' OR ?first_name? COLLATE nocase LIKE :name_contains_all_ci_0_1 ESCAPE '|') AND (?last_name? COLLATE nocase LIKE :name_contains_all_ci_1_0 ESCAPE '|' OR ?first_name? COLLATE nocase LIKE :name_contains_all_ci_1_1 ESCAPE '|'))",
@@ -615,23 +615,23 @@ class RansackTest extends RebetDatabaseTestCase
                     'name_contains_all_ci_1_1' => '%foo%',
                 ],
                 'name_contains_all_ci', ['100%', 'foo'], ['name' => ['last_name', 'first_name']],
-                ['sqlite']
+                ['sqlite'],
             ],
             // --------------
             [
                 "?name? NOT LIKE :name_not_contains ESCAPE '|'",
                 ['name_not_contains' => '%100|%%'],
                 'name_not_contains', '100%', [],
-                []
+                [],
             ],
             [
                 "(?name? NOT LIKE :name_not_contains_any_0 ESCAPE '|' OR ?name? NOT LIKE :name_not_contains_any_1 ESCAPE '|')",
                 [
                     'name_not_contains_any_0' => '%100|%%',
-                    'name_not_contains_any_1' => '%foo%'
+                    'name_not_contains_any_1' => '%foo%',
                 ],
                 'name_not_contains_any', ['100%', 'foo'], [],
-                []
+                [],
             ],
             [
                 "(?last_name? NOT LIKE :name_not_contains_0 ESCAPE '|' AND ?first_name? NOT LIKE :name_not_contains_1 ESCAPE '|')",
@@ -640,23 +640,23 @@ class RansackTest extends RebetDatabaseTestCase
                     'name_not_contains_1' => '%100|%%',
                 ],
                 'name_not_contains', '100%', ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             // --------------
             [
                 "?name? LIKE :name_starts ESCAPE '|'",
                 ['name_starts' => '100|%%'],
                 'name_starts', '100%', [],
-                []
+                [],
             ],
             [
                 "(?name? LIKE :name_starts_any_0 ESCAPE '|' OR ?name? LIKE :name_starts_any_1 ESCAPE '|')",
                 [
                     'name_starts_any_0' => '100|%%',
-                    'name_starts_any_1' => 'foo%'
+                    'name_starts_any_1' => 'foo%',
                 ],
                 'name_starts_any', ['100%', 'foo'], [],
-                []
+                [],
             ],
             [
                 "(?last_name? LIKE :name_starts_0 ESCAPE '|' OR ?first_name? LIKE :name_starts_1 ESCAPE '|')",
@@ -665,23 +665,23 @@ class RansackTest extends RebetDatabaseTestCase
                     'name_starts_1' => '100|%%',
                 ],
                 'name_starts', '100%', ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             // --------------
             [
                 "?name? NOT LIKE :name_not_starts ESCAPE '|'",
                 ['name_not_starts' => '100|%%'],
                 'name_not_starts', '100%', [],
-                []
+                [],
             ],
             [
                 "(?name? NOT LIKE :name_not_starts_any_0 ESCAPE '|' OR ?name? NOT LIKE :name_not_starts_any_1 ESCAPE '|')",
                 [
                     'name_not_starts_any_0' => '100|%%',
-                    'name_not_starts_any_1' => 'foo%'
+                    'name_not_starts_any_1' => 'foo%',
                 ],
                 'name_not_starts_any', ['100%', 'foo'], [],
-                []
+                [],
             ],
             [
                 "(?last_name? NOT LIKE :name_not_starts_0 ESCAPE '|' AND ?first_name? NOT LIKE :name_not_starts_1 ESCAPE '|')",
@@ -690,23 +690,23 @@ class RansackTest extends RebetDatabaseTestCase
                     'name_not_starts_1' => '100|%%',
                 ],
                 'name_not_starts', '100%', ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             // --------------
             [
                 "?name? LIKE :name_ends ESCAPE '|'",
                 ['name_ends' => '%100|%'],
                 'name_ends', '100%', [],
-                []
+                [],
             ],
             [
                 "(?name? LIKE :name_ends_any_0 ESCAPE '|' OR ?name? LIKE :name_ends_any_1 ESCAPE '|')",
                 [
                     'name_ends_any_0' => '%100|%',
-                    'name_ends_any_1' => '%foo'
+                    'name_ends_any_1' => '%foo',
                 ],
                 'name_ends_any', ['100%', 'foo'], [],
-                []
+                [],
             ],
             [
                 "(?last_name? LIKE :name_ends_0 ESCAPE '|' OR ?first_name? LIKE :name_ends_1 ESCAPE '|')",
@@ -715,23 +715,23 @@ class RansackTest extends RebetDatabaseTestCase
                     'name_ends_1' => '%100|%',
                 ],
                 'name_ends', '100%', ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             // --------------
             [
                 "?name? NOT LIKE :name_not_ends ESCAPE '|'",
                 ['name_not_ends' => '%100|%'],
                 'name_not_ends', '100%', [],
-                []
+                [],
             ],
             [
                 "(?name? NOT LIKE :name_not_ends_any_0 ESCAPE '|' OR ?name? NOT LIKE :name_not_ends_any_1 ESCAPE '|')",
                 [
                     'name_not_ends_any_0' => '%100|%',
-                    'name_not_ends_any_1' => '%foo'
+                    'name_not_ends_any_1' => '%foo',
                 ],
                 'name_not_ends_any', ['100%', 'foo'], [],
-                []
+                [],
             ],
             [
                 "(?last_name? NOT LIKE :name_not_ends_0 ESCAPE '|' AND ?first_name? NOT LIKE :name_not_ends_1 ESCAPE '|')",
@@ -740,104 +740,104 @@ class RansackTest extends RebetDatabaseTestCase
                     'name_not_ends_1' => '%100|%',
                 ],
                 'name_not_ends', '100%', ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             // --------------
             [
                 "?name? IS NULL",
                 [],
                 'name_null', '1', [],
-                []
+                [],
             ],
             [
                 "(?last_name? IS NULL AND ?first_name? IS NULL)",
                 [],
                 'name_null', '1', ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             // --------------
             [
                 "?name? IS NOT NULL",
                 [],
                 'name_not_null', '1', [],
-                []
+                [],
             ],
             [
                 "(?last_name? IS NOT NULL OR ?first_name? IS NOT NULL)",
                 [],
                 'name_not_null', '1', ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             // --------------
             [
                 "(?name? IS NULL OR ?name? = '')",
                 [],
                 'name_blank', '1', [],
-                []
+                [],
             ],
             [
                 "((?last_name? IS NULL OR ?last_name? = '') AND (?first_name? IS NULL OR ?first_name? = ''))",
                 [],
                 'name_blank', '1', ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             // --------------
             [
                 "(?name? IS NOT NULL AND ?name? <> '')",
                 [],
                 'name_not_blank', '1', [],
-                []
+                [],
             ],
             [
                 "((?last_name? IS NOT NULL AND ?last_name? <> '') OR (?first_name? IS NOT NULL AND ?first_name? <> ''))",
                 [],
                 'name_not_blank', '1', ['name' => ['last_name', 'first_name']],
-                []
+                [],
             ],
             // --------------
             [
                 "?name? REGEXP :name_matches",
                 ['name_matches' => '^fo+'],
                 'name_matches', '^fo+', [],
-                ['sqlite', 'mysql', 'mariadb']
+                ['sqlite', 'mysql', 'mariadb'],
             ],
             [
                 "?name? ~ :name_matches",
                 ['name_matches' => '^fo+'],
                 'name_matches', '^fo+', [],
-                ['pgsql']
+                ['pgsql'],
             ],
             // --------------
             [
                 "?name? NOT REGEXP :name_not_matches",
                 ['name_not_matches' => '^fo+'],
                 'name_not_matches', '^fo+', [],
-                ['sqlite', 'mysql', 'mariadb']
+                ['sqlite', 'mysql', 'mariadb'],
             ],
             [
                 "?name? !~ :name_not_matches",
                 ['name_not_matches' => '^fo+'],
                 'name_not_matches', '^fo+', [],
-                ['pgsql']
+                ['pgsql'],
             ],
             // --------------
             [
                 "?name? MATCH :name_search",
                 ['name_search' => 'foo'],
                 'name_search', 'foo', [],
-                ['sqlite']
+                ['sqlite'],
             ],
             [
                 "MATCH(?name?) AGAINST(:name_search)",
                 ['name_search' => 'foo'],
                 'name_search', 'foo', [],
-                ['mysql', 'mariadb']
+                ['mysql', 'mariadb'],
             ],
             [
                 "to_tsvector(?name?) @@ to_tsquery(:name_search)",
                 ['name_search' => 'foo'],
                 'name_search', 'foo', [],
-                ['pgsql']
+                ['pgsql'],
             ],
         ];
     }

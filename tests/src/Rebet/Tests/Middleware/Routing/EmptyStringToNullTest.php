@@ -35,7 +35,7 @@ class EmptyStringToNullTest extends RebetTestCase
                 'q_number'       => 1,
                 'q_array'        => [1, '', 3, null, 5],
                 'q_not_empty'    => 'a',
-            ]
+            ],
         ]);
         $request->request->add([
             'r_null'         => null,
@@ -53,7 +53,7 @@ class EmptyStringToNullTest extends RebetTestCase
                 'r_number'       => 1,
                 'r_array'        => [1, '', 3, null, 5],
                 'r_not_empty'    => 'a',
-            ]
+            ],
         ]);
 
         $response = $middleware->handle($request, $destination);

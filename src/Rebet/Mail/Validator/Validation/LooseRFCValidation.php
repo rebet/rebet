@@ -36,7 +36,7 @@ class LooseRFCValidation implements EmailValidation
                 DotAtEnd::class,
                 DotAtStart::class,
                 ConsecutiveDot::class,
-            ]
+            ],
         ];
     }
 

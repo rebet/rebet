@@ -49,7 +49,7 @@ class DataModelTest extends RebetDatabaseTestCase
                 // ------- | ------------ | ------- //
                 [        2 , '1990-01-08' , 'good'   ],
                 [        1 , '2003-02-16' , 'bad'    ],
-            ]
+            ],
         ]);
     }
 

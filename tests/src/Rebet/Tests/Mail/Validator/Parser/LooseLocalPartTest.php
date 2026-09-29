@@ -30,25 +30,25 @@ class LooseLocalPartTest extends RebetTestCase
     {
         return [
             [
-                new DotAtStart(), '.invalid.rfc.mail@foo.com', []
+                new DotAtStart(), '.invalid.rfc.mail@foo.com', [],
             ],
             [
-                null, '.invalid.rfc.mail@foo.com', [DotAtStart::class], [DotAtStartWarning::class]
+                null, '.invalid.rfc.mail@foo.com', [DotAtStart::class], [DotAtStartWarning::class],
             ],
             [
-                new ConsecutiveDot(), '.invalid..rfc.mail@foo.com', [DotAtStart::class], [DotAtStartWarning::class]
+                new ConsecutiveDot(), '.invalid..rfc.mail@foo.com', [DotAtStart::class], [DotAtStartWarning::class],
             ],
             [
-                null, '.invalid..rfc.mail@foo.com', [DotAtStart::class, ConsecutiveDot::class], [DotAtStartWarning::class, ConsecutiveDotWarning::class]
+                null, '.invalid..rfc.mail@foo.com', [DotAtStart::class, ConsecutiveDot::class], [DotAtStartWarning::class, ConsecutiveDotWarning::class],
             ],
             [
-                new DotAtEnd(), '.invalid..rfc.mail.@foo.com', [DotAtStart::class, ConsecutiveDot::class], [DotAtStartWarning::class, ConsecutiveDotWarning::class]
+                new DotAtEnd(), '.invalid..rfc.mail.@foo.com', [DotAtStart::class, ConsecutiveDot::class], [DotAtStartWarning::class, ConsecutiveDotWarning::class],
             ],
             [
-                null, '.invalid..rfc.mail.@foo.com', [DotAtStart::class, ConsecutiveDot::class, DotAtEnd::class], [DotAtStartWarning::class, ConsecutiveDotWarning::class, DotAtEndWarning::class]
+                null, '.invalid..rfc.mail.@foo.com', [DotAtStart::class, ConsecutiveDot::class, DotAtEnd::class], [DotAtStartWarning::class, ConsecutiveDotWarning::class, DotAtEndWarning::class],
             ],
             [
-                null, '".invalid..rfc.mail."@foo.com', [], [QuotedString::class]
+                null, '".invalid..rfc.mail."@foo.com', [], [QuotedString::class],
             ],
         ];
     }

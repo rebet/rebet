@@ -37,7 +37,7 @@ class TrimStringsTest extends RebetTestCase
                 'q_empty_array'     => [],
                 'q_number'          => 1,
                 'q_array'           => [1, ' a ', 3, '　b　', 5],
-            ]
+            ],
         ]);
         $request->request->add([
             'r_null'            => null,
@@ -57,7 +57,7 @@ class TrimStringsTest extends RebetTestCase
                 'r_empty_array'     => [],
                 'r_number'          => 1,
                 'r_array'           => [1, ' a ', 3, '　b　', 5],
-            ]
+            ],
         ]);
 
         $response = $middleware->handle($request, $destination);

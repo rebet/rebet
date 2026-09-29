@@ -111,7 +111,7 @@ class SessionGuardTest extends RebetTestCase
                 'providers' => [
                     'member' => $mock,
                 ],
-            ]
+            ],
         ]);
 
         $guard = (new SessionGuard('member', '/user/signin', 30, $request = $this->createRequestMock('/user/mypage')))->name('member');
@@ -144,7 +144,7 @@ class SessionGuardTest extends RebetTestCase
                 'providers' => [
                     'member' => $mock,
                 ],
-            ]
+            ],
         ]);
 
         $guard = (new SessionGuard('member', '/user/signin', 30, $request = $this->createRequestMock('/user/mypage')))->name('member');
@@ -186,7 +186,7 @@ class SessionGuardTest extends RebetTestCase
                 'providers' => [
                     'admin' => $mock,
                 ],
-            ]
+            ],
         ]);
 
         $guard = (new SessionGuard('admin', '/admin/signin', 30, $request = $this->createRequestMock('/admin/mypage?foo=bar', 'admin')))->name('admin');

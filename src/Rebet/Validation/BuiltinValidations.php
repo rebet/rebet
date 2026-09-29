@@ -40,7 +40,7 @@ class BuiltinValidations implements Validations
             'customs' => [],
             'default' => [
                 'DependenceChar' => [
-                    'encode' => 'sjis-win'
+                    'encode' => 'sjis-win',
                 ],
                 'NgWord' => [
                     'word_split_pattern' => '[\p{Z}\p{P}]',
@@ -1512,7 +1512,7 @@ class BuiltinValidations implements Validations
             },
             'FileSize',
             [
-                'max' => $unit->exchange($max, null, $precision)
+                'max' => $unit->exchange($max, null, $precision),
             ]
         );
     }

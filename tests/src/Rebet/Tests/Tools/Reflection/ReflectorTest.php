@@ -33,9 +33,9 @@ class ReflectorTest extends RebetTestCase
             'hobbies' => ['game', 'outdoor'],
             'partner' => [
                 'name'   => 'Jane Smith',
-                'gender' => 'female'
+                'gender' => 'female',
             ],
-            'children' => null
+            'children' => null,
         ];
         $this->object = (object) [
             'name'    => 'John Smith',
@@ -43,9 +43,9 @@ class ReflectorTest extends RebetTestCase
             'hobbies' => ['game', 'outdoor'],
             'partner' => (object)[
                 'name'   => 'Jane Smith',
-                'gender' => 'female'
+                'gender' => 'female',
             ],
-            'children' => null
+            'children' => null,
         ];
         $this->transparent = (object) [
             'a' => new class() implements DotAccessDelegator {
@@ -72,7 +72,7 @@ class ReflectorTest extends RebetTestCase
                         }
                     };
                 }
-            }
+            },
         ];
 
         $this->accessible                = new ReflectorTest_Accessible();
@@ -84,7 +84,7 @@ class ReflectorTest extends RebetTestCase
         $this->accessible_child->setPrivateParent(new ReflectorTest_AccessibleChild());
 
         $this->vfs([
-            'dummy.txt' => 'dummy'
+            'dummy.txt' => 'dummy',
         ]);
     }
 
@@ -104,7 +104,7 @@ class ReflectorTest extends RebetTestCase
             '@setup'   => function ($mock) {
                 $mock->value = 'setup';
                 return $mock;
-            }
+            },
         ])->value);
         $this->assertSame('arg via build()', Reflector::instantiate([ReflectorTest_Mock::class.'::build', 'arg'])->value);
         $this->assertSame('arg via build()', Reflector::instantiate([ReflectorTest_Mock::class.'::build', 'value' => 'arg'])->value);
@@ -115,7 +115,7 @@ class ReflectorTest extends RebetTestCase
             '@setup'   => function ($mock) {
                 $mock->value .= ' setup';
                 return $mock;
-            }
+            },
         ])->value);
         $this->assertSame(123, Reflector::instantiate(123));
         $this->assertSame('instantiated', Reflector::instantiate(new ReflectorTest_Mock('instantiated'))->value);

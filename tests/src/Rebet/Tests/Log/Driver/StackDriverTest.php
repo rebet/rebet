@@ -42,9 +42,9 @@ class StackDriverTest extends RebetTestCase
                             'level'    => LogLevel::DEBUG,
                             'format'   => "{datetime} [{channel}.{level_name}] {extra.process_id} {message}{context}{extra}{exception}\n",
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
 
         $process_id = getmypid();
@@ -87,9 +87,9 @@ class StackDriverTest extends RebetTestCase
                             'level'    => LogLevel::DEBUG,
                             'format'   => "{datetime} [{channel}.{level_name}] {extra.process_id} {message}{context}{extra}{exception}\n",
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
 
         $process_id = getmypid();
@@ -133,9 +133,9 @@ class StackDriverTest extends RebetTestCase
                             'level'    => LogLevel::DEBUG,
                             'format'   => "{datetime} [{channel}.{level_name}] {extra.process_id} {message}{context}{extra}{exception}\n",
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
 
         $process_id = getmypid();

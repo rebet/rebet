@@ -154,7 +154,7 @@ class EmailTest extends RebetTestCase
         Config::runtime([
             DateTime::class => [
                 'default_timezone' => 'Asia/Tokyo',
-            ]
+            ],
         ]);
         DateTime::setTestNow('2012-01-23 12:34:56', 'Asia/Tokyo');
 

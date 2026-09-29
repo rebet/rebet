@@ -188,6 +188,6 @@ return [
         */
         'uninflected' => [
             // ex) 'regex',
-        ]
+        ],
     ],
 ];

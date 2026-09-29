@@ -24,205 +24,205 @@ class LetterpressTest extends RebetTestCase
         return [
             [
                 null,
-                []
+                [],
             ],
             [
                 "",
-                []
+                [],
             ],
             [
                 "foo",
                 [
-                    'foo'
-                ]
+                    'foo',
+                ],
             ],
             [
                 "foo {{ \$var }} bar",
                 [
-                    "foo {{ \$var }} bar"
-                ]
+                    "foo {{ \$var }} bar",
+                ],
             ],
             [
                 "foo {#coment-#} bar",
                 [
-                    "foo bar"
-                ]
+                    "foo bar",
+                ],
             ],
             [
                 "foo {#coment#} \nbar",
                 [
-                    "foo  \nbar"
-                ]
+                    "foo  \nbar",
+                ],
             ],
             [
                 "foo {#-coment#} \nbar",
                 [
-                    "foo \nbar"
-                ]
+                    "foo \nbar",
+                ],
             ],
             [
                 "foo\n {#-coment#} \nbar",
                 [
-                    "foo\n \nbar"
-                ]
+                    "foo\n \nbar",
+                ],
             ],
             [
                 "foo {#coment-#} \nbar",
                 [
-                    "foo bar"
-                ]
+                    "foo bar",
+                ],
             ],
             [
                 "foo {#- coment -#} \nbar",
                 [
-                    "foobar"
-                ]
+                    "foobar",
+                ],
             ],
             [
                 "foo {#- coment -#} \n bar",
                 [
-                    "foo bar"
-                ]
+                    "foo bar",
+                ],
             ],
             [
                 "foo {#- coment -#} \n\n bar",
                 [
-                    "foo\n bar"
-                ]
+                    "foo\n bar",
+                ],
             ],
             [
                 "foo /*{#- coment -#}*/ \n\n bar",
                 [
-                    "foo  \n\n bar"
-                ]
+                    "foo  \n\n bar",
+                ],
             ],
             [
                 "foo /*{#-- coment --#}*/ \n\n bar",
                 [
-                    "foo\n bar"
-                ]
+                    "foo\n bar",
+                ],
             ],
             [
                 "foo {#-- coment --#} \n\n bar",
                 [
-                    "foo\n bar"
-                ]
+                    "foo\n bar",
+                ],
             ],
             [
                 "foo {# coment #} bar {# coment\n #} baz",
                 [
-                    "foo  bar  baz"
-                ]
+                    "foo  bar  baz",
+                ],
             ],
             [
                 "foo {#- coment #} bar {# coment\n -#} baz",
                 [
-                    "foo bar baz"
-                ]
+                    "foo bar baz",
+                ],
             ],
             [
                 "{% if \$user->isAdmin() %} foo {% endif %}",
                 [
                     '',
                     ['tag' => "if", 'code' => "\$user->isAdmin()", 'nodes' => [
-                        " foo "
+                        " foo ",
                     ]],
-                ]
+                ],
             ],
             [
                 "foo {% if \$user->isAdmin() %} bar {% endif %} baz",
                 [
                     "foo ",
                     ['tag' => "if", 'code' => "\$user->isAdmin()", 'nodes' => [
-                        " bar "
+                        " bar ",
                     ]],
                     " baz",
-                ]
+                ],
             ],
             [
                 "foo {%- if \$user->isAdmin() -%} bar {%- endif -%} baz",
                 [
                     "foo",
                     ['tag' => "if", 'code' => "\$user->isAdmin()", 'nodes' => [
-                        "bar"
+                        "bar",
                     ]],
                     "baz",
-                ]
+                ],
             ],
             [
                 "foo /*{%- if true -%}*/ bar /*{%- endif -%}*/ baz",
                 [
                     "foo ",
                     ['tag' => "if", 'code' => "true", 'nodes' => [
-                        " bar "
+                        " bar ",
                     ]],
                     " baz",
-                ]
+                ],
             ],
             [
                 "foo /*{%- if true --%}*/ bar /*{%-- endif -%}*/ baz",
                 [
                     "foo ",
                     ['tag' => "if", 'code' => "true", 'nodes' => [
-                        "bar"
+                        "bar",
                     ]],
                     " baz",
-                ]
+                ],
             ],
             [
                 "foo\n   //{%-- if true --%}\nbar\n   /*{%-- endif --%}*/\nbaz",
                 [
                     "foo\n",
                     ['tag' => "if", 'code' => "true", 'nodes' => [
-                        "bar\n"
+                        "bar\n",
                     ]],
                     "baz",
-                ]
+                ],
             ],
             [
                 "foo {% if \$user->isAdmin() %} bar {% else %} baz {% endif %} qux",
                 [
                     "foo ",
                     ['tag' => "if", 'code' => "\$user->isAdmin()", 'nodes' => [
-                        " bar "
+                        " bar ",
                     ]],
                     ['tag' => "else", 'code' => '', 'nodes' => [
-                        " baz "
+                        " baz ",
                     ]],
                     " qux",
-                ]
+                ],
             ],
             [
                 "foo {% if \$user->isAdmin() %} bar {% elseif \$user->isMember() %} baz {% else %} qux {% endif %} quxx",
                 [
                     "foo ",
                     ['tag' => "if", 'code' => "\$user->isAdmin()", 'nodes' => [
-                        " bar "
+                        " bar ",
                     ]],
                     ['tag' => "elseif", 'code' => "\$user->isMember()", 'nodes' => [
-                        " baz "
+                        " baz ",
                     ]],
                     ['tag' => "else", 'code' => '', 'nodes' => [
-                        " qux "
+                        " qux ",
                     ]],
                     " quxx",
-                ]
+                ],
             ],
             [
                 "foo {% if \$user->isAdmin() %} bar {% elseif \$user->isMember() %} baz {% elseif \$user->isGuest() %} qux {% endif %} quxx",
                 [
                     "foo ",
                     ['tag' => "if", 'code' => "\$user->isAdmin()", 'nodes' => [
-                        " bar "
+                        " bar ",
                     ]],
                     ['tag' => "elseif", 'code' => "\$user->isMember()", 'nodes' => [
-                        " baz "
+                        " baz ",
                     ]],
                     ['tag' => "elseif", 'code' => "\$user->isGuest()", 'nodes' => [
-                        " qux "
+                        " qux ",
                     ]],
                     " quxx",
-                ]
+                ],
             ],
             [
                 "foo {% if true %} bar {% if false %} baz {% endif %} qux {% endif %} quxx",
@@ -236,7 +236,7 @@ class LetterpressTest extends RebetTestCase
                         " qux ",
                     ]],
                     " quxx",
-                ]
+                ],
             ],
             [
                 "a{% if true %}b{% if false %}c{% else %}d{% endif %}e{% else %}f{% endif %}g",
@@ -256,7 +256,7 @@ class LetterpressTest extends RebetTestCase
                         "f",
                     ]],
                     "g",
-                ]
+                ],
             ],
             [
                 'a {% for $list as $key => $value %} {{$key}} = {{$value}} {% endfor %} b',
@@ -266,7 +266,7 @@ class LetterpressTest extends RebetTestCase
                         ' {{$key}} = {{$value}} ',
                     ]],
                     " b",
-                ]
+                ],
             ],
             [
                 'a {% if true %} b',
@@ -373,7 +373,7 @@ class LetterpressTest extends RebetTestCase
                     foreach ($vars as $k => $v) {
                         echo "[{$i}] {$k} = {$v}\n";
                     }
-                }
+                },
             ],
             false
         );
@@ -439,12 +439,12 @@ class LetterpressTest extends RebetTestCase
             [
                 null,
                 [],
-                ''
+                '',
             ],
             [
                 '',
                 [],
-                ''
+                '',
             ],
             [
                 'foo',
@@ -1085,7 +1085,7 @@ class LetterpressTest extends RebetTestCase
                                 //{%-- enduncommentif -%}
                 EOS,
                 [],
-                ""
+                "",
             ],
             [
                 <<<EOS
@@ -1160,7 +1160,7 @@ class LetterpressTest extends RebetTestCase
                                 //{%-- enduncommentif -%}
                 EOS,
                 ['use_db' => true],
-                ""
+                "",
             ],
         ];
     }

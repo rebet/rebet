@@ -540,7 +540,7 @@ class BuiltinFilesystemTest extends RebetTestCase
     {
         $public = new BuiltinFilesystem(new LocalFilesystemAdapter($this->root), [
             'visibility' => 'public',
-            'url'        => '/storage/public'
+            'url'        => '/storage/public',
         ]);
         $public->put('foo/bar.txt', 'foo bar');
         $this->assertSame('/storage/public/foo/bar.txt', $public->url('foo/bar.txt'));

@@ -28,12 +28,12 @@ return [
             'user' => [
                 '@factory'     => ArrayProvider::class,
                 'users'        => $users,
-                'precondition' => function ($user) { return !isset($user['resigned_at']); }
+                'precondition' => function ($user) { return !isset($user['resigned_at']); },
             ],
             'admin' => [
                 '@factory'     => ArrayProvider::class,
                 'users'        => $users,
-                'precondition' => function ($user) { return !isset($user['resigned_at']) && $user['role'] === 'admin'; }
+                'precondition' => function ($user) { return !isset($user['resigned_at']) && $user['role'] === 'admin'; },
             ],
         ],
         'roles' => [
@@ -53,8 +53,8 @@ return [
                 'create' => function (AuthUser $user, string $target, array $addresses) {
                     return !$user->isGuest() && count($addresses) < 5 ;
                 },
-            ]
-        ]
+            ],
+        ],
     ],
 
 

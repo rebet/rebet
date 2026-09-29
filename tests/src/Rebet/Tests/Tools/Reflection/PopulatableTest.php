@@ -40,7 +40,7 @@ class PopulatableTest extends RebetTestCase
                     'zip'        => '9870002',
                     'prefecture' => '31',
                     'address'    => 'Baz bldg 12F, 1-2, Bar street, Foo city',
-                ]
+                ],
             ],
         ]);
     }
@@ -112,7 +112,7 @@ class PopulatableTest extends RebetTestCase
                         'number' => '7654321',
                         'holder' => 'Jane Smith',
                     ],
-                ]
+                ],
             ],
         ]);
         $customer = new Customer();
@@ -156,7 +156,7 @@ class PopulatableTest extends RebetTestCase
             'aliases' => [
                 'name' => 'altanate_name',
                 'bank' => [
-                    'name' => 'short_name'
+                    'name' => 'short_name',
                 ],
             ],
         ]);
@@ -181,7 +181,7 @@ class PopulatableTest extends RebetTestCase
             'includes' => [
                 'name',
                 'bank' => [
-                    'name'
+                    'name',
                 ],
             ],
         ]);
@@ -208,7 +208,7 @@ class PopulatableTest extends RebetTestCase
             'excludes' => [
                 'name',
                 'bank' => [
-                    'name'
+                    'name',
                 ],
             ],
         ]);

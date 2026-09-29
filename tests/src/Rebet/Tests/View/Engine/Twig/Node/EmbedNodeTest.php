@@ -58,7 +58,7 @@ class EmbedNodeTest extends RebetTestCase
 
         $args = [
             new ConstantExpression('world', 0),
-            new NameExpression('name', 0)
+            new NameExpression('name', 0),
         ];
         $node = new EmbedNode('echo', 'hello', $args, ';');
         $src  = $this->compiler->compile($node)->getSource();
@@ -70,7 +70,7 @@ class EmbedNodeTest extends RebetTestCase
 
         $args = [
             'foo' => new ConstantExpression('world', 0),
-            'bar' => new NameExpression('name', 0)
+            'bar' => new NameExpression('name', 0),
         ];
         $node = new EmbedNode('echo', 'hello', $args, ';');
         $src  = $this->compiler->compile($node)->getSource();
@@ -81,7 +81,7 @@ class EmbedNodeTest extends RebetTestCase
         $this->assertSame('echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [($context["name"] ?? null), ($context["foo"] ?? null), "foo" => "world", "bar" => ($context["name"] ?? null)]) ;', $src);
 
         $args = [
-            new NameExpression('status', 0)
+            new NameExpression('status', 0),
         ];
         $node = new EmbedNode('if(', 'is_active', $args, '):');
         $src  = $this->compiler->compile($node)->getSource();

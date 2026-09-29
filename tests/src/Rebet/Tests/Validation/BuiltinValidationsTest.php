@@ -40,9 +40,9 @@ class BuiltinValidationsTest extends RebetTestCase
         $valid_data = $validation->validate('C', [
             'say' => [
                 'rule' => [
-                    ['C', 'Hello']
-                ]
-            ]
+                    ['C', 'Hello'],
+                ],
+            ],
         ]);
         $this->assertNotNull($valid_data);
         $this->assertSame('Hello', $valid_data->say);
@@ -51,9 +51,9 @@ class BuiltinValidationsTest extends RebetTestCase
         $valid_data = $validation->validate('C', [
             'say' => [
                 'rule' => [
-                    ['C', 'Hello']
-                ]
-            ]
+                    ['C', 'Hello'],
+                ],
+            ],
         ]);
         $this->assertNull($valid_data);
         $this->assertSame(['say' => ["The Say must be 'Hello'"]], $validation->errors());
@@ -121,7 +121,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', ['bar', ':baz'   ], false, []],
                     ['foo', ['bar', [1, 3, 5]], true , []],
                     ['foo', ['bar', [2, 4, 6]], false, []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -137,7 +137,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', ['bar', ':baz'   ], true , []],
                     ['foo', ['bar', [1, 3, 5]], false, []],
                     ['foo', ['bar', [2, 4, 6]], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -152,7 +152,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', [['foo', 'bar']   ], false, []],
                     ['foo', [['bar', 'baz']   ], true , []],
                     ['foo', [['foo', 'bar'], 1], true, []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -167,7 +167,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', [['foo', 'bar']   ], false, []],
                     ['foo', [['bar', 'baz']   ], true , []],
                     ['foo', [['foo', 'bar'], 1], true, []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -179,7 +179,7 @@ class BuiltinValidationsTest extends RebetTestCase
                 'tests' => [
                     ['foo', [     ], true , []],
                     ['foo', ['bar'], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -191,7 +191,7 @@ class BuiltinValidationsTest extends RebetTestCase
                 'tests' => [
                     ['foo', [     ], false, []],
                     ['foo', ['bar'], false, []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -205,7 +205,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['bar', [function (Context $c) { return $c->value == 1 ? true : $c->appendError("@The {$c->label} is not 1.") ; }], false, ['bar' => ["The Bar is not 1."]]],
                     ['foo', [function (Context $c) { return $c->value == 1; }                                                        ], true , []],
                     ['bar', [function (Context $c) { return $c->value == 1; }                                                        ], false, []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -224,7 +224,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['zero_string' , [], true , []],
                     ['false'       , [], true , []],
                     ['array'       , [], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -242,7 +242,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', ['baz'    , [1, 3, 5]], true , []],
                     ['foo', ['baz'    , ':bar'   ], true , []],
                     ['foo', ['baz'    , ':qux'   ], false, ['foo' => ["The Foo field is required when Baz is Qux."]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -260,7 +260,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', ['baz'    , [1, 3, 5]], false, ['foo' => ["The Foo field is required when Baz is not in 1, 3, 5."]]],
                     ['foo', ['baz'    , ':bar'   ], false, ['foo' => ["The Foo field is required when Baz is not Bar."]]],
                     ['foo', ['baz'    , ':qux'   ], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -277,7 +277,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', [['bar', 'baz', 'qux']   ], true , []],
                     ['foo', [['bar', 'baz', 'qux'], 2], false, ['foo' => ["The Foo field is required when Bar, Baz, Qux are present at least 2."]]],
                     ['foo', [['qux', 'quxx']      , 1], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -294,7 +294,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', [['qux', 'quux', 'bar']   ], true , []],
                     ['foo', [['qux', 'quux', 'bar'], 2], false, ['foo' => ["The Foo field is required when Qux, Quux, Bar are not present at least 2."]]],
                     ['foo', [['qux', 'bar', 'baz'] , 2], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -313,7 +313,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', ['bar'    , ':baz'   ], true , []],
                     ['foo', ['foo'    , ':bar'   ], false, ['foo' => ["The Foo field must be blank when Foo is Bar."]]],
                     ['foo', ['qux'    , ':quux'  ], false, ['foo' => ["The Foo field must be blank when Qux is Quux."]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -332,7 +332,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', ['bar'    , ':baz'   ], false, ['foo' => ["The Foo field must be blank when Bar is not Baz."]]],
                     ['foo', ['foo'    , ':bar'   ], true , []],
                     ['foo', ['qux'    , ':quux'  ], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -349,7 +349,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', [['bar', 'baz', 'qux']   ], true , []],
                     ['foo', [['bar', 'baz', 'qux'], 2], false, ['foo' => ["The Foo field must be blank when Bar, Baz, Qux are present at least 2."]]],
                     ['foo', [['qux', 'quxx']      , 1], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -366,7 +366,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', [['qux', 'quux', 'bar']   ], true , []],
                     ['foo', [['qux', 'quux', 'bar'], 2], false, ['foo' => ["The Foo field must be blank when Qux, Quux, Bar are not present at least 2."]]],
                     ['foo', [['qux', 'bar', 'baz'] , 2], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -383,7 +383,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo'    , [Gender::FEMALE()], false, ['foo' => ["The Foo and Female must match."]]],
                     ['foo'    , [':bar'          ], true , []],
                     ['foo'    , [':baz'          ], false, ['foo' => ["The Foo and Baz must match."]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -399,7 +399,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo'    , [2     ], true , []],
                     ['foo'    , [':bar'], false, ['foo' => ["The Foo and Bar must not match."]]],
                     ['foo'    , [':baz'], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -424,7 +424,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd Quux (abc) must be digits.",
                         "The 3rd Quux (def) must be digits.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -449,7 +449,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd Quux (123) must contain non-digits characters.",
                         "The 3rd Quux (456) must contain non-digits characters.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -467,7 +467,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 1st Baz (1234) may not be greater than 3 characters.",
                         "The 4th Baz (12345) may not be greater than 3 characters.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -484,7 +484,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['baz'    , [3], false, ['baz' => [
                         "The 2nd Baz (1) must be at least 3 characters.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -503,7 +503,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 1st Qux (1234) must be 3 characters.",
                         "The 2nd Qux (1) must be 3 characters.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -521,7 +521,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['qux'    , [], false, ['qux' => [
                         "The 2nd Qux (-1,234) must be number.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -540,7 +540,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 1st Qux (+123.4) must be integer.",
                         "The 3rd Qux (abc) must be integer.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -561,7 +561,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd Foobar (123.230) must be real number (up to 2 decimal places).",
                         "The 3rd Foobar (abc) must be real number (up to 2 decimal places).",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -591,7 +591,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd Foobar (10) must be less than 10 with precision up to 1 decimal places.",
                         "The 4th Foobar (123) must be less than 10 with precision up to 1 decimal places.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -619,7 +619,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 1st Foobar (abc) must be number.",
                         "The 4th Foobar (123) may not be greater than 10 with precision up to 1 decimal places.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -656,7 +656,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 3rd Foobar (10.3) must be equal 10 with precision up to 1 decimal places.",
                         "The 4th Foobar (3.5) must be equal 10 with precision up to 1 decimal places.",
                     ]]],
-                ]
+                ],
             ]],
 
 
@@ -689,7 +689,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 3rd Foobar (2) must be greater than 10 with precision up to 1 decimal places.",
                         "The 5th Foobar (3.5) must be greater than 10 with precision up to 1 decimal places.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -719,7 +719,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 3rd Foobar (2) must be at least 10 with precision up to 1 decimal places.",
                         "The 5th Foobar (3.5) must be at least 10 with precision up to 1 decimal places.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -742,7 +742,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['baz'    , [false], false, ['baz' => [
                         "The 3rd Baz (abc) must be a valid email address.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -767,7 +767,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd Qux (https://invalid[bar]/rebet) format is invalid.",
                         "The 3rd Qux (https://invalid.local/rebet) is not a valid URL.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -814,7 +814,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd Fooqux (abc) must be a valid IPv4(CIDR) address.",
                         "The 4th Fooqux (192.168.2.0/34) must be a valid IPv4(CIDR) address.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -833,7 +833,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 1st Qux (１２３) may only contain digits.",
                         "The 3rd Qux (abc) may only contain digits.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -852,7 +852,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd Qux (123) may only contain letters.",
                         "The 4th Qux (987) may only contain letters.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -870,7 +870,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['qux'    , [], false, ['qux' => [
                         "The 3rd Qux (あいう) may only contain letters or digits.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -891,7 +891,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd Qux (1,234) may only contain letters, digits or marks (include -_).",
                         "The 5th Qux (foo@rebet.local) may only contain letters, digits or marks (include -_).",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -912,7 +912,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd Qux (ア) may only contain Hiragana in Japanese.",
                         "The 4th Qux (1) may only contain Hiragana in Japanese.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -934,7 +934,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 3rd Quux (あ) may only contain full width Kana in Japanese.",
                         "The 4th Quux (1) may only contain full width Kana in Japanese.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -954,7 +954,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         'The 5th Baz (髙) must not contain platform dependent character [髙].',
                         'The 6th Baz (①②) must not contain platform dependent character [①, ②].',
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -994,7 +994,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 3rd Hhh (ḎU**Ⓨ qux) must not contain the word 'ḎU**Ⓨ'.",
                         "The 4th Hhh (はこだてストリート) must not contain the word 'てスト'.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1012,7 +1012,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd Baz must be selected from the specified list.",
                         "The 4th Baz must be selected from the specified list.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1030,7 +1030,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['baz'    , [4], false, ['baz' => ["The Baz must have at least 4 items."]]],
                     ['baz'    , [3], true , []],
                     ['baz'    , [2], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1049,7 +1049,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['baz'    , [3], true , []],
                     ['baz'    , [2], false, ['baz' => ["The Baz may not have more than 2 items."]]],
                     ['baz'    , [1], false, ['baz' => ["The Baz may not have more than 1 item."]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1068,7 +1068,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['baz'    , [3], true , []],
                     ['baz'    , [2], false, ['baz' => ["The Baz must have 2 items."]]],
                     ['baz'    , [1], false, ['baz' => ["The Baz must have 1 item."]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1083,7 +1083,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         ['foo' => 2, 'bar' => 2],
                         ['foo' => 3, 'bar' => 1],
                         ['foo' => 4, 'bar' => 4],
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['nothing', [     ], true , []],
@@ -1094,7 +1094,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['qux'    , [     ], false, ['qux' => ["The Qux must be entered a different value. The values 1, a have duplicated."]]],
                     ['quux'   , ['foo'], true , []],
                     ['quux'   , ['bar'], false, ['quux' => ["The Quux Bar must be entered a different value. The value 1 has duplicated."]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1116,7 +1116,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd Quux (abc) is not a valid date time.",
                         "The 3rd Quux (2010|01|23) is not a valid date time.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1138,12 +1138,12 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['qux'    , ['now'                       ], true , []],
                     ['qux'    , [':baz'                      ], true , []],
                     ['quux'   , ['now'                       ], false, ['quux' => [
-                        "The 2nd Quux (1999-01-01) must be a date future than 2010-01-23 12:34:56."
+                        "The 2nd Quux (1999-01-01) must be a date future than 2010-01-23 12:34:56.",
                     ]]],
                     ['quux'   , [':baz'             ], false, ['quux' => [
-                        "The 2nd Quux (1999-01-01) must be a date future than Baz."
+                        "The 2nd Quux (1999-01-01) must be a date future than Baz.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1159,9 +1159,9 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['now'    , ['now'], true , []],
                     ['future' , ['now'], true , []],
                     ['list'   , ['now'], false, ['list' => [
-                        "The 1st List (2010-01-23 12:34:55) must be a date future than or equal 2010-01-23 12:34:56."
+                        "The 1st List (2010-01-23 12:34:55) must be a date future than or equal 2010-01-23 12:34:56.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1180,7 +1180,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd List (2010-01-23 12:34:56) must be a date past than 2010-01-23 12:34:56.",
                         "The 3rd List (2010-01-23 12:34:57) must be a date past than 2010-01-23 12:34:56.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1198,7 +1198,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['list'   , ['now'], false, ['list' => [
                         "The 3rd List (2010-01-23 12:34:57) must be a date past than or equal 2010-01-23 12:34:56.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1225,7 +1225,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 1st value (1999-01-23) of List must be 10 years or younger as of 2011-01-23.",
                         "The 2nd value (2000-01-23) of List must be 10 years or younger as of 2011-01-23.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1252,7 +1252,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The 2nd value (2000-01-23) of List must be 10 years or older as of 2009-01-23.",
                         "The 3rd value (2000-01-24) of List must be 10 years or older as of 2009-01-23.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1267,7 +1267,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         ['foo' => 2, 'bar' => 2, 'baz' => 5],
                         ['foo' => 3, 'bar' => 1, 'baz' => 7],
                         ['foo' => 4, 'bar' => 4, 'baz' => 9],
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['nothing', ['foo'      ], true , []],
@@ -1276,7 +1276,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo'    , ['bar'      ], false, ['foo' => ["The Foo Bar must be sequential number."]]],
                     ['foo'    , ['baz'      ], false, ['foo' => ["The Foo Baz must be sequential number."]]],
                     ['foo'    , ['baz', 3, 2], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1297,7 +1297,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['true_bool'  , [], true , []],
                     ['array_empty', [], false, ['array_empty' => ["The Array Empty must be accepted."]]],
                     ['array'      , [], false, ['array' => ["The Array must be accepted."]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1310,7 +1310,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['nothing', [['null', 'foo', 'bar', 'baz'], 2], true , []],
                     ['nothing', [['null', 'empty', 'foo'     ], 2], false, ['nothing' => ["The Null, Empty, Foo are required at least 2."]]],
                     ['nothing', [['null', 'empty', 'zero'    ], 1], true , []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1325,7 +1325,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['nothing', [['foo', 'bar', 'qux', 'quux']], false, ['nothing' => ["The Foo, Bar, Qux, Quux must be entered a different value. The Foo, Bar, Qux, Quux have duplicated."]]],
                     ['nothing', [['null', 'empty', 'foo'     ]], false, ['nothing' => ["The Null, Empty, Foo must be entered a different value. The Null, Empty have duplicated."]]],
                     ['nothing', [['null', 'zero', 'foo'      ]], true,  []],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1340,7 +1340,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         $image_72x72_png,
                         $image_120x60_png,
                         $image_160x240_png,
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'   , ['1M' ], true  , []],
@@ -1354,7 +1354,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The file size of '72x72.png' (454 bytes) in Banners may not be greater than 400 bytes.",
                         "The file size of '160x240.png' (430 bytes) in Banners may not be greater than 400 bytes.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1369,7 +1369,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         $image_72x72_png,
                         $image_120x60_png,
                         new UploadedFile(App::structure()->public('/assets/img/160x240.png'), 'invalid.png'),
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'   , ['/^[0-9]+x[0-9]+\.png$/'], true  , []],
@@ -1379,7 +1379,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['banners', ['/^[0-9]+x[0-9]+\.png$/'], false , ['banners' => [
                         "The file name of 'invalid.png' in Banners format is invalid.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1394,7 +1394,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         $image_72x72_png,
                         $image_120x60_png,
                         new UploadedFile(App::structure()->public('/assets/img/160x240.png'), 'invalid.jpg'),
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'   , ['/^png|gif$/'      ], true  , []],
@@ -1404,7 +1404,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['banners', ['/^png|gif$/'      ], false , ['banners' => [
                         "The file suffix of 'invalid.jpg' in Banners is invalid.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1419,7 +1419,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         $image_72x72_png,
                         $image_120x60_png,
                         $text_env,
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'   , ['/^image\/.+$/'     ], true  , []],
@@ -1429,7 +1429,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['banners', ['/^image\/.+$/'     ], false , ['banners' => [
                         "The file mime type of 'env.txt' (text/plain) in Banners is invalid.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1451,7 +1451,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         static::uploadedFileMock('foo.png', 'image/png'),
                         static::uploadedFileMock('bar.bmp', 'image/bmp'),
                         static::uploadedFileMock('baz.xml', 'text/xml'),
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'   , [], true  , []],
@@ -1462,7 +1462,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['mixed'  , [], false , ['mixed' => [
                         "The file type of 'baz.xml' (text/xml) in Mixed must be images.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1484,7 +1484,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         static::uploadedFileMock('foo.png', 'image/png'),
                         static::uploadedFileMock('bar.bmp', 'image/bmp'),
                         static::uploadedFileMock('baz.xml', 'text/xml'),
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'   , [], true  , []],
@@ -1498,7 +1498,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The file type of 'bar.bmp' (image/bmp) in Mixed must be common web images like jpeg, gif and png.",
                         "The file type of 'baz.xml' (text/xml) in Mixed must be common web images like jpeg, gif and png.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1515,7 +1515,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         static::uploadedFileMock('foo.png', 'image/png'),
                         static::uploadedFileMock('bar.csv', 'text/csv'),
                         static::uploadedFileMock('baz.xml', 'text/xml'),
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'   , [], true  , []],
@@ -1526,7 +1526,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The file type of 'foo.png' (image/png) in Mixed must be Comma-Separated Values (csv) file.",
                         "The file type of 'baz.xml' (text/xml) in Mixed must be Comma-Separated Values (csv) file.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1543,7 +1543,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         static::uploadedFileMock('foo.png', 'image/png'),
                         static::uploadedFileMock('bar.zip', 'application/zip'),
                         static::uploadedFileMock('baz.xml', 'text/xml'),
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'   , [], true  , []],
@@ -1554,7 +1554,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The file type of 'foo.png' (image/png) in Mixed must be Zip archived file.",
                         "The file type of 'baz.xml' (text/xml) in Mixed must be Zip archived file.",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1571,7 +1571,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         $image_120x60_png,
                         $image_160x240_png,
                         $text_env,
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'  , [ 73], true  , []],
@@ -1583,7 +1583,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The '160x240.png' in Mixed may not be greater than 120 width.",
                         "The 'env.txt' in Mixed must have area (width and height).",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1600,7 +1600,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         $image_120x60_png,
                         $image_160x240_png,
                         $text_env,
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'  , [ 73], true  , []],
@@ -1613,7 +1613,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The '160x240.png' in Mixed must be 120 width.",
                         "The 'env.txt' in Mixed must have area (width and height).",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1630,7 +1630,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         $image_120x60_png,
                         $image_160x240_png,
                         $text_env,
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'  , [ 73], true  , []],
@@ -1642,7 +1642,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The '72x72.png' in Mixed may not be less than 120 width.",
                         "The 'env.txt' in Mixed must have area (width and height).",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1659,7 +1659,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         $image_120x60_png,
                         $image_160x240_png,
                         $text_env,
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'  , [73], true  , []],
@@ -1671,7 +1671,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The '160x240.png' in Mixed may not be greater than 72 height.",
                         "The 'env.txt' in Mixed must have area (width and height).",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1688,7 +1688,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         $image_120x60_png,
                         $image_160x240_png,
                         $text_env,
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'  , [73], true  , []],
@@ -1701,7 +1701,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The '160x240.png' in Mixed must be 72 height.",
                         "The 'env.txt' in Mixed must have area (width and height).",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1718,7 +1718,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         $image_120x60_png,
                         $image_160x240_png,
                         $text_env,
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'  , [73], true  , []],
@@ -1730,7 +1730,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The '120x60.png' in Mixed may not be less than 72 height.",
                         "The 'env.txt' in Mixed must have area (width and height).",
                     ]]],
-                ]
+                ],
             ]],
 
             // --------------------------------------------
@@ -1747,7 +1747,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         $image_120x60_png,
                         $image_160x240_png,
                         $text_env,
-                    ]
+                    ],
                 ],
                 'tests' => [
                     ['null'  , [16, 9], true  , []],
@@ -1759,7 +1759,7 @@ class BuiltinValidationsTest extends RebetTestCase
                         "The '160x240.png' in Mixed aspect ratio must be '2:1'.",
                         "The 'env.txt' in Mixed must have area (width and height).",
                     ]]],
-                ]
+                ],
             ]],
         ];
     }

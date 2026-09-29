@@ -121,7 +121,7 @@ class HttpExceptionTest extends RebetTestCase
             'status' => 404,
             'title'  => '指定のページが見つかりません',
             'type'   => 'about:blank',
-            'detail' => 'Detail'
+            'detail' => 'Detail',
         ], $response->getProblem());
     }
 }

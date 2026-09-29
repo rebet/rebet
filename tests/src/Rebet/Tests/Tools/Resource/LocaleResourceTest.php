@@ -36,7 +36,7 @@ class LocaleResourceTest extends RebetTestCase
                     2 => '依存性チェック',
                     3 => 'その他',
                 ],
-            ]
+            ],
         ], $resources);
 
         $resources = LocaleResource::load(App::structure()->resources('/i18n'), 'de', 'enum');
@@ -51,7 +51,7 @@ class LocaleResourceTest extends RebetTestCase
 
         $resources = LocaleResource::load([
             App::structure()->resources('/i18n'),
-            App::structure()->resources('/adhoc/Tools/Resource/LocaleResource')
+            App::structure()->resources('/adhoc/Tools/Resource/LocaleResource'),
         ], 'ja', 'enum');
         $this->assertSame([
             Gender::class => [
@@ -66,7 +66,7 @@ class LocaleResourceTest extends RebetTestCase
                     2 => '依存性チェック',
                     3 => 'その他',
                 ],
-            ]
+            ],
         ], $resources);
 
         $this->assertSame(

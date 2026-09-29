@@ -19,7 +19,7 @@ class CommandTest extends RebetTestCase
             const NAME        = 'Hello';
             const DESCRIPTION = 'Say Hello.';
             const ARGUMENTS   = [
-                ['to', InputArgument::OPTIONAL, 'Say hello to someone.']
+                ['to', InputArgument::OPTIONAL, 'Say hello to someone.'],
             ];
             const OPTIONS = [
                 ['meeting-time', 'mt', InputArgument::OPTIONAL, 'Meeting time of morning, noon or evening.'],

@@ -49,7 +49,7 @@ class StatementTest extends RebetDatabaseTestCase
         $pdo_stmt->method('columnCount')->willReturn(2);
         $pdo_stmt->method('getColumnMeta')->willReturnMap([
             [0, ['name' => 'foo', 'native_type' => 'int']],
-            [1, ['name' => 'bar', 'native_type' => 'string']]
+            [1, ['name' => 'bar', 'native_type' => 'string']],
         ]);
         $stmt = new Statement(Dao::db(), $pdo_stmt);
         $this->assertEquals([

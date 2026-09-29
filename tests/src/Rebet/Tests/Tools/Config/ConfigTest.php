@@ -45,8 +45,8 @@ class ConfigTest extends RebetTestCase
                 'driver' => 'sqlite',
             ],
             ConfigTest_MockOption::class => [
-                'map' => ['a' => 'A', 'b' => 'B']
-            ]
+                'map' => ['a' => 'A', 'b' => 'B'],
+            ],
         ]);
         $this->assertSame('sqlite', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('A', Config::get(ConfigTest_MockOption::class, 'map.a'));
@@ -54,8 +54,8 @@ class ConfigTest extends RebetTestCase
 
         Config::application([
             ConfigTest_MockOption::class => [
-                'map' => ['b' => 'BB']
-            ]
+                'map' => ['b' => 'BB'],
+            ],
         ]);
         $this->assertSame('sqlite', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('A', Config::get(ConfigTest_MockOption::class, 'map.a'));
@@ -105,8 +105,8 @@ class ConfigTest extends RebetTestCase
                 'database' => 'rebet_db',
             ],
             'global' => [
-                'lang' => 'en_us'
-            ]
+                'lang' => 'en_us',
+            ],
         ]);
 
         $this->assertSame(
@@ -136,8 +136,8 @@ class ConfigTest extends RebetTestCase
                 'user'     => 'rebet_user',
             ],
             'global' => [
-                'lang' => 'ja_JP'
-            ]
+                'lang' => 'ja_JP',
+            ],
         ]);
 
         $this->assertSame(
@@ -165,8 +165,8 @@ class ConfigTest extends RebetTestCase
                 'database' => null,
             ],
             'global' => [
-                'lang' => 'en_us'
-            ]
+                'lang' => 'en_us',
+            ],
         ]);
         $this->assertSame(
             [
@@ -208,7 +208,7 @@ class ConfigTest extends RebetTestCase
         Config::framework([
             ConfigTest_Mock::class => [
                 'driver' => null,
-            ]
+            ],
         ]);
 
         Config::get(ConfigTest_Mock::class, 'driver');
@@ -224,7 +224,7 @@ class ConfigTest extends RebetTestCase
         Config::application([
             ConfigTest_Mock::class => [
                 'driver' => null,
-            ]
+            ],
         ]);
 
         Config::get(ConfigTest_Mock::class, 'driver');
@@ -240,7 +240,7 @@ class ConfigTest extends RebetTestCase
         Config::runtime([
             ConfigTest_Mock::class => [
                 'driver' => null,
-            ]
+            ],
         ]);
 
         Config::get(ConfigTest_Mock::class, 'driver');
@@ -268,7 +268,7 @@ class ConfigTest extends RebetTestCase
                     'map'   => ['a' => 'aa', 'c' => 'cc'],
                     'array' => ['cc'],
                 ],
-            ]
+            ],
         ]);
 
         $this->assertSame(
@@ -332,7 +332,7 @@ class ConfigTest extends RebetTestCase
                     'map='  => ['a' => 'aa', 'c' => 'cc'],
                     'array' => ['cc'],
                 ],
-            ]
+            ],
         ]);
 
         $this->assertSame(
@@ -396,7 +396,7 @@ class ConfigTest extends RebetTestCase
                     'map'    => ['a' => 'aa', 'c' => 'cc'],
                     'array=' => ['cc'],
                 ],
-            ]
+            ],
         ]);
 
         $this->assertSame(
@@ -460,7 +460,7 @@ class ConfigTest extends RebetTestCase
                     'map'   => ['a' => 'aa', 'c' => 'cc'],
                     'array' => ['cc'],
                 ],
-            ]
+            ],
         ]);
 
         $this->assertSame(
@@ -524,7 +524,7 @@ class ConfigTest extends RebetTestCase
                     'map'    => ['a' => 'aa', 'c' => 'cc'],
                     'array<' => ['cc'],
                 ],
-            ]
+            ],
         ]);
 
         $this->assertSame(
@@ -588,7 +588,7 @@ class ConfigTest extends RebetTestCase
                     'map'    => ['a' => 'aa', 'c' => 'cc'],
                     'array>' => ['cc'],
                 ],
-            ]
+            ],
         ]);
 
         Config::application([
@@ -599,7 +599,7 @@ class ConfigTest extends RebetTestCase
                     'array' => ['d'],
                     'new'   => 'new',
                 ],
-            ]
+            ],
         ]);
 
         Config::runtime([
@@ -608,7 +608,7 @@ class ConfigTest extends RebetTestCase
                 'parent' => [
                     'new' => 'NEW',
                 ],
-            ]
+            ],
         ]);
 
         $this->assertSame(
@@ -680,7 +680,7 @@ class ConfigTest extends RebetTestCase
         Config::application([
             ConfigTest_Mock::class => [
                 'array' => [1, 2, 3],
-            ]
+            ],
         ]);
 
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'array'));
@@ -756,7 +756,7 @@ class ConfigTest extends RebetTestCase
         Config::framework([
             ConfigTest_Mock::class => [
                 'undefined' => 'defined',
-            ]
+            ],
         ]);
 
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));
@@ -768,7 +768,7 @@ class ConfigTest extends RebetTestCase
         Config::application([
             ConfigTest_Mock::class => [
                 'invalid' => 'not invalid',
-            ]
+            ],
         ]);
 
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));
@@ -780,7 +780,7 @@ class ConfigTest extends RebetTestCase
         Config::runtime([
             ConfigTest_Mock::class => [
                 'nothing' => 'something',
-            ]
+            ],
         ]);
 
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));

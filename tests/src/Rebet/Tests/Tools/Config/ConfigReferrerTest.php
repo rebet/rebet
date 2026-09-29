@@ -62,7 +62,7 @@ class ConfigReferrerTest extends RebetTestCase
             ],
             ConfigReferrerTest_MockOrigin::class => [
                 'user' => 'test',
-            ]
+            ],
         ]);
 
         $this->assertSame('sqlite', $this->ref_driver->get());

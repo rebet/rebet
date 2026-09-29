@@ -92,7 +92,7 @@ class Resource
                     }
                     return \explode($option['delimiter'] ?? "\n", \file_get_contents($path));
                 },
-            ]
+            ],
         ];
     }
 

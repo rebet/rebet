@@ -22,7 +22,7 @@ class ContextTest extends RebetTestCase
                 'label' => '氏名',
                 'rule'  => [
                     ['CU', Valid::REQUIRED],
-                ]
+                ],
             ],
             'name_withMessage' => [
                 'label' => '氏名',
@@ -32,7 +32,7 @@ class ContextTest extends RebetTestCase
                 ],
                 'messages' => [
                     Valid::MAX_LENGTH => 'カスタムメッセージ[:max]',
-                ]
+                ],
             ],
             'birthday' => [
                 'label' => '生年月日',
@@ -317,7 +317,7 @@ class ContextTest extends RebetTestCase
                     'inner_nest_define' => null,
                     'parent'            => [
                         'child' => null,
-                    ]
+                    ],
                 ],
                 'bank' => [
                     'bank_name' => 'Sample Bank',
@@ -334,7 +334,7 @@ class ContextTest extends RebetTestCase
                     [
                         'zip'     => '3210003',
                         'address' => '3-2-1, Baz town, Foo city',
-                    ]
+                    ],
                 ],
             ],
             $this->errors,
@@ -456,7 +456,7 @@ class ContextTest extends RebetTestCase
                     [
                         'zip'     => '3210003',
                         'address' => '3-2-1, Baz town, Foo city',
-                    ]
+                    ],
                 ],
             ],
             $this->errors,
@@ -472,7 +472,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame(
             [
                 ['John Smith'],
-                '氏名'
+                '氏名',
             ],
             $c->pluckNested(null)
         );
@@ -488,23 +488,23 @@ class ContextTest extends RebetTestCase
                     [
                         'zip'     => '3210003',
                         'address' => '3-2-1, Baz town, Foo city',
-                    ]
+                    ],
                 ],
-                '送付先'
+                '送付先',
             ],
             $c->pluckNested(null)
         );
         $this->assertSame(
             [
                 ['1230001', '3210003'],
-                '送付先郵便番号'
+                '送付先郵便番号',
             ],
             $c->pluckNested('zip')
         );
         $this->assertSame(
             [
                 ['1-2-3, Foo town, Bar city', '3-2-1, Baz town, Foo city'],
-                '送付先の住所'
+                '送付先の住所',
             ],
             $c->pluckNested('address')
         );
@@ -604,7 +604,7 @@ class ContextTest extends RebetTestCase
                     [
                         'zip'     => '3210003',
                         'address' => '3-2-1, Baz town, Foo city',
-                    ]
+                    ],
                 ],
             ],
             $this->errors,
@@ -671,7 +671,7 @@ class ContextTest extends RebetTestCase
                 [
                     'zip'     => '3210003',
                     'address' => '3-2-1, Baz town, Foo city',
-                ]
+                ],
             ],
             $c->value
         );

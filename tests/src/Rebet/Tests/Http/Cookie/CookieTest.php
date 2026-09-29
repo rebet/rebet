@@ -42,8 +42,8 @@ class CookieTest extends RebetTestCase
 
         Config::application([
             Cookie::class => [
-                'domain' => 'rebet.local'
-            ]
+                'domain' => 'rebet.local',
+            ],
         ]);
         $request                = $this->createRequestMock('/');
         $request->route->prefix = '/test';

@@ -129,11 +129,11 @@ class FlashBagTest extends RebetTestCase
         $bag->set('map', ['a' => 'A', 'b' => 'B']);
         $this->assertSame([
             'name' => 'value',
-            'map'  => ['a' => 'A', 'b' => 'B']
+            'map'  => ['a' => 'A', 'b' => 'B'],
         ], $bag->peekAll());
         $this->assertSame([
             'name' => 'value',
-            'map'  => ['a' => 'A', 'b' => 'B']
+            'map'  => ['a' => 'A', 'b' => 'B'],
         ], $bag->peekAll());
     }
 
@@ -144,7 +144,7 @@ class FlashBagTest extends RebetTestCase
         $bag->set('map', ['a' => 'A', 'b' => 'B']);
         $this->assertSame([
             'name' => 'value',
-            'map'  => ['a' => 'A', 'b' => 'B']
+            'map'  => ['a' => 'A', 'b' => 'B'],
         ], $bag->all());
         $this->assertSame([], $bag->peekAll());
     }
@@ -156,23 +156,23 @@ class FlashBagTest extends RebetTestCase
         $bag->set('map', ['a' => 'A', 'b' => 'B']);
         $this->assertSame([
             'name' => 'value',
-            'map'  => ['a' => 'A', 'b' => 'B']
+            'map'  => ['a' => 'A', 'b' => 'B'],
         ], $bag->peekAll());
 
         $bag->remove('map.a');
         $this->assertSame([
             'name' => 'value',
-            'map'  => ['b' => 'B']
+            'map'  => ['b' => 'B'],
         ], $bag->peekAll());
 
         $bag->remove('name');
         $this->assertSame([
-            'map' => ['b' => 'B']
+            'map' => ['b' => 'B'],
         ], $bag->peekAll());
 
         $bag->remove('nothing');
         $this->assertSame([
-            'map' => ['b' => 'B']
+            'map' => ['b' => 'B'],
         ], $bag->peekAll());
     }
 }

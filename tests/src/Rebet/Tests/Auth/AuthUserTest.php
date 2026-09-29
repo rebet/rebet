@@ -31,7 +31,7 @@ class AuthUserTest extends RebetTestCase
             'email'       => 'user@rebet.local',
             'password'    => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2',  // password: user
             'api_token'   => 'token_2',
-            'resigned_at' => null
+            'resigned_at' => null,
         ];
 
         $user           = new User();

@@ -16,16 +16,16 @@ class UserValidation extends Rule
             'user_id' => [
                 'label' => '会員ID',
                 'rule'  => [
-                    ['RUD', Valid::REQUIRED]
-                ]
+                    ['RUD', Valid::REQUIRED],
+                ],
             ],
             'name' => [
                 'label' => '氏名',
                 'rule'  => [
                     ['CU', Valid::REQUIRED],
                     ['CU', Valid::MAX_LENGTH, 20],
-                    ['CU', Valid::DEPENDENCE_CHAR]
-                ]
+                    ['CU', Valid::DEPENDENCE_CHAR],
+                ],
             ],
             'mail_address' => [
                 'label' => 'メールアドレス',
@@ -33,15 +33,15 @@ class UserValidation extends Rule
                     ['CU', Valid::REQUIRED],
                     ['CU', Valid::EMAIL],
                     ['CU', Valid::IF_NOT_ERROR, 'then' => [
-                        ['CU', 'MailAddressExists'] // Invoke custom validation
+                        ['CU', 'MailAddressExists'], // Invoke custom validation
                     ]],
-                ]
+                ],
             ],
             'password' => [
                 'label' => 'パスワード',
                 'rule'  => [
                     ['C' , Valid::REQUIRED],
-                    ['CU', Valid::MIN_LENGTH, 8]
+                    ['CU', Valid::MIN_LENGTH, 8],
                 ],
             ],
             'password_confirm' => [
@@ -49,7 +49,7 @@ class UserValidation extends Rule
                 'rule'  => [
                     ['CU', Valid::SATISFY, function (Context $c) { return !Auth::isAdmin(); }, 'then' => [
                         ['C' , Valid::REQUIRED],
-                        ['CU', Valid::SAME_AS, ':password']
+                        ['CU', Valid::SAME_AS, ':password'],
                     ]],
                 ],
             ],
@@ -57,16 +57,16 @@ class UserValidation extends Rule
                 'label' => 'アバター画像',
                 'rule'  => [
                     ['CU', Valid::FILE_SIZE, '2M'],
-                    ['CU', Valid::FILE_TYPE_WEB_IMAGES]
+                    ['CU', Valid::FILE_TYPE_WEB_IMAGES],
                 ],
             ],
             'gender' => [
                 'label' => '性別',
                 'rule'  => [
                     ['C', Valid::REQUIRED],
-                    ['C', Valid::CONTAINS, Gender::values()]
+                    ['C', Valid::CONTAINS, Gender::values()],
                 ],
-                'convert' => Gender::class
+                'convert' => Gender::class,
             ],
             'birthday' => [
                 'label'  => '生年月日',
@@ -75,9 +75,9 @@ class UserValidation extends Rule
                     ['C', Valid::REQUIRED],
                     ['C', Valid::DATETIME],
                     ['C', Valid::MIN_AGE, 18],
-                    ['C', Valid::MAX_AGE, 100]
+                    ['C', Valid::MAX_AGE, 100],
                 ],
-                'convert' => DateTime::class
+                'convert' => DateTime::class,
             ],
             'bank' => [
                 'label' => '銀行',
@@ -88,7 +88,7 @@ class UserValidation extends Rule
                             ['CU', Valid::REQUIRED],
                             ['CU', Valid::MAX_LENGTH, 20],
                         ],
-                    ]
+                    ],
                 ],
             ],
             'shipping_addresses' => [
@@ -120,7 +120,7 @@ class UserValidation extends Rule
                             ['CU', Valid::DEPENDENCE_CHAR],
                         ],
                     ],
-                ]
+                ],
             ],
         ];
     }

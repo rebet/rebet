@@ -36,8 +36,8 @@ class ValidatorTest extends RebetTestCase
                         $c->appendError($message ?? "@The {$c->label} is NG.");
                         return false;
                     },
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -327,9 +327,9 @@ class ValidatorTest extends RebetTestCase
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'rule' => [
-                    ['C', Valid::REQUIRED]
-                ]
-            ]
+                    ['C', Valid::REQUIRED],
+                ],
+            ],
         ]);
         $this->assertNotNull($valid_data);
         $this->assertSame('FOO', $valid_data->foo);
@@ -338,14 +338,14 @@ class ValidatorTest extends RebetTestCase
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'rule' => [
-                    ['C', Valid::REQUIRED]
-                ]
+                    ['C', Valid::REQUIRED],
+                ],
             ],
             'bar' => [
                 'rule' => [
-                    ['C', Valid::REQUIRED]
-                ]
-            ]
+                    ['C', Valid::REQUIRED],
+                ],
+            ],
         ]);
         $this->assertNotNull($valid_data);
         $this->assertSame('FOO', $valid_data->foo);
@@ -355,16 +355,16 @@ class ValidatorTest extends RebetTestCase
             [
                 'foo' => [
                     'rule' => [
-                        ['C', Valid::REQUIRED]
-                    ]
-                ]
+                        ['C', Valid::REQUIRED],
+                    ],
+                ],
             ],
             [
                 'bar' => [
                     'rule' => [
-                        ['C', Valid::REQUIRED]
-                    ]
-                ]
+                        ['C', Valid::REQUIRED],
+                    ],
+                ],
             ],
         ]);
         $this->assertNotNull($valid_data);
@@ -401,8 +401,8 @@ class ValidatorTest extends RebetTestCase
                 'rule'   => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::REGEX, '/^[A-Z]+$/'],
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertNotNull($valid_data);
         $this->assertSame('FOO', $valid_data->foo);
@@ -418,7 +418,7 @@ class ValidatorTest extends RebetTestCase
                     ['C', Valid::ALPHA],
                 ],
                 'after' => function ($value) { return is_string($value) ? strtoupper($value) : $value ; },
-            ]
+            ],
         ]);
         $this->assertNotNull($valid_data);
         $this->assertSame('FOO', $valid_data->foo);
@@ -434,7 +434,7 @@ class ValidatorTest extends RebetTestCase
                     ['C', Valid::DATETIME],
                 ],
                 'convert' => DateTime::class,
-            ]
+            ],
         ]);
         $this->assertNotNull($valid_data);
         $this->assertInstanceOf(DateTime::class, $valid_data->foo);
@@ -451,7 +451,7 @@ class ValidatorTest extends RebetTestCase
                     ['C', Valid::DATETIME],
                 ],
                 'convert' => DateTime::class,
-            ]
+            ],
         ]);
         $this->assertNull($valid_data);
     }
@@ -466,7 +466,7 @@ class ValidatorTest extends RebetTestCase
                     ['C', Valid::DATETIME],
                 ],
                 'convert' => Gender::class,
-            ]
+            ],
         ]);
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["The value of Foo could not be converted correctly."]], $validator->errors());
@@ -479,8 +479,8 @@ class ValidatorTest extends RebetTestCase
             'foo' => [
                 'rule' => [
                     ['C', Valid::NUMBER.'?'],
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertNotNull($valid_data);
         $this->assertSame([], $validator->errors());
@@ -492,12 +492,12 @@ class ValidatorTest extends RebetTestCase
             'foo' => [
                 'rule' => [
                     ['C', Valid::NUMBER.'?', 'then' => [
-                        ['C', Valid::NUMBER_GREATER_THAN, 100]
+                        ['C', Valid::NUMBER_GREATER_THAN, 100],
                     ], 'else' => [
-                        ['C', Valid::REGEX, '/^[A-Z]+$/']
+                        ['C', Valid::REGEX, '/^[A-Z]+$/'],
                     ]],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $validator  = new Validator(['foo' => 'abc']);
@@ -517,8 +517,8 @@ class ValidatorTest extends RebetTestCase
             'foo' => [
                 'rule' => [
                     ['C', 'Number', 'then' => [['C', Valid::NUMBER_GREATER_THAN, 100]], 'else' => [['C', 'Ng']]],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $validator  = new Validator(['foo' => 'abc']);
@@ -540,8 +540,8 @@ class ValidatorTest extends RebetTestCase
                 'rule' => [
                     ['C', 'Number'],
                     ['C', 'Ng'],
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["The Foo must be number.", "The Foo is NG."]], $validator->errors());
@@ -551,8 +551,8 @@ class ValidatorTest extends RebetTestCase
                 'rule' => [
                     ['C', 'Number:!'], // with '!' option
                     ['C', 'Ng'],
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["The Foo must be number."]], $validator->errors());
@@ -569,8 +569,8 @@ class ValidatorTest extends RebetTestCase
                     ['C', 'Ng', '@Error message 1.'],
                     ['C', 'Ng', '@Error message 3.'],
                     ['C', 'Ng', '@Error message 3.'],
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["Error message 1.", "Error message 2.", "Error message 3."]], $validator->errors()); // The same message is not duplicated
@@ -583,8 +583,8 @@ class ValidatorTest extends RebetTestCase
             'foo' => [
                 'rule' => [
                     ['C', 'Number'],
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["The 1st Foo (abc) must be number."]], $validator->errors());
@@ -592,9 +592,9 @@ class ValidatorTest extends RebetTestCase
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'rule' => [
-                    ['C', Valid::NUMBER_GREATER_THAN, 100]
-                ]
-            ]
+                    ['C', Valid::NUMBER_GREATER_THAN, 100],
+                ],
+            ],
         ]);
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["The 1st Foo (abc) must be number.", "The 2nd Foo (99) must be greater than 100."]], $validator->errors());
@@ -603,9 +603,9 @@ class ValidatorTest extends RebetTestCase
             'foo' => [
                 'rule' => [
                     ['C', 'Number'],
-                    ['C', Valid::NUMBER_GREATER_THAN, 100]
-                ]
-            ]
+                    ['C', Valid::NUMBER_GREATER_THAN, 100],
+                ],
+            ],
         ]);
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["The 1st Foo (abc) must be number.", "The 2nd Foo (99) must be greater than 100."]], $validator->errors());
@@ -618,8 +618,8 @@ class ValidatorTest extends RebetTestCase
             'foo' => [
                 'rule' => [
                     ['C', Valid::REQUIRED],
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["The Foo field is required."]], $validator->errors());
@@ -629,8 +629,8 @@ class ValidatorTest extends RebetTestCase
                 'label' => 'Custom Foo', // Inline labels are a convenient way to specify labels when internationalization is not required
                 'rule'  => [
                     ['C', Valid::REQUIRED],
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["The Custom Foo field is required."]], $validator->errors());
@@ -641,8 +641,8 @@ class ValidatorTest extends RebetTestCase
                 'label' => 'Custom Foo',
                 'rule'  => [
                     ['C', Valid::REQUIRED],
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["フーを入力して下さい。"]], $validator->errors()); // 'i18n/{locale}/attribute.php' transration settings take precedence over inline labels
@@ -661,7 +661,7 @@ class ValidatorTest extends RebetTestCase
                             ['CU', Valid::REQUIRED],
                             ['CU', Valid::MAX_LENGTH, 20],
                         ],
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -690,7 +690,7 @@ class ValidatorTest extends RebetTestCase
                         'rule' => [
                             ['CU', Valid::REQUIRED],
                         ],
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -708,7 +708,7 @@ class ValidatorTest extends RebetTestCase
                         'rule'  => [
                             ['CU', Valid::REQUIRED],
                         ],
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -726,7 +726,7 @@ class ValidatorTest extends RebetTestCase
                         'rule'  => [
                             ['CU', Valid::REQUIRED],
                         ],
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -747,7 +747,7 @@ class ValidatorTest extends RebetTestCase
                         'rule'  => [
                             ['CU', Valid::REQUIRED],
                         ],
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -765,7 +765,7 @@ class ValidatorTest extends RebetTestCase
                         'rule'  => [
                             ['CU', Valid::REQUIRED],
                         ],
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -795,7 +795,7 @@ class ValidatorTest extends RebetTestCase
                             ['CU', Valid::REQUIRED],
                         ],
                     ],
-                ]
+                ],
             ],
         ];
 
@@ -807,10 +807,10 @@ class ValidatorTest extends RebetTestCase
         $this->assertNull($valid_data);
         $this->assertSame([
             'shipping_addresses.0.address' => [
-                "The Shipping Address field is required."
+                "The Shipping Address field is required.",
             ],
             'shipping_addresses.1.zip' => [
-                "The Shipping Zip field is required."
+                "The Shipping Zip field is required.",
             ],
         ], $validator->errors());
     }
@@ -845,7 +845,7 @@ class ValidatorTest extends RebetTestCase
                             'foo' => ['rule' => [['C' , 'Ng']]],
                             'bar' => ['rule' => [[ 'U', 'Ng']]],
                             'baz' => ['rule' => [['CU', 'Ng']]],
-                        ]
+                        ],
                     ],
                 ],
             ],
@@ -866,7 +866,7 @@ class ValidatorTest extends RebetTestCase
                             'baz' => ['rule' => [['CU', 'Ng']]],
                         ],
                     ],
-                ]
+                ],
             ],
         ];
         $data = [
@@ -893,8 +893,8 @@ class ValidatorTest extends RebetTestCase
                     'child' => [
                         'foo' => 'foo',
                         'bar' => 'bar',
-                        'baz' => 'baz'
-                    ]
+                        'baz' => 'baz',
+                    ],
                 ],
             ],
         ];
@@ -949,8 +949,8 @@ class ValidatorTest extends RebetTestCase
             'foo' => [
                 'rule' => [
                     ['C', Valid::REQUIRED],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $validator  = new Validator(['foo' => 'Foo', 'bar' => 'bar']);
@@ -970,7 +970,7 @@ class ValidatorTest extends RebetTestCase
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'rule' => ['C', Valid::IF, 'type', 1, 'then' => 'invalid format'],
-            ]
+            ],
         ]);
     }
 
@@ -983,7 +983,7 @@ class ValidatorTest extends RebetTestCase
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'rule' => ['C', Valid::IF, 'type', 2, 'else' => 'invalid format'],
-            ]
+            ],
         ]);
     }
 }

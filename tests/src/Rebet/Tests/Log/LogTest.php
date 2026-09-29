@@ -35,9 +35,9 @@ class LogTest extends RebetTestCase
                         ],
                     ],
                     'missing_driver' => [
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
         Log::channel()->driver()->clear();
         Log::channel('test')->driver()->clear();
@@ -56,7 +56,7 @@ class LogTest extends RebetTestCase
         $this->assertStderrContainsAll(
             [
                 "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'nothing' channel logger",
-                "Unable to instantiate 'channels.nothing.driver' in Log. Undefined configure 'Rebet\Log\Log.channels.nothing.driver'."
+                "Unable to instantiate 'channels.nothing.driver' in Log. Undefined configure 'Rebet\Log\Log.channels.nothing.driver'.",
             ],
             function () {
                 $this->assertInstanceOf(NullDriver::class, Log::channel('nothing')->driver());
@@ -65,7 +65,7 @@ class LogTest extends RebetTestCase
         $this->assertStderrContainsAll(
             [
                 "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'missing_driver' channel logger",
-                "Unable to instantiate 'channels.missing_driver.driver' in Log. Undefined configure 'Rebet\Log\Log.channels.missing_driver.driver'."
+                "Unable to instantiate 'channels.missing_driver.driver' in Log. Undefined configure 'Rebet\Log\Log.channels.missing_driver.driver'.",
             ],
             function () {
                 $this->assertInstanceOf(NullDriver::class, Log::channel('missing_driver')->driver());

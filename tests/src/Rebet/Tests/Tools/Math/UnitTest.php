@@ -23,9 +23,9 @@ class UnitTest extends RebetTestCase
                 'factors' => [
                     Unit::TIME => [
                         'c' => ['3.1536e9', false],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
 
         $factors = Unit::factorsOf(UNIT::TIME);

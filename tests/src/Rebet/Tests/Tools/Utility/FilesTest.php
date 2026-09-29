@@ -26,8 +26,8 @@ class FilesTest extends RebetTestCase
                 'js' => [
                     'application.js' => 'This is application.js',
                     'underscore'     => [
-                        'underscore.min.js' => 'This is underscore.min.js'
-                    ]
+                        'underscore.min.js' => 'This is underscore.min.js',
+                    ],
                 ],
                 'index.html' => 'This is index.html',
                 'robot.txt'  => '', // empty file

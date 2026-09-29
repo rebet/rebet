@@ -43,12 +43,12 @@ class RawTokenParserTest extends RebetTestCase
             [
                 new RawTokenParser('endenv', '}'),
                 '{% endenv %}',
-                '}'
+                '}',
             ],
             [
                 new RawTokenParser('endenv', 'endif:'),
                 '{% endenv %}',
-                'endif:'
+                'endif:',
             ],
         ];
     }

@@ -364,7 +364,7 @@ return [
             // 'yaml' => function(string $path, array $option) : array {
             //     return Symfony\Component\Yaml\Yaml::parse(\file_get_contents($path));
             // }
-        ]
+        ],
     ],
 
 

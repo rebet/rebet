@@ -11,8 +11,8 @@ class BarValidation extends Rule
         return [
             'bar' => [
                 'rule' => [
-                    ['C', Valid::REQUIRED]
-                ]
+                    ['C', Valid::REQUIRED],
+                ],
             ],
         ];
     }

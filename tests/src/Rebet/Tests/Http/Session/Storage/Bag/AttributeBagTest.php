@@ -109,7 +109,7 @@ class AttributeBagTest extends RebetTestCase
         $bag->set('map', ['a' => 'A', 'b' => 'B']);
         $this->assertSame([
             'name' => 'value',
-            'map'  => ['a' => 'A', 'b' => 'B']
+            'map'  => ['a' => 'A', 'b' => 'B'],
         ], $bag->all());
     }
 
@@ -120,23 +120,23 @@ class AttributeBagTest extends RebetTestCase
         $bag->set('map', ['a' => 'A', 'b' => 'B']);
         $this->assertSame([
             'name' => 'value',
-            'map'  => ['a' => 'A', 'b' => 'B']
+            'map'  => ['a' => 'A', 'b' => 'B'],
         ], $bag->all());
 
         $bag->remove('map.a');
         $this->assertSame([
             'name' => 'value',
-            'map'  => ['b' => 'B']
+            'map'  => ['b' => 'B'],
         ], $bag->all());
 
         $bag->remove('name');
         $this->assertSame([
-            'map' => ['b' => 'B']
+            'map' => ['b' => 'B'],
         ], $bag->all());
 
         $bag->remove('nothing');
         $this->assertSame([
-            'map' => ['b' => 'B']
+            'map' => ['b' => 'B'],
         ], $bag->all());
     }
 

@@ -134,7 +134,7 @@ EOS;
             'fat & rat',                                                                                        // type_tsquery
             'a fat cat sat on a mat and ate a fat rat',                                                         // type_tsvector
             Expression::of('txid_current_snapshot()'),                                                          // type_txid_snapshot
-            null                                                                                                // type_text_null
+            null,                                                                                                // type_text_null
         ]]);
         $db->commit();
         $stmt = $db->query('SELECT * FROM native_types');

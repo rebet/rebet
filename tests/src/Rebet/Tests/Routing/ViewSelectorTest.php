@@ -41,7 +41,7 @@ class ViewSelectorTest extends RebetTestCase
             ["Hello, Bob.\nTest for directory change type view selector.", 'en', '/welcome/Bob'],
             ["Hello, Bob.\nTest for directory change type view selector.", 'en_AU', '/welcome/Bob'],
             ["Hello, Bob.\nTest for directory change type view selector.", 'de', '/welcome/Bob'],
-            ["こんにちは、Bob。\nディレクトリ変更形式のビューセレクターテスト用。", 'ja', '/welcome/Bob']
+            ["こんにちは、Bob。\nディレクトリ変更形式のビューセレクターテスト用。", 'ja', '/welcome/Bob'],
         ];
     }
 
@@ -53,8 +53,8 @@ class ViewSelectorTest extends RebetTestCase
                 'changer' => function ($view_name, $request, $user) {
                     $locale = App::getLocale();
                     return ["{$locale}/{$view_name}", Strings::latrim($locale, '_').'/'.$view_name, App::getFallbackLocale().'/'.$view_name, ];
-                }
-            ]
+                },
+            ],
         ]);
 
         App::setLocale($locale);
@@ -81,8 +81,8 @@ class ViewSelectorTest extends RebetTestCase
                 'changer' => function ($view_name, Request $request, $user) {
                     $device = $request->getUserAgent()->isMobile() ? 'sp' : 'pc' ;
                     return "{$view_name}_{$device}";
-                }
-            ]
+                },
+            ],
         ]);
 
         $route   = new ViewRoute('/welcome/{name}', 'welcome');

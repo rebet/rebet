@@ -186,7 +186,7 @@ class WebExceptionHandler extends ExceptionHandler
                     'status'    => $status,
                     'title'     => $title,
                     'detail'    => $detail,
-                    'exception' => $e
+                    'exception' => $e,
                 ]), $status);
             }
         }
@@ -216,7 +216,7 @@ class WebExceptionHandler extends ExceptionHandler
                     'status'    => $status,
                     'title'     => $title,
                     'detail'    => $detail,
-                    'exception' => $e
+                    'exception' => $e,
                 ]), $status);
             }
         }

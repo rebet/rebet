@@ -89,8 +89,8 @@ class MysqlDriver extends AbstractDriver
                     'i'   => 'MINUTE({col})',
                     's'   => 'SECOND({col})',
                     'dow' => 'DAYOFWEEK({col})',
-                ]
-            ]
+                ],
+            ],
         ];
     }
 

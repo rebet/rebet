@@ -102,10 +102,10 @@ class AuthTest extends RebetTestCase
             Auth::class => [
                 'providers' => [
                     'user' => [
-                        'precondition' => function ($user) { return $user['role'] === 'admin'; }
-                    ]
+                        'precondition' => function ($user) { return $user['role'] === 'admin'; },
+                    ],
                 ],
-            ]
+            ],
         ]);
         $user = Auth::attempt($request, 'user@rebet.local', 'user');
         $this->assertTrue($user->isGuest());

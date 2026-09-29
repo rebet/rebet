@@ -193,8 +193,8 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
 
         $errors = [
             'name' => [
-                'The name field is required.'
-            ]
+                'The name field is required.',
+            ],
         ];
 
         $this->assertSame(
@@ -208,8 +208,8 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
 
         $errors = [
             'email' => [
-                'The email field is required.'
-            ]
+                'The email field is required.',
+            ],
         ];
 
         $this->assertSame(
@@ -223,11 +223,11 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
 
         $errors = [
             'name' => [
-                'The name field is required.'
+                'The name field is required.',
             ],
             'email' => [
-                'The email field is required.'
-            ]
+                'The email field is required.',
+            ],
         ];
 
         $this->assertSame(
@@ -263,8 +263,8 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $errors = [
             'name' => [
                 'The name field is required.',
-                'The name may not be greater than 20 characters.'
-            ]
+                'The name may not be greater than 20 characters.',
+            ],
         ];
         $this->assertSame(
             <<<EOS
@@ -288,8 +288,8 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $errors = [
             'email' => [
                 'The email field is required.',
-                'The email may not be greater than 255 characters.'
-            ]
+                'The email may not be greater than 255 characters.',
+            ],
         ];
         $this->assertSame(
             <<<EOS
@@ -313,11 +313,11 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $errors = [
             'name' => [
                 'The name field is required.',
-                'The name may not be greater than 20 characters.'
+                'The name may not be greater than 20 characters.',
             ],
             'email' => [
                 'The email field is required.',
-            ]
+            ],
         ];
         $this->assertSame(
             <<<EOS
@@ -360,8 +360,8 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $errors = [
             'name' => [
                 'The name field is required.',
-                'The name may not be greater than 20 characters.'
-            ]
+                'The name may not be greater than 20 characters.',
+            ],
         ];
         $this->assertSame(
             <<<EOS
@@ -377,8 +377,8 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $errors = [
             'email' => [
                 'The email field is required.',
-                'The email may not be greater than 255 characters.'
-            ]
+                'The email may not be greater than 255 characters.',
+            ],
         ];
         $this->assertSame(
             <<<EOS
@@ -394,11 +394,11 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $errors = [
             'name' => [
                 'The name field is required.',
-                'The name may not be greater than 20 characters.'
+                'The name may not be greater than 20 characters.',
             ],
             'email' => [
                 'The email field is required.',
-            ]
+            ],
         ];
         $this->assertSame(
             <<<EOS
@@ -429,8 +429,8 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $errors = [
             'name' => [
                 'The name field is required.',
-                'The name may not be greater than 20 characters.'
-            ]
+                'The name may not be greater than 20 characters.',
+            ],
         ];
         $this->assertSame(
             <<<EOS
@@ -445,8 +445,8 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $errors = [
             'email' => [
                 'The email field is required.',
-                'The email may not be greater than 255 characters.'
-            ]
+                'The email may not be greater than 255 characters.',
+            ],
         ];
         $this->assertSame(
             <<<EOS
@@ -461,11 +461,11 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $errors = [
             'name' => [
                 'The name field is required.',
-                'The name may not be greater than 20 characters.'
+                'The name may not be greater than 20 characters.',
             ],
             'email' => [
                 'The email field is required.',
-            ]
+            ],
         ];
         $this->assertSame(
             <<<EOS
@@ -494,7 +494,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
 
         $input = [
-            'name' => 'Name'
+            'name' => 'Name',
         ];
         $this->assertSame(
             <<<EOS
@@ -508,7 +508,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         );
 
         $input = [
-            'email' => 'test@rebet.local'
+            'email' => 'test@rebet.local',
         ];
         $this->assertSame(
             <<<EOS
@@ -523,7 +523,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
 
         $input = [
             'name'  => 'Name',
-            'email' => 'test@rebet.local'
+            'email' => 'test@rebet.local',
         ];
         $this->assertSame(
             <<<EOS

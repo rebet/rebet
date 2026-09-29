@@ -86,7 +86,7 @@ class BladeTest extends RebetTestCase
                     This is content.
                 EOS,
                 'builtin/child',
-                []
+                [],
             ],
             [
                 <<<EOS
@@ -96,7 +96,7 @@ class BladeTest extends RebetTestCase
                 You are not allowed to access this resource!
                 EOS,
                 'builtin/component',
-                []
+                [],
             ],
             [
                 <<<EOS
@@ -106,14 +106,14 @@ class BladeTest extends RebetTestCase
                 You are not allowed to access this resource!
                 EOS,
                 'builtin/component-args',
-                []
+                [],
             ],
             [
                 <<<EOS
                 var app = [1,2,3];
                 EOS,
                 'builtin/json',
-                ['array' => [1, 2, 3]]
+                ['array' => [1, 2, 3]],
             ],
         ];
     }

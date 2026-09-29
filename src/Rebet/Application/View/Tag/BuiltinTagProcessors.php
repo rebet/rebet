@@ -330,7 +330,7 @@ class BuiltinTagProcessors
             $page_name = App::config('paginate.page_name');
             unset($query[$page_name]);
             return View::of($template)->with(array_merge($options, [
-                'paginator' => $paginator->action($action, $page_name, $anchor)->with($query)
+                'paginator' => $paginator->action($action, $page_name, $anchor)->with($query),
             ]))->render();
         };
 

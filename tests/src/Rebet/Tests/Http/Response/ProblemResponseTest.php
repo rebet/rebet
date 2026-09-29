@@ -151,9 +151,9 @@ class ProblemResponseTest extends RebetTestCase
                         ],
                         'errors' => [
                             'name' => [
-                                'Name is required.'
-                            ]
-                        ]
+                                'Name is required.',
+                            ],
+                        ],
                     ]);
 
         $this->assertSame([
@@ -165,9 +165,9 @@ class ProblemResponseTest extends RebetTestCase
             'input'    => ['name' => null],
             'errors'   => [
                 'name' => [
-                    'Name is required.'
-                ]
-            ]
+                    'Name is required.',
+                ],
+            ],
         ], $response->getProblem());
 
         $this->assertSame(400, $response->getProblem('status'));

@@ -14,7 +14,7 @@ class FileDriverTest extends RebetTestCase
     {
         parent::setUp();
         $this->vfs([
-            'logs' => []
+            'logs' => [],
         ]);
     }
 

@@ -229,7 +229,7 @@ class EntityTest extends RebetDatabaseTestCase
                 'group_user' => [
                     ['group_id' , 'user_id' , 'position'              , 'join_on'     , 'created_at' , 'updated_at'],
                     [         1 ,         1 , GroupPosition::MEMBER() , Date::today() , $now         , null        ],
-                ]
+                ],
             ]);
 
             $gu = GroupUser::find(['user_id' => 1, 'group_id' => 1]);
@@ -242,7 +242,7 @@ class EntityTest extends RebetDatabaseTestCase
                 'group_user' => [
                     ['group_id' , 'user_id' , 'position'              , 'join_on'     , 'created_at' , 'updated_at'],
                     [         1 ,         1 , GroupPosition::LEADER() , Date::today() ,  $now        , $now        ],
-                ]
+                ],
             ]);
 
             $gu = GroupUser::find(['user_id' => 1, 'group_id' => 1]);
@@ -253,7 +253,7 @@ class EntityTest extends RebetDatabaseTestCase
                 'group_user' => [
                     ['group_id' , 'user_id' , 'position'              , 'join_on'     , 'created_at' , 'updated_at'],
                     [         1 ,         1 , GroupPosition::LEADER() , Date::today() ,  $now        , $new_now    ],
-                ]
+                ],
             ]);
         });
     }

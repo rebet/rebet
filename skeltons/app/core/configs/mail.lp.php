@@ -201,6 +201,6 @@ return [
             DotAtEnd::class,
             DotAtStart::class,
             ConsecutiveDot::class,
-        ]
+        ],
     ],
 ];

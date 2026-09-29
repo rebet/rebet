@@ -68,8 +68,8 @@ class RequestTest extends RebetTestCase
                     ['CU', Valid::REQUIRED],
                     ['CU', Valid::MAX_LENGTH, 20],
                     ['CU', Valid::DEPENDENCE_CHAR],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $request = Request::create('/');
@@ -92,8 +92,8 @@ class RequestTest extends RebetTestCase
                     ['CU', Valid::REQUIRED],
                     ['CU', Valid::MAX_LENGTH, 20],
                     ['CU', Valid::DEPENDENCE_CHAR],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $request = Request::create('/');

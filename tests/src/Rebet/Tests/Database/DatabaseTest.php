@@ -172,9 +172,9 @@ class DatabaseTest extends RebetDatabaseTestCase
                             $ep = $query->params();
                         },
                         'debug' => true,
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
 
         Dao::db('sqlite')->log($sql, $params);
@@ -404,7 +404,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertSame(0, $db->count("SELECT * FROM users WHERE gender = 1"));
 
             $this->assertSame(1, $db->execute("INSERT INTO users (user_id, name, gender, birthday, email, password) VALUES (:values)", [
-                'values' => ['user_id' => 33, 'name' => 'Insert', 'gender' => Gender::MALE(), 'birthday' => Date::createDateTime('1976-04-23'), 'email' => 'foo@bar.local', 'password' => Password::hash('password-33')]
+                'values' => ['user_id' => 33, 'name' => 'Insert', 'gender' => Gender::MALE(), 'birthday' => Date::createDateTime('1976-04-23'), 'email' => 'foo@bar.local', 'password' => Password::hash('password-33')],
             ]));
 
             $this->assertSame(1, $db->count("SELECT * FROM users WHERE gender = 1"));
@@ -452,35 +452,35 @@ class DatabaseTest extends RebetDatabaseTestCase
             //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
             '04-simple_paging-01' => [
                 [30, 29, 28], null, 1, null,
-                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(-1)
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(-1),
             ],
             '04-simple_paging-02' => [
                 [30, 29, 28], null, 1, null,
-                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3),
             ],
             '04-simple_paging-03' => [
                 [            23, 19, 17], null, 1, null,
-                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(2)
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(2),
             ],
             '04-simple_paging-04' => [
                 [                        10, 9, 7], null, 1, null,
-                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(3)
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(3),
             ],
             '04-simple_paging-05' => [
                 [                                  5, 4, 3], null, 1, null,
-                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(4)
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(4),
             ],
             '04-simple_paging-06' => [
                 [                                                                                                      12, 11, 8], null, 1, null,
-                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(10)
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(10),
             ],
             '04-simple_paging-07' => [
                 [                                                                                                                 6, 1], null, 0, null,
-                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(11)
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(11),
             ],
             '04-simple_paging-08' => [
                 [], null, 0, null,
-                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(12)
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(12),
             ],
 
             //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
@@ -493,7 +493,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                     0
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(1),
-                null
+                null,
             ],
             '05-simple_paging_with_cursor-02' => [
                 [            23, 19, 17], null, 1,
@@ -636,7 +636,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                     3
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(1),
-                null
+                null,
             ],
             '07-wide_paging_with_cursor-02' => [
                 [            23, 19, 17], null, 3,
@@ -779,7 +779,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                     9
                 ),
                 "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(1),
-                null
+                null,
             ],
             '09-full_paging_with_cursor-02' => [
                 [            23, 19, 17], 32, 9,

@@ -29,7 +29,7 @@ class PipelineTest extends RebetTestCase
             PipelineTest_Wrapper::class,
             function ($input, $next) {
                 return $next($input.'!');
-            }
+            },
         ])->then(function ($input) {
             return $input;
         });

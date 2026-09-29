@@ -145,13 +145,13 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     Utils::class     => ['isBlank', 'bvl', 'isEmpty', 'evl'],
                     Strings::class   => [
                         'lcut', 'rcut', 'clip', 'indent', 'ltrim', 'rtrim', 'trim', 'mbtrim', 'startsWith', 'endsWith',
-                        'contains', 'match', 'wildmatch', 'split'
+                        'contains', 'match', 'wildmatch', 'split',
                     ],
                     Arrays::class => [
                         'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact', 'unique',
                         'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'reduce', 'diff', 'intersect',
                         'every', 'groupBy', 'union', 'min', 'max', 'sort', 'sortBy', 'sortKeys', 'sum', 'avg',
-                        'median', 'mode', 'implode', 'toQuery'
+                        'median', 'mode', 'implode', 'toQuery',
                     ],
                 ],
                 'customs' => [

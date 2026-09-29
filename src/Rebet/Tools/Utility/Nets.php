@@ -58,7 +58,7 @@ class Nets
             'http' => ['ignore_errors' => true],
             'ssl'  => [
                 'verify_peer'      => false,
-                'verify_peer_name' => false
+                'verify_peer_name' => false,
             ],
         ]));
     }

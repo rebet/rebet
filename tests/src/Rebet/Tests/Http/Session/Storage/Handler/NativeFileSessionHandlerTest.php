@@ -12,7 +12,7 @@ class NativeFileSessionHandlerTest extends RebetTestCase
     {
         parent::setUp();
         $this->vfs([
-            'session' => []
+            'session' => [],
         ]);
     }
 

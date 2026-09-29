@@ -26,7 +26,7 @@ class ConventionalRouteTest extends RebetTestCase
             'controller_suffix'          => '',
             'action_suffix'              => 'Action',
             'aliases'                    => [
-                '/howto' => '/misc/howto'
+                '/howto' => '/misc/howto',
             ],
             'accessible' => true,
         ]);

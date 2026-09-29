@@ -120,7 +120,7 @@ class ProjectInitCommand extends Command
             "phpstan/phpstan",
             "phpunit/phpunit",
             "psy/psysh",
-        ]
+        ],
     ];
 
     /**

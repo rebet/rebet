@@ -28,6 +28,6 @@ return [
     FileDictionary::class => [
         'resources' => [
             'i18n' => [App::structure()->resources('/i18n')],
-        ]
+        ],
     ],
 ];

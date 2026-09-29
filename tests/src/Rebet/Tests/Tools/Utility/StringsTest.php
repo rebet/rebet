@@ -283,7 +283,7 @@ class StringsTest extends RebetTestCase
                     0 => single line text in array
                 ]
                 EOS,
-                ['single line text in array']
+                ['single line text in array'],
             ],
             [
                 <<<EOS
@@ -291,7 +291,7 @@ class StringsTest extends RebetTestCase
                 line
                 text
                 EOS,
-                "multi\nline\ntext"
+                "multi\nline\ntext",
             ],
             [
                 <<<EOS
@@ -305,7 +305,7 @@ class StringsTest extends RebetTestCase
                     """
                 ]
                 EOS,
-                ["multi\nline\ntext\nin\narray"]
+                ["multi\nline\ntext\nin\narray"],
             ],
             ['123', 123],
             ['123.456', 123.456],
@@ -321,7 +321,7 @@ class StringsTest extends RebetTestCase
                     0 => TestApp\Stub\ToStringStub : single line text in array
                 ]
                 EOS,
-                [new ToStringStub('single line text in array')]
+                [new ToStringStub('single line text in array')],
             ],
             [
                 <<<EOS
@@ -331,7 +331,7 @@ class StringsTest extends RebetTestCase
                     text
                 """
                 EOS,
-                new ToStringStub("multi\nline\ntext")
+                new ToStringStub("multi\nline\ntext"),
             ],
             [
                 <<<EOS
@@ -345,7 +345,7 @@ class StringsTest extends RebetTestCase
                     """
                 ]
                 EOS,
-                [new ToStringStub("multi\nline\ntext\nin\narray")]
+                [new ToStringStub("multi\nline\ntext\nin\narray")],
             ],
             ['Rebet\Tests\Tools\Utility\StringsTest::{closure}($a, ?int $b, string $c = default) : ?bool', function ($a, int|null $b, string $c = 'default') : bool|null { return true; }],
             ['TestApp\Stub\JsonSerializableStub : 123', new JsonSerializableStub(123)],
@@ -356,7 +356,7 @@ class StringsTest extends RebetTestCase
                     a => A
                 ]
                 EOS,
-                new JsonSerializableStub(['a' => 'A'])
+                new JsonSerializableStub(['a' => 'A']),
             ],
             ['[]', []],
             [
@@ -367,7 +367,7 @@ class StringsTest extends RebetTestCase
                     2 => 3
                 ]
                 EOS,
-                [1, 2, 3]
+                [1, 2, 3],
             ],
             [
                 <<<EOS
@@ -377,7 +377,7 @@ class StringsTest extends RebetTestCase
                     c => C
                 ]
                 EOS,
-                ['a' => 'A', 'b' => 'B', 'c' => 'C']
+                ['a' => 'A', 'b' => 'B', 'c' => 'C'],
             ],
             [
                 <<<EOS
@@ -391,7 +391,7 @@ class StringsTest extends RebetTestCase
                     ]
                 ]
                 EOS,
-                [1, [2, [3]]]
+                [1, [2, [3]]],
             ],
             [
                 <<<EOS
@@ -401,7 +401,7 @@ class StringsTest extends RebetTestCase
                     2 => 3
                 ]
                 EOS,
-                new \ArrayObject([1, 2, 3])
+                new \ArrayObject([1, 2, 3]),
             ],
             ['<instance of Rebet\Tests\Tools\Utility\StringsTest_Mock>', new StringsTest_Mock()],
             [
@@ -412,7 +412,7 @@ class StringsTest extends RebetTestCase
                     c => C
                 ]
                 EOS,
-                ['a' => 'A', 'b' => 'B', 'c' => 'C'], ['a']
+                ['a' => 'A', 'b' => 'B', 'c' => 'C'], ['a'],
             ],
             [
                 <<<EOS
@@ -425,7 +425,7 @@ class StringsTest extends RebetTestCase
                     c => *
                 ]
                 EOS,
-                ['a' => 'A', 'b' => ['a' => 'A', 'b' => 'B'], 'c' => 'C'], ['a', 'c'], '*'
+                ['a' => 'A', 'b' => ['a' => 'A', 'b' => 'B'], 'c' => 'C'], ['a', 'c'], '*',
             ],
         ];
     }

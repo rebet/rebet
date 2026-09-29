@@ -35,7 +35,7 @@ class RouterTest extends RebetTestCase
                 'middlewares='             => [],
                 'default_fallback_handler' => function (Request $request, \Throwable $e) {
                     throw $e;
-                }
+                },
             ],
             View::class => [
                 'engine' => Blade::class,
@@ -992,8 +992,8 @@ class RouterTest extends RebetTestCase
             Router::class => [
                 'default_fallback_handler' => function (Request $request, \Throwable $e) {
                     return Responder::toResponse('fallback default');
-                }
-            ]
+                },
+            ],
         ]);
 
         $response = Router::handle(Request::create('/'));

@@ -60,8 +60,8 @@ class ConfigurableTest extends RebetTestCase
 
         Config::application([
             ConfigurableTest_Mock::class => [
-                'driver' => 'pgsql'
-            ]
+                'driver' => 'pgsql',
+            ],
         ]);
 
         $this->assertSame(
@@ -236,7 +236,7 @@ class ConfigurableTest extends RebetTestCase
         Config::application([
             ConfigurableTest_Mock::class => [
                 'driver' => 'oracle',
-            ]
+            ],
         ]);
 
         $this->assertSame('oracle', ConfigurableTest_Mock::config('driver'));
@@ -248,7 +248,7 @@ class ConfigurableTest extends RebetTestCase
         Config::application([
             ConfigurableTest_MockChildShare::class => [
                 'driver' => 'mariadb',
-            ]
+            ],
         ]);
 
         $this->assertSame('oracle', ConfigurableTest_Mock::config('driver'));
@@ -263,7 +263,7 @@ class ConfigurableTest extends RebetTestCase
         Config::application([
             ConfigurableTest_Mock::class => [
                 'host' => '192.168.1.1',
-            ]
+            ],
         ]);
 
         $this->assertSame('192.168.1.1', ConfigurableTest_Mock::config('host'));
@@ -274,7 +274,7 @@ class ConfigurableTest extends RebetTestCase
         Config::application([
             ConfigurableTest_Mock::class => [
                 'user' => 'bar',
-            ]
+            ],
         ]);
 
         $this->assertSame('bar', ConfigurableTest_Mock::config('user', false));
@@ -317,7 +317,7 @@ class ConfigurableTest extends RebetTestCase
                 'override_replace' => ['c'],
                 'override_prepend' => ['c'],
                 'override_append'  => ['c'],
-            ]
+            ],
         ]);
 
         $this->assertSame(
@@ -343,14 +343,14 @@ class ConfigurableTest extends RebetTestCase
         Config::framework([
             ConfigurableTest_Mock::class => [
                 'driver' => 'oracle',
-            ]
+            ],
         ]);
         $this->assertSame('oracle', ConfigurableTest_Mock::config('driver'));
 
         Config::application([
             ConfigurableTest_Mock::class => [
                 'driver' => 'postgresql',
-            ]
+            ],
         ]);
         $this->assertSame('postgresql', ConfigurableTest_Mock::config('driver'));
 
@@ -439,7 +439,7 @@ class ConfigurableTest_MockChildShare extends ConfigurableTest_Mock
     public static function defaultConfig()
     {
         return static::shareConfigWith(parent::class, [
-            'user' => 'foo'
+            'user' => 'foo',
         ]);
     }
 }

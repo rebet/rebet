@@ -63,7 +63,7 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
                 '(?first_name? = :name_0 OR ?last_name? = :name_1) AND ?gender? = :gender',
                 ['name_0' => 'foo', 'name_1' => 'foo', 'gender' => 1],
                 ['name' => 'foo', 'gender' => 1],
-                ['name' => ['first_name', 'last_name']]
+                ['name' => ['first_name', 'last_name']],
             ],
         ];
     }

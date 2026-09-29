@@ -42,9 +42,9 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
                     "====== [  CONTEXT  ] ======",
                     "%c2010-10-20 10:20:30.123456 web/{$pid} [DEBUG] Log Message.",
                     SimpleBrowserConsoleHandler::OUTPUT_STYLES[MonologLogger::DEBUG][1],
-                    SimpleBrowserConsoleHandler::OUTPUT_STYLES[MonologLogger::DEBUG][2]
+                    SimpleBrowserConsoleHandler::OUTPUT_STYLES[MonologLogger::DEBUG][2],
                 ],
-                ['context' => ['foo' => 'bar']]
+                ['context' => ['foo' => 'bar']],
             ],
         ];
     }
@@ -69,7 +69,7 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
             'channel'  => 'web',
             'datetime' => DateTime::now(), // Use Rebet DateTime class for create datetime.
             'extra'    => [
-                'process_id' => getmypid()
+                'process_id' => getmypid(),
             ],
         ], $diff);
 

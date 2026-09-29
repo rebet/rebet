@@ -56,7 +56,7 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'options'  => [],
                         'debug'    => true,
                     ],
-                ]
+                ],
             ],
         ]);
 

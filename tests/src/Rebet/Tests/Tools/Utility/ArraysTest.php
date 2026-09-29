@@ -17,7 +17,7 @@ class ArraysTest extends RebetTestCase
     {
         parent::setUp();
         $this->vfs([
-            'dummy.txt' => 'dummy'
+            'dummy.txt' => 'dummy',
         ]);
     }
 
@@ -109,7 +109,7 @@ class ArraysTest extends RebetTestCase
             [
                 21 => ['user_id' => 21, 'name' => 'John'],
                 35 => ['user_id' => 35, 'name' => 'David'],
-                43 => ['user_id' => 43, 'name' => 'Linda']
+                43 => ['user_id' => 43, 'name' => 'Linda'],
             ],
             Arrays::pluck($list, null, 'user_id')
         );
@@ -117,7 +117,7 @@ class ArraysTest extends RebetTestCase
             [
                 21 => 'John(21)',
                 35 => 'David(35)',
-                43 => 'Linda(43)'
+                43 => 'Linda(43)',
             ],
             Arrays::pluck($list, function ($i, $key, $row) { return "{$row['name']}({$row['user_id']})"; }, 'user_id')
         );
@@ -870,7 +870,7 @@ class ArraysTest extends RebetTestCase
         $result = Arrays::groupBy($data, 'url');
         $this->assertSame([
             'a' => [
-                ['rating' => 1, 'url' => 'a']
+                ['rating' => 1, 'url' => 'a'],
             ],
             'b' => [
                 ['rating' => 1, 'url' => 'b'],
@@ -884,7 +884,7 @@ class ArraysTest extends RebetTestCase
         $data = [
             10 => ['rating' => 1, 'url' => 'a'],
             20 => ['rating' => 1, 'url' => 'b'],
-            30 => ['rating' => 2, 'url' => 'b']
+            30 => ['rating' => 2, 'url' => 'b'],
         ];
 
         $result = Arrays::groupBy($data, 'rating', true);
@@ -892,10 +892,10 @@ class ArraysTest extends RebetTestCase
         $expected_result = [
             1 => [
                 10 => ['rating' => 1, 'url' => 'a'],
-                20 => ['rating' => 1, 'url' => 'b']
+                20 => ['rating' => 1, 'url' => 'b'],
             ],
             2 => [
-                30 => ['rating' => 2, 'url' => 'b']
+                30 => ['rating' => 2, 'url' => 'b'],
             ],
         ];
 
@@ -907,7 +907,7 @@ class ArraysTest extends RebetTestCase
         $data = [
             ['rating' => 1, 'url' => 'a'],
             ['rating' => 1, 'url' => 'b'],
-            ['rating' => 2, 'url' => 'b']
+            ['rating' => 2, 'url' => 'b'],
         ];
 
         $result = Arrays::groupBy($data, function ($item) {
@@ -917,11 +917,11 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals([
             1 => [
                 ['rating' => 1, 'url' => 'a'],
-                ['rating' => 1, 'url' => 'b']
+                ['rating' => 1, 'url' => 'b'],
             ],
             2 => [
-                ['rating' => 2, 'url' => 'b']
-            ]
+                ['rating' => 2, 'url' => 'b'],
+            ],
         ], $result);
     }
 
@@ -930,7 +930,7 @@ class ArraysTest extends RebetTestCase
         $data = [
             10 => ['rating' => 1, 'url' => 'a'],
             20 => ['rating' => 1, 'url' => 'b'],
-            30 => ['rating' => 2, 'url' => 'b']
+            30 => ['rating' => 2, 'url' => 'b'],
         ];
 
         $result = Arrays::groupBy($data, function ($item) {
@@ -940,10 +940,10 @@ class ArraysTest extends RebetTestCase
         $expected_result = [
             1 => [
                 10 => ['rating' => 1, 'url' => 'a'],
-                20 => ['rating' => 1, 'url' => 'b']
+                20 => ['rating' => 1, 'url' => 'b'],
             ],
             2 => [
-                30 => ['rating' => 2, 'url' => 'b']
+                30 => ['rating' => 2, 'url' => 'b'],
             ],
         ];
 

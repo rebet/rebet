@@ -88,7 +88,7 @@ class EnvResourceTest extends RebetTestCase
                 ],
                 'b' => [
                     'string' => 'b',
-                ]
+                ],
             ],
             EnvResource::load('unittest', $this->resources, 'test', 'ini')
         );

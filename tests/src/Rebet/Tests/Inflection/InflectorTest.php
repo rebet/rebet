@@ -447,7 +447,7 @@ class InflectorTest extends RebetTestCase
                         ['/^(custom)$/i', '\1izables'],
                     ],
                 ],
-            ]
+            ],
         ]);
         $this->assertEquals(Inflector::pluralize('custom'), 'customizables');
 
@@ -458,7 +458,7 @@ class InflectorTest extends RebetTestCase
                         'uninflectable',
                     ],
                 ],
-            ]
+            ],
         ]);
         $this->assertEquals(Inflector::pluralize('uninflectable'), 'uninflectable');
 
@@ -467,9 +467,9 @@ class InflectorTest extends RebetTestCase
                 'plural' => [
                     'rules'       => [['/^(alert)$/i', '\1ables']],
                     'uninflected' => ['noflect', 'abtuse'],
-                    'irregular'   => ['amaze' => 'amazable', 'phone' => 'phonezes']
+                    'irregular'   => ['amaze' => 'amazable', 'phone' => 'phonezes'],
                 ],
-            ]
+            ],
         ]);
         $this->assertEquals(Inflector::pluralize('noflect'), 'noflect');
         $this->assertEquals(Inflector::pluralize('abtuse'), 'abtuse');
@@ -484,9 +484,9 @@ class InflectorTest extends RebetTestCase
         Config::application([
             Inflector::class => [
                 'singular' => [
-                    'rules' => [['/(eple)r$/i', '\1'], ['/(jente)r$/i', '\1']]
+                    'rules' => [['/(eple)r$/i', '\1'], ['/(jente)r$/i', '\1']],
                 ],
-            ]
+            ],
         ]);
         $this->assertEquals(Inflector::singularize('epler'), 'eple');
         $this->assertEquals(Inflector::singularize('jenter'), 'jente');
@@ -496,9 +496,9 @@ class InflectorTest extends RebetTestCase
                 'singular' => [
                     'rules'       => [['/^(bil)er$/i', '\1'], ['/^(inflec|contribu)tors$/i', '\1ta']],
                     'uninflected' => ['singulars'],
-                    'irregular'   => ['spins' => 'spinor']
+                    'irregular'   => ['spins' => 'spinor'],
                 ],
-            ]
+            ],
         ]);
         $this->assertEquals(Inflector::singularize('inflectors'), 'inflecta');
         $this->assertEquals(Inflector::singularize('contributors'), 'contributa');
@@ -520,9 +520,9 @@ class InflectorTest extends RebetTestCase
                 'plural=' => [
                     'rules'       => [['/^(.*)(a|e|o|u)l$/i', '\1\2is']],
                     'uninflected' => $uninflected,
-                    'irregular'   => $plural_irregular
+                    'irregular'   => $plural_irregular,
                 ],
-            ]
+            ],
         ]);
         $this->assertEquals(Inflector::pluralize('Alcool'), 'Alcoois');
         $this->assertEquals(Inflector::pluralize('Atlas'), 'Atlas');

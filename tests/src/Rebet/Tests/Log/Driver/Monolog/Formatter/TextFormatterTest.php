@@ -29,7 +29,7 @@ class TextFormatterTest extends RebetTestCase
             ["2010-10-20 10:20:30.123456 web/ [DEBUG] Log Message.\n"],
             [
                 "2010-10-20 10:20:30.123456 web/123 [DEBUG] Log Message.\n"
-                , ['extra' => ['process_id' => '123']]
+                , ['extra' => ['process_id' => '123']],
             ],
             ["2010-10-20 10:20:30.123456 web/ [INFO] Log Message.\n", ['level' => MonologLogger::INFO]],
             [
@@ -40,21 +40,21 @@ class TextFormatterTest extends RebetTestCase
                 ==     foo => FOO
                 == ]
                 EOS,
-                ['context' => ['foo' => 'FOO']]
+                ['context' => ['foo' => 'FOO']],
             ],
             [
                 <<<EOS
                 2010-10-20 10:20:30.123456 web [DEBUG] Log Message. <FOO>
                 EOS,
                 ['context' => ['foo' => 'FOO']],
-                "{datetime} {channel} [{level_name}] {message} <{context.foo}>{context}{extra}{exception}\n"
+                "{datetime} {channel} [{level_name}] {message} <{context.foo}>{context}{extra}{exception}\n",
             ],
             [
                 <<<EOS
                 2010-10-20 10:20:30.123456 web [DEBUG] Log Message. <FOO><>
                 EOS,
                 ['context' => ['foo' => 'FOO']],
-                "{datetime} {channel} [{level_name}] {message} <{context.foo}><{context.bar}>{context}{extra}{exception}\n"
+                "{datetime} {channel} [{level_name}] {message} <{context.foo}><{context.bar}>{context}{extra}{exception}\n",
             ],
 
             [
@@ -65,21 +65,21 @@ class TextFormatterTest extends RebetTestCase
                 --     foo => FOO
                 -- ]
                 EOS,
-                ['extra' => ['foo' => 'FOO']]
+                ['extra' => ['foo' => 'FOO']],
             ],
             [
                 <<<EOS
                 2010-10-20 10:20:30.123456 web [DEBUG] Log Message. <FOO>
                 EOS,
                 ['extra' => ['foo' => 'FOO']],
-                "{datetime} {channel} [{level_name}] {message} <{extra.foo}>{context}{extra}{exception}\n"
+                "{datetime} {channel} [{level_name}] {message} <{extra.foo}>{context}{extra}{exception}\n",
             ],
             [
                 <<<EOS
                 2010-10-20 10:20:30.123456 web [DEBUG] Log Message. <FOO><>
                 EOS,
                 ['extra' => ['foo' => 'FOO']],
-                "{datetime} {channel} [{level_name}] {message} <{extra.foo}><{extra.bar}>{context}{extra}{exception}\n"
+                "{datetime} {channel} [{level_name}] {message} <{extra.foo}><{extra.bar}>{context}{extra}{exception}\n",
             ],
             [
                 <<<EOS
@@ -87,7 +87,7 @@ class TextFormatterTest extends RebetTestCase
                 ****** [ EXCEPTION ] ******
                 ** Exception: Test Exception in 
                 EOS,
-                ['context' => ['exception' => new \Exception("Test Exception")]]
+                ['context' => ['exception' => new \Exception("Test Exception")]],
             ],
             [
                 <<<EOS
@@ -106,7 +106,7 @@ class TextFormatterTest extends RebetTestCase
                 [
                     'context' => ['foo' => 'FOO', 'exception' => new \Exception("Test Exception")],
                     'extra'   => ['bar' => 'BAR'],
-                ]
+                ],
             ],
             ["2010年10月20日(水) 10:20:30.123456 web/ [DEBUG] Log Message.\n", [], null, [
                 '{datetime}' => function (DateTime $val) { return $val->format('@ddd @ttt'); },

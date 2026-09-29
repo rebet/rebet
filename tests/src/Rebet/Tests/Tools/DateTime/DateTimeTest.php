@@ -347,8 +347,8 @@ class DateTimeTest extends RebetTestCase
 
         Config::runtime([
             DateTime::class => [
-                'default_format' => 'Y m d'
-            ]
+                'default_format' => 'Y m d',
+            ],
         ]);
 
         $input                 = '2010 01 02';

@@ -50,7 +50,7 @@ EOS;
             true,
             '2010-01-02',
             '2010-01-02 10:20:30',
-            null
+            null,
         ]]);
         $stmt = $db->query('SELECT * FROM native_types');
         $meta = $stmt->meta();
@@ -69,7 +69,7 @@ EOS;
             'type_boolean'  => ['integer', 'int'   ],
             'type_date'     => ['string' , 'string'],
             'type_datetime' => ['string' , 'string'],
-            'type_null'     => ['null'   , null    ]
+            'type_null'     => ['null'   , null    ],
         ] as $col => [$native_type, $php_type]) {
             $this->assertSame($native_type, $meta[$col]['native_type'] ?? null, "Failed {$col} => {$native_type}");
             $this->assertSame($php_type, Reflector::getType($rs->$col));
