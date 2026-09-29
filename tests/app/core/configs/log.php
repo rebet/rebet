@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Rebet\Application\App;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Log;

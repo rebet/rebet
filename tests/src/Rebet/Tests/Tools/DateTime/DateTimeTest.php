@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Tools\DateTime;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -1029,7 +1031,7 @@ class DateTimeTest extends RebetTestCase
     {
         $micro  = microtime(true);
         $now    = new DateTime($micro);
-        $millis = intval(Strings::latrim($micro, '.'));
+        $millis = intval(Strings::latrim((string) $micro, '.'));
 
         $this->assertSame($now, $now->convertTo(DateTime::class));
         $this->assertSame($now, $now->convertTo(\DateTimeImmutable::class));

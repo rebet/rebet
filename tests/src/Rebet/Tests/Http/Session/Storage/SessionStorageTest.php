@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Http\Session\Storage;
 
 use PHPUnit\Framework\Attributes\PreserveGlobalState;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Console\Command;
 
 use Rebet\Console\Command\Command;

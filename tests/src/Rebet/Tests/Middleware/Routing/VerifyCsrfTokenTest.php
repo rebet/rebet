@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Middleware\Routing;
 
 use PHPUnit\Framework\AssertionFailedError;

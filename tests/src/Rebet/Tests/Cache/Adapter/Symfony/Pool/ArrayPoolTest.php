@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Cache\Adapter\Symfony\Pool;
 
 use Rebet\Cache\Adapter\Symfony\Pool\ArrayPool;

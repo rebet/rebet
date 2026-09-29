@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\View\Engine\Blade\Compiler;
 
 use Rebet\Application\App;

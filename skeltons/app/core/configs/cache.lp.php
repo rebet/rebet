@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Rebet\Application\App;
 use Rebet\Cache\Adapter\Symfony\ApcuAdapter;
 use Rebet\Cache\Adapter\Symfony\ArrayAdapter;

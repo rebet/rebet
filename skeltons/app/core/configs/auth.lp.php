@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 //{%-- if $use_auth && $use_db -%}
 use App\Model\User;
 //{%-- endif -%}

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Database\Event;
 
 use Rebet\Database\Dao;

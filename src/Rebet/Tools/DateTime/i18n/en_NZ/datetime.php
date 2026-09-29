@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\DateTime\DayOfWeek;
 use Rebet\Tools\DateTime\Month;

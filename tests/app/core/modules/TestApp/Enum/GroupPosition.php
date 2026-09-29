@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TestApp\Enum;
 
 use Rebet\Tools\Enum\Enum;

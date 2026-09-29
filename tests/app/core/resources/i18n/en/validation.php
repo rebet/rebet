@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'Regex'         => [
         "{digits} The :attribute must be digits.",

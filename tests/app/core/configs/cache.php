@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Rebet\Cache\Adapter\Symfony\ArrayAdapter;
 use Rebet\Cache\Cache;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Tools\DateTime\Exception;
 
 use Rebet\Http\Exception\FallbackRedirectException;

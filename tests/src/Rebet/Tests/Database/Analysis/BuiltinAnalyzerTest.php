@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Database\Analysis;
 
 use PHPUnit\Framework\Attributes\DataProvider;

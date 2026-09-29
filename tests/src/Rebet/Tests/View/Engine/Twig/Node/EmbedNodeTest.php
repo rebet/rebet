@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\View\Engine\Twig\Node;
 
 use Rebet\Tests\RebetTestCase;

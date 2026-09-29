@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Database\Exception;
 
 use Rebet\Database\Exception\DatabaseException;

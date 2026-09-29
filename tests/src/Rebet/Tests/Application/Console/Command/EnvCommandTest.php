@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Application\Console\Command;
 
 use Rebet\Application\Console\Command\EnvCommand;

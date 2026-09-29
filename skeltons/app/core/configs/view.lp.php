@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Rebet\Application\App;
 use Rebet\Application\View\Engine\Blade\BladeTagCustomizer;
 use Rebet\Application\View\Engine\Twig\TwigTagCustomizer;

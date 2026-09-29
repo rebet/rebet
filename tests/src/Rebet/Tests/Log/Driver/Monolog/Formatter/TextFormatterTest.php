@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Log\Driver\Monolog\Formatter;
 
 use Monolog\Logger as MonologLogger;

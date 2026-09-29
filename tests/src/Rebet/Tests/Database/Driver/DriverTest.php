@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Database\Driver;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -27,7 +29,7 @@ class DriverTest extends RebetDatabaseTestCase
         self::setUpStatic();
         DateTime::setTestNow('2001-02-03 04:05:06');
         $path = App::structure()->public('/assets/img/72x72.png');
-        $file = file_get_contents($path, 'r');
+        $file = file_get_contents($path);
         return [
             [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::int(1), PdoParameter::int(1)],
             [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::int(1), 1],

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Application\View\Engine\Twig;
 
 use Rebet\Application\App;

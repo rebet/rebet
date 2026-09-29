@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Application\Console\Command\Project;
 
 use Rebet\Application\Console\Command\Project\ProjectInitCommand;

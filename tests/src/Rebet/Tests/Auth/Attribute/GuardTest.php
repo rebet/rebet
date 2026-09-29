@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Auth\Attribute;
 
 use Rebet\Attribute\AttributedClass;

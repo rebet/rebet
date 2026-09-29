@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Application\Console\Command\Crypto;
 
 use PHPUnit\Framework\Attributes\DataProvider;

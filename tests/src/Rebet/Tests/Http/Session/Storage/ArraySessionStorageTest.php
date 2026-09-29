@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Http\Session\Storage;
 
 use Rebet\Http\Session\Storage\ArraySessionStorage;

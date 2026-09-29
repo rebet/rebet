@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\View\Engine\Twig\Environment;
 
 use Rebet\Tests\RebetTestCase;
@@ -42,7 +44,7 @@ class EnvironmentTest extends RebetTestCase
         $parser   = new Parser($this->env);
         $compiler = new Compiler($this->env);
         $stream   = $this->env->tokenize(new Source($source, ''));
-        return $compiler->compile($parser->parse($stream)->getNode('body')->getNode(0))->getSource();
+        return $compiler->compile($parser->parse($stream)->getNode('body')->getNode('0'))->getSource();
     }
 
     public function test_embed()

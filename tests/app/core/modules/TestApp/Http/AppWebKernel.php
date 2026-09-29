@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TestApp\Http;
 
 use Rebet\Application\Bootstrap\EmailValidatorEnable;

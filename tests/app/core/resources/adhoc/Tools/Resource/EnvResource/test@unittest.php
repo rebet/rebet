@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'int'   => 2,
     'array' => [1, 2, 3, 4],

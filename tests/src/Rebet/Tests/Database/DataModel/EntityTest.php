@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Database\DataModel;
 
 use Rebet\Auth\Password;
@@ -178,7 +180,7 @@ class EntityTest extends RebetDatabaseTestCase
 
             $user           = new UserWithAnnot();
             $user->user_id  = 99;
-            $user->password = Password::hash($user->user_id);
+            $user->password = Password::hash((string) $user->user_id);
             $this->assertSame(false, $user->exists());
             $this->assertSame(null, $user->created_at);
 
@@ -266,7 +268,7 @@ class EntityTest extends RebetDatabaseTestCase
 
             $user           = new UserWithAnnot();
             $user->user_id  = 99;
-            $user->password = Password::hash($user->user_id);
+            $user->password = Password::hash((string) $user->user_id);
             $this->assertSame(false, $user->exists());
             $this->assertSame(null, $user->created_at);
             $this->assertSame(null, $user->updated_at);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Rebet\Application\App;
 use Rebet\Filesystem\Storage;

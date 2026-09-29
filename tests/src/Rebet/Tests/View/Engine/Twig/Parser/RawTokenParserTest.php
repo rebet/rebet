@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\View\Engine\Twig\Parser;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -33,7 +35,7 @@ class RawTokenParserTest extends RebetTestCase
         $stream   = $env->tokenize(new Source($source, ''));
         $parser   = new Parser($env);
         $compiler = new Compiler($env);
-        $src      = $compiler->compile($parser->parse($stream)->getNode('body')->getNode(0))->getSource();
+        $src      = $compiler->compile($parser->parse($stream)->getNode('body')->getNode('0'))->getSource();
 
         $this->assertSame($expect, $src);
     }

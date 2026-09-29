@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Rebet\Validation\Kind;
 use TestApp\Enum\Gender;
 

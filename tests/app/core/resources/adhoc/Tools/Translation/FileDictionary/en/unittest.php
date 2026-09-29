@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     "@delimiter"                     => ", ",
     "@full_name"                     => ":first_name :last_name",

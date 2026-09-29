@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Mail\Validator;
 
 use Egulias\EmailValidator\Validation\RFCValidation;

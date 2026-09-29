@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Filesystem\Exception;
 
 use Rebet\Filesystem\Exception\FilesystemException;

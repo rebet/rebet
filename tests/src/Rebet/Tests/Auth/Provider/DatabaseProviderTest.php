@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rebet\Tests\Auth\Provider;
 
 use Rebet\Auth\Password;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Monolog\Processor\ProcessIdProcessor;
 use Rebet\Application\App;
 use Rebet\Log\Driver\Monolog\FileDriver;

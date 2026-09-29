@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Rebet\Application\App;
 use Rebet\Application\Database\Pagination\Storage\SessionCursorStorage;
 use Rebet\Database\Dao;
