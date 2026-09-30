@@ -834,25 +834,24 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_noInteraction_databaseAndMemcachedNamesDefaultToSnakeCaseOfCodeName(): void
+    public function test_execute_noInteraction_databaseNamesDefaultToSnakeCaseOfCodeName(): void
     {
         $this->runInFreshWorkDir('project-init-snake-default', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
-            $status = $tester->execute(['--database' => 'mysql', '--cache' => 'memcached', '--dry-run' => true], ['interactive' => false]);
+            $status = $tester->execute(['--database' => 'mysql', '--dry-run' => true], ['interactive' => false]);
             $this->assertSame(0, $status);
 
             $display = $tester->getDisplay();
             $this->assertStringContainsString('code_name => project-init-snake-default,', $display);
             $this->assertStringContainsString('db_name => project_init_snake_default,', $display);
             $this->assertStringContainsString('db_user => project_init_snake_default,', $display);
-            $this->assertStringContainsString('memcached_user => project_init_snake_default,', $display);
         });
     }
 
-    public function test_execute_noInteraction_withoutDatabaseAndCache_namesDefaultToSnakeCaseOfCodeName(): void
+    public function test_execute_noInteraction_withoutDatabase_databaseNameDefaultsToSnakeCaseOfCodeName(): void
     {
-        // Even when neither database nor cache is used, the (unused) names are set to the snake
-        // case of the code name, since the skelton templates refer to them.
+        // Even when database is not used, the (unused) database name is set to the snake case of the
+        // code name, since the skelton templates refer to it.
         $this->runInFreshWorkDir('project-init-snake-unused', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--dry-run' => true], ['interactive' => false]);
@@ -860,7 +859,6 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
             $display = $tester->getDisplay();
             $this->assertStringContainsString('db_name => project_init_snake_unused,', $display);
-            $this->assertStringContainsString('memcached_user => project_init_snake_unused,', $display);
         });
     }
 
@@ -892,31 +890,30 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     }
 
     /**
-     * @return array<int, array{0: array<string, string>, 1: string, 2: string}>
+     * @return array<int, array{0: array<string, string>, 1: string}>
      */
     public static function dataDefaultPasswords(): array
     {
         return [
-            // The passwords default to the (default) users.
-            [[], 'project_init_default_password', 'project_init_default_password'],
-            // The passwords default to the given users.
-            [['--database-user' => 'db_foo', '--memcached-user' => 'mc_bar'], 'db_foo', 'mc_bar'],
-            // The given passwords are used as they are.
-            [['--database-pass' => 'db_secret', '--memcached-pass' => 'mc_secret'], 'db_secret', 'mc_secret'],
+            // The password defaults to the (default) user.
+            [[], 'project_init_default_password'],
+            // The password defaults to the given user.
+            [['--database-user' => 'db_foo'], 'db_foo'],
+            // The given password is used as it is.
+            [['--database-pass' => 'db_secret'], 'db_secret'],
         ];
     }
 
     #[DataProvider('dataDefaultPasswords')]
-    public function test_execute_noInteraction_passwordsDefaultToUsers(array $options, string $db_pass, string $memcached_pass): void
+    public function test_execute_noInteraction_databasePasswordDefaultsToUser(array $options, string $db_pass): void
     {
-        $this->runInFreshWorkDir('project-init-default-password', function (string $work_dir) use ($options, $db_pass, $memcached_pass): void {
+        $this->runInFreshWorkDir('project-init-default-password', function (string $work_dir) use ($options, $db_pass): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
-            $status = $tester->execute(array_merge(['--database' => 'mysql', '--cache' => 'memcached'], $options), ['interactive' => false]);
+            $status = $tester->execute(array_merge(['--database' => 'mysql'], $options), ['interactive' => false]);
             $this->assertSame(0, $status);
 
             $env = file_get_contents("{$work_dir}/app/core/.env");
             $this->assertStringContainsString("DB_PASSWORD={$db_pass}\n", $env);
-            $this->assertStringContainsString("MEMCACHED_PASSWORD={$memcached_pass}\n", $env);
         });
     }
 
@@ -960,7 +957,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
-    public function test_execute_interactive_reviewShowsDatabaseAndMemcachedPasswords(): void
+    public function test_execute_interactive_reviewShowsDatabasePassword(): void
     {
         $this->runInFreshWorkDir('project-init-review-passwords', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
@@ -969,7 +966,6 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
                 '', 'db_user', '',           // DB Name -> default, DB User -> db_user, DB Password -> default (= DB User)
                 'n',                         // Auth -> no
                 '',                          // View -> default
-                '', 'mc_pass',               // Memcached User -> default, Memcached Password -> mc_pass
                 '',                          // Session -> default
                 '', 'y',                     // Review -> yes, Are you really sure? -> yes
             ]);
@@ -977,7 +973,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $display = $tester->getDisplay();
             $this->assertSame(0, $status);
             $this->assertMatchesRegularExpression('/\|\s+DB Password\s+\|\s+db_user\s+\|/', $display);
-            $this->assertMatchesRegularExpression('/\|\s+Memcached Password\s+\|\s+mc_pass\s+\|/', $display);
+            // The memcached for the cache store is used without authentication, so nothing is asked for it.
+            $this->assertStringNotContainsString('Memcached User', $display);
+            $this->assertStringNotContainsString('Memcached Password', $display);
         });
     }
 
@@ -1003,6 +1001,64 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertStringNotContainsString('P@ssw0rd1', $auth);
             $this->assertSame(1, preg_match("/'email' => 'admin@example\\.com', 'password' => '(?<hash>[^']+)'/", $auth, $matches));
             $this->assertTrue(Password::verify('P@ssw0rd1', $matches['hash']));
+        });
+    }
+
+    /**
+     * @return array<int, array{0: array<string, string>, 1: bool, 2: bool}>
+     */
+    public static function dataMemcachedContainers(): array
+    {
+        return [
+            // [options, memcached-cache exists, memcached-session exists]
+            [['--cache' => 'memcached', '--session' => 'native'], true, false],
+            [['--cache' => 'file', '--session' => 'memcached'], false, true],
+            [['--session' => 'memcached'], false, true], // without cache store
+            [['--cache' => 'memcached', '--session' => 'memcached'], true, true],
+            [['--cache' => 'file', '--session' => 'native'], false, false],
+            [[], false, false], // without cache store, native session
+        ];
+    }
+
+    #[DataProvider('dataMemcachedContainers')]
+    public function test_execute_noInteraction_memcachedContainersAreSeparatedForCacheAndSession(array $options, bool $cache, bool $session): void
+    {
+        // The memcached for the cache store and the session storage are separated, since they have
+        // different purposes.
+        $this->runInFreshWorkDir('project-init-memcached-containers', function (string $work_dir) use ($options, $cache, $session): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute($options, ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $compose = file_get_contents("{$work_dir}/.devcontainer/docker-compose.yml");
+            $this->assertSame($cache, str_contains($compose, "\n  memcached-cache:\n"));
+            $this->assertSame($session, str_contains($compose, "\n  memcached-session:\n"));
+            $this->assertStringNotContainsString("\n  memcached:\n", $compose);
+
+            // The memcached extension is installed when either of them is used.
+            foreach (['php-fpm', 'workspace'] as $container) {
+                $dockerfile = file_get_contents("{$work_dir}/.devcontainer/docker/{$container}/Dockerfile");
+                $this->assertSame($cache || $session, str_contains($dockerfile, 'pecl install                            memcached'), $container);
+            }
+        });
+    }
+
+    public function test_execute_noInteraction_memcachedCacheStoreIsUsedWithoutAuthentication(): void
+    {
+        $this->runInFreshWorkDir('project-init-memcached-no-auth', function (string $work_dir): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--cache' => 'memcached'], ['interactive' => false]);
+            $this->assertSame(0, $status);
+            $this->assertStringNotContainsString('memcached_user', $tester->getDisplay());
+
+            $cache = file_get_contents("{$work_dir}/app/core/configs/cache.php");
+            $this->assertStringContainsString("'local'      => 'memcached://memcached-cache:11211',", $cache);
+            $this->assertStringContainsString("// 'username' => \\Rebet\\Tools\\Utility\\Env::promise('MEMCACHED_CACHE_USERNAME'),", $cache);
+            $this->assertStringContainsString("// 'password' => \\Rebet\\Tools\\Utility\\Env::promise('MEMCACHED_CACHE_PASSWORD'),", $cache);
+
+            $env = file_get_contents("{$work_dir}/app/core/.env");
+            $this->assertStringContainsString("# MEMCACHED_CACHE_USERNAME=\n# MEMCACHED_CACHE_PASSWORD=\n", $env);
+            $this->assertDoesNotMatchRegularExpression('/^MEMCACHED_/m', $env);
         });
     }
 }

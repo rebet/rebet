@@ -132,12 +132,13 @@ return [
                 'adapter' => [
                     '@factory' => MemcachedAdapter::class,
                     'dsn'      => App::when([
-                        'local'      => 'memcached://memcached:11211',
+                        'local'      => 'memcached://memcached-cache:11211',
                         'production' => ['memcached://localhost:11211', /* Secondary DSN if exists */],
                     ]),
                     'options'  => [
-                        'username' => Env::promise('MEMCACHED_USERNAME'),
-                        'password' => Env::promise('MEMCACHED_PASSWORD'),
+                        // --- Please uncomment if you want to use SASL authentication (and set them in .env) ---
+                        // 'username' => \Rebet\Tools\Utility\Env::promise('MEMCACHED_CACHE_USERNAME'),
+                        // 'password' => \Rebet\Tools\Utility\Env::promise('MEMCACHED_CACHE_PASSWORD'),
                         // --- You can set any other options supported by Symfony\Component\Cache\Adapter\MemcachedAdapter::createConnection() ---
                         // 'persistent_id' => null,
                         // 'weight'        => 100,

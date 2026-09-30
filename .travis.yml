@@ -13,7 +13,8 @@ addons:
   hosts:
     - mysql
     - pgsql
-    - memcached
+    - memcached-cache
+    - memcached-session
     - redis
 
 env:

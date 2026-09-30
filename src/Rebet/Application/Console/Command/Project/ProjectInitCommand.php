@@ -42,8 +42,6 @@ class ProjectInitCommand extends Command
         [['auth-password',  'ap' ], null, InputOption::VALUE_OPTIONAL, 'Auth user password for local development (only when --auth is used without a database).'],
         [['view',           'v'  ], null, InputOption::VALUE_OPTIONAL, 'View template engine. (choices: twig, blade / default: twig)'],
         [['cache',          'c'  ], null, InputOption::VALUE_OPTIONAL, 'Cache store product. (choices: apcu, file, memcached, redis, and also database when a database is used / default: memcached)'],
-        [['memcached-user', 'mu' ], null, InputOption::VALUE_OPTIONAL, 'Memcached user for local development. (default: the snake case of the application code name)'],
-        [['memcached-pass', 'mp' ], null, InputOption::VALUE_OPTIONAL, 'Memcached password for local development. (default: same as the memcached user)'],
         [['session',        's'  ], null, InputOption::VALUE_OPTIONAL, 'Session storage. (choices: native, database (when a database is used), memcached, redis, mongodb / default: native)'],
         [['dry-run'              ], null, InputOption::VALUE_NONE,     'Show the settings and the list of files that would be generated, without writing anything.'],
     ];
@@ -424,12 +422,10 @@ class ProjectInitCommand extends Command
             [
                 ['View Engine', $configs['view'] ?? ''],
             ],
-            array_values(array_filter([
-                ['Use Cache', $yn($configs['use_cache'] ?? false)],
-                ($configs['use_cache'] ?? false) ? ['Cache Store', $configs['cache'] ?? '', true] : null,
-                ($configs['cache'] ?? null) === 'memcached' && isset($configs['memcached_user']) ? ['Memcached User', $configs['memcached_user'], true] : null,
-                isset($configs['memcached_pass']) ? ['Memcached Password', $configs['memcached_pass'], true] : null,
-            ])),
+            array_merge(
+                [['Use Cache', $yn($configs['use_cache'] ?? false)]],
+                ($configs['use_cache'] ?? false) ? [['Cache Store', $configs['cache'] ?? '', true]] : [],
+            ),
             [
                 ['Session Storage', $configs['session'] ?? ''],
             ],
@@ -634,11 +630,7 @@ class ProjectInitCommand extends Command
      */
     protected function stepCache(array $configs): array|null
     {
-        // Use the snake case of the code name (ex `my-app` => `my_app`) as the default, to be
-        // consistent with the default database name/user (see stepDatabase()).
-        $default_name = Inflector::snakize($configs['code_name']);
-        $use_db       = $configs['use_db'] ?? false;
-        unset($configs['memcached_user'], $configs['memcached_pass']);
+        $use_db = $configs['use_db'] ?? false;
 
         $use_cache = false;
         if ($this->option('cache') || $this->confirm("Will you use cache store? [y/n] : ")) {
@@ -652,16 +644,11 @@ class ProjectInitCommand extends Command
                 return null;
             }
             $configs['cache'] = $this->choice("* Cache Store : ", $cache_choices, 'cache', 'memcached');
-            if ($configs['cache'] == 'memcached') {
-                $configs['memcached_user'] = $this->ask("* Memcached User     : [{$default_name}] ", 'memcached-user', true, $default_name);
-                $configs['memcached_pass'] = $this->ask("* Memcached Password : [{$configs['memcached_user']}] ", 'memcached-pass', true, $configs['memcached_user']);
-            }
-            $use_cache = true;
+            $use_cache        = true;
         }
         $configs['use_cache'] = $use_cache;
         if (!$use_cache) {
-            $configs['cache']          = 'memcached';
-            $configs['memcached_user'] = $default_name;
+            $configs['cache'] = 'memcached';
         }
         return $configs;
     }

@@ -59,7 +59,7 @@ RUN apt-get install -y --no-install-recommends mariadb-client \
 RUN docker-php-ext-install -j$(nproc) pdo_pgsql
 
 #{%-- endif -%}
-#{%-- if $cache == 'memcached' -%}
+#{%-- if ($use_cache && $cache == 'memcached') || $session == 'memcached' -%}
 # Install Memcached extensions and depends
 RUN apt-get install -y --no-install-recommends libmemcached-dev \
     && pecl install                            memcached \

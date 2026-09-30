@@ -276,10 +276,12 @@ services:
   #{%-- if $use_cache -%}
   #{%-- if $cache == 'memcached' -%}
   # ---------------------------------------------------------------------------
-  # Memcached Settings
+  # Memcached for Cache Store Settings
   # ---------------------------------------------------------------------------
-  memcached:
-    hostname: {! $code_name !}-memcached
+  # NOTE: The memcached for the cache store and the session storage are separated, since they
+  #       have different purposes (ex. evicting cache items does not have to affect sessions).
+  memcached-cache:
+    hostname: {! $code_name !}-memcached-cache
     image: memcached
     restart: always
 
@@ -294,4 +296,14 @@ services:
     restart: always
 
   #{%-- endif -%}
+  #{%-- endif -%}
+  #{%-- if $session == 'memcached' -%}
+  # ---------------------------------------------------------------------------
+  # Memcached for Session Storage Settings
+  # ---------------------------------------------------------------------------
+  memcached-session:
+    hostname: {! $code_name !}-memcached-session
+    image: memcached
+    restart: always
+
   #{%-- endif -%}

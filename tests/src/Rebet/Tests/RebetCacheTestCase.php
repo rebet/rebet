@@ -51,7 +51,7 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
                     'memcached'   => [
                         'adapter' => [
                             '@factory' => MemcachedAdapter::class,
-                            'dsn'      => 'memcached://memcached:11211',
+                            'dsn'      => 'memcached://memcached-cache:11211',
                         ],
                     ],
                     'pdo-sqlite'  => [

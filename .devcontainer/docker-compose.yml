@@ -51,9 +51,14 @@ services:
       - pgsql:/var/lib/postgresql
 
   # KVS Containers for Unit Tests
-  memcached:
+  # NOTE: The memcached for the cache store and the session storage are separated, since they
+  #       have different purposes (same as the skelton, see skeltons/.devcontainer/docker-compose.lp.yml).
+  memcached-cache:
     image: memcached
-    hostname: rebet-memcached
+    hostname: rebet-memcached-cache
+  memcached-session:
+    image: memcached
+    hostname: rebet-memcached-session
   redis:
     image: redis
     hostname: rebet-redis
