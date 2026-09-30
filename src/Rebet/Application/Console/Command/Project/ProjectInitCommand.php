@@ -7,7 +7,6 @@ namespace Rebet\Application\Console\Command\Project;
 use Override;
 use Rebet\Auth\Password;
 use Rebet\Console\Command\Command;
-use Rebet\Inflection\Inflector;
 use Rebet\Tools\Template\Letterpress;
 use Rebet\Tools\Testable\System;
 use Rebet\Tools\Utility\Path;
@@ -133,14 +132,19 @@ class ProjectInitCommand extends Command
     public const REQUIRED_COMPOSER_NAME = 'rebet/app-web';
 
     /**
-     * Regex patterns of the vendor/project part of Composer package name
-     * (same as the `name` pattern of Composer's JSON schema).
+     * Rules of the names asked by this command, as [name => ['pattern' => regex, 'label' => label]].
      *
-     * @var array<string, string>
+     *  - `code_name`: only lowercase letters, digits and hyphens (not leading/trailing/consecutive),
+     *    since it is used not only as the project part of Composer package name `{vendor}/{code_name}`
+     *    but also as docker compose project name, container hostnames, Traefik router names (that
+     *    can not contain `.`), and the default of the vendor name.
+     *  - `vendor`: same as the vendor part of the `name` pattern of Composer's JSON schema.
+     *
+     * @var array<string, array{pattern: string, label: string}>
      */
-    public const COMPOSER_NAME_PATTERNS = [
-        'vendor'  => '/^[a-z0-9]([_.-]?[a-z0-9]+)*$/',
-        'project' => '/^[a-z0-9](([_.]|-{1,2})?[a-z0-9]+)*$/',
+    public const NAME_RULES = [
+        'code_name' => ['pattern' => '/^[a-z0-9]+(-[a-z0-9]+)*$/', 'label' => 'an application code name (only lowercase letters, digits and hyphens are allowed)'],
+        'vendor'    => ['pattern' => '/^[a-z0-9]([_.-]?[a-z0-9]+)*$/', 'label' => 'a Composer vendor name'],
     ];
 
     /**
@@ -436,13 +440,15 @@ class ProjectInitCommand extends Command
      */
     protected function stepDefaults(array $configs): array|null
     {
-        $configs['code_name'] = $this->askComposerNamePart("* Application Code Name : ", 'project', null, Inflector::kebabize(basename($configs['cwd'])));
+        // Default to the current directory name, ie. the project name given to `composer create-project`.
+        $default_code_name    = basename($configs['cwd']);
+        $configs['code_name'] = $this->askValidName("* Application Code Name : [{$default_code_name}] ", 'code_name', null, $default_code_name);
         if ($configs['code_name'] === null) {
             return null;
         }
 
         $code_name         = $configs['code_name'];
-        $configs['vendor'] = $this->askComposerNamePart("* Composer Vendor Name  : [{$code_name}] ", 'vendor', 'vendor', $code_name);
+        $configs['vendor'] = $this->askValidName("* Composer Vendor Name  : [{$code_name}] ", 'vendor', 'vendor', $code_name);
         if ($configs['vendor'] === null) {
             return null;
         }
@@ -693,28 +699,28 @@ class ProjectInitCommand extends Command
     }
 
     /**
-     * Ask the given question whose answer is used as a part of Composer package name
-     * `{vendor}/{project}`, and validate the answer by `static::COMPOSER_NAME_PATTERNS[$part]`.
+     * Ask the given question whose answer is a name, and validate the answer by the rule of
+     * `static::NAME_RULES[$name]`.
      *
      * When the answer is invalid, ask again if possible (ie. interactive, and the answer is not
      * given via `--{$via_option}`), otherwise print an error and return null.
      *
      * @param  string      $question
-     * @param  string      $part       'vendor' or 'project' (see static::COMPOSER_NAME_PATTERNS)
+     * @param  string      $name       'code_name' or 'vendor' (see static::NAME_RULES)
      * @param  string|null $via_option (default: null)
      * @param  string|null $default    (default: null)
      * @return string|null the valid answer, or null when the answer is invalid and can not ask again
      */
-    protected function askComposerNamePart(string $question, string $part, string|null $via_option = null, string|null $default = null): string|null
+    protected function askValidName(string $question, string $name, string|null $via_option = null, string|null $default = null): string|null
     {
-        $pattern = static::COMPOSER_NAME_PATTERNS[$part];
+        ['pattern' => $pattern, 'label' => $label] = static::NAME_RULES[$name];
         while (true) {
             $answer = $this->ask($question, $via_option, true, $default);
             if (preg_match($pattern, $answer)) {
                 return $answer;
             }
 
-            $this->error("`{$answer}` is invalid as a Composer {$part} name, it must match `{$pattern}`.");
+            $this->error("`{$answer}` is invalid as {$label}, it must match `{$pattern}`.");
             if (!$this->input->isInteractive() || ($via_option !== null && $this->option($via_option))) {
                 return null;
             }

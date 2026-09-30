@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Application\Console\Command\Project;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\Console\Command\Project\ProjectInitCommand;
 use Rebet\Tests\RebetConsoleTestCase;
 
@@ -61,7 +62,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_noInteraction(): void
     {
-        $this->runInFreshWorkDir('project_init_no_interaction', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-no-interaction', function (string $work_dir): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute([], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -79,7 +80,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_noInteraction_database(): void
     {
-        $this->runInFreshWorkDir('project_init_no_interaction_database', function (): void {
+        $this->runInFreshWorkDir('project-init-no-interaction-database', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--database' => 'mysql'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -94,7 +95,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         // Regression check: Command::choice() silently falls back to null (instead of failing)
         // when the given option value does not resolve and the question is not interactive, so
         // ProjectInitCommand must reject it explicitly instead of proceeding with `database=null`.
-        $this->runInFreshWorkDir('project_init_no_interaction_invalid_database', function (): void {
+        $this->runInFreshWorkDir('project-init-no-interaction-invalid-database', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--database' => 'oracle'], ['interactive' => false]);
             $this->assertSame(1, $status);
@@ -108,7 +109,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     public function test_execute_noInteraction_invalidCache(): void
     {
         // Same regression check as test_execute_noInteraction_invalidDatabase, but for --cache.
-        $this->runInFreshWorkDir('project_init_no_interaction_invalid_cache', function (): void {
+        $this->runInFreshWorkDir('project-init-no-interaction-invalid-cache', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--cache' => 'oracle'], ['interactive' => false]);
             $this->assertSame(1, $status);
@@ -121,7 +122,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_noInteraction_authWithoutDatabase_requiresOptions(): void
     {
-        $this->runInFreshWorkDir('project_init_no_interaction_auth_missing', function (): void {
+        $this->runInFreshWorkDir('project-init-no-interaction-auth-missing', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--auth' => true], ['interactive' => false]);
             $this->assertSame(1, $status);
@@ -134,7 +135,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_noInteraction_authWithoutDatabase(): void
     {
-        $this->runInFreshWorkDir('project_init_no_interaction_auth', function (): void {
+        $this->runInFreshWorkDir('project-init-no-interaction-auth', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute([
                 '--auth'          => true,
@@ -150,7 +151,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_dryRun(): void
     {
-        $this->runInFreshWorkDir('project_init_dry_run', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-dry-run', function (string $work_dir): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--dry-run' => true], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -170,7 +171,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_dryRun_excludesUnselectedDatabaseDirs(): void
     {
-        $this->runInFreshWorkDir('project_init_dry_run_database', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-dry-run-database', function (string $work_dir): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--dry-run' => true, '--database' => 'mysql'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -187,7 +188,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     {
         // Not just `app/`: any top-level skelton entry (eg. `tests/`, `.devcontainer/`)
         // already existing must also refuse to run.
-        $this->runInFreshWorkDir('project_init_already_initialized', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-already-initialized', function (string $work_dir): void {
             mkdir("{$work_dir}/tests");
 
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
@@ -207,7 +208,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     {
         // An `app/` directory that only has `vendor/` (eg. from a devcontainer running
         // `composer install` ahead of time) must not be treated as already initialized.
-        $this->runInFreshWorkDir('project_init_app_vendor_only', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-app-vendor-only', function (string $work_dir): void {
             mkdir("{$work_dir}/app/vendor", 0o755, true);
 
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
@@ -220,7 +221,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     public function test_execute_appDirWithMoreThanVendorDir_isAlreadyInitialized(): void
     {
         // But if `app/` has anything else besides `vendor/`, it is still considered initialized.
-        $this->runInFreshWorkDir('project_init_app_vendor_and_more', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-app-vendor-and-more', function (string $work_dir): void {
             mkdir("{$work_dir}/app/vendor", 0o755, true);
             touch("{$work_dir}/app/other-file.txt");
 
@@ -237,7 +238,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     public function test_execute_noComposerJson_refusesToRun(): void
     {
         // Unlike runInFreshWorkDir(), this deliberately does NOT create a composer.json.
-        $work_dir = static::makeSubWorkingDir('project_init_no_composer_json');
+        $work_dir = static::makeSubWorkingDir('project-init-no-composer-json');
         $cwd      = getcwd();
         chdir($work_dir);
         try {
@@ -258,7 +259,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         // RebetTestCase enables System::testing() for every test, so ProjectInitCommand::
         // composerRequire() never actually shells out to Composer here; it only prints the
         // command it would have run.
-        $this->runInFreshWorkDir('project_init_composer_require_default', function (): void {
+        $this->runInFreshWorkDir('project-init-composer-require-default', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute([], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -278,7 +279,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_composerRequire_viewBlade(): void
     {
-        $this->runInFreshWorkDir('project_init_composer_require_blade', function (): void {
+        $this->runInFreshWorkDir('project-init-composer-require-blade', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--view' => 'blade'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -291,7 +292,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_composerRequire_cacheRedis(): void
     {
-        $this->runInFreshWorkDir('project_init_composer_require_redis', function (): void {
+        $this->runInFreshWorkDir('project-init-composer-require-redis', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--cache' => 'redis'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -303,7 +304,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_noInteraction_session_defaultsToNative(): void
     {
-        $this->runInFreshWorkDir('project_init_session_default', function (): void {
+        $this->runInFreshWorkDir('project-init-session-default', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute([], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -313,7 +314,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_noInteraction_session_redis(): void
     {
-        $this->runInFreshWorkDir('project_init_session_redis', function (): void {
+        $this->runInFreshWorkDir('project-init-session-redis', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--session' => 'redis'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -326,7 +327,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_noInteraction_session_mongodb(): void
     {
-        $this->runInFreshWorkDir('project_init_session_mongodb', function (): void {
+        $this->runInFreshWorkDir('project-init-session-mongodb', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--session' => 'mongodb'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -340,7 +341,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     public function test_execute_noInteraction_session_databaseRequiresDatabase(): void
     {
         // 'database' is only a valid --session choice when a database is actually used.
-        $this->runInFreshWorkDir('project_init_session_database_without_db', function (): void {
+        $this->runInFreshWorkDir('project-init-session-database-without-db', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--session' => 'database'], ['interactive' => false]);
             $this->assertSame(1, $status);
@@ -353,7 +354,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_noInteraction_session_databaseWithDatabase(): void
     {
-        $this->runInFreshWorkDir('project_init_session_database_with_db', function (): void {
+        $this->runInFreshWorkDir('project-init-session-database-with-db', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--session' => 'database', '--database' => 'mysql'], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -363,7 +364,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_noInteraction_invalidSession(): void
     {
-        $this->runInFreshWorkDir('project_init_invalid_session', function (): void {
+        $this->runInFreshWorkDir('project-init-invalid-session', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--session' => 'oracle'], ['interactive' => false]);
             $this->assertSame(1, $status);
@@ -391,7 +392,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_interactive_reviewConfirmYes(): void
     {
-        $this->runInFreshWorkDir('project_init_review_yes', function (): void {
+        $this->runInFreshWorkDir('project-init-review-yes', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $tester->setInputs($this->minimalInteractiveInputs([
                 '', // Are these settings OK? -> yes (default)
@@ -410,7 +411,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_interactive_reviewRedoStep(): void
     {
-        $this->runInFreshWorkDir('project_init_review_redo', function (): void {
+        $this->runInFreshWorkDir('project-init-review-redo', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $tester->setInputs($this->minimalInteractiveInputs([
                 '5',     // Are these settings OK? -> type the step number to fix -> 5) View
@@ -429,7 +430,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_interactive_reviewAbort(): void
     {
-        $this->runInFreshWorkDir('project_init_review_abort', function (): void {
+        $this->runInFreshWorkDir('project-init-review-abort', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $tester->setInputs($this->minimalInteractiveInputs([
                 'abort', // Are these settings OK? -> abort
@@ -446,7 +447,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_interactive_reviewAbort_declinedKeepsReviewing(): void
     {
-        $this->runInFreshWorkDir('project_init_review_abort_declined', function (): void {
+        $this->runInFreshWorkDir('project-init-review-abort-declined', function (): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $tester->setInputs($this->minimalInteractiveInputs([
                 'abort', // Are these settings OK? -> abort
@@ -466,7 +467,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     {
         // A `.gitignore` (that a project created via `composer create-project` usually already has)
         // must not be treated as already initialized, and is overwritten by the skelton.
-        $this->runInFreshWorkDir('project_init_gitignore_exists', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-gitignore-exists', function (string $work_dir): void {
             file_put_contents("{$work_dir}/.gitignore", "/old-entry/\n");
 
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
@@ -479,7 +480,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_composerNameIsNotRebetAppWeb(): void
     {
-        $this->runInFreshWorkDir('project_init_composer_name_invalid', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-composer-name-invalid', function (string $work_dir): void {
             file_put_contents("{$work_dir}/composer.json", '{"name": "acme/other-project"}');
 
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
@@ -492,7 +493,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_composerNameStartsWithRebetAppWebButNotExactlyMatched(): void
     {
-        $this->runInFreshWorkDir('project_init_composer_name_not_exact', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-composer-name-not-exact', function (string $work_dir): void {
             file_put_contents("{$work_dir}/composer.json", '{"name": "rebet/app-web-extra"}');
 
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
@@ -505,7 +506,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_composerNameIsMissing(): void
     {
-        $this->runInFreshWorkDir('project_init_composer_name_missing', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-composer-name-missing', function (string $work_dir): void {
             file_put_contents("{$work_dir}/composer.json", '{}');
 
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
@@ -518,7 +519,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_updatesComposerNameAndDescription(): void
     {
-        $this->runInFreshWorkDir('project_init_composer_update', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-composer-update', function (string $work_dir): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             // Give the vendor explicitly to check that the given vendor (not the default) is used.
             $status = $tester->execute(['--vendor' => 'acme'], ['interactive' => false]);
@@ -537,7 +538,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_dryRun_doesNotUpdateComposerJson(): void
     {
-        $this->runInFreshWorkDir('project_init_composer_dry_run', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-composer-dry-run', function (string $work_dir): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--dry-run' => true], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -550,9 +551,64 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
         });
     }
 
+    public function test_execute_noInteraction_codeNameDefaultsToDirectoryName(): void
+    {
+        // The code name defaults to the current directory name as it is (ie. the project name
+        // given to `composer create-project`).
+        $this->runInFreshWorkDir('project-init-code-name-default', function (string $work_dir): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute([], ['interactive' => false]);
+            $this->assertSame(0, $status);
+            $this->assertStringContainsString('code_name => project-init-code-name-default,', $tester->getDisplay());
+        });
+    }
+
+    /**
+     * @return array<int, array{0: string}>
+     */
+    public static function dataInvalidCodeNames(): array
+    {
+        return [
+            ['ProjectInitUpperCase'],
+            ['project_init_underscore'],
+            ['project-init.dot'],
+            ['project-init--double-hyphens'],
+            ['project-init-trailing-hyphen-'],
+        ];
+    }
+
+    #[DataProvider('dataInvalidCodeNames')]
+    public function test_execute_noInteraction_directoryNameIsInvalidAsCodeName(string $dir_name): void
+    {
+        // Only lowercase letters, digits and hyphens are allowed as the code name.
+        $this->runInFreshWorkDir($dir_name, function (string $work_dir) use ($dir_name): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute([], ['interactive' => false]);
+            $this->assertSame(1, $status);
+            $this->assertStringContainsString("`{$dir_name}` is invalid as an application code name (only lowercase letters, digits and hyphens are allowed)", $tester->getDisplay());
+            $this->assertFileDoesNotExist("{$work_dir}/app");
+        });
+    }
+
+    public function test_execute_interactive_directoryNameIsInvalidAsCodeName_isAskedAgain(): void
+    {
+        $this->runInFreshWorkDir('project_init_code_name_ask_again', function (string $work_dir): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $tester->setInputs(array_merge(
+                ['', 'fixed-code-name'], // Code name -> default (invalid directory name), so it is asked again
+                array_slice($this->minimalInteractiveInputs(['', 'y']), 1),
+            ));
+            $status  = $tester->execute([], ['interactive' => true]);
+            $display = $tester->getDisplay();
+            $this->assertSame(0, $status);
+            $this->assertStringContainsString('`project_init_code_name_ask_again` is invalid as an application code name', $display);
+            $this->assertSame('fixed-code-name/fixed-code-name', json_decode(file_get_contents("{$work_dir}/composer.json"), true)['name']);
+        });
+    }
+
     public function test_execute_noInteraction_vendorDefaultsToCodeName(): void
     {
-        $this->runInFreshWorkDir('project_init_vendor_default', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-vendor-default', function (string $work_dir): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute([], ['interactive' => false]);
             $this->assertSame(0, $status);
@@ -563,7 +619,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_invalidVendorViaOption(): void
     {
-        $this->runInFreshWorkDir('project_init_vendor_invalid', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-vendor-invalid', function (string $work_dir): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--vendor' => 'Invalid Vendor'], ['interactive' => false]);
             $this->assertSame(1, $status);
@@ -574,7 +630,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_interactive_invalidVendorIsAskedAgain(): void
     {
-        $this->runInFreshWorkDir('project_init_vendor_ask_again', function (string $work_dir): void {
+        $this->runInFreshWorkDir('project-init-vendor-ask-again', function (string $work_dir): void {
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $tester->setInputs(array_merge(
                 ['', 'Invalid Vendor'], // Code name -> default, Vendor -> invalid, so it is asked again
