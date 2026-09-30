@@ -28,23 +28,24 @@ class ProjectInitCommand extends Command
     public const NAME        = 'project:init';
     public const DESCRIPTION = 'Initialize a new Rebet application';
     public const OPTIONS     = [
-        [['domain', 'd'  ], null, InputOption::VALUE_OPTIONAL, 'Application domain for local development. (default: localhost)'],
-        [['locale', 'l'  ], null, InputOption::VALUE_OPTIONAL, 'Default application locale. (default: the system locale, ie. locale_get_default())'],
-        [['timezone', 't'  ], null, InputOption::VALUE_OPTIONAL, 'Default application timezone. (default: the system timezone, ie. date_default_timezone_get(), falls back to UTC)'],
-        [['database', 'db' ], null, InputOption::VALUE_OPTIONAL, 'Database product. (choices: sqlite, mysql, mariadb, pgsql / default: mysql)'],
-        [['database-name', 'dbn'], null, InputOption::VALUE_OPTIONAL, 'Database name for local development. (default: the application code name)'],
-        [['database-user', 'dbu'], null, InputOption::VALUE_OPTIONAL, 'Database user for local development. (default: the application code name)'],
-        [['database-pass', 'dbp'], null, InputOption::VALUE_OPTIONAL, 'Database password for local development. (default: P@ssw0rd)'],
-        [['auth'                 ], 'a', InputOption::VALUE_NONE, 'Use user auth (when do not use database then use ArrayProvider as read only authentication)'],
-        [['auth-name', 'an' ], null, InputOption::VALUE_OPTIONAL, 'Auth user name for local development (only when --auth is used without a database).'],
-        [['auth-email', 'ae' ], null, InputOption::VALUE_OPTIONAL, 'Auth user email for local development (only when --auth is used without a database).'],
-        [['auth-password', 'ap' ], null, InputOption::VALUE_OPTIONAL, 'Auth user password for local development (only when --auth is used without a database).'],
-        [['view', 'v'  ], null, InputOption::VALUE_OPTIONAL, 'View template engine. (choices: twig, blade / default: twig)'],
-        [['cache', 'c'  ], null, InputOption::VALUE_OPTIONAL, 'Cache store product. (choices: apcu, file, memcached, redis, and also database when a database is used / default: memcached)'],
+        [['vendor',         'vn' ], null, InputOption::VALUE_OPTIONAL, 'Composer vendor name, used as the application package name `{vendor}/{code_name}` in composer.json. (default: the application code name)'],
+        [['domain',         'd'  ], null, InputOption::VALUE_OPTIONAL, 'Application domain for local development. (default: localhost)'],
+        [['locale',         'l'  ], null, InputOption::VALUE_OPTIONAL, 'Default application locale. (default: the system locale, ie. locale_get_default())'],
+        [['timezone',       't'  ], null, InputOption::VALUE_OPTIONAL, 'Default application timezone. (default: the system timezone, ie. date_default_timezone_get(), falls back to UTC)'],
+        [['database',       'db' ], null, InputOption::VALUE_OPTIONAL, 'Database product. (choices: sqlite, mysql, mariadb, pgsql / default: mysql)'],
+        [['database-name',  'dbn'], null, InputOption::VALUE_OPTIONAL, 'Database name for local development. (default: the application code name)'],
+        [['database-user',  'dbu'], null, InputOption::VALUE_OPTIONAL, 'Database user for local development. (default: the application code name)'],
+        [['database-pass',  'dbp'], null, InputOption::VALUE_OPTIONAL, 'Database password for local development. (default: P@ssw0rd)'],
+        [['auth'                 ], 'a',  InputOption::VALUE_NONE,     'Use user auth (when do not use database then use ArrayProvider as read only authentication)'],
+        [['auth-name',      'an' ], null, InputOption::VALUE_OPTIONAL, 'Auth user name for local development (only when --auth is used without a database).'],
+        [['auth-email',     'ae' ], null, InputOption::VALUE_OPTIONAL, 'Auth user email for local development (only when --auth is used without a database).'],
+        [['auth-password',  'ap' ], null, InputOption::VALUE_OPTIONAL, 'Auth user password for local development (only when --auth is used without a database).'],
+        [['view',           'v'  ], null, InputOption::VALUE_OPTIONAL, 'View template engine. (choices: twig, blade / default: twig)'],
+        [['cache',          'c'  ], null, InputOption::VALUE_OPTIONAL, 'Cache store product. (choices: apcu, file, memcached, redis, and also database when a database is used / default: memcached)'],
         [['memcached-user', 'mu' ], null, InputOption::VALUE_OPTIONAL, 'Memcached user for local development. (default: the application code name)'],
         [['memcached-pass', 'mp' ], null, InputOption::VALUE_OPTIONAL, 'Memcached password for local development. (default: P@ssw0rd)'],
-        [['session', 's'  ], null, InputOption::VALUE_OPTIONAL, 'Session storage. (choices: native, database (when a database is used), memcached, redis, mongodb / default: native)'],
-        [['dry-run'              ], null, InputOption::VALUE_NONE, 'Show the settings and the list of files that would be generated, without writing anything.'],
+        [['session',        's'  ], null, InputOption::VALUE_OPTIONAL, 'Session storage. (choices: native, database (when a database is used), memcached, redis, mongodb / default: native)'],
+        [['dry-run'              ], null, InputOption::VALUE_NONE,     'Show the settings and the list of files that would be generated, without writing anything.'],
     ];
 
     /**
@@ -121,6 +122,35 @@ class ProjectInitCommand extends Command
             "phpunit/phpunit",
             "psy/psysh",
         ],
+    ];
+
+    /**
+     * The `name` in composer.json that the Composer project to initialize must have,
+     * ie. `project:init` is only for a project created via `composer create-project rebet/app-web`.
+     *
+     * @var string
+     */
+    public const REQUIRED_COMPOSER_NAME = 'rebet/app-web';
+
+    /**
+     * Regex patterns of the vendor/project part of Composer package name
+     * (same as the `name` pattern of Composer's JSON schema).
+     *
+     * @var array<string, string>
+     */
+    public const COMPOSER_NAME_PATTERNS = [
+        'vendor'  => '/^[a-z0-9]([_.-]?[a-z0-9]+)*$/',
+        'project' => '/^[a-z0-9](([_.]|-{1,2})?[a-z0-9]+)*$/',
+    ];
+
+    /**
+     * Top-level skelton entries (by their generated name) that are allowed to already exist in the
+     * given directory, and are overwritten by the skelton on generation (see existingSkeltonEntries()).
+     *
+     * @var string[]
+     */
+    public const OVERWRITABLE_ENTRIES = [
+        '.gitignore',
     ];
 
     /**
@@ -219,6 +249,16 @@ class ProjectInitCommand extends Command
             }
         }
         $this->writeln('  ' . count($generated) . ' files ' . ($dry_run ? 'would be generated.' : 'generated.'));
+
+        $composer_name        = "{$configs['vendor']}/{$code_name}";
+        $composer_description = "{$code_name} web application";
+        $this->writeln('');
+        $this->writeln($dry_run ? 'composer.json that would be updated...' : 'Updating composer.json...');
+        $this->writeln("  - name        : {$composer_name}");
+        $this->writeln("  - description : {$composer_description}");
+        if (!$dry_run && !$this->updateComposerJson($cwd, ['name' => $composer_name, 'description' => $composer_description])) {
+            return 1;
+        }
 
         $require     = $this->resolveComposerPackages(static::COMPOSER_REQUIRE, $configs);
         $require_dev = $this->resolveComposerPackages(static::COMPOSER_REQUIRE_DEV, $configs);
@@ -341,6 +381,7 @@ class ProjectInitCommand extends Command
         $groups = [
             [
                 ['Application Code Name', $configs['code_name'] ?? ''],
+                ['Composer Vendor Name', $configs['vendor'] ?? ''],
                 ['Locale', $configs['locale'] ?? ''],
                 ['Timezone', $configs['timezone'] ?? ''],
             ],
@@ -388,14 +429,24 @@ class ProjectInitCommand extends Command
     }
 
     /**
-     * Wizard step: application code name, locale and timezone.
+     * Wizard step: application code name, composer vendor name, locale and timezone.
      *
-     * @param  array<string, mixed> $configs
-     * @return array<string, mixed>
+     * @param  array<string, mixed>      $configs
+     * @return array<string, mixed>|null null when the code name or vendor name is invalid
      */
-    protected function stepDefaults(array $configs): array
+    protected function stepDefaults(array $configs): array|null
     {
-        $configs['code_name'] = $this->ask("* Application Code Name : ", null, true, Inflector::kebabize(basename($configs['cwd'])));
+        $configs['code_name'] = $this->askComposerNamePart("* Application Code Name : ", 'project', null, Inflector::kebabize(basename($configs['cwd'])));
+        if ($configs['code_name'] === null) {
+            return null;
+        }
+
+        $code_name         = $configs['code_name'];
+        $configs['vendor'] = $this->askComposerNamePart("* Composer Vendor Name  : [{$code_name}] ", 'vendor', 'vendor', $code_name);
+        if ($configs['vendor'] === null) {
+            return null;
+        }
+
         // Same fallback as the library default (see Rebet\Application\App::defaultConfig()).
         $configs['locale']   = $this->ask("* Default Locale        : [" . locale_get_default() . "] ", 'locale', true, locale_get_default());
         $configs['timezone'] = $this->ask("* Default Timezone      : [" . (date_default_timezone_get() ?: 'UTC') . "] ", 'timezone', true, date_default_timezone_get() ?: 'UTC');
@@ -578,6 +629,8 @@ class ProjectInitCommand extends Command
      *  - The given directory must be the root of an existing Composer project (ie. it must contain
      *    a `composer.json`), since `project:init` only adds the Rebet application skeleton to an
      *    existing Composer project rather than creating a brand-new one.
+     *  - The `name` in that `composer.json` must be `static::REQUIRED_COMPOSER_NAME`
+     *    (ie. the project must be created via `composer create-project rebet/app-web`).
      *  - The given directory must not already be initialized (see `existingSkeltonEntries()`).
      *
      * @param  string $cwd
@@ -594,6 +647,14 @@ class ProjectInitCommand extends Command
         if (!file_exists($composer_json)) {
             $this->error("This directory does not seem to be a Composer project (`{$composer_json}` not found).");
             $this->error('`' . static::NAME . '` must be run from the root of an existing Composer project.');
+            return false;
+        }
+
+        $name     = json_decode((string) file_get_contents($composer_json))->name ?? null;
+        $required = static::REQUIRED_COMPOSER_NAME;
+        if ($name !== $required) {
+            $this->error("The name in `{$composer_json}` must be `{$required}`, but " . (is_string($name) ? "`{$name}`" : 'nothing') . " given.");
+            $this->error('`' . static::NAME . "` must be run from the root of a Composer project created via `composer create-project {$required}`.");
             return false;
         }
 
@@ -632,6 +693,35 @@ class ProjectInitCommand extends Command
     }
 
     /**
+     * Ask the given question whose answer is used as a part of Composer package name
+     * `{vendor}/{project}`, and validate the answer by `static::COMPOSER_NAME_PATTERNS[$part]`.
+     *
+     * When the answer is invalid, ask again if possible (ie. interactive, and the answer is not
+     * given via `--{$via_option}`), otherwise print an error and return null.
+     *
+     * @param  string      $question
+     * @param  string      $part       'vendor' or 'project' (see static::COMPOSER_NAME_PATTERNS)
+     * @param  string|null $via_option (default: null)
+     * @param  string|null $default    (default: null)
+     * @return string|null the valid answer, or null when the answer is invalid and can not ask again
+     */
+    protected function askComposerNamePart(string $question, string $part, string|null $via_option = null, string|null $default = null): string|null
+    {
+        $pattern = static::COMPOSER_NAME_PATTERNS[$part];
+        while (true) {
+            $answer = $this->ask($question, $via_option, true, $default);
+            if (preg_match($pattern, $answer)) {
+                return $answer;
+            }
+
+            $this->error("`{$answer}` is invalid as a Composer {$part} name, it must match `{$pattern}`.");
+            if (!$this->input->isInteractive() || ($via_option !== null && $this->option($via_option))) {
+                return null;
+            }
+        }
+    }
+
+    /**
      * Get the paths, under the given directory, that already exist and correspond to one of the
      * top-level entries of the skeltons directory (ie. that `project:init` would otherwise
      * generate into).
@@ -643,6 +733,10 @@ class ProjectInitCommand extends Command
      * As a special case, an existing `app` directory that contains nothing but a `vendor`
      * directory (ie. only `composer install` has been run there, typically ahead of time by the
      * devcontainer setup) is not considered "already initialized".
+     *
+     * Also, the entries listed in `static::OVERWRITABLE_ENTRIES` (ex `.gitignore`, which a project
+     * created via `composer create-project` usually already has) are not considered "already
+     * initialized", since they are simply overwritten by the skelton on generation.
      *
      * @param  string   $cwd
      * @return string[] absolute paths that already exist
@@ -656,6 +750,9 @@ class ProjectInitCommand extends Command
             }
 
             $name = Letterpress::isTemplateFile($item) ? Letterpress::stripMarker($item) : $item;
+            if (in_array($name, static::OVERWRITABLE_ENTRIES, true)) {
+                continue;
+            }
             $path = Path::normalize("{$cwd}/{$name}");
             if (!file_exists($path)) {
                 continue;
@@ -790,6 +887,36 @@ class ProjectInitCommand extends Command
         }
 
         return array_values(array_unique($packages));
+    }
+
+    /**
+     * Update the given properties of the `composer.json` in the given directory, keeping the other
+     * properties (and their order) as they are. A property that does not exist yet is added.
+     *
+     * @param  string                $cwd        project root directory (where `composer.json` lives)
+     * @param  array<string, string> $properties [property name => value]
+     * @return bool                  true on success, false if `composer.json` could not be read/written
+     */
+    protected function updateComposerJson(string $cwd, array $properties): bool
+    {
+        $composer_json = Path::normalize("{$cwd}/composer.json");
+        // Decode as objects (not assoc arrays) so that empty objects (ex `"require": {}`) stay `{}`.
+        $json = json_decode((string) file_get_contents($composer_json));
+        if (!$json instanceof \stdClass) {
+            $this->error("Could not update `{$composer_json}`, it is not a valid JSON object.");
+            return false;
+        }
+
+        foreach ($properties as $key => $value) {
+            $json->{$key} = $value;
+        }
+
+        if (file_put_contents($composer_json, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n") === false) {
+            $this->error("Could not update `{$composer_json}`.");
+            return false;
+        }
+
+        return true;
     }
 
     /**
