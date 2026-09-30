@@ -6,6 +6,7 @@ namespace Rebet\Tests\Application\Console\Command\Project;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\Console\Command\Project\ProjectInitCommand;
+use Rebet\Auth\Password;
 use Rebet\Tests\RebetConsoleTestCase;
 
 class ProjectInitCommandTest extends RebetConsoleTestCase
@@ -70,7 +71,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $display = $tester->getDisplay();
             $this->assertStringContainsString('locale => ' . locale_get_default() . ',', $display);
             $this->assertStringContainsString('timezone => ' . (date_default_timezone_get() ?: 'UTC') . ',', $display);
-            $this->assertStringContainsString('domain => localhost,', $display);
+            $this->assertStringContainsString('domain => project-init-no-interaction.localhost,', $display);
             $this->assertStringContainsString('view => twig,', $display);
 
             $this->assertFileExists("{$work_dir}/app/core/.env");
@@ -641,6 +642,367 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(0, $status);
             $this->assertStringContainsString('`Invalid Vendor` is invalid as a Composer vendor name', $display);
             $this->assertSame('project-init-vendor-ask-again/project-init-vendor-ask-again', json_decode(file_get_contents("{$work_dir}/composer.json"), true)['name']);
+        });
+    }
+
+    /**
+     * @return array<int, array{0: string, 1: string}>
+     */
+    public static function dataValidLocales(): array
+    {
+        return [
+            ['en', 'en'],
+            ['ja_JP', 'ja_JP'],
+            ['ja-JP', 'ja_JP'],
+            ['JA_jp', 'ja_JP'],
+            ['zh_Hant_TW', 'zh_Hant_TW'],
+        ];
+    }
+
+    #[DataProvider('dataValidLocales')]
+    public function test_execute_noInteraction_validLocale_isCanonicalized(string $given, string $expect): void
+    {
+        $this->runInFreshWorkDir('project-init-valid-locale', function () use ($given, $expect): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--locale' => $given, '--dry-run' => true], ['interactive' => false]);
+            $this->assertSame(0, $status);
+            $this->assertStringContainsString("locale => {$expect},", $tester->getDisplay());
+        });
+    }
+
+    /**
+     * @return array<int, array{0: string}>
+     */
+    public static function dataInvalidLocales(): array
+    {
+        return [
+            ['xx'],
+            ['ja_XX'],
+            ['japanese'],
+            ['C'],
+        ];
+    }
+
+    #[DataProvider('dataInvalidLocales')]
+    public function test_execute_noInteraction_invalidLocale(string $locale): void
+    {
+        $this->runInFreshWorkDir('project-init-invalid-locale', function (string $work_dir) use ($locale): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--locale' => $locale], ['interactive' => false]);
+            $this->assertSame(1, $status);
+            $this->assertStringContainsString("`{$locale}` is invalid as a locale", $tester->getDisplay());
+            $this->assertFileDoesNotExist("{$work_dir}/app");
+        });
+    }
+
+    /**
+     * @return array<int, array{0: string, 1: string}>
+     */
+    public static function dataValidTimezones(): array
+    {
+        return [
+            ['UTC', 'UTC'],
+            ['Asia/Tokyo', 'Asia/Tokyo'],
+            ['asia/tokyo', 'Asia/Tokyo'],
+            ['Japan', 'Japan'], // backward compatible identifier
+        ];
+    }
+
+    #[DataProvider('dataValidTimezones')]
+    public function test_execute_noInteraction_validTimezone_isCanonicalized(string $given, string $expect): void
+    {
+        $this->runInFreshWorkDir('project-init-valid-timezone', function () use ($given, $expect): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--timezone' => $given, '--dry-run' => true], ['interactive' => false]);
+            $this->assertSame(0, $status);
+            $this->assertStringContainsString("timezone => {$expect},", $tester->getDisplay());
+        });
+    }
+
+    /**
+     * @return array<int, array{0: string}>
+     */
+    public static function dataInvalidTimezones(): array
+    {
+        return [
+            ['Foo/Bar'],
+            ['JST'],
+            ['+09:00'],
+        ];
+    }
+
+    #[DataProvider('dataInvalidTimezones')]
+    public function test_execute_noInteraction_invalidTimezone(string $timezone): void
+    {
+        $this->runInFreshWorkDir('project-init-invalid-timezone', function (string $work_dir) use ($timezone): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--timezone' => $timezone], ['interactive' => false]);
+            $this->assertSame(1, $status);
+            $this->assertStringContainsString("`{$timezone}` is invalid as a timezone", $tester->getDisplay());
+            $this->assertFileDoesNotExist("{$work_dir}/app");
+        });
+    }
+
+    public function test_execute_interactive_invalidLocaleAndTimezone_areAskedAgain(): void
+    {
+        $this->runInFreshWorkDir('project-init-locale-timezone-ask-again', function (string $work_dir): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $tester->setInputs(array_merge(
+                ['', ''],                         // Code name, Vendor -> defaults
+                ['japanese', 'ja-JP'],            // Locale -> invalid, so it is asked again
+                ['JST', 'asia/tokyo'],            // Timezone -> invalid, so it is asked again
+                array_slice($this->minimalInteractiveInputs(['', 'y']), 4),
+            ));
+            $status  = $tester->execute([], ['interactive' => true]);
+            $display = $tester->getDisplay();
+            $this->assertSame(0, $status);
+            $this->assertStringContainsString('`japanese` is invalid as a locale', $display);
+            $this->assertStringContainsString('`JST` is invalid as a timezone', $display);
+            $this->assertStringContainsString('locale => ja_JP,', $display);
+            $this->assertStringContainsString('timezone => Asia/Tokyo,', $display);
+        });
+    }
+
+    /**
+     * @return array<int, array{0: string}>
+     */
+    public static function dataReservedDomains(): array
+    {
+        return [
+            ['localhost'],
+            ['LocalHost'],
+            ['localhost.'],
+            ['traefik.localhost'],
+            ['Traefik.Localhost'],
+        ];
+    }
+
+    #[DataProvider('dataReservedDomains')]
+    public function test_execute_noInteraction_reservedDomain(string $domain): void
+    {
+        $this->runInFreshWorkDir('project-init-reserved-domain', function (string $work_dir) use ($domain): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--domain' => $domain], ['interactive' => false]);
+            $this->assertSame(1, $status);
+            $this->assertStringContainsString("`{$domain}` is reserved, so please use another domain (ex project-init-reserved-domain.localhost).", $tester->getDisplay());
+            $this->assertFileDoesNotExist("{$work_dir}/app");
+        });
+    }
+
+    public function test_execute_interactive_reservedDomain_isAskedAgain(): void
+    {
+        $this->runInFreshWorkDir('project-init-domain-ask-again', function (string $work_dir): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $tester->setInputs(array_merge(
+                ['', '', '', ''],                           // Code name, Vendor, Locale, Timezone -> defaults
+                ['localhost', 'traefik.localhost', 'foo.localhost'], // Domain -> reserved twice, so it is asked again
+                array_slice($this->minimalInteractiveInputs(['', 'y']), 5),
+            ));
+            $status  = $tester->execute([], ['interactive' => true]);
+            $display = $tester->getDisplay();
+            $this->assertSame(0, $status);
+            $this->assertStringContainsString('`localhost` is reserved', $display);
+            $this->assertStringContainsString('`traefik.localhost` is reserved', $display);
+            $this->assertStringContainsString('domain => foo.localhost,', $display);
+        });
+    }
+
+    public function test_execute_localhostDomain_hostsFileIsIfNeeded(): void
+    {
+        $this->runInFreshWorkDir('project-init-localhost-domain', function (string $work_dir): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute([], ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $post_create = file_get_contents("{$work_dir}/.devcontainer/post_create_command.sh");
+            $this->assertStringContainsString("'project-init-localhost-domain.localhost' usually resolves to 127.0.0.1 without editing your hosts file.", $post_create);
+            $this->assertStringContainsString("If needed (ex. your browser/OS can not resolve it), write '127.0.0.1 project-init-localhost-domain.localhost' in your hosts file.", $post_create);
+            $this->assertStringNotContainsString('Please write', $post_create);
+        });
+    }
+
+    public function test_execute_otherDomain_hostsFileIsRequired(): void
+    {
+        $this->runInFreshWorkDir('project-init-other-domain', function (string $work_dir): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--domain' => 'local.example.com'], ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $post_create = file_get_contents("{$work_dir}/.devcontainer/post_create_command.sh");
+            $this->assertStringContainsString("Please write '127.0.0.1 local.example.com' in your hosts file.", $post_create);
+            $this->assertStringNotContainsString('If needed', $post_create);
+        });
+    }
+
+    public function test_execute_noInteraction_databaseAndMemcachedNamesDefaultToSnakeCaseOfCodeName(): void
+    {
+        $this->runInFreshWorkDir('project-init-snake-default', function (): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--database' => 'mysql', '--cache' => 'memcached', '--dry-run' => true], ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $display = $tester->getDisplay();
+            $this->assertStringContainsString('code_name => project-init-snake-default,', $display);
+            $this->assertStringContainsString('db_name => project_init_snake_default,', $display);
+            $this->assertStringContainsString('db_user => project_init_snake_default,', $display);
+            $this->assertStringContainsString('memcached_user => project_init_snake_default,', $display);
+        });
+    }
+
+    public function test_execute_noInteraction_withoutDatabaseAndCache_namesDefaultToSnakeCaseOfCodeName(): void
+    {
+        // Even when neither database nor cache is used, the (unused) names are set to the snake
+        // case of the code name, since the skelton templates refer to them.
+        $this->runInFreshWorkDir('project-init-snake-unused', function (): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--dry-run' => true], ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $display = $tester->getDisplay();
+            $this->assertStringContainsString('db_name => project_init_snake_unused,', $display);
+            $this->assertStringContainsString('memcached_user => project_init_snake_unused,', $display);
+        });
+    }
+
+    /**
+     * @return array<int, array{0: array<string, string>, 1: string, 2: string}>
+     */
+    public static function dataPgsqlIdentifiers(): array
+    {
+        return [
+            [[], 'project_init_pgsql_quoted', 'project_init_pgsql_quoted'],
+            [['--database-name' => 'my-db', '--database-user' => '3d-user'], 'my-db', '3d-user'],
+        ];
+    }
+
+    #[DataProvider('dataPgsqlIdentifiers')]
+    public function test_execute_pgsql_identifiersAreQuoted(array $options, string $db_name, string $db_user): void
+    {
+        // PostgreSQL requires identifiers containing hyphens or starting with digits to be quoted.
+        $this->runInFreshWorkDir('project-init-pgsql-quoted', function (string $work_dir) use ($options, $db_name, $db_user): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(array_merge(['--database' => 'pgsql'], $options), ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $sql = file_get_contents("{$work_dir}/.devcontainer/docker/pgsql/initdb.d/001_create_database.sql");
+            $this->assertStringContainsString("CREATE USER \"{$db_user}\" WITH PASSWORD", $sql);
+            $this->assertStringContainsString("ALTER ROLE \"{$db_user}\" WITH SUPERUSER;", $sql);
+            $this->assertStringContainsString("CREATE DATABASE \"{$db_name}\" WITH OWNER = \"{$db_user}\"", $sql);
+        });
+    }
+
+    /**
+     * @return array<int, array{0: array<string, string>, 1: string, 2: string}>
+     */
+    public static function dataDefaultPasswords(): array
+    {
+        return [
+            // The passwords default to the (default) users.
+            [[], 'project_init_default_password', 'project_init_default_password'],
+            // The passwords default to the given users.
+            [['--database-user' => 'db_foo', '--memcached-user' => 'mc_bar'], 'db_foo', 'mc_bar'],
+            // The given passwords are used as they are.
+            [['--database-pass' => 'db_secret', '--memcached-pass' => 'mc_secret'], 'db_secret', 'mc_secret'],
+        ];
+    }
+
+    #[DataProvider('dataDefaultPasswords')]
+    public function test_execute_noInteraction_passwordsDefaultToUsers(array $options, string $db_pass, string $memcached_pass): void
+    {
+        $this->runInFreshWorkDir('project-init-default-password', function (string $work_dir) use ($options, $db_pass, $memcached_pass): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(array_merge(['--database' => 'mysql', '--cache' => 'memcached'], $options), ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $env = file_get_contents("{$work_dir}/app/core/.env");
+            $this->assertStringContainsString("DB_PASSWORD={$db_pass}\n", $env);
+            $this->assertStringContainsString("MEMCACHED_PASSWORD={$memcached_pass}\n", $env);
+        });
+    }
+
+    /**
+     * @return array<int, array{0: string, 1: string}>
+     */
+    public static function dataRootPasswords(): array
+    {
+        return [
+            ['mysql', 'MYSQL_ROOT_PASSWORD: root'],
+            ['mariadb', 'MARIADB_ROOT_PASSWORD: root'],
+            ['pgsql', 'POSTGRES_PASSWORD: root'],
+        ];
+    }
+
+    #[DataProvider('dataRootPasswords')]
+    public function test_execute_rootPasswordIsSameAsRootUser(string $database, string $expect): void
+    {
+        $this->runInFreshWorkDir('project-init-root-password', function (string $work_dir) use ($database, $expect): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--database' => $database], ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $compose = file_get_contents("{$work_dir}/.devcontainer/docker-compose.yml");
+            $this->assertSame(2, substr_count($compose, $expect)); // for local development and unit test
+            $this->assertStringNotContainsString('P@ssw0rd', $compose);
+        });
+    }
+
+    public function test_execute_traefikPortsArePublishedOnlyOnLoopback(): void
+    {
+        $this->runInFreshWorkDir('project-init-traefik-loopback', function (string $work_dir): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute([], ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $initialize = file_get_contents("{$work_dir}/.devcontainer/initialize_command.sh");
+            $this->assertStringContainsString('-p 127.0.0.1:80:80 \\', $initialize);
+            $this->assertStringContainsString('-p 127.0.0.1:443:443 \\', $initialize);
+            $this->assertDoesNotMatchRegularExpression('/-p (80|443):/', $initialize);
+        });
+    }
+
+    public function test_execute_interactive_reviewShowsDatabaseAndMemcachedPasswords(): void
+    {
+        $this->runInFreshWorkDir('project-init-review-passwords', function (): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $tester->setInputs([
+                '', '', '', '', '',          // Code name, Vendor, Locale, Timezone, Domain -> defaults
+                '', 'db_user', '',           // DB Name -> default, DB User -> db_user, DB Password -> default (= DB User)
+                'n',                         // Auth -> no
+                '',                          // View -> default
+                '', 'mc_pass',               // Memcached User -> default, Memcached Password -> mc_pass
+                '',                          // Session -> default
+                '', 'y',                     // Review -> yes, Are you really sure? -> yes
+            ]);
+            $status  = $tester->execute(['--database' => 'mysql', '--cache' => 'memcached'], ['interactive' => true]);
+            $display = $tester->getDisplay();
+            $this->assertSame(0, $status);
+            $this->assertMatchesRegularExpression('/\|\s+DB Password\s+\|\s+db_user\s+\|/', $display);
+            $this->assertMatchesRegularExpression('/\|\s+Memcached Password\s+\|\s+mc_pass\s+\|/', $display);
+        });
+    }
+
+    public function test_execute_interactive_reviewShowsAuthPassword_andItIsHashedInGeneratedFile(): void
+    {
+        // The auth password is shown as it is in the review, and hashed only in the generated file.
+        $this->runInFreshWorkDir('project-init-review-auth-password', function (string $work_dir): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $tester->setInputs([
+                '', '', '', '', '', // Code name, Vendor, Locale, Timezone, Domain -> defaults
+                'n',                // Database -> no (Auth is given via options)
+                '',                 // View -> default
+                'n',                // Cache -> no
+                '',                 // Session -> default
+                '', 'y',            // Review -> yes, Are you really sure? -> yes
+            ]);
+            $status  = $tester->execute(['--auth' => true, '--auth-name' => 'Admin', '--auth-email' => 'admin@example.com', '--auth-password' => 'P@ssw0rd1'], ['interactive' => true]);
+            $display = $tester->getDisplay();
+            $this->assertSame(0, $status);
+            $this->assertMatchesRegularExpression('/\|\s+Auth Password\s+\|\s+P@ssw0rd1\s+\|/', $display);
+
+            $auth = file_get_contents("{$work_dir}/app/core/configs/auth.php");
+            $this->assertStringNotContainsString('P@ssw0rd1', $auth);
+            $this->assertSame(1, preg_match("/'email' => 'admin@example\\.com', 'password' => '(?<hash>[^']+)'/", $auth, $matches));
+            $this->assertTrue(Password::verify('P@ssw0rd1', $matches['hash']));
         });
     }
 }

@@ -115,12 +115,15 @@ echo ">> Done."
 
 echo "> Start shared reverse proxy '${TRAEFIK_CONTAINER_NAME}' if not running..."
 if ! docker container inspect "${TRAEFIK_CONTAINER_NAME}" > /dev/null 2>&1; then
+    # NOTE: Publish the ports only on the loopback address, so that the applications (and the
+    #       development tools like Adminer/Mailpit with easy-to-guess passwords) can not be
+    #       accessed from other machines on the same network.
     docker run -d \
         --name "${TRAEFIK_CONTAINER_NAME}" \
         --restart unless-stopped \
         --network "${SHARED_NETWORK_NAME}" \
-        -p 80:80 \
-        -p 443:443 \
+        -p 127.0.0.1:80:80 \
+        -p 127.0.0.1:443:443 \
         -v /var/run/docker.sock:/var/run/docker.sock:ro \
         -v "${CERTS_DIR}:/etc/traefik/certs:ro" \
         -v "${DYNAMIC_DIR}:/etc/traefik/dynamic:ro" \

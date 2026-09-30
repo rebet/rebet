@@ -156,7 +156,7 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_ROOT_PASSWORD: root
       TZ: {! $timezone !}
     volumes:
       - db:/var/lib/mysql
@@ -171,7 +171,7 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_ROOT_PASSWORD: root
       TZ: {! $timezone !}
     volumes:
       - db4ut:/var/lib/mysql
@@ -188,7 +188,7 @@ services:
     image: mariadb
     restart: always
     environment:
-      MARIADB_ROOT_PASSWORD: P@ssw0rd
+      MARIADB_ROOT_PASSWORD: root
       TZ: {! $timezone !}
     volumes:
       - db:/var/lib/mysql
@@ -203,7 +203,7 @@ services:
     image: mariadb
     restart: always
     environment:
-      MARIADB_ROOT_PASSWORD: P@ssw0rd
+      MARIADB_ROOT_PASSWORD: root
       TZ: {! $timezone !}
     volumes:
       - db4ut:/var/lib/mysql
@@ -221,7 +221,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_PASSWORD: root
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
       TZ: {! $timezone !}
     volumes:
@@ -237,7 +237,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_PASSWORD: root
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
       TZ: {! $timezone !}
     volumes:

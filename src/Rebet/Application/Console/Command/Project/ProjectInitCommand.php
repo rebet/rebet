@@ -7,6 +7,7 @@ namespace Rebet\Application\Console\Command\Project;
 use Override;
 use Rebet\Auth\Password;
 use Rebet\Console\Command\Command;
+use Rebet\Inflection\Inflector;
 use Rebet\Tools\Template\Letterpress;
 use Rebet\Tools\Testable\System;
 use Rebet\Tools\Utility\Path;
@@ -28,21 +29,21 @@ class ProjectInitCommand extends Command
     public const DESCRIPTION = 'Initialize a new Rebet application';
     public const OPTIONS     = [
         [['vendor',         'vn' ], null, InputOption::VALUE_OPTIONAL, 'Composer vendor name, used as the application package name `{vendor}/{code_name}` in composer.json. (default: the application code name)'],
-        [['domain',         'd'  ], null, InputOption::VALUE_OPTIONAL, 'Application domain for local development. (default: localhost)'],
+        [['domain',         'd'  ], null, InputOption::VALUE_OPTIONAL, 'Application domain for local development, `localhost` and `traefik.localhost` are not allowed. (default: {code_name}.localhost)'],
         [['locale',         'l'  ], null, InputOption::VALUE_OPTIONAL, 'Default application locale. (default: the system locale, ie. locale_get_default())'],
         [['timezone',       't'  ], null, InputOption::VALUE_OPTIONAL, 'Default application timezone. (default: the system timezone, ie. date_default_timezone_get(), falls back to UTC)'],
         [['database',       'db' ], null, InputOption::VALUE_OPTIONAL, 'Database product. (choices: sqlite, mysql, mariadb, pgsql / default: mysql)'],
-        [['database-name',  'dbn'], null, InputOption::VALUE_OPTIONAL, 'Database name for local development. (default: the application code name)'],
-        [['database-user',  'dbu'], null, InputOption::VALUE_OPTIONAL, 'Database user for local development. (default: the application code name)'],
-        [['database-pass',  'dbp'], null, InputOption::VALUE_OPTIONAL, 'Database password for local development. (default: P@ssw0rd)'],
+        [['database-name',  'dbn'], null, InputOption::VALUE_OPTIONAL, 'Database name for local development. (default: the snake case of the application code name)'],
+        [['database-user',  'dbu'], null, InputOption::VALUE_OPTIONAL, 'Database user for local development. (default: the snake case of the application code name)'],
+        [['database-pass',  'dbp'], null, InputOption::VALUE_OPTIONAL, 'Database password for local development. (default: same as the database user)'],
         [['auth'                 ], 'a',  InputOption::VALUE_NONE,     'Use user auth (when do not use database then use ArrayProvider as read only authentication)'],
         [['auth-name',      'an' ], null, InputOption::VALUE_OPTIONAL, 'Auth user name for local development (only when --auth is used without a database).'],
         [['auth-email',     'ae' ], null, InputOption::VALUE_OPTIONAL, 'Auth user email for local development (only when --auth is used without a database).'],
         [['auth-password',  'ap' ], null, InputOption::VALUE_OPTIONAL, 'Auth user password for local development (only when --auth is used without a database).'],
         [['view',           'v'  ], null, InputOption::VALUE_OPTIONAL, 'View template engine. (choices: twig, blade / default: twig)'],
         [['cache',          'c'  ], null, InputOption::VALUE_OPTIONAL, 'Cache store product. (choices: apcu, file, memcached, redis, and also database when a database is used / default: memcached)'],
-        [['memcached-user', 'mu' ], null, InputOption::VALUE_OPTIONAL, 'Memcached user for local development. (default: the application code name)'],
-        [['memcached-pass', 'mp' ], null, InputOption::VALUE_OPTIONAL, 'Memcached password for local development. (default: P@ssw0rd)'],
+        [['memcached-user', 'mu' ], null, InputOption::VALUE_OPTIONAL, 'Memcached user for local development. (default: the snake case of the application code name)'],
+        [['memcached-pass', 'mp' ], null, InputOption::VALUE_OPTIONAL, 'Memcached password for local development. (default: same as the memcached user)'],
         [['session',        's'  ], null, InputOption::VALUE_OPTIONAL, 'Session storage. (choices: native, database (when a database is used), memcached, redis, mongodb / default: native)'],
         [['dry-run'              ], null, InputOption::VALUE_NONE,     'Show the settings and the list of files that would be generated, without writing anything.'],
     ];
@@ -148,6 +149,21 @@ class ProjectInitCommand extends Command
     ];
 
     /**
+     * Domains that can not be used as the application domain for local development, since
+     * multiple applications are routed by their domains via the shared reverse proxy (Traefik).
+     *
+     *  - `localhost`        : too generic to share among multiple applications.
+     *  - `traefik.localhost`: used as the URL of the Traefik dashboard
+     *                         (see skeltons/.devcontainer/initialize_command.lp.sh).
+     *
+     * @var string[]
+     */
+    public const RESERVED_DOMAINS = [
+        'localhost',
+        'traefik.localhost',
+    ];
+
+    /**
      * Top-level skelton entries (by their generated name) that are allowed to already exist in the
      * given directory, and are overwritten by the skelton on generation (see existingSkeltonEntries()).
      *
@@ -246,7 +262,7 @@ class ProjectInitCommand extends Command
 
         $this->writeln('');
         $this->writeln($dry_run ? 'Previewing application files that would be generated from skeltons (dry-run, nothing is written)...' : 'Generating application files from skeltons...');
-        $generated = $this->generate($this->skeltons_dir, $cwd, $configs, $dry_run, $this->excludedDatabaseDirs($configs));
+        $generated = $this->generate($this->skeltons_dir, $cwd, $this->templateVars($configs), $dry_run, $this->excludedDatabaseDirs($configs));
         if ($dry_run) {
             foreach ($generated as $path) {
                 $this->writeln("  - {$path}");
@@ -370,7 +386,8 @@ class ProjectInitCommand extends Command
 
     /**
      * Print the currently collected $configs as a human readable table, grouped by the wizard
-     * step that asked each setting. Password-like values are masked.
+     * step that asked each setting. The passwords are shown as they are, since they are only
+     * for local development and should be easy to check.
      *
      * @param  array<string, mixed> $configs
      * @return void
@@ -378,7 +395,6 @@ class ProjectInitCommand extends Command
     protected function displayConfigs(array $configs): void
     {
         $yn     = fn($value) => $value ? 'Yes' : 'No';
-        $mask   = '********';
         $use_db = $configs['use_db'] ?? false;
         $labels = array_values(static::STEPS);
 
@@ -397,13 +413,13 @@ class ProjectInitCommand extends Command
                 $use_db ? ['DB Product', $configs['database'] ?? '', true] : null,
                 $use_db ? ['DB Name', $configs['db_name'] ?? '', true] : null,
                 isset($configs['db_user']) ? ['DB User', $configs['db_user'], true] : null,
-                isset($configs['db_pass']) ? ['DB Password', $mask, true] : null,
+                isset($configs['db_pass']) ? ['DB Password', $configs['db_pass'], true] : null,
             ])),
             array_values(array_filter([
                 ['Use Auth', $yn($configs['use_auth'] ?? false)],
                 isset($configs['auth_name']) ? ['Auth Name', $configs['auth_name'], true] : null,
                 isset($configs['auth_email']) ? ['Auth Email', $configs['auth_email'], true] : null,
-                isset($configs['auth_password']) ? ['Auth Password', $mask, true] : null,
+                isset($configs['auth_password']) ? ['Auth Password', $configs['auth_password'], true] : null,
             ])),
             [
                 ['View Engine', $configs['view'] ?? ''],
@@ -412,7 +428,7 @@ class ProjectInitCommand extends Command
                 ['Use Cache', $yn($configs['use_cache'] ?? false)],
                 ($configs['use_cache'] ?? false) ? ['Cache Store', $configs['cache'] ?? '', true] : null,
                 ($configs['cache'] ?? null) === 'memcached' && isset($configs['memcached_user']) ? ['Memcached User', $configs['memcached_user'], true] : null,
-                isset($configs['memcached_pass']) ? ['Memcached Password', $mask, true] : null,
+                isset($configs['memcached_pass']) ? ['Memcached Password', $configs['memcached_pass'], true] : null,
             ])),
             [
                 ['Session Storage', $configs['session'] ?? ''],
@@ -436,7 +452,7 @@ class ProjectInitCommand extends Command
      * Wizard step: application code name, composer vendor name, locale and timezone.
      *
      * @param  array<string, mixed>      $configs
-     * @return array<string, mixed>|null null when the code name or vendor name is invalid
+     * @return array<string, mixed>|null null when the code name, vendor name, locale or timezone is invalid
      */
     protected function stepDefaults(array $configs): array|null
     {
@@ -454,27 +470,67 @@ class ProjectInitCommand extends Command
         }
 
         // Same fallback as the library default (see Rebet\Application\App::defaultConfig()).
-        $configs['locale']   = $this->ask("* Default Locale        : [" . locale_get_default() . "] ", 'locale', true, locale_get_default());
-        $configs['timezone'] = $this->ask("* Default Timezone      : [" . (date_default_timezone_get() ?: 'UTC') . "] ", 'timezone', true, date_default_timezone_get() ?: 'UTC');
+        $default_locale    = locale_get_default();
+        $configs['locale'] = $this->askValid(
+            "* Default Locale        : [{$default_locale}] ",
+            fn(string $answer) => static::validLocale($answer),
+            'is invalid as a locale, it must be one of the locales available in ICU (see ResourceBundle::getLocales(\'\')).',
+            'locale',
+            $default_locale,
+        );
+        if ($configs['locale'] === null) {
+            return null;
+        }
+
+        $default_timezone    = date_default_timezone_get() ?: 'UTC';
+        $configs['timezone'] = $this->askValid(
+            "* Default Timezone      : [{$default_timezone}] ",
+            fn(string $answer) => static::validTimezone($answer),
+            'is invalid as a timezone, it must be one of the timezone identifiers (see DateTimeZone::listIdentifiers()).',
+            'timezone',
+            $default_timezone,
+        );
+        if ($configs['timezone'] === null) {
+            return null;
+        }
+
         return $configs;
     }
 
     /**
      * Wizard step: application domain for local development.
      *
-     * @param  array<string, mixed> $configs
-     * @return array<string, mixed>
+     * The domain defaults to `{code_name}.localhost`, and the domains listed in
+     * `static::RESERVED_DOMAINS` are rejected, since multiple applications are routed by their
+     * domains via the shared reverse proxy (Traefik) in local development.
+     *
+     * @param  array<string, mixed>      $configs
+     * @return array<string, mixed>|null null when the domain is reserved (and can not ask again)
      */
-    protected function stepDomain(array $configs): array
+    protected function stepDomain(array $configs): array|null
     {
-        $code_name = $configs['code_name'];
+        $code_name      = $configs['code_name'];
+        $default_domain = "{$code_name}.localhost";
         $this->comment(" - If you already have production domain, then type it with prefix `local.` (ex local.{$code_name}.com)");
-        $this->comment(" - If you don't have production domain yet, then type app name with suffix `.local` (ex {$code_name}.local)");
-        $this->comment(" - If you don't care local development doamin, then type `localhost`");
-        // Same fallback as the skelton's own `APP_DOMAIN` default (see skeltons/app/core/.lp.env).
-        $configs['domain'] = $domain = $this->ask("* Application Domain for Local Development : [localhost] ", 'domain', true, 'localhost');
+        $this->comment(" - If you don't have production domain yet, then type app name with suffix `.localhost` (ex {$default_domain})");
+        $this->comment("   (`*.localhost` usually resolves to the loopback address without editing your hosts file)");
+        $domain = $this->askValid(
+            "* Application Domain for Local Development : [{$default_domain}] ",
+            fn(string $answer) => in_array(rtrim(strtolower(trim($answer)), '.'), static::RESERVED_DOMAINS, true) ? null : trim($answer),
+            'is reserved, so please use another domain (ex ' . $default_domain . '). Reserved domains are `' . implode('`, `', static::RESERVED_DOMAINS) . '`.',
+            'domain',
+            $default_domain,
+        );
+        if ($domain === null) {
+            return null;
+        }
+        $configs['domain'] = $domain;
         // The docker/nginx skelton templates refer to this same value as `site_domain`.
         $configs['site_domain'] = $domain;
+        // Domains ending with `.localhost` usually resolve to the loopback address without editing
+        // the hosts file (see RFC 6761), so the skelton templates show the hosts file instruction
+        // as "if needed" for them.
+        $configs['is_localhost_domain'] = str_ends_with(rtrim(strtolower($domain), '.'), '.localhost');
         return $configs;
     }
 
@@ -486,7 +542,9 @@ class ProjectInitCommand extends Command
      */
     protected function stepDatabase(array $configs): array|null
     {
-        $code_name = $configs['code_name'];
+        // Use the snake case of the code name (ex `my-app` => `my_app`) as the default, since hyphens
+        // in SQL identifiers need to be quoted.
+        $default_name = Inflector::snakize($configs['code_name']);
         unset($configs['db_user'], $configs['db_pass']);
 
         $use_db = false;
@@ -500,17 +558,17 @@ class ProjectInitCommand extends Command
             }
             $configs['database'] = $this->choice("* DB Product  : ", static::SUPPORTED_DATABASES, 'database', 'mysql');
             $is_sqlite           = $configs['database'] === 'sqlite';
-            $configs['db_name']  = $this->ask("* DB Name     : [{$code_name}] ", 'database-name', true, $code_name);
+            $configs['db_name']  = $this->ask("* DB Name     : [{$default_name}] ", 'database-name', true, $default_name);
             if (!$is_sqlite) {
-                $configs['db_user'] = $this->ask("* DB User     : [{$code_name}] ", 'database-user', true, $code_name);
-                $configs['db_pass'] = $this->ask("* DB Password : [P@ssw0rd] ", 'database-pass', true, 'P@ssw0rd');
+                $configs['db_user'] = $this->ask("* DB User     : [{$default_name}] ", 'database-user', true, $default_name);
+                $configs['db_pass'] = $this->ask("* DB Password : [{$configs['db_user']}] ", 'database-pass', true, $configs['db_user']);
             }
             $use_db = true;
         }
         $configs['use_db'] = $use_db;
         if (!$use_db) {
             $configs['database'] = 'mysql';
-            $configs['db_name']  = $code_name;
+            $configs['db_name']  = $default_name;
         }
         return $configs;
     }
@@ -541,9 +599,11 @@ class ProjectInitCommand extends Command
                 $this->comment("You do not use database, so set ArrayProvider as read only authentication.");
                 $this->comment("Please input an authentication user information that will be written in auth.php configuration file.");
                 $this->writeln("NOTE: If you want to change the password or add new user then you can use Rebet assistant `hash:password` command to create password hash.");
-                $configs['auth_name']     = $this->ask("* Name             : ", 'auth-name', true);
-                $configs['auth_email']    = $this->ask("* Email            : ", 'auth-email', true);
-                $configs['auth_password'] = Password::hash($this->option('auth-password') ?: $this->password("* Password         : ", "* Confirm Password : "));
+                $configs['auth_name']  = $this->ask("* Name             : ", 'auth-name', true);
+                $configs['auth_email'] = $this->ask("* Email            : ", 'auth-email', true);
+                // NOTE: Keep the password as it is (to show it in the settings review), it will be hashed
+                //       just before generating files from skeltons (see templateVars()).
+                $configs['auth_password'] = $this->option('auth-password') ?: $this->password("* Password         : ", "* Confirm Password : ");
             }
             $use_auth = true;
         }
@@ -574,8 +634,10 @@ class ProjectInitCommand extends Command
      */
     protected function stepCache(array $configs): array|null
     {
-        $code_name = $configs['code_name'];
-        $use_db    = $configs['use_db'] ?? false;
+        // Use the snake case of the code name (ex `my-app` => `my_app`) as the default, to be
+        // consistent with the default database name/user (see stepDatabase()).
+        $default_name = Inflector::snakize($configs['code_name']);
+        $use_db       = $configs['use_db'] ?? false;
         unset($configs['memcached_user'], $configs['memcached_pass']);
 
         $use_cache = false;
@@ -591,15 +653,15 @@ class ProjectInitCommand extends Command
             }
             $configs['cache'] = $this->choice("* Cache Store : ", $cache_choices, 'cache', 'memcached');
             if ($configs['cache'] == 'memcached') {
-                $configs['memcached_user'] = $this->ask("* Memcached User     : [{$code_name}] ", 'memcached-user', true, $code_name);
-                $configs['memcached_pass'] = $this->ask("* Memcached Password : [P@ssw0rd] ", 'memcached-pass', true, 'P@ssw0rd');
+                $configs['memcached_user'] = $this->ask("* Memcached User     : [{$default_name}] ", 'memcached-user', true, $default_name);
+                $configs['memcached_pass'] = $this->ask("* Memcached Password : [{$configs['memcached_user']}] ", 'memcached-pass', true, $configs['memcached_user']);
             }
             $use_cache = true;
         }
         $configs['use_cache'] = $use_cache;
         if (!$use_cache) {
             $configs['cache']          = 'memcached';
-            $configs['memcached_user'] = $code_name;
+            $configs['memcached_user'] = $default_name;
         }
         return $configs;
     }
@@ -714,17 +776,82 @@ class ProjectInitCommand extends Command
     protected function askValidName(string $question, string $name, string|null $via_option = null, string|null $default = null): string|null
     {
         ['pattern' => $pattern, 'label' => $label] = static::NAME_RULES[$name];
+        return $this->askValid(
+            $question,
+            fn(string $answer) => preg_match($pattern, $answer) ? $answer : null,
+            "is invalid as {$label}, it must match `{$pattern}`.",
+            $via_option,
+            $default,
+        );
+    }
+
+    /**
+     * Ask the given question, and validate (and normalize) the answer by the given validator.
+     *
+     * When the answer is invalid, print an error (the answer followed by the given error message),
+     * then ask again if possible (ie. interactive, and the answer is not given via `--{$via_option}`),
+     * otherwise return null.
+     *
+     * @param  string                          $question
+     * @param  \Closure(string): (string|null) $validator  that returns the (normalized) valid answer, or null when the answer is invalid
+     * @param  string                          $error      message that follows the invalid answer (ex "is invalid as ...")
+     * @param  string|null                     $via_option (default: null)
+     * @param  string|null                     $default    (default: null)
+     * @return string|null                     the valid answer, or null when the answer is invalid and can not ask again
+     */
+    protected function askValid(string $question, \Closure $validator, string $error, string|null $via_option = null, string|null $default = null): string|null
+    {
         while (true) {
             $answer = $this->ask($question, $via_option, true, $default);
-            if (preg_match($pattern, $answer)) {
-                return $answer;
+            $valid  = $validator($answer);
+            if ($valid !== null) {
+                return $valid;
             }
 
-            $this->error("`{$answer}` is invalid as {$label}, it must match `{$pattern}`.");
+            $this->error("`{$answer}` {$error}");
             if (!$this->input->isInteractive() || ($via_option !== null && $this->option($via_option))) {
                 return null;
             }
         }
+    }
+
+    /**
+     * Get the canonical form of the given locale if it is one of the locales available in ICU
+     * (ie. `ResourceBundle::getLocales('')`), otherwise null.
+     *
+     * The given locale is canonicalized by `Locale::canonicalize()`, so `ja-JP` and `JA_jp` are
+     * accepted as `ja_JP`.
+     *
+     * @param  string      $locale
+     * @return string|null
+     */
+    protected static function validLocale(string $locale): string|null
+    {
+        $canonical = \Locale::canonicalize(trim($locale));
+        return $canonical !== null && in_array($canonical, \ResourceBundle::getLocales(''), true) ? $canonical : null;
+    }
+
+    /**
+     * Get the timezone identifier of the given timezone if it is one of the timezone identifiers
+     * that PHP supports (including backward compatible ones like `Japan`), otherwise null.
+     *
+     * The timezone is compared case-insensitively, and the identifier is returned in its canonical
+     * case (ex `asia/tokyo` is accepted as `Asia/Tokyo`). Timezone abbreviations (ex `JST`) and UTC
+     * offsets (ex `+09:00`) are not accepted, since they can not be used as `date.timezone` of
+     * php.ini or `TZ` environment variable of docker containers.
+     *
+     * @param  string      $timezone
+     * @return string|null
+     */
+    protected static function validTimezone(string $timezone): string|null
+    {
+        $timezone = strtolower(trim($timezone));
+        foreach (\DateTimeZone::listIdentifiers(\DateTimeZone::ALL_WITH_BC) as $identifier) {
+            if (strtolower($identifier) === $timezone) {
+                return $identifier;
+            }
+        }
+        return null;
     }
 
     /**
@@ -782,6 +909,23 @@ class ProjectInitCommand extends Command
     {
         $entries = array_values(array_diff(scandir($dir), ['.', '..']));
         return $entries === ['vendor'];
+    }
+
+    /**
+     * Get the variables for the skelton templates from the collected $configs.
+     *
+     * The auth password is kept as it is while the wizard (to show it in the settings review), and
+     * hashed here, since the skelton templates (ex `app/core/configs/auth.lp.php`) require the hash.
+     *
+     * @param  array<string, mixed> $configs
+     * @return array<string, mixed>
+     */
+    protected function templateVars(array $configs): array
+    {
+        if (isset($configs['auth_password'])) {
+            $configs['auth_password'] = Password::hash($configs['auth_password']);
+        }
+        return $configs;
     }
 
     /**

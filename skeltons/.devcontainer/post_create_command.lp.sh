@@ -14,7 +14,12 @@ echo ""
 echo "============================================================"
 echo " Dev Container Was Ready"
 echo "============================================================"
-echo "Please write '127.0.0.1 {! $site_domain !}' in your hosts file (if the domain is not resolved to 127.0.0.1)."
+#{%-- if $is_localhost_domain -%}
+echo "'{! $site_domain !}' usually resolves to 127.0.0.1 without editing your hosts file."
+echo "If needed (ex. your browser/OS can not resolve it), write '127.0.0.1 {! $site_domain !}' in your hosts file."
+#{%-- else -%}
+echo "Please write '127.0.0.1 {! $site_domain !}' in your hosts file."
+#{%-- endif -%}
 echo "And then, access below"
 echo ""
 echo " - Site Top  "
