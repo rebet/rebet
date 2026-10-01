@@ -1,0 +1,8 @@
+# Normalize line endings of text files to LF (binary files are detected automatically)
+* text=auto eol=lf
+
+*.css diff=css
+*.html diff=html
+*.md diff=markdown
+*.php diff=php
+*.blade.php diff=html
