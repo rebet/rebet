@@ -81,7 +81,7 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
                     'redis'       => [
                         'adapter' => [
                             '@factory' => RedisAdapter::class,
-                            'dsn'      => 'redis://redis/0',
+                            'dsn'      => 'redis://redis-cache/0',
                         ],
                     ],
                 ],

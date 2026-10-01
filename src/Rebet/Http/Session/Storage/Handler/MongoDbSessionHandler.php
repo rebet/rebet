@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Session\Storage\Handler;
 
+use MongoDB\Client;
 use Override;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Utility\Env;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MongoDbSessionHandler as SymfonyMongoDbSessionHandler;
 
 /**
@@ -28,23 +30,51 @@ class MongoDbSessionHandler extends SymfonyMongoDbSessionHandler
     public static function defaultConfig()
     {
         return [
-            'database'     => null,
-            'collection'   => null,
-            'id_field'     => '_id',
-            'data_field'   => 'data',
-            'time_field'   => 'time',
-            'expiry_field' => 'expires_at',
+            'uri'            => Env::promise('SESSION_MONGODB_URI'), // null for the default URI of MongoDB\Client
+            'uri_options'    => [],
+            'driver_options' => [],
+            'options'        => [
+                'database'     => 'rebet',
+                'collection'   => 'sessions',
+                'id_field'     => '_id',
+                'data_field'   => 'data',
+                'time_field'   => 'time',
+                'expiry_field' => 'expires_at',
+                'ttl'          => fn(): int => (int) ini_get('session.gc_maxlifetime') ?: 86400,
+            ],
         ];
     }
 
     /**
-     * {@inheritDoc}
+     * Create a mongodb session handler.
      *
-     * @param \MongoDB\Client      $mongo
-     * @param array<string, mixed> $options (default: depend on configure)
+     * The mongodb connection is created by MongoDB\Client using the given $uri, $uri_options and $driver_options.
+     *
+     * @param string|null               $uri            The MongoDB connection string (default: depend on configure, null for the default URI of MongoDB\Client)
+     * @param array<string, mixed>|null $uri_options    The additional connection string options of MongoDB\Client (default: depend on configure)
+     * @param array<string, mixed>|null $driver_options The driver-specific options of MongoDB\Client (default: depend on configure)
+     * @param array<string, mixed>|null $options        The options of Symfony's MongoDbSessionHandler, they are merged into the `options` configuration (default: depend on configure)
+     *                                                  - database     : string The name of the database                        [default: rebet]
+     *                                                  - collection   : string The name of the collection                      [default: sessions]
+     *                                                  - id_field     : string The field name for storing the session id       [default: _id]
+     *                                                  - data_field   : string The field name for storing the session data     [default: data]
+     *                                                  - time_field   : string The field name for storing the timestamp        [default: time]
+     *                                                  - expiry_field : string The field name for storing the expiry-timestamp [default: expires_at]
+     *                                                  - ttl          : int|\Closure|null The time to live in seconds          [default: fn() => session.gc_maxlifetime ?: 86400 (evaluated on each use)]
      */
-    public function __construct(\MongoDB\Client $mongo, array $options = [])
-    {
-        parent::__construct($mongo, array_merge(static::config(), $options));
+    public function __construct(
+        string|null $uri = null,
+        array|null $uri_options = null,
+        array|null $driver_options = null,
+        array|null $options = null,
+    ) {
+        parent::__construct(
+            new Client(
+                $uri ?? static::config('uri', false),
+                $uri_options ?? static::config('uri_options', false, []),
+                $driver_options ?? static::config('driver_options', false, []),
+            ),
+            array_merge(static::config('options', false, []), $options ?? []),
+        );
     }
 }

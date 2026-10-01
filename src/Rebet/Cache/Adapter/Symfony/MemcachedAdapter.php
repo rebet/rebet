@@ -25,14 +25,14 @@ class MemcachedAdapter extends AbstractSymfonyAdapter
      *
      * @param array<int, array<int, string>>|string|array<int, string> $dsn                    An array of servers, a DSN, or an array of DSNs
      * @param array<string, mixed>                                     $options                for connect memcached. (default: [])
-     * @param string                                                   $namespace              (default: '')
+     * @param string                                                   $namespace              (default: 'rbt-c')
      * @param int|string                                               $default_lifetime       that time unit labeled string like '12min', or int seconds. (default: 0)
      * @param MarshallerInterface|null                                 $marshaller             (default: mull)
      * @param bool                                                     $taggable               (default: false)
      * @param null|string|CacheItemPoolInterface                       $tags_pool              name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
      * @param float                                                    $known_tag_versions_ttl when taggable is true. (default: 0.15)
      */
-    public function __construct($dsn, array $options = [], string $namespace = '', $default_lifetime = 0, MarshallerInterface $marshaller = null, bool $taggable = false, $tags_pool = null, $known_tag_versions_ttl = 0.15)
+    public function __construct($dsn, array $options = [], string $namespace = 'rbt-c', $default_lifetime = 0, MarshallerInterface|null $marshaller = null, bool $taggable = false, $tags_pool = null, $known_tag_versions_ttl = 0.15)
     {
         if (!static::isSupported()) {
             throw new CacheException("Memcached extension is not enabled.");

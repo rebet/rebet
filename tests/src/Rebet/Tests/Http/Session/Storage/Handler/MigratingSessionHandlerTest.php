@@ -14,7 +14,7 @@ class MigratingSessionHandlerTest extends RebetTestCase
     public function test___construct(): void
     {
         $current = new NullSessionHandler();
-        $new     = new MemcachedSessionHandler($this->getMockBuilder('Memcached')->getMock());
+        $new     = new MemcachedSessionHandler('memcached://memcached-session:11211');
         $this->assertInstanceOf(MigratingSessionHandler::class, new MigratingSessionHandler($current, $new));
     }
 }

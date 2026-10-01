@@ -1,5 +1,5 @@
 {
-    "name": "rebet/rebet",
+    "name": "rebet-dev",
     "dockerComposeFile": ["docker-compose.yml"],
     "service": "workspace",
     "forwardPorts": [ 9003 ],

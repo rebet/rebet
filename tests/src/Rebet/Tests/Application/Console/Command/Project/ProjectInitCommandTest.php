@@ -1052,13 +1052,15 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertStringNotContainsString('memcached_user', $tester->getDisplay());
 
             $cache = file_get_contents("{$work_dir}/app/core/configs/cache.php");
-            $this->assertStringContainsString("'local'      => 'memcached://memcached-cache:11211',", $cache);
-            $this->assertStringContainsString("// 'username' => \\Rebet\\Tools\\Utility\\Env::promise('MEMCACHED_CACHE_USERNAME'),", $cache);
-            $this->assertStringContainsString("// 'password' => \\Rebet\\Tools\\Utility\\Env::promise('MEMCACHED_CACHE_PASSWORD'),", $cache);
+            $this->assertStringContainsString("'dsn'      => Env::promise('CACHE_MEMCACHED_DSN'),", $cache);
+            $this->assertStringContainsString("// 'username'      => Env::promise('CACHE_MEMCACHED_USERNAME'),", $cache);
+            $this->assertStringContainsString("// 'password'      => Env::promise('CACHE_MEMCACHED_PASSWORD'),", $cache);
 
             $env = file_get_contents("{$work_dir}/app/core/.env");
-            $this->assertStringContainsString("# MEMCACHED_CACHE_USERNAME=\n# MEMCACHED_CACHE_PASSWORD=\n", $env);
-            $this->assertDoesNotMatchRegularExpression('/^MEMCACHED_/m', $env);
+            $this->assertStringContainsString("CACHE_MEMCACHED_DSN=memcached://memcached-cache:11211\n", $env);
+            $this->assertStringContainsString("# CACHE_MEMCACHED_USERNAME=\n# CACHE_MEMCACHED_PASSWORD=\n", $env);
+            $this->assertDoesNotMatchRegularExpression('/^(CACHE|SESSION)_MEMCACHED_(USERNAME|PASSWORD)=/m', $env);
+            $this->assertStringNotContainsString('SESSION_MEMCACHED_DSN', $env);
         });
     }
 }

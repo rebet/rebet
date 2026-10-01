@@ -8,6 +8,7 @@ services:
   - postgresql
   - memcached
   - redis-server
+  - mongodb
 
 addons:
   hosts:
@@ -15,7 +16,9 @@ addons:
     - pgsql
     - memcached-cache
     - memcached-session
-    - redis
+    - redis-cache
+    - redis-session
+    - mongodb
 
 env:
   global:

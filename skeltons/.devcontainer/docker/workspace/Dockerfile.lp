@@ -66,7 +66,7 @@ RUN apt-get install -y --no-install-recommends libmemcached-dev \
     && docker-php-ext-enable                   memcached
 
 #{%-- endif -%}
-#{%-- if $cache == 'redis' -%}
+#{%-- if ($use_cache && $cache == 'redis') || $session == 'redis' -%}
 # Install Redis extensions and depends
 RUN pecl install             redis \
     && docker-php-ext-enable redis

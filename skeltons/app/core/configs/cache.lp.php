@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Rebet\Application\App;
 use Rebet\Cache\Adapter\Symfony\ApcuAdapter;
 use Rebet\Cache\Adapter\Symfony\ArrayAdapter;
 use Rebet\Cache\Adapter\Symfony\FilesystemAdapter;
@@ -131,26 +130,22 @@ return [
             'memcached' => [
                 'adapter' => [
                     '@factory' => MemcachedAdapter::class,
-                    'dsn'      => App::when([
-                        'local'      => 'memcached://memcached-cache:11211',
-                        'production' => ['memcached://localhost:11211', /* Secondary DSN if exists */],
-                    ]),
+                    'dsn'      => Env::promise('CACHE_MEMCACHED_DSN'),
                     'options'  => [
-                        // --- Please uncomment if you want to use SASL authentication (and set them in .env) ---
-                        // 'username' => \Rebet\Tools\Utility\Env::promise('MEMCACHED_CACHE_USERNAME'),
-                        // 'password' => \Rebet\Tools\Utility\Env::promise('MEMCACHED_CACHE_PASSWORD'),
                         // --- You can set any other options supported by Symfony\Component\Cache\Adapter\MemcachedAdapter::createConnection() ---
+                        // 'username'      => Env::promise('CACHE_MEMCACHED_USERNAME'),
+                        // 'password'      => Env::promise('CACHE_MEMCACHED_PASSWORD'),
                         // 'persistent_id' => null,
                         // 'weight'        => 100,
                         // ... etc
                     ],
                     // --- You can change only what you need for these default options ---
-                    // 'namespace'              => '',
-                    // 'default_lifetime'       => 0,     // You can set time unit labeled string like '12min', or int seconds.
-                    // 'marshaller'             => null,  // Instance of Symfony\Component\Cache\Marshaller\MarshallerInterface
+                    // 'namespace'              => 'rbt-c',
+                    // 'default_lifetime'       => 0,       // You can set time unit labeled string like '12min', or int seconds.
+                    // 'marshaller'             => null,    // Instance of Symfony\Component\Cache\Marshaller\MarshallerInterface
                     // 'taggable'               => false,
-                    // 'tags_pool'              => null,  // [when taggable] You can set name that `Cache.stores.{name}` or CacheItemPoolInterface instance.
-                    // 'known_tag_versions_ttl' => 0.15,  // [when taggable]
+                    // 'tags_pool'              => null,    // [when taggable] You can set name that `Cache.stores.{name}` or CacheItemPoolInterface instance.
+                    // 'known_tag_versions_ttl' => 0.15,    // [when taggable]
                 ],
             ],
             //{%-- endcommentif -%}
@@ -202,17 +197,14 @@ return [
             'redis'     => [
                 'adapter' => [
                     '@factory' => RedisAdapter::class,
-                    'dsn'      => App::when([
-                        'local'      => 'redis://redis/0',
-                        'production' => 'redis://localhost/0',
-                    ]),
+                    'dsn'      => Env::promise('CACHE_REDIS_DSN'),
                     // --- You can change only what you need for these default options ---
                     // 'options'  => [
                     //     // --- You can set any other options supported by Rebet\Cache\Adapter\Symfony\RedisAdapter::__construct() ---
                     //     // 'timeout' => 0,
                     //     // ... etc
                     // ],
-                    // 'namespace'              => '',
+                    // 'namespace'              => 'rbt-c',
                     // 'default_lifetime'       => 0,     // You can set time unit labeled string like '12min', or int seconds.
                     // 'marshaller'             => null,  // Instance of Symfony\Component\Cache\Marshaller\MarshallerInterface
                     // 'taggable'               => false,

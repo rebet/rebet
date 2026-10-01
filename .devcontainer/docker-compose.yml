@@ -1,10 +1,13 @@
+name: 'rebet'
 version: '3'
 volumes:
   mariadb:
   mysql:
   pgsql:
   sqlite:
-  redis:
+  redis-cache:
+  redis-session:
+  mongodb:
 services:
   # Workspace for Dev Container Development
   workspace:
@@ -59,11 +62,21 @@ services:
   memcached-session:
     image: memcached
     hostname: rebet-memcached-session
-  redis:
+  redis-cache:
     image: redis
-    hostname: rebet-redis
+    hostname: rebet-redis-cache
     volumes:
-      - redis:/data
+      - redis-cache:/data
+  redis-session:
+    image: redis
+    hostname: rebet-redis-session
+    volumes:
+      - redis-session:/data
+  mongodb:
+    image: mongo
+    hostname: rebet-mongodb
+    volumes:
+      - mongodb:/data/db
 
   # Adminer Container for Web-based database administration tool
   adminer:

@@ -13,6 +13,8 @@ use Rebet\Http\Session\Storage\Handler\MongoDbSessionHandler;
 use Rebet\Http\Session\Storage\Handler\NativeFileSessionHandler;
 use Rebet\Http\Session\Storage\Handler\RedisSessionHandler;
 use Rebet\Http\Session\Storage\SessionStorage;
+use Rebet\Inflection\Inflector;
+use Rebet\Tools\Utility\Env;
 
 /*
 |##################################################################################################
@@ -162,7 +164,6 @@ return [
         | Provided Handlers:
         |  - Rebet\Http\Session\Storage\Handler\DatabaseSessionHandler
         |  - Rebet\Http\Session\Storage\Handler\MemcachedSessionHandler
-        |  - Rebet\Http\Session\Storage\Handler\MigratingSessionHandler
         |  - Rebet\Http\Session\Storage\Handler\MongoDbSessionHandler
         |  - Rebet\Http\Session\Storage\Handler\NativeFileSessionHandler
         |  - Rebet\Http\Session\Storage\Handler\NullSessionHandler
@@ -170,6 +171,26 @@ return [
         |  - Rebet\Http\Session\Storage\Handler\StrictSessionHandler
         |  - And you can use any handler that extends \SessionHandler or implements
         |    \SessionHandlerInterface and \SessionUpdateTimestampHandlerInterface
+        |
+        | For Handler Migrating:
+        |  - Rebet\Http\Session\Storage\Handler\MigratingSessionHandler
+        |    This handler is for migrating sessions from the 1st (current) handler to the 2nd (new)
+        |    handler without stopping the service.
+        |
+        |    ex) 1. Current   : `handler` => NativeFileSessionHandler::class,
+        |        2. Migrating : `handler` => new MigratingSessionHandler(new NativeFileSessionHandler(), new MemcachedSessionHandler()),
+        |        3. Migrated  : `handler` => MemcachedSessionHandler::class,
+        |
+        |    Notes:
+        |     * It reads only from the 1st handler and writes to both of them, and the errors of the
+        |       2nd handler are ignored.
+        |     * Set `'lazy_write' => 0` to the `options` of SessionStorage::class while migrating. If it is
+        |       enabled (default), the sessions that were not modified are not written to the 2nd handler.
+        |     * The sessions of users who did not access during the migration are not copied to the 2nd
+        |       handler, so they will be logged out after the switch. Switch to the 2nd handler after the
+        |       session lifetime has passed since the migration started.
+        |     * `new` is evaluated when this config file is loaded, so the settings that the handlers
+        |       refer to (ex. the DSN of memcached in the .env) must be available at that time.
         */
         //{%-- uncommentif $session == 'database' -%}
         // 'handler' => DatabaseSessionHandler::class,
@@ -237,6 +258,76 @@ return [
         ],
     ],
 
+    /*
+    |==============================================================================================
+    | Database Session Handler Configuration
+    |==============================================================================================
+    | This section defines Database Session Handler settings.
+    | The session is stored in the table of the database that is defined in database.php.
+    | If you use this handler you need to create the session table in the database, and also you
+    | may change these defaults as required.
+    |
+    | Available Options:
+    |  * db      : The name of the database defined in database.php.         [default: null (the default database)]
+    |  * options : The options of Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler.
+    |     - db_table        : The name of the table.                         [default: sessions]
+    |     - db_id_col       : The column where to store the session id.      [default: session_id]
+    |     - db_data_col     : The column where to store the session data.    [default: session_data]
+    |     - db_lifetime_col : The column where to store the lifetime.        [default: session_lifetime]
+    |     - db_time_col     : The column where to store the timestamp.       [default: session_time]
+    |     - lock_mode       : The strategy for locking.                      [default: DatabaseSessionHandler::LOCK_TRANSACTIONAL]
+    |                         (LOCK_NONE, LOCK_ADVISORY or LOCK_TRANSACTIONAL)
+    |     - ttl             : The time to live in seconds. (int or Closure evaluated on each use) [default: fn() => session.gc_maxlifetime ?: 86400]
+    */
+    //{%-- commentif $session != 'database', 'message' => '--- Please uncomment if you want to use database session ---' -%}
+    DatabaseSessionHandler::class   => [
+        // --- You can change only what you need for these default options ---
+        // 'db'      => null,
+        // 'options' => [
+        //     'db_table'        => 'sessions',
+        //     'db_id_col'       => 'session_id',
+        //     'db_data_col'     => 'session_data',
+        //     'db_lifetime_col' => 'session_lifetime',
+        //     'db_time_col'     => 'session_time',
+        //     'lock_mode'       => DatabaseSessionHandler::LOCK_TRANSACTIONAL,
+        //     'ttl'             => fn(): int => (int) ini_get('session.gc_maxlifetime') ?: 86400,
+        // ],
+    ],
+    //{%-- endcommentif -%}
+
+    /*
+    |==============================================================================================
+    | Memcached Session Handler Configuration
+    |==============================================================================================
+    | This section defines Memcached Session Handler settings.
+    | If you use this handler you need to set the required options, and also you may change these
+    | defaults as required.
+    |
+    | Available Options:
+    |  * dsn        : The DSN(s) of the memcached servers.                                  [required] (default: SESSION_MEMCACHED_DSN in .env)
+    |  * options    : The connection options of MemcachedAdapter::createConnection(), such as
+    |                 username, password, persistent_id, weight, lazy, and any Memcached::OPT_* name
+    |                 (ex. serializer, hash, libketama_compatible).                         [default: []]
+    |  * prefix     : The prefix to use for the memcached keys in order to avoid collision. [default: rbt-s:]
+    |  * ttl        : The time to live in seconds. (int or Closure evaluated on each use) [default: fn() => session.gc_maxlifetime ?: 86400]
+    */
+    //{%-- commentif $session != 'memcached', 'message' => '--- Please uncomment if you want to use memcached session ---' -%}
+    MemcachedSessionHandler::class  => [
+        'dsn'     => Env::promise('SESSION_MEMCACHED_DSN'),
+        'options' => [
+            // --- You can set any other options supported by Symfony\Component\Cache\Adapter\MemcachedAdapter::createConnection() ---
+            // 'username'      => Env::promise('SESSION_MEMCACHED_USERNAME'),
+            // 'password'      => Env::promise('SESSION_MEMCACHED_PASSWORD'),
+            // 'persistent_id' => null,
+            // 'weight'        => 100,
+            // ... etc
+        ],
+        // --- You can change only what you need for these default options ---
+        // 'prefix'   => 'rbt-s:',
+        // 'ttl'      => fn(): int => (int) ini_get('session.gc_maxlifetime') ?: 86400,
+    ],
+    //{%-- endcommentif -%}
+
 
     /*
     |==============================================================================================
@@ -263,16 +354,20 @@ return [
     | Mongo DB Session Handler Configuration
     |==============================================================================================
     | This section defines Mongo DB Session Handler settings.
-    | If you use this handler you need to set the required options, and also you may change these
-    | defaults as required.
+    | You may change these defaults as required.
     |
     | Available Options:
-    |  * database     : The name of the database                        [required]
-    |  * collection   : The name of the collection                      [required]
-    |  * id_field     : The field name for storing the session id       [default: _id]
-    |  * data_field   : The field name for storing the session data     [default: data]
-    |  * time_field   : The field name for storing the timestamp        [default: time]
-    |  * expiry_field : The field name for storing the expiry-timestamp [default: expires_at]
+    |  * uri             : The MongoDB connection string.                                      [default: SESSION_MONGODB_URI in .env (null for the default URI of MongoDB\Client)]
+    |  * uri_options     : The additional connection string options of MongoDB\Client.         [default: []]
+    |  * driver_options  : The driver-specific options of MongoDB\Client.                      [default: []]
+    |  * options         : The options of Symfony's MongoDbSessionHandler.
+    |     - database     : The name of the database                                            [default: rebet]
+    |     - collection   : The name of the collection                                          [default: sessions]
+    |     - id_field     : The field name for storing the session id                           [default: _id]
+    |     - data_field   : The field name for storing the session data                         [default: data]
+    |     - time_field   : The field name for storing the timestamp                            [default: time]
+    |     - expiry_field : The field name for storing the expiry-timestamp                     [default: expires_at]
+    |     - ttl          : The time to live in seconds. (int or Closure evaluated on each use) [default: fn() => session.gc_maxlifetime ?: 86400]
     |
     | It is strongly recommended to put an index on the `expiry_field` for garbage-collection.
     | Alternatively it's possible to automatically expire the sessions in the database as described
@@ -293,37 +388,22 @@ return [
     */
     //{%-- commentif $session != 'mongodb', 'message' => '--- Please uncomment if you want to use mongodb session ---' -%}
     MongoDbSessionHandler::class    => [
-        'database'   => App::codeName(),
-        'collection' => 'sessions',
+        'uri'     => Env::promise('SESSION_MONGODB_URI'),
+        'options' => [
+            'database' => Inflector::snakize(App::codeName()),
+            // --- You can change only what you need for these default options ---
+            // 'collection'   => 'sessions',
+            // 'id_field'     => '_id',
+            // 'data_field'   => 'data',
+            // 'time_field'   => 'time',
+            // 'expiry_field' => 'expires_at',
+            // 'ttl'          => fn(): int => (int) ini_get('session.gc_maxlifetime') ?: 86400,
+        ],
         // --- You can change only what you need for these default options ---
-        // 'id_field'     => '_id',
-        // 'data_field'   => 'data',
-        // 'time_field'   => 'time',
-        // 'expiry_field' => 'expires_at',
+        // 'uri_options'    => [],
+        // 'driver_options' => [],
     ],
     //{%-- endcommentif -%}
-
-
-    /*
-    |==============================================================================================
-    | Memcached Session Handler Configuration
-    |==============================================================================================
-    | This section defines Memcached Session Handler settings.
-    | If you use this handler you need to set the required options, and also you may change these
-    | defaults as required.
-    |
-    | Available Options:
-    |  * prefix     : The prefix to use for the memcached keys in order to avoid collision. [required]
-    |  * expiretime : The time to live in seconds.                                          [default: 86400]
-    */
-    //{%-- commentif $session != 'memcached', 'message' => '--- Please uncomment if you want to use memcached session ---' -%}
-    MemcachedSessionHandler::class  => [
-        'prefix' => App::codeName(),
-        // --- You can change only what you need for these default options ---
-        // 'expiretime' => 86400,
-    ],
-    //{%-- endcommentif -%}
-
 
     /*
     |==============================================================================================
@@ -334,14 +414,26 @@ return [
     | defaults as required.
     |
     | Available Options:
-    |  * prefix : The prefix to use for the redis keys in order to avoid collision. [required]
-    |  * ttl    : The time to live in seconds.                                      [default: null]
+    |  * dsn     : The DSN of the redis server.                                             [required] (default: SESSION_REDIS_DSN in .env)
+    |               - redis://[pass@][ip|host|socket[:port]][/db-index]
+    |               - redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster
+    |  * options : The connection options of RedisAdapter::createConnection(), such as
+    |              class, persistent, persistent_id, timeout, read_timeout, retry_interval,
+    |              tcp_keepalive, lazy, redis_cluster, redis_sentinel, dbindex, failover.   [default: []]
+    |  * prefix  : The prefix to use for the redis keys in order to avoid collision.        [default: rbt-s:]
+    |  * ttl     : The time to live in seconds. (int or Closure evaluated on each use)      [default: fn() => session.gc_maxlifetime ?: 86400]
     */
     //{%-- commentif $session != 'redis', 'message' => '--- Please uncomment if you want to use redis session ---' -%}
     RedisSessionHandler::class      => [
-        'prefix' => App::codeName(),
+        'dsn'     => Env::promise('SESSION_REDIS_DSN'),
+        'options' => [
+            // --- You can set any other options supported by Symfony\Component\Cache\Adapter\RedisAdapter::createConnection() ---
+            // 'timeout' => 30,
+            // ... etc
+        ],
         // --- You can change only what you need for these default options ---
-        // 'ttl'    => null,
+        // 'prefix'  => 'rbt-s:',
+        // 'ttl'     => fn(): int => (int) ini_get('session.gc_maxlifetime') ?: 86400,
     ],
     //{%-- endcommentif -%}
 

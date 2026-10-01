@@ -21,6 +21,9 @@ volumes:
   db:      # DB data storage volumes for local development.
   db4ut:   # DB data storage volumes for unit test.
   work4ut: # Working file storage volumes for unit test.
+  #{%-- if $session == 'mongodb' -%}
+  mongodb: # MongoDB data storage volumes for the session storage.
+  #{%-- endif -%}
 services:
 
   # ---------------------------------------------------------------------------
@@ -288,10 +291,12 @@ services:
   #{%-- endif -%}
   #{%-- if $cache == 'redis' -%}
   # ---------------------------------------------------------------------------
-  # Redis Settings
+  # Redis for Cache Store Settings
   # ---------------------------------------------------------------------------
-  redis:
-    hostname: {! $code_name !}-redis
+  # NOTE: The redis for the cache store and the session storage are separated, since they
+  #       have different purposes (ex. evicting cache items does not have to affect sessions).
+  redis-cache:
+    hostname: {! $code_name !}-redis-cache
     image: redis
     restart: always
 
@@ -305,5 +310,29 @@ services:
     hostname: {! $code_name !}-memcached-session
     image: memcached
     restart: always
+
+  #{%-- endif -%}
+  #{%-- if $session == 'redis' -%}
+  # ---------------------------------------------------------------------------
+  # Redis for Session Storage Settings
+  # ---------------------------------------------------------------------------
+  redis-session:
+    hostname: {! $code_name !}-redis-session
+    image: redis
+    restart: always
+
+  #{%-- endif -%}
+  #{%-- if $session == 'mongodb' -%}
+  # ---------------------------------------------------------------------------
+  # MongoDB for Session Storage Settings
+  # ---------------------------------------------------------------------------
+  mongodb:
+    hostname: {! $code_name !}-mongodb
+    image: mongo
+    restart: always
+    environment:
+      TZ: {! $timezone !}
+    volumes:
+      - mongodb:/data/db
 
   #{%-- endif -%}
