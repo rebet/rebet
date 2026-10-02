@@ -74,7 +74,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertStringContainsString('domain => project-init-no-interaction.localhost,', $display);
             $this->assertStringContainsString('view => twig,', $display);
 
-            $this->assertFileExists("{$work_dir}/app/.env");
+            $this->assertFileExists("{$work_dir}/.env");
             $this->assertFileExists("{$work_dir}/bin/assistant");
         });
     }
@@ -202,37 +202,6 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
             // Nothing else was written.
             $this->assertFileDoesNotExist("{$work_dir}/app");
-        });
-    }
-
-    public function test_execute_appDirWithOnlyVendorDir_isNotAlreadyInitialized(): void
-    {
-        // An `app/` directory that only has `vendor/` (eg. from a devcontainer running
-        // `composer install` ahead of time) must not be treated as already initialized.
-        $this->runInFreshWorkDir('project-init-app-vendor-only', function (string $work_dir): void {
-            mkdir("{$work_dir}/app/vendor", 0o755, true);
-
-            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
-            $status = $tester->execute(['--dry-run' => true], ['interactive' => false]);
-            $this->assertSame(0, $status);
-            $this->assertStringContainsString('would be generated.', $tester->getDisplay());
-        });
-    }
-
-    public function test_execute_appDirWithMoreThanVendorDir_isAlreadyInitialized(): void
-    {
-        // But if `app/` has anything else besides `vendor/`, it is still considered initialized.
-        $this->runInFreshWorkDir('project-init-app-vendor-and-more', function (string $work_dir): void {
-            mkdir("{$work_dir}/app/vendor", 0o755, true);
-            touch("{$work_dir}/app/other-file.txt");
-
-            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
-            $status = $tester->execute(['--dry-run' => true], ['interactive' => false]);
-            $this->assertSame(1, $status);
-            $this->assertStringContainsString(
-                "This directory seems to already be initialized (`{$work_dir}/app` already exists).",
-                $tester->getDisplay(),
-            );
         });
     }
 
@@ -912,7 +881,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $status = $tester->execute(array_merge(['--database' => 'mysql'], $options), ['interactive' => false]);
             $this->assertSame(0, $status);
 
-            $env = file_get_contents("{$work_dir}/app/.env");
+            $env = file_get_contents("{$work_dir}/.env");
             $this->assertStringContainsString("DB_PASSWORD={$db_pass}\n", $env);
         });
     }
@@ -997,7 +966,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(0, $status);
             $this->assertMatchesRegularExpression('/\|\s+Auth Password\s+\|\s+P@ssw0rd1\s+\|/', $display);
 
-            $auth = file_get_contents("{$work_dir}/app/core/config/auth.php");
+            $auth = file_get_contents("{$work_dir}/app/config/auth.php");
             $this->assertStringNotContainsString('P@ssw0rd1', $auth);
             $this->assertSame(1, preg_match("/'email' => 'admin@example\\.com', 'password' => '(?<hash>[^']+)'/", $auth, $matches));
             $this->assertTrue(Password::verify('P@ssw0rd1', $matches['hash']));
@@ -1051,12 +1020,12 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(0, $status);
             $this->assertStringNotContainsString('memcached_user', $tester->getDisplay());
 
-            $cache = file_get_contents("{$work_dir}/app/core/config/cache.php");
+            $cache = file_get_contents("{$work_dir}/app/config/cache.php");
             $this->assertStringContainsString("'dsn'      => Env::promise('CACHE_MEMCACHED_DSN'),", $cache);
             $this->assertStringContainsString("// 'username'      => Env::promise('CACHE_MEMCACHED_USERNAME'),", $cache);
             $this->assertStringContainsString("// 'password'      => Env::promise('CACHE_MEMCACHED_PASSWORD'),", $cache);
 
-            $env = file_get_contents("{$work_dir}/app/.env");
+            $env = file_get_contents("{$work_dir}/.env");
             $this->assertStringContainsString("CACHE_MEMCACHED_DSN=memcached://memcached-cache:11211\n", $env);
             $this->assertStringContainsString("# CACHE_MEMCACHED_USERNAME=\n# CACHE_MEMCACHED_PASSWORD=\n", $env);
             $this->assertDoesNotMatchRegularExpression('/^(CACHE|SESSION)_MEMCACHED_(USERNAME|PASSWORD)=/m', $env);

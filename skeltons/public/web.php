@@ -10,7 +10,7 @@ require __DIR__ . '/../vendor/autoload.php';
 //-------------------------------------------------
 // Create kernel and initilizing application
 //-------------------------------------------------
-$kernel = Rebet\Application\App::init(new App\Http\AppWebKernel(new App\AppStructure(__DIR__ . '/../')));
+$kernel = Rebet\Application\App::init(new App\Http\AppWebKernel(new App\AppStructure(__DIR__ . '/..')));
 
 //-------------------------------------------------
 // Routing Request and handle action

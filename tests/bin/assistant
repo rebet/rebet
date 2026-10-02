@@ -11,7 +11,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 //-------------------------------------------------
 // Create kernel and initilizing application
 //-------------------------------------------------
-$kernel = Rebet\Application\App::init(new TestApp\Console\AppCliKernel(new TestApp\AppStructure(__DIR__ . '/../app')));
+$kernel = Rebet\Application\App::init(new TestApp\Console\AppCliKernel(new TestApp\AppStructure(__DIR__ . '/..')));
 
 //-------------------------------------------------
 // Invoke command and handle action

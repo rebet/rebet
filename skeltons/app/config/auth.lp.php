@@ -32,7 +32,7 @@ use Rebet\Tools\Translation\Translator;
 | time the settings are referenced.
 |
 | NOTE: If you want to get other default setting samples of configuration file, try check here.
-|       https://github.com/rebet/rebet/tree/master/skeltons/app/core/config
+|       https://github.com/rebet/rebet/tree/master/skeltons/app/config
 */
 return [
     /*
@@ -43,7 +43,7 @@ return [
     | You may change these defaults as required, but they're a good start for many applications.
     |
     | See below for more detailed configuration examples for this file:
-    | @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/auth.lp.php
+    | @see https://github.com/rebet/rebet/blob/master/skeltons/app/config/auth.lp.php
     */
     Auth::class     => [
         /*

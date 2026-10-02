@@ -40,7 +40,7 @@ abstract class RebetTestCase extends TestCase
     {
         App::reset();
         System::testing(true);
-        App::init(new AppWebKernel(new AppStructure(__DIR__ . '/../../../app')));
+        App::init(new AppWebKernel(new AppStructure(__DIR__ . '/../../..')));
     }
 
     #[Override]

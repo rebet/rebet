@@ -46,7 +46,7 @@ class SqliteDriver extends AbstractDriver
 {
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/database.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/config/database.lp.php
      */
     #[Override]
     public static function defaultConfig()

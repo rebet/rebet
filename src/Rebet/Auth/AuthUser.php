@@ -33,7 +33,7 @@ class AuthUser implements \JsonSerializable
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/auth.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/config/auth.lp.php
      */
     #[Override]
     public static function defaultConfig()

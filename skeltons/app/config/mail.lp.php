@@ -30,7 +30,7 @@ use Symfony\Component\Mailer\Transport;
 | time the settings are referenced.
 |
 | NOTE: If you want to get other default setting samples of configuration file, try check here.
-|       https://github.com/rebet/rebet/tree/master/skeltons/app/core/config
+|       https://github.com/rebet/rebet/tree/master/skeltons/app/config
 */
 return [
     /*

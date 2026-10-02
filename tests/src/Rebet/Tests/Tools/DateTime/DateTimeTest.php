@@ -1130,7 +1130,7 @@ class DateTimeTest extends RebetTestCase
 
     public function test_i18n(): void
     {
-        $i18n_dir = Path::normalize(App::path('../../src/Rebet/Tools/DateTime/i18n'));
+        $i18n_dir = Path::normalize(App::path('../src/Rebet/Tools/DateTime/i18n'));
         $locales  = array_diff(scandir($i18n_dir), ['.', '..']);
         $datetime = new DateTime('2019-01-06 13:20:30.123456', 'UTC');
         foreach ($locales as $locale) {

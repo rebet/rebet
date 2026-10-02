@@ -70,50 +70,62 @@ class Structure
 
     /**
      * Get application config path
-     * Defaultly this method return "{Structure::root()}/core/config/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/app/config/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string
      */
     public function config(string|null $relative_path = null): string
     {
-        return Path::normalize("{$this->path('/core/config')}/{$relative_path}");
+        return Path::normalize("{$this->path('/app/config')}/{$relative_path}");
     }
 
     /**
      * Get application resources path
-     * Defaultly this method return "{Structure::root()}/core/resources/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/app/resources/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string
      */
     public function resources(string|null $relative_path = null): string
     {
-        return Path::normalize("{$this->path('/core/resources')}/{$relative_path}");
-    }
-
-    /**
-     * Get application routes configuration path
-     * Defaultly this method return "{Structure::root()}/core/routes/{$relative_path}", you can override this method if you want.
-     *
-     * @param  string|null $relative_path (default: null)
-     * @return string
-     */
-    public function routes(string|null $relative_path = null): string
-    {
-        return Path::normalize("{$this->path('/core/routes')}/{$relative_path}");
+        return Path::normalize("{$this->path('/app/resources')}/{$relative_path}");
     }
 
     /**
      * Get application views path
-     * Defaultly this method return "{Structure::root()}/core/views/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/app/resources/views/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string
      */
     public function views(string|null $relative_path = null): string
     {
-        return Path::normalize("{$this->path('/core/views')}/{$relative_path}");
+        return Path::normalize("{$this->resources('/views')}/{$relative_path}");
+    }
+
+    /**
+     * Get application i18n (internationalization) path
+     * Defaultly this method return "{Structure::root()}/app/resources/i18n/{$relative_path}", you can override this method if you want.
+     *
+     * @param  string|null $relative_path (default: null)
+     * @return string
+     */
+    public function i18n(string|null $relative_path = null): string
+    {
+        return Path::normalize("{$this->resources('/i18n')}/{$relative_path}");
+    }
+
+    /**
+     * Get application routes configuration path
+     * Defaultly this method return "{Structure::root()}/app/routes/{$relative_path}", you can override this method if you want.
+     *
+     * @param  string|null $relative_path (default: null)
+     * @return string
+     */
+    public function routes(string|null $relative_path = null): string
+    {
+        return Path::normalize("{$this->path('/app/routes')}/{$relative_path}");
     }
 
     /**

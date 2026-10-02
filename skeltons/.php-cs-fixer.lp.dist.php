@@ -50,9 +50,6 @@ return (new PhpCsFixer\Config())
     ->setLineEnding("\n")
     ->setFinder(
         PhpCsFixer\Finder::create()
-            ->exclude([
-                'vendor',
-            ])
             ->in([
                 __DIR__ . '/app',
                 __DIR__ . '/tests',

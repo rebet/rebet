@@ -850,11 +850,7 @@ class ProjectInitCommand extends Command
      * `.lp` marker), the path is checked using its generated name (`.lp` marker removed), since
      * that is the name it would actually be written as.
      *
-     * As a special case, an existing `app` directory that contains nothing but a `vendor`
-     * directory (ie. only `composer install` has been run there, typically ahead of time by the
-     * devcontainer setup) is not considered "already initialized".
-     *
-     * Also, the entries listed in `static::OVERWRITABLE_ENTRIES` (ex `.gitignore`, which a project
+     * The entries listed in `static::OVERWRITABLE_ENTRIES` (ex `.gitignore`, which a project
      * created via `composer create-project` usually already has) are not considered "already
      * initialized", since they are simply overwritten by the skelton on generation.
      *
@@ -877,9 +873,6 @@ class ProjectInitCommand extends Command
             if (!file_exists($path)) {
                 continue;
             }
-            if ($name === 'app' && is_dir($path) && $this->containsOnlyVendorDir($path)) {
-                continue;
-            }
             $existing[] = $path;
         }
 
@@ -887,22 +880,10 @@ class ProjectInitCommand extends Command
     }
 
     /**
-     * Determine whether the given directory contains nothing but a `vendor` directory.
-     *
-     * @param  string $dir
-     * @return bool
-     */
-    protected function containsOnlyVendorDir(string $dir): bool
-    {
-        $entries = array_values(array_diff(scandir($dir), ['.', '..']));
-        return $entries === ['vendor'];
-    }
-
-    /**
      * Get the variables for the skelton templates from the collected $configs.
      *
      * The auth password is kept as it is while the wizard (to show it in the settings review), and
-     * hashed here, since the skelton templates (ex `app/core/config/auth.lp.php`) require the hash.
+     * hashed here, since the skelton templates (ex `app/config/auth.lp.php`) require the hash.
      *
      * @param  array<string, mixed> $configs
      * @return array<string, mixed>

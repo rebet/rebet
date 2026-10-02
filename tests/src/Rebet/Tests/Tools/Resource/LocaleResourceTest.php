@@ -21,13 +21,13 @@ class LocaleResourceTest extends RebetTestCase
 
     public function test_load(): void
     {
-        $resources = LocaleResource::load(App::structure()->resources('/i18n'), 'ja', 'invalid');
+        $resources = LocaleResource::load(App::structure()->i18n(), 'ja', 'invalid');
         $this->assertSame([], $resources);
 
-        $resources = LocaleResource::load(App::structure()->resources('/i18n'), 'nothing', 'enum');
+        $resources = LocaleResource::load(App::structure()->i18n(), 'nothing', 'enum');
         $this->assertSame([], $resources);
 
-        $resources = LocaleResource::load(App::structure()->resources('/i18n'), 'ja', 'enum');
+        $resources = LocaleResource::load(App::structure()->i18n(), 'ja', 'enum');
         $this->assertSame([
             Gender::class => [
                 'label' => [
@@ -44,7 +44,7 @@ class LocaleResourceTest extends RebetTestCase
             ],
         ], $resources);
 
-        $resources = LocaleResource::load(App::structure()->resources('/i18n'), 'de', 'enum');
+        $resources = LocaleResource::load(App::structure()->i18n(), 'de', 'enum');
         $this->assertSame([
             Gender::class => [
                 'label' => [
@@ -55,7 +55,7 @@ class LocaleResourceTest extends RebetTestCase
         ], $resources);
 
         $resources = LocaleResource::load([
-            App::structure()->resources('/i18n'),
+            App::structure()->i18n(),
             App::structure()->resources('/adhoc/Tools/Resource/LocaleResource'),
         ], 'ja', 'enum');
         $this->assertSame([

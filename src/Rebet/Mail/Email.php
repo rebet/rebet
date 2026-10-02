@@ -64,7 +64,7 @@ class Email extends SymfonyEmail
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/mail.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/config/mail.lp.php
      */
     #[Override]
     public static function defaultConfig()

@@ -27,7 +27,7 @@ class MethodRoute extends DeclarativeRoute
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/routing.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/config/routing.lp.php
      */
     #[Override]
     public static function defaultConfig()

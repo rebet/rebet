@@ -37,7 +37,7 @@ services:
       TZ: {! $timezone !}
     volumes:
       - ../:/workspace
-      - ../app:/var/www/{! $code_name !}
+      - ../:/var/www/{! $code_name !}
       - work4ut:/workspace/tests/work
       - ./docker/workspace/configs/php.ini:/usr/local/etc/php/php.ini
       - ./docker/workspace/configs/mailpit.ini:/usr/local/etc/php/conf.d/mailpit.ini
@@ -66,7 +66,7 @@ services:
       default: {}
       traefik-public: {}
     volumes:
-      - ../app:/var/www/{! $code_name !}
+      - ../:/var/www/{! $code_name !}
       - ./docker/nginx/configs/default.conf:/etc/nginx/conf.d/default.conf
       - ./docker/nginx/var:/var/log/nginx
     labels:
@@ -86,7 +86,7 @@ services:
     restart: always
     volumes:
       - ../:/workspace
-      - ../app:/var/www/{! $code_name !}
+      - ../:/var/www/{! $code_name !}
       - work4ut:/workspace/tests/work
       - ./docker/php-fpm/configs/php.ini:/usr/local/etc/php/php.ini
       - ./docker/php-fpm/configs/mailpit.ini:/usr/local/etc/php/conf.d/mailpit.ini

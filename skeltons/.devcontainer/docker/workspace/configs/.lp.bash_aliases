@@ -3,7 +3,7 @@
 # Please use it as needed.
 # =========================================================
 alias assistant="/workspace/bin/assistant"
-alias phpunit="/workspace/app/vendor/bin/phpunit -d memory_limit=256M"
-alias phpstan="/workspace/app/vendor/bin/phpstan"
-alias php-cs-fixer="/workspace/app/vendor/bin/php-cs-fixer"
-alias psysh="/workspace/app/vendor/bin/psysh"
+alias phpunit="/workspace/vendor/bin/phpunit -d memory_limit=256M"
+alias phpstan="/workspace/vendor/bin/phpstan"
+alias php-cs-fixer="/workspace/vendor/bin/php-cs-fixer"
+alias psysh="/workspace/vendor/bin/psysh"

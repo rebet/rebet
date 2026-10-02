@@ -103,7 +103,7 @@ class BuiltinValidationsTest extends RebetTestCase
     public static function dataValidationMethods(): array
     {
         App::reset();
-        App::init(new AppWebKernel(new AppStructure(__DIR__ . '/../../../../app')));
+        App::init(new AppWebKernel(new AppStructure(__DIR__ . '/../../../..')));
         DateTime::setTestNow('2010-01-23 12:34:56');
 
         $ng_word_file      = App::structure()->resources('/validation/ng_word.txt');

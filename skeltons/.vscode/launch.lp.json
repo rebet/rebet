@@ -7,7 +7,7 @@
             "request": "launch",
             "port": 9003,
             "pathMappings": {
-                "/var/www/{! $code_name !}/":"${workspaceRoot}/app/"
+                "/var/www/{! $code_name !}/":"${workspaceRoot}/"
             }
         }
     ]

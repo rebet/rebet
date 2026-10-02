@@ -30,7 +30,7 @@ class AppStructure extends Structure
 
     /**
      * Get application config path
-     * Defaultly this method return "{Structure::root()}/core/config/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/app/config/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string
@@ -43,7 +43,7 @@ class AppStructure extends Structure
 
     /**
      * Get application resources path
-     * Defaultly this method return "{Structure::root()}/core/resources/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/app/resources/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string
@@ -56,7 +56,7 @@ class AppStructure extends Structure
 
     /**
      * Get application routes configuration path
-     * Defaultly this method return "{Structure::root()}/core/routes/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/app/routes/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string
@@ -69,7 +69,7 @@ class AppStructure extends Structure
 
     /**
      * Get application views path
-     * Defaultly this method return "{Structure::root()}/core/views/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/app/resources/views/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string

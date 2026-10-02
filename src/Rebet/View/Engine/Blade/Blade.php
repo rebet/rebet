@@ -39,7 +39,7 @@ class Blade implements Engine
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/view.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/config/view.lp.php
      */
     #[Override]
     public static function defaultConfig()

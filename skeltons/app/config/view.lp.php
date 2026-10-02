@@ -32,7 +32,7 @@ use Rebet\View\View;
 | time the settings are referenced.
 |
 | NOTE: If you want to get other default setting samples of configuration file, try check here.
-|       https://github.com/rebet/rebet/tree/master/skeltons/app/core/config
+|       https://github.com/rebet/rebet/tree/master/skeltons/app/config
 */
 return [
     /*
@@ -94,8 +94,8 @@ return [
         | resolved from, and 'cache_path' defines the directory the compiled view cache is stored in
         | (it will be created automatically if it does not exist).
         */
-        'view_path'   => [App::path('/core/views')],
-        'cache_path'  => App::path('/var/cache/views/blade'),
+        'view_path'   => [App::structure()->views()],
+        'cache_path'  => App::structure()->cache('/views/blade'),
 
 
         /*
@@ -124,7 +124,7 @@ return [
         | This option defines the directory (or directories) that Twig template files are resolved
         | from.
         */
-        'template_dir' => [App::path('/core/views')],
+        'template_dir' => [App::structure()->views()],
 
 
         /*

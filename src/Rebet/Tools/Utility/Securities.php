@@ -21,7 +21,7 @@ class Securities
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/tools.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/config/tools.lp.php
      */
     #[Override]
     public static function defaultConfig()

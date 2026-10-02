@@ -7,7 +7,7 @@ echo "------------------------------------------------------------"
 echo " Install Composer Dependencies"
 echo "------------------------------------------------------------"
 echo "> composer install..."
-composer install -d /workspace/app
+composer install -d /workspace
 echo ">> Done."
 
 echo ""

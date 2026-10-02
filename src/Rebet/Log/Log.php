@@ -68,7 +68,7 @@ class Log
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/log.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/config/log.lp.php
      */
     #[Override]
     public static function defaultConfig()
