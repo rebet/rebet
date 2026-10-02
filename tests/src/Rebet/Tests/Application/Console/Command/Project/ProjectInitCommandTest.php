@@ -74,7 +74,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertStringContainsString('domain => project-init-no-interaction.localhost,', $display);
             $this->assertStringContainsString('view => twig,', $display);
 
-            $this->assertFileExists("{$work_dir}/app/core/.env");
+            $this->assertFileExists("{$work_dir}/app/.env");
             $this->assertFileExists("{$work_dir}/app/bin/assistant");
         });
     }
@@ -161,7 +161,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertStringContainsString('nothing is written', $display);
             $this->assertStringContainsString("  - {$work_dir}/app/bin/assistant", $display);
             // Database is not used by default, so all `.devcontainer/docker/{driver}` dirs are excluded.
-            $this->assertStringContainsString('62 files would be generated.', $display);
+            $this->assertStringContainsString('63 files would be generated.', $display);
             $this->assertStringContainsString('Dry-run finished, nothing was written.', $display);
 
             // Nothing was actually written to disk.
@@ -912,7 +912,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $status = $tester->execute(array_merge(['--database' => 'mysql'], $options), ['interactive' => false]);
             $this->assertSame(0, $status);
 
-            $env = file_get_contents("{$work_dir}/app/core/.env");
+            $env = file_get_contents("{$work_dir}/app/.env");
             $this->assertStringContainsString("DB_PASSWORD={$db_pass}\n", $env);
         });
     }
@@ -1056,7 +1056,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertStringContainsString("// 'username'      => Env::promise('CACHE_MEMCACHED_USERNAME'),", $cache);
             $this->assertStringContainsString("// 'password'      => Env::promise('CACHE_MEMCACHED_PASSWORD'),", $cache);
 
-            $env = file_get_contents("{$work_dir}/app/core/.env");
+            $env = file_get_contents("{$work_dir}/app/.env");
             $this->assertStringContainsString("CACHE_MEMCACHED_DSN=memcached://memcached-cache:11211\n", $env);
             $this->assertStringContainsString("# CACHE_MEMCACHED_USERNAME=\n# CACHE_MEMCACHED_PASSWORD=\n", $env);
             $this->assertDoesNotMatchRegularExpression('/^(CACHE|SESSION)_MEMCACHED_(USERNAME|PASSWORD)=/m', $env);

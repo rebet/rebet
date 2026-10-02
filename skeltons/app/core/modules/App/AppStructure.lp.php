@@ -17,7 +17,7 @@ class AppStructure extends Structure
 {
     /**
      * Get environment file path
-     * Defaultly this method return "{Structure::root()}/core/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string

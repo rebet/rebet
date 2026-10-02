@@ -58,14 +58,14 @@ class Structure
 
     /**
      * Get environment file path
-     * Defaultly this method return "{Structure::root()}/core/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string
      */
     public function env(string|null $relative_path = null): string
     {
-        return Path::normalize("{$this->path('/core')}/{$relative_path}");
+        return Path::normalize("{$this->root()}/{$relative_path}");
     }
 
     /**
