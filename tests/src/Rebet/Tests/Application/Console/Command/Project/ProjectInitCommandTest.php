@@ -997,7 +997,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(0, $status);
             $this->assertMatchesRegularExpression('/\|\s+Auth Password\s+\|\s+P@ssw0rd1\s+\|/', $display);
 
-            $auth = file_get_contents("{$work_dir}/app/core/configs/auth.php");
+            $auth = file_get_contents("{$work_dir}/app/core/config/auth.php");
             $this->assertStringNotContainsString('P@ssw0rd1', $auth);
             $this->assertSame(1, preg_match("/'email' => 'admin@example\\.com', 'password' => '(?<hash>[^']+)'/", $auth, $matches));
             $this->assertTrue(Password::verify('P@ssw0rd1', $matches['hash']));
@@ -1051,7 +1051,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(0, $status);
             $this->assertStringNotContainsString('memcached_user', $tester->getDisplay());
 
-            $cache = file_get_contents("{$work_dir}/app/core/configs/cache.php");
+            $cache = file_get_contents("{$work_dir}/app/core/config/cache.php");
             $this->assertStringContainsString("'dsn'      => Env::promise('CACHE_MEMCACHED_DSN'),", $cache);
             $this->assertStringContainsString("// 'username'      => Env::promise('CACHE_MEMCACHED_USERNAME'),", $cache);
             $this->assertStringContainsString("// 'password'      => Env::promise('CACHE_MEMCACHED_PASSWORD'),", $cache);

@@ -37,7 +37,7 @@ use Rebet\Tools\Utility\Utils;
 | time the settings are referenced.
 |
 | NOTE: If you want to get other default setting samples of configuration file, try check here.
-|       https://github.com/rebet/rebet/tree/master/skeltons/app/core/configs
+|       https://github.com/rebet/rebet/tree/master/skeltons/app/core/config
 */
 return [
     /*

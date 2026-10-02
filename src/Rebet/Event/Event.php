@@ -25,7 +25,7 @@ class Event
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/event.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/event.lp.php
      */
     #[Override]
     public static function defaultConfig()

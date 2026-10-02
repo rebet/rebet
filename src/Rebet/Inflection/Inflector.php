@@ -63,7 +63,7 @@ class Inflector
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/inflection.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/inflection.lp.php
      */
     #[Override]
     public static function defaultConfig()

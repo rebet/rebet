@@ -70,14 +70,14 @@ class Structure
 
     /**
      * Get application config path
-     * Defaultly this method return "{Structure::root()}/core/configs/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/core/config/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string
      */
-    public function configs(string|null $relative_path = null): string
+    public function config(string|null $relative_path = null): string
     {
-        return Path::normalize("{$this->path('/core/configs')}/{$relative_path}");
+        return Path::normalize("{$this->path('/core/config')}/{$relative_path}");
     }
 
     /**

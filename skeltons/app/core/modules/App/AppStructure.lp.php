@@ -30,15 +30,15 @@ class AppStructure extends Structure
 
     /**
      * Get application config path
-     * Defaultly this method return "{Structure::root()}/core/configs/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/core/config/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
-    public function configs(string|null $relative_path = null): string
+    public function config(string|null $relative_path = null): string
     {
-        return parent::configs($relative_path);
+        return parent::config($relative_path);
     }
 
     /**

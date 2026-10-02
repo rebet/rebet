@@ -39,7 +39,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/tools.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/tools.lp.php
      */
     #[Override]
     public static function defaultConfig()

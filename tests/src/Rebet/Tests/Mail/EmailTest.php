@@ -38,7 +38,7 @@ class EmailTest extends RebetTestCase
         $this->assertInstanceOf(NullTransport::class, $this->inspect($mailer, 'transport'));
 
         Email::reset();
-        $mailer = Email::mailer(); // default_mailer is 'unittest' configured in tests/app/core/configs/mail.php
+        $mailer = Email::mailer(); // default_mailer is 'unittest' configured in tests/app/core/config/mail.php
         $this->assertInstanceOf(Mailer::class, $mailer);
         $this->assertInstanceOf(InMemoryTransport::class, $this->inspect($mailer, 'transport'));
 

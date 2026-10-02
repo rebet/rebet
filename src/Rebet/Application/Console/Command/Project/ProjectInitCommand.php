@@ -902,7 +902,7 @@ class ProjectInitCommand extends Command
      * Get the variables for the skelton templates from the collected $configs.
      *
      * The auth password is kept as it is while the wizard (to show it in the settings review), and
-     * hashed here, since the skelton templates (ex `app/core/configs/auth.lp.php`) require the hash.
+     * hashed here, since the skelton templates (ex `app/core/config/auth.lp.php`) require the hash.
      *
      * @param  array<string, mixed> $configs
      * @return array<string, mixed>

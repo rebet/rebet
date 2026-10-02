@@ -75,7 +75,7 @@ class Cache
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/cache.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/config/cache.lp.php
      */
     #[Override]
     public static function defaultConfig()
