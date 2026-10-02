@@ -1,5 +1,5 @@
 {
-    "name": "{! $code_name !}-dev",
+    "name": "{! $code_name !}",
     "dockerComposeFile": ["docker-compose.yml"],
     "service": "workspace",
     "forwardPorts": [ 9003 ],
