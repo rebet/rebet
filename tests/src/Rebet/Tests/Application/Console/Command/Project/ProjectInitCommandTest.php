@@ -75,7 +75,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertStringContainsString('view => twig,', $display);
 
             $this->assertFileExists("{$work_dir}/app/.env");
-            $this->assertFileExists("{$work_dir}/app/bin/assistant");
+            $this->assertFileExists("{$work_dir}/bin/assistant");
         });
     }
 
@@ -159,7 +159,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
             $display = $tester->getDisplay();
             $this->assertStringContainsString('nothing is written', $display);
-            $this->assertStringContainsString("  - {$work_dir}/app/bin/assistant", $display);
+            $this->assertStringContainsString("  - {$work_dir}/bin/assistant", $display);
             // Database is not used by default, so all `.devcontainer/docker/{driver}` dirs are excluded.
             $this->assertStringContainsString('63 files would be generated.', $display);
             $this->assertStringContainsString('Dry-run finished, nothing was written.', $display);

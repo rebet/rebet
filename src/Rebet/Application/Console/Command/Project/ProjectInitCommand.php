@@ -924,7 +924,7 @@ class ProjectInitCommand extends Command
      * removed from the generated file name (ex `application.php`, `Dockerfile`, `.env`).
      * All other files are copied as-is. Directory structure (including empty directories) is
      * preserved, and each generated file keeps the permissions of its source file (so that, for
-     * example, `app/bin/assistant` stays executable).
+     * example, `bin/assistant` stays executable).
      *
      * If `$dry_run` is true, no directory/file is actually created/written (this method only
      * computes and returns the destination paths that would be generated).
