@@ -141,15 +141,15 @@ class Structure
     }
 
     /**
-     * Get logs path
-     * Defaultly this method return "{Structure::root()}/var/logs/{$relative_path}", you can override this method if you want.
+     * Get log path
+     * Defaultly this method return "{Structure::root()}/var/log/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string
      */
-    public function logs(string|null $relative_path = null): string
+    public function log(string|null $relative_path = null): string
     {
-        return Path::normalize("{$this->path('/var/logs')}/{$relative_path}");
+        return Path::normalize("{$this->path('/var/log')}/{$relative_path}");
     }
 
     /**

@@ -107,16 +107,16 @@ class AppStructure extends Structure
     }
 
     /**
-     * Get logs path
-     * Defaultly this method return "{Structure::root()}/var/logs/{$relative_path}", you can override this method if you want.
+     * Get log path
+     * Defaultly this method return "{Structure::root()}/var/log/{$relative_path}", you can override this method if you want.
      *
      * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
-    public function logs(string|null $relative_path = null): string
+    public function log(string|null $relative_path = null): string
     {
-        return parent::logs($relative_path);
+        return parent::log($relative_path);
     }
 
     /**

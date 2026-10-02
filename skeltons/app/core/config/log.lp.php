@@ -149,7 +149,7 @@ return [
                         'local'   => LogLevel::DEBUG,
                         'default' => LogLevel::ERROR,
                     ]),
-                    'filename'             => App::path('/var/logs/app.log'),
+                    'filename'             => App::structure()->log('app.log'),
                     'with_browser_console' => App::when([
                         'web@local' => true,
                         'default'   => false,
@@ -181,7 +181,7 @@ return [
                         'local'   => LogLevel::DEBUG,
                         'default' => LogLevel::INFO,
                     ]),
-                    'filename' => App::path('/var/logs/command.log'),
+                    'filename' => App::path('/var/log/command.log'),
                 ],
             ],
 

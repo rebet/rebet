@@ -41,21 +41,21 @@ class AppTest extends RebetTestCase
     public function test_path(): void
     {
         App::init(new KernelStub(new AppStructure('/var/www/app'), 'web'));
-        $this->assertSame('/var/www/app/var/logs', App::path('/var/logs'));
-        $this->assertSame('/var/www/app/var/logs', App::path('var/logs'));
+        $this->assertSame('/var/www/app/var/log', App::path('/var/log'));
+        $this->assertSame('/var/www/app/var/log', App::path('var/log'));
         $this->assertSame('/var/www/.env', App::path('/../.env'));
         $this->assertSame('/var/www/.env', App::path('../.env'));
 
         App::init(new KernelStub(new AppStructure('c:\\var\\www\\app\\'), 'web'));
-        $this->assertSame('c:/var/www/app/var/logs', App::path('/var/logs'));
+        $this->assertSame('c:/var/www/app/var/log', App::path('/var/log'));
         $this->assertSame('c:/var/www/.env', App::path('../.env'));
 
         App::init(new KernelStub(new AppStructure('file:\\\\var\\www\\app'), 'web'));
-        $this->assertSame('file://var/www/app/var/logs', App::path('/var/logs'));
+        $this->assertSame('file://var/www/app/var/log', App::path('/var/log'));
         $this->assertSame('file://var/www/.env', App::path('../.env'));
 
         App::init(new KernelStub(new AppStructure('file:\\\\c:\\var\\www\\app\\'), 'web'));
-        $this->assertSame('file://c:/var/www/app/var/logs', App::path('/var/logs'));
+        $this->assertSame('file://c:/var/www/app/var/log', App::path('/var/log'));
         $this->assertSame('file://c:/var/www/.env', App::path('../.env'));
     }
 
