@@ -294,11 +294,12 @@ class ProjectInitCommand extends Command
             }
             if (!$dry_run) {
                 $failed = [];
+                $ignore = '--ignore-platform-req=' . escapeshellarg('ext-*');
                 if (!$this->composerRequire($cwd, $require, false)) {
-                    $failed[] = 'composer require ' . implode(' ', array_map('escapeshellarg', $require));
+                    $failed[] = "composer require {$ignore} " . implode(' ', array_map('escapeshellarg', $require));
                 }
                 if (!$this->composerRequire($cwd, $require_dev, true)) {
-                    $failed[] = 'composer require --dev ' . implode(' ', array_map('escapeshellarg', $require_dev));
+                    $failed[] = "composer require --dev {$ignore} " . implode(' ', array_map('escapeshellarg', $require_dev));
                 }
                 if (!empty($failed)) {
                     $this->error('The application files were generated, but some Composer packages could not be installed.');
@@ -1057,6 +1058,11 @@ class ProjectInitCommand extends Command
      * Run `composer require` (or, when `$dev` is true, `composer require --dev`) for the given
      * packages against the `composer.json` in the given directory.
      *
+     * The PHP extensions required by the packages are not checked (`--ignore-platform-req=ext-*`),
+     * because this command runs on the host machine while the packages (ex. phpunit requires
+     * `ext-dom`) are used in the dev container, whose PHP is checked on its own `composer install`.
+     * The PHP version is still checked, so that the packages usable with it are selected.
+     *
      * @param  string   $cwd      project root directory (where `composer.json` lives)
      * @param  string[] $packages
      * @param  bool     $dev
@@ -1070,6 +1076,7 @@ class ProjectInitCommand extends Command
 
         $command = 'composer require ' . ($dev ? '--dev ' : '')
             . '--no-interaction '
+            . '--ignore-platform-req=' . escapeshellarg('ext-*') . ' '
             . implode(' ', array_map('escapeshellarg', $packages))
             . ' --working-dir=' . escapeshellarg($cwd);
 

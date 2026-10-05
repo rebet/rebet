@@ -37,8 +37,8 @@ class ProjectInitCommandComposerFailureTest extends RebetConsoleTestCase
 
             $display = $tester->getDisplay();
             $this->assertStringContainsString('The application files were generated, but some Composer packages could not be installed.', $display);
-            $this->assertStringContainsString("composer require 'illuminate/view:^13.21'", $display);
-            $this->assertStringContainsString("composer require --dev 'friendsofphp/php-cs-fixer:^3.95' 'phpstan/phpstan:^2.2' 'phpunit/phpunit:^11.5' 'psy/psysh:^0.12.24'", $display);
+            $this->assertStringContainsString("composer require --ignore-platform-req='ext-*' 'illuminate/view:^13.21'", $display);
+            $this->assertStringContainsString("composer require --dev --ignore-platform-req='ext-*' 'friendsofphp/php-cs-fixer:^3.95' 'phpstan/phpstan:^2.2' 'phpunit/phpunit:^11.5' 'psy/psysh:^0.12.24'", $display);
             $this->assertStringNotContainsString('initilized!', $display);
 
             // The application files themselves were generated.

@@ -244,6 +244,10 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
                 'composer require --dev friendsofphp/php-cs-fixer:^3.95 phpstan/phpstan:^2.2 phpunit/phpunit:^11.5 psy/psysh:^0.12.24',
                 $display,
             );
+            // Host's missing PHP extensions (ex. ext-dom for phpunit) must not block the installation,
+            // but the PHP version is still checked.
+            $this->assertStringContainsString("--no-interaction --ignore-platform-req='ext-*' ", $display);
+            $this->assertStringNotContainsString('--ignore-platform-reqs', $display);
         });
     }
 
