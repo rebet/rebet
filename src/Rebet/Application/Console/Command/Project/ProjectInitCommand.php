@@ -91,19 +91,22 @@ class ProjectInitCommand extends Command
      * Composer packages to `composer require` based on the collected $configs, grouped by the
      * $configs key that decides whether each package is required (see resolveComposerPackages()).
      *
+     * Each package has the version constraint that Rebet is tested with, so that the latest major
+     * version of a package that requires a newer PHP than Rebet supports is never picked up.
+     *
      * @var array<string, array<string, string>>
      */
     public const COMPOSER_REQUIRE = [
         'session' => [
-            'mongodb' => 'mongodb/mongodb',
-            'redis'   => 'predis/predis',
+            'mongodb' => 'mongodb/mongodb:^2.3',
+            'redis'   => 'predis/predis:^2.3',
         ],
         'cache'   => [
-            'redis' => 'predis/predis',
+            'redis' => 'predis/predis:^2.3',
         ],
         'view'    => [
-            'twig'  => 'twig/twig',
-            'blade' => 'illuminate/view',
+            'twig'  => 'twig/twig:^3.21',
+            'blade' => 'illuminate/view:^13.21',
         ],
     ];
 
@@ -115,10 +118,10 @@ class ProjectInitCommand extends Command
      */
     public const COMPOSER_REQUIRE_DEV = [
         'always' => [
-            "friendsofphp/php-cs-fixer",
-            "phpstan/phpstan",
-            "phpunit/phpunit",
-            "psy/psysh",
+            "friendsofphp/php-cs-fixer:^3.95",
+            "phpstan/phpstan:^2.2",
+            "phpunit/phpunit:^11.5",
+            "psy/psysh:^0.12.24",
         ],
     ];
 
@@ -179,11 +182,11 @@ class ProjectInitCommand extends Command
      */
     public const STEPS = [
         'stepDefaults' => 'Setup Your Application Default Configs',
-        'stepDomain'   => 'Setup Your Application Domain for Local Development',
-        'stepDatabase' => 'Setup Database For Local Development Configs',
+        'stepDomain'   => 'Setup Your Application Domain',
+        'stepDatabase' => 'Setup Database Configs',
         'stepAuth'     => 'Setup Auth Configs',
         'stepView'     => 'Setup View Configs',
-        'stepCache'    => 'Setup Cache Store For Local Development Configs',
+        'stepCache'    => 'Setup Cache Store Configs',
         'stepSession'  => 'Setup Session Storage Configs',
     ];
 
@@ -290,8 +293,21 @@ class ProjectInitCommand extends Command
                 $this->writeln('  - composer require --dev ' . implode(' ', $require_dev));
             }
             if (!$dry_run) {
-                $this->composerRequire($cwd, $require, false);
-                $this->composerRequire($cwd, $require_dev, true);
+                $failed = [];
+                if (!$this->composerRequire($cwd, $require, false)) {
+                    $failed[] = 'composer require ' . implode(' ', array_map('escapeshellarg', $require));
+                }
+                if (!$this->composerRequire($cwd, $require_dev, true)) {
+                    $failed[] = 'composer require --dev ' . implode(' ', array_map('escapeshellarg', $require_dev));
+                }
+                if (!empty($failed)) {
+                    $this->error('The application files were generated, but some Composer packages could not be installed.');
+                    $this->error('Check the output above (ex. `composer check-platform-reqs` shows the PHP version and extensions Composer sees), fix it, and then run below in the project directory.');
+                    foreach ($failed as $command) {
+                        $this->writeln("  - {$command}");
+                    }
+                    return 1;
+                }
             }
         }
 
@@ -404,14 +420,14 @@ class ProjectInitCommand extends Command
                 ['Timezone', $configs['timezone'] ?? ''],
             ],
             [
-                ['Domain', $configs['domain'] ?? ''],
+                ['Domain (For Local)', $configs['domain'] ?? ''],
             ],
             array_values(array_filter([
                 ['Use Database', $yn($use_db)],
                 $use_db ? ['DB Product', $configs['database'] ?? '', true] : null,
-                $use_db ? ['DB Name', $configs['db_name'] ?? '', true] : null,
-                isset($configs['db_user']) ? ['DB User', $configs['db_user'], true] : null,
-                isset($configs['db_pass']) ? ['DB Password', $configs['db_pass'], true] : null,
+                $use_db ? ['DB Name     (For Local)', $configs['db_name'] ?? '', true] : null,
+                isset($configs['db_user']) ? ['DB User     (For Local)', $configs['db_user'], true] : null,
+                isset($configs['db_pass']) ? ['DB Password (For Local)', $configs['db_pass'], true] : null,
             ])),
             array_values(array_filter([
                 ['Use Auth', $yn($configs['use_auth'] ?? false)],
@@ -511,7 +527,7 @@ class ProjectInitCommand extends Command
         $this->comment(" - If you don't have production domain yet, then type app name with suffix `.localhost` (ex {$default_domain})");
         $this->comment("   (`*.localhost` usually resolves to the loopback address without editing your hosts file)");
         $domain = $this->askValid(
-            "* Application Domain for Local Development : [{$default_domain}] ",
+            "* Application Domain (for Local Development) : [{$default_domain}] ",
             fn(string $answer) => in_array(rtrim(strtolower(trim($answer)), '.'), static::RESERVED_DOMAINS, true) ? null : trim($answer),
             'is reserved, so please use another domain (ex ' . $default_domain . '). Reserved domains are `' . implode('`, `', static::RESERVED_DOMAINS) . '`.',
             'domain',
@@ -554,10 +570,10 @@ class ProjectInitCommand extends Command
             }
             $configs['database'] = $this->choice("* DB Product  : ", static::SUPPORTED_DATABASES, 'database', 'mysql');
             $is_sqlite           = $configs['database'] === 'sqlite';
-            $configs['db_name']  = $this->ask("* DB Name     : [{$default_name}] ", 'database-name', true, $default_name);
+            $configs['db_name']  = $this->ask("* DB Name     (For Local) : [{$default_name}] ", 'database-name', true, $default_name);
             if (!$is_sqlite) {
-                $configs['db_user'] = $this->ask("* DB User     : [{$default_name}] ", 'database-user', true, $default_name);
-                $configs['db_pass'] = $this->ask("* DB Password : [{$configs['db_user']}] ", 'database-pass', true, $configs['db_user']);
+                $configs['db_user'] = $this->ask("* DB User     (For Local) : [{$default_name}] ", 'database-user', true, $default_name);
+                $configs['db_pass'] = $this->ask("* DB Password (For Local) : [{$configs['db_user']}] ", 'database-pass', true, $configs['db_user']);
             }
             $use_db = true;
         }
@@ -1053,6 +1069,7 @@ class ProjectInitCommand extends Command
         }
 
         $command = 'composer require ' . ($dev ? '--dev ' : '')
+            . '--no-interaction '
             . implode(' ', array_map('escapeshellarg', $packages))
             . ' --working-dir=' . escapeshellarg($cwd);
 

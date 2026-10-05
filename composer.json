@@ -64,8 +64,8 @@
         }
     },
     "suggest": {
-        "illuminate/view": "Required to use the 'Blade' view template engine (^10.0).",
-        "twig/twig": "Required to use the 'Twig' view template engine (^3.8).",
+        "illuminate/view": "Required to use the 'Blade' view template engine (^13.21).",
+        "twig/twig": "Required to use the 'Twig' view template engine (^3.21).",
         "league/flysystem-*": "Required to use the any other Flysystem driver like Cached[cached-adapter], AWS S3[aws-s3-v3], InMemory[memory], SFTP[sftp], and others (^3.0).",
         "symfony/*-mailer": "Required to use the any other 3rd party transport like Mailgun[mailgun-mailer], SendGrid[sendgrid-mailer], Amazon SES[amazon-mailer], and others (see https://symfony.com/doc/current/mailer.html)."
     },

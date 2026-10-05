@@ -236,12 +236,12 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
             $display = $tester->getDisplay();
             // Default view is 'twig', so only twig/twig is required (session/cache have no match).
-            $this->assertStringContainsString('composer require twig/twig', $display);
+            $this->assertStringContainsString('composer require twig/twig:^3.21', $display);
             $this->assertStringNotContainsString('mongodb/mongodb', $display);
             $this->assertStringNotContainsString('predis/predis', $display);
             // COMPOSER_REQUIRE_DEV's 'always' group is applied unconditionally.
             $this->assertStringContainsString(
-                'composer require --dev friendsofphp/php-cs-fixer phpstan/phpstan phpunit/phpunit psy/psysh',
+                'composer require --dev friendsofphp/php-cs-fixer:^3.95 phpstan/phpstan:^2.2 phpunit/phpunit:^11.5 psy/psysh:^0.12.24',
                 $display,
             );
         });
@@ -255,7 +255,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(0, $status);
 
             $display = $tester->getDisplay();
-            $this->assertStringContainsString('composer require illuminate/view', $display);
+            $this->assertStringContainsString('composer require illuminate/view:^13.21', $display);
             $this->assertStringNotContainsString('twig/twig', $display);
         });
     }
@@ -268,7 +268,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(0, $status);
             // 'predis/predis' (cache=redis) and 'twig/twig' (default view) are both required
             // together, in COMPOSER_REQUIRE's declared group order (cache before view).
-            $this->assertStringContainsString('composer require predis/predis twig/twig', $tester->getDisplay());
+            $this->assertStringContainsString('composer require predis/predis:^2.3 twig/twig:^3.21', $tester->getDisplay());
         });
     }
 
@@ -291,7 +291,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $display = $tester->getDisplay();
             $this->assertMatchesRegularExpression('/session => redis,?$/m', $display);
             // Regression check for COMPOSER_REQUIRE['session']['redis'].
-            $this->assertStringContainsString('composer require predis/predis twig/twig', $display);
+            $this->assertStringContainsString('composer require predis/predis:^2.3 twig/twig:^3.21', $display);
         });
     }
 
@@ -304,7 +304,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $display = $tester->getDisplay();
             $this->assertMatchesRegularExpression('/session => mongodb,?$/m', $display);
             // Regression check for COMPOSER_REQUIRE['session']['mongodb'].
-            $this->assertStringContainsString('composer require mongodb/mongodb twig/twig', $display);
+            $this->assertStringContainsString('composer require mongodb/mongodb:^2.3 twig/twig:^3.21', $display);
         });
     }
 
@@ -394,7 +394,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(0, $status);
             // The redone step is asked a second time, and the final settings/generation reflect it.
             $this->assertSame(2, substr_count($display, '5) Setup View Configs (5/7)'));
-            $this->assertStringContainsString('composer require illuminate/view', $display);
+            $this->assertStringContainsString('composer require illuminate/view:^13.21', $display);
         });
     }
 
@@ -941,7 +941,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $status  = $tester->execute(['--database' => 'mysql', '--cache' => 'memcached'], ['interactive' => true]);
             $display = $tester->getDisplay();
             $this->assertSame(0, $status);
-            $this->assertMatchesRegularExpression('/\|\s+DB Password\s+\|\s+db_user\s+\|/', $display);
+            $this->assertMatchesRegularExpression('/\|\s+DB Password \(For Local\)\s+\|\s+db_user\s+\|/', $display);
             // The memcached for the cache store is used without authentication, so nothing is asked for it.
             $this->assertStringNotContainsString('Memcached User', $display);
             $this->assertStringNotContainsString('Memcached Password', $display);
