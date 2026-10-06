@@ -13,14 +13,11 @@
                 "php-cs-fixer.onsave": true,
                 "php-cs-fixer.executablePath": "/workspace/vendor/bin/php-cs-fixer",
                 "phpstan.binCommand": ["/workspace/vendor/bin/phpstan"],
-                "phpstan.memoryLimit": "512M",
+                "phpstan.memoryLimit": "1G",
                 "phpstan.timeout": 30000,
                 "[php]": {
                     "editor.formatOnSave": true,
                     "editor.defaultFormatter": "junstyle.php-cs-fixer"
-                },
-                "search.exclude": {
-                    "**/.history": true
                 }
             },
             "extensions": [
