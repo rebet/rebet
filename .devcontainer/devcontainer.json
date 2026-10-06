@@ -28,13 +28,14 @@
                 "donjayamanne.githistory",
                 "EditorConfig.EditorConfig",
                 "junstyle.php-cs-fixer",
+                "mblode.twig-language-2",
                 "mikestead.dotenv",
                 "mhutchie.git-graph",
                 "neilbrayfield.php-docblocker",
                 "oderwat.indent-rainbow",
+                "onecentlin.laravel-blade",
                 "sanderronde.phpstan-vscode",
                 "xdebug.php-debug",
-                "xyz.local-history",
                 "usernamehw.errorlens"
             ]
         }

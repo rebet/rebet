@@ -25,12 +25,17 @@
                 "donjayamanne.githistory",
                 "EditorConfig.EditorConfig",
                 "junstyle.php-cs-fixer",
+                "{%-- if $view == 'twig' --%}",
+                "mblode.twig-language-2",
+                "{%-- endif --%}",
                 "mikestead.dotenv",
                 "mhutchie.git-graph",
                 "neilbrayfield.php-docblocker",
+                "{%-- if $view == 'blade' --%}",
+                "onecentlin.laravel-blade",
+                "{%-- endif --%}",
                 "oderwat.indent-rainbow",
                 "xdebug.php-debug",
-                "xyz.local-history",
                 "usernamehw.errorlens"
             ]
         }

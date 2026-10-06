@@ -59,9 +59,11 @@
     "autoload-dev": {
         "psr-4": {
             "Rebet\\Tests\\": "tests/src/Rebet/Tests/",
-            "TestApp\\": "tests/app/modules/TestApp/",
-            "App\\": "skeltons/app/modules/App/"
-        }
+            "TestApp\\": "tests/app/modules/TestApp/"
+        },
+        "classmap": [
+            "skeltons/app/modules/App/"
+        ]
     },
     "suggest": {
         "illuminate/view": "Required to use the 'Blade' view template engine (^13.21).",

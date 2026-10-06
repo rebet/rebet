@@ -140,26 +140,30 @@ class WebExceptionHandler extends ExceptionHandler
     protected function handleView(Request $request, \Throwable $e): Response
     {
         $response = null;
-        switch (true) {
-            case $e instanceof FallbackRedirectException:
-                $response = $e->redirect();
-                break;
-            case $e instanceof HttpException:
-                $response = $this->makeView($e->getStatus(), $e->getTitle(), $e->getDetail(), $request, $e);
-                break;
-            case $e instanceof AuthenticateException:
-                $response = $this->makeView(403, null, null, $request, $e);
-                break;
-            case $e instanceof RouteNotFoundException: // Do not break.
-            case $e instanceof TokenMismatchException: // Do not break.
-            case $e instanceof FileNotFoundException:
-                $response = $this->makeView(404, null, null, $request, $e);
-                break;
-            default:
-                $response = $this->makeView(500, null, null, $request, $e);
-                break;
+        try {
+            switch (true) {
+                case $e instanceof FallbackRedirectException:
+                    $response = $e->redirect();
+                    break;
+                case $e instanceof HttpException:
+                    $response = $this->makeView($e->getStatus(), $e->getTitle(), $e->getDetail(), $request, $e);
+                    break;
+                case $e instanceof AuthenticateException:
+                    $response = $this->makeView(403, null, null, $request, $e);
+                    break;
+                case $e instanceof RouteNotFoundException: // Do not break.
+                case $e instanceof TokenMismatchException: // Do not break.
+                case $e instanceof FileNotFoundException:
+                    $response = $this->makeView(404, null, null, $request, $e);
+                    break;
+                default:
+                    $response = $this->makeView(500, null, null, $request, $e);
+                    break;
+            }
+        } finally {
+            // Always report the original exception, even if making the response failed.
+            $this->report($request, $response, $e);
         }
-        $this->report($request, $response, $e);
         return $response;
     }
 
@@ -181,16 +185,9 @@ class WebExceptionHandler extends ExceptionHandler
         $title ??= Translator::get("message.http.{$status}.title") ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
         $detail ??= Translator::get("message.http.{$status}.detail");
 
-        if (View::isEnabled()) {
-            $view = View::of("/errors/{$status}");
-            if ($view->exists()) {
-                return Responder::toResponse($view->with([
-                    'status'    => $status,
-                    'title'     => $title,
-                    'detail'    => $detail,
-                    'exception' => $e,
-                ]), $status);
-            }
+        $response = $this->makeViewResponse("/errors/{$status}", $status, $title, $detail, $e);
+        if ($response) {
+            return $response;
         }
 
         return $this->makeDefaultView($status, $title, $detail, $request, $e);
@@ -211,18 +208,63 @@ class WebExceptionHandler extends ExceptionHandler
      */
     protected function makeDefaultView(int $status, string|null $title, string|null $detail, Request $request, \Throwable $e): Response
     {
-        if (View::isEnabled()) {
-            $view = View::of("/errors/default");
-            if ($view->exists()) {
-                return Responder::toResponse($view->with([
-                    'status'    => $status,
-                    'title'     => $title,
-                    'detail'    => $detail,
-                    'exception' => $e,
-                ]), $status);
-            }
+        $response = $this->makeViewResponse("/errors/default", $status, $title, $detail, $e);
+        if ($response) {
+            return $response;
         }
 
+        return $this->makeBuiltinView($status, $title, $detail, $request);
+    }
+
+    /**
+     * Create a error page view response using the given view name.
+     *
+     * This method returns null when the view is not enabled or does not exist. It also returns null
+     * (and logs the failure) when the view engine can not render it (ex. the views directory does not
+     * exist), so that the error page can fall back to the framework default one instead of throwing
+     * an exception from the exception handler.
+     *
+     * @param  string        $name
+     * @param  int           $status
+     * @param  string|null   $title
+     * @param  string|null   $detail
+     * @param  \Throwable    $e
+     * @return Response|null
+     */
+    protected function makeViewResponse(string $name, int $status, string|null $title, string|null $detail, \Throwable $e): Response|null
+    {
+        if (!View::isEnabled()) {
+            return null;
+        }
+
+        try {
+            $view = View::of($name);
+            if (!$view->exists()) {
+                return null;
+            }
+            return Responder::toResponse($view->with([
+                'status'    => $status,
+                'title'     => $title,
+                'detail'    => $detail,
+                'exception' => $e,
+            ]), $status);
+        } catch (\Throwable $view_error) {
+            Log::warning("Failed to render the error view of '{$name}', so the framework default error page is used.", [], $view_error);
+            return null;
+        }
+    }
+
+    /**
+     * Create a framework default error page response (not depend on the view engine).
+     *
+     * @param  int         $status
+     * @param  string|null $title
+     * @param  string|null $detail
+     * @param  Request     $request
+     * @return Response
+     */
+    protected function makeBuiltinView(int $status, string|null $title, string|null $detail, Request $request): Response
+    {
         $home            = $request->getRoutePrefix() . '/' ;
         $is_reason_title = $title === (HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error');
         $title           = Tinker::with($title, true)->escape()->nl2br();

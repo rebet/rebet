@@ -213,6 +213,70 @@ class WebExceptionHandlerTest extends RebetTestCase
         $this->assertStringContainsString('Rebet\Tools\Config\Exception\ConfigNotDefineException: unit test in', $log);
     }
 
+    public function test_handle_web_viewDirectoryDoesNotExist(): void
+    {
+        // Twig's FilesystemLoader throws when the template directory does not exist, and an exception
+        // thrown from the exception handler results in an empty 500 response without any log.
+        Config::application([
+            View::class => [
+                'engine' => Twig::class,
+            ],
+            Twig::class => [
+                'template_dir' => [App::structure()->views('/not-exists')],
+            ],
+        ]);
+        Twig::clear(); // The Twig environment is cached statically, so rebuild it with the above config.
+
+        $handler  = new WebExceptionHandler();
+        $response = $handler->handle($this->createRequestMock('/'), new \RuntimeException('Original exception'));
+
+        // Fall back to the framework default error page.
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertStringContainsString('<span class="status">500</span>Internal Server Error', $response->getContent());
+
+        // The original exception is reported, and also the reason why the error view was not used.
+        $log = Log::channel()->driver()->formatted();
+        $this->assertStringContainsString('HTTP 500 Internal Server Error occurred.', $log);
+        $this->assertStringContainsString('RuntimeException: Original exception in', $log);
+        $this->assertStringContainsString("Failed to render the error view of '/errors/500'", $log);
+        $this->assertStringContainsString("Failed to render the error view of '/errors/default'", $log);
+
+        Twig::clear(); // Do not leak the broken environment to the other tests.
+    }
+
+    public function test_handle_web_reportsOriginalExceptionEvenIfMakingResponseFailed(): void
+    {
+        $handler = new class extends WebExceptionHandler {
+            /** @var array<int, array{0: mixed, 1: \Throwable}> */
+            public array $reported = [];
+
+            #[Override]
+            public function report($input, $result, \Throwable $e): void
+            {
+                $this->reported[] = [$result, $e];
+            }
+
+            #[Override]
+            protected function makeView(int $status, string|null $title, string|null $detail, \Rebet\Http\Request $request, \Throwable $e): \Rebet\Http\Response
+            {
+                throw new \LogicException('Making view failed');
+            }
+        };
+
+        $original = new \RuntimeException('Original exception');
+        try {
+            $handler->handle($this->createRequestMock('/'), $original);
+            $this->fail('The exception of making the response must not be swallowed.');
+        } catch (\LogicException $e) {
+            $this->assertSame('Making view failed', $e->getMessage());
+        }
+
+        // Even so, the original exception has been reported (without a result).
+        $this->assertCount(1, $handler->reported);
+        $this->assertNull($handler->reported[0][0]);
+        $this->assertSame($original, $handler->reported[0][1]);
+    }
+
     public function test_handle_json(): void
     {
         App::setLocale('en');

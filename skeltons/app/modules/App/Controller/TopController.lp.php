@@ -18,10 +18,15 @@ class TopController extends Controller
     /**
      * Show the top page.
      *
-     * @return string
+     * The default view of this action is "app/resources/views/top/index.{% if $view == 'twig' %}twig{% else %}blade.php{% endif %}".
+     *
+     * @return \Rebet\View\View
      */
     public function index()
     {
-        return 'Top: index';
+        return $this->view()->with([
+            'title'   => 'Welcome to Rebet',
+            'message' => 'Your application is up and running.',
+        ]);
     }
 }

@@ -161,7 +161,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertStringContainsString('nothing is written', $display);
             $this->assertStringContainsString("  - {$work_dir}/bin/assistant", $display);
             // Database is not used by default, so all `.devcontainer/docker/{driver}` dirs are excluded.
-            $this->assertStringContainsString('63 files would be generated.', $display);
+            $this->assertStringContainsString('64 files would be generated.', $display);
             $this->assertStringContainsString('Dry-run finished, nothing was written.', $display);
 
             // Nothing was actually written to disk.
@@ -202,6 +202,83 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
             // Nothing else was written.
             $this->assertFileDoesNotExist("{$work_dir}/app");
+        });
+    }
+
+    /**
+     * @return array<string, array{0: array<string, mixed>, 1: string|null}>
+     */
+    public static function dataRoutingGuard(): array
+    {
+        return [
+            'auth with database'    => [['--database' => 'mysql', '--auth' => true], 'user:web'],
+            'auth without database' => [['--auth' => true, '--auth-name' => 'Admin', '--auth-email' => 'admin@example.com', '--auth-password' => 'P@ssw0rd1'], 'user:web'],
+            'no auth'               => [[], null],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    #[DataProvider('dataRoutingGuard')]
+    public function test_execute_noInteraction_routingGuardIsDefinedInAuthConfig(array $options, string|null $expected_guard): void
+    {
+        // The guard of the generated routing must exist in `guards` of the generated auth config,
+        // otherwise the Authenticate middleware fails on every request (ex. `guards.web` undefined).
+        $this->runInFreshWorkDir('project-init-routing-guard', function (string $work_dir) use ($options, $expected_guard): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute($options, ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $routing = file_get_contents("{$work_dir}/app/routes/routing.php");
+            $auth    = file_get_contents("{$work_dir}/app/config/auth.php");
+
+            // Only the uncommented guard definitions are effective.
+            preg_match_all("/^\s+'([^']+)'\s*=>\s*\[(?:SessionGuard|TokenGuard)::class/m", $auth, $matches);
+            $defined_guards = $matches[1];
+
+            if ($expected_guard === null) {
+                $this->assertStringNotContainsString('->guard(', $routing);
+                $this->assertSame([], $defined_guards);
+            } else {
+                $this->assertStringContainsString("Router::rules('web')->guard('{$expected_guard}')->routing(", $routing);
+                $this->assertContains($expected_guard, $defined_guards);
+            }
+            $this->assertSame(1, substr_count($routing, 'Router::rules('), 'Only one rule must be generated.');
+            $this->assertStringNotContainsString('{%', $routing);
+        });
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: string, 2: string}>
+     */
+    public static function dataViewTemplates(): array
+    {
+        return [
+            'twig'  => ['twig', 'top/index.twig', 'top/index.blade.php'],
+            'blade' => ['blade', 'top/index.blade.php', 'top/index.twig'],
+        ];
+    }
+
+    #[DataProvider('dataViewTemplates')]
+    public function test_execute_noInteraction_onlyTheViewTemplatesOfTheSelectedEngineAreGenerated(string $view, string $expected, string $unexpected): void
+    {
+        // The top page (TopController::index) is rendered by the template of the selected view engine.
+        // This also makes sure that the views directory exists (the view engine fails otherwise).
+        $this->runInFreshWorkDir("project-init-view-templates-{$view}", function (string $work_dir) use ($view, $expected, $unexpected): void {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--view' => $view], ['interactive' => false]);
+            $this->assertSame(0, $status);
+            $this->assertFileExists("{$work_dir}/app/resources/views/{$expected}");
+            $this->assertFileDoesNotExist("{$work_dir}/app/resources/views/{$unexpected}");
+
+            $controller = file_get_contents("{$work_dir}/app/modules/App/Controller/TopController.php");
+            $this->assertStringContainsString('$this->view()', $controller);
+            // The comment of the controller refers to the template of the selected view engine only.
+            $this->assertStringContainsString("\"app/resources/views/{$expected}\"", $controller);
+            $this->assertStringNotContainsString($unexpected, $controller);
+            $this->assertStringNotContainsString('{%', $controller);
+            $this->assertFileDoesNotExist("{$work_dir}/app/modules/App/Controller/TopController.lp.php");
         });
     }
 

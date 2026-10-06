@@ -1,11 +1,7 @@
-.DS_Store
-Thumbs.db
-/.php_cs.cache
-/.phpunit.result.cache
-/composer.phar
-/vendor/
-/nbproject/
-/.history/
 /.phpunit.cache/
 /.sandbox/
+/.phpunit.result.cache
+/vendor/
+.DS_Store
 .php-cs-fixer.cache
+Thumbs.db

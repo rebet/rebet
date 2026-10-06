@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $title }}</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; color: #444; background: #f7f7f7; }
+        .container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+        h1 { font-weight: normal; font-size: 2.5rem; margin: 0 0 1rem; }
+        p { margin: 0.25rem 1rem; color: #888; }
+        code { background: #eee; padding: 0.1rem 0.4rem; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ $title }}</h1>
+        <p>{{ $message }}</p>
+        <p>Edit <code>app/modules/App/Controller/TopController.php</code> and <code>app/resources/views/top/index.blade.php</code> to get started.</p>
+    </div>
+</body>
+</html>

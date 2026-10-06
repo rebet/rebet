@@ -88,6 +88,17 @@ class ProjectInitCommand extends Command
     ];
 
     /**
+     * File name suffix of the view templates of each view engine (ie. `--view` choice), used to
+     * generate only the templates of the selected engine (see excludedViewFiles()).
+     *
+     * @var array<string, string>
+     */
+    public const VIEW_TEMPLATE_SUFFIXES = [
+        'twig'  => '.twig',
+        'blade' => '.blade.php',
+    ];
+
+    /**
      * Composer packages to `composer require` based on the collected $configs, grouped by the
      * $configs key that decides whether each package is required (see resolveComposerPackages()).
      *
@@ -263,7 +274,7 @@ class ProjectInitCommand extends Command
 
         $this->writeln('');
         $this->writeln($dry_run ? 'Previewing application files that would be generated from skeltons (dry-run, nothing is written)...' : 'Generating application files from skeltons...');
-        $generated = $this->generate($this->skeltons_dir, $cwd, $this->templateVars($configs), $dry_run, $this->excludedDatabaseDirs($configs));
+        $generated = $this->generate($this->skeltons_dir, $cwd, $this->templateVars($configs), $dry_run, array_merge($this->excludedDatabaseDirs($configs), $this->excludedViewFiles($configs)));
         if ($dry_run) {
             foreach ($generated as $path) {
                 $this->writeln("  - {$path}");
@@ -989,6 +1000,42 @@ class ProjectInitCommand extends Command
             fn($driver) => Path::normalize("{$this->skeltons_dir}/.devcontainer/docker/{$driver}"),
             $excluded,
         ));
+    }
+
+    /**
+     * Get the view template files of the skelton that should be excluded from generation, ie. the
+     * templates under `app/resources/views` of every view engine other than the one selected in
+     * $configs (`view`), so that only the templates of the selected engine are generated.
+     *
+     * @param  array<string, mixed> $configs
+     * @return string[]             absolute source paths to exclude
+     */
+    protected function excludedViewFiles(array $configs): array
+    {
+        $selected = $configs['view'] ?? 'twig';
+        $suffixes = array_values(array_filter(
+            static::VIEW_TEMPLATE_SUFFIXES,
+            fn($engine) => $engine !== $selected,
+            ARRAY_FILTER_USE_KEY,
+        ));
+
+        $views_dir = Path::normalize("{$this->skeltons_dir}/app/resources/views");
+        if (!is_dir($views_dir)) {
+            return [];
+        }
+
+        $excluded = [];
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($views_dir, \FilesystemIterator::SKIP_DOTS));
+        foreach ($iterator as $file) {
+            foreach ($suffixes as $suffix) {
+                if (str_ends_with($file->getFilename(), $suffix)) {
+                    $excluded[] = Path::normalize($file->getPathname());
+                    break;
+                }
+            }
+        }
+
+        return $excluded;
     }
 
     /**
