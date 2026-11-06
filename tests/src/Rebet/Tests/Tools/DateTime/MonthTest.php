@@ -7,33 +7,51 @@ namespace Rebet\Tests\Tools\DateTime;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\Month;
+use Rebet\Tools\Enum\Enumeration;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Translation\Translator;
 
 class MonthTest extends RebetTestCase
 {
+    public function test_enum(): void
+    {
+        $this->assertInstanceOf(\BackedEnum::class, Month::January);
+        $this->assertInstanceOf(Enumeration::class, Month::January);
+        $this->assertSame(range(1, 12), Month::values());
+        $this->assertSame(Month::October, Month::valueOf(10));
+        $this->assertSame(Month::October, Month::valueOf('10'));
+        $this->assertSame(Month::October, Month::from(10));
+        $this->assertSame(Month::September, Month::nameOf('September'));
+        $this->assertNull(Month::valueOf(0));
+        $this->assertNull(Month::valueOf(13));
+        $this->assertSame(Month::December, Reflector::convert('12', Month::class));
+    }
+
     #[DataProvider('dataDefinitions')]
     public function test_definition(Month $month, $value, $label, $label_short): void
     {
         $this->assertSame($value, $month->value);
-        $this->assertSame($label, $month->label);
-        $this->assertSame($label_short, $month->label_short);
+        $this->assertSame($value, $month->value());
+        $this->assertSame($label, $month->field('label'));
+        $this->assertSame($label_short, $month->field('label_short'));
+        $this->assertSame($label_short, $month->label_short());
     }
 
     public static function dataDefinitions()
     {
         return [
-            [Month::JANUARY(),  1, 'January', 'Jan'],
-            [Month::FEBRUARY(),  2, 'February', 'Feb'],
-            [Month::MARCH(),  3, 'March', 'Mar'],
-            [Month::APRIL(),  4, 'April', 'Apr'],
-            [Month::MAY(),  5, 'May', 'May'],
-            [Month::JUNE(),  6, 'June', 'Jun'],
-            [Month::JULY(),  7, 'July', 'Jul'],
-            [Month::AUGUST(),  8, 'August', 'Aug'],
-            [Month::SEPTEMBE(),  9, 'September', 'Sep'],
-            [Month::OCTOBER(), 10, 'October', 'Oct'],
-            [Month::NOVEMBER(), 11, 'November', 'Nov'],
-            [Month::DECEMBER(), 12, 'December', 'Dec'],
+            [Month::January,  1, 'January', 'Jan'],
+            [Month::February,  2, 'February', 'Feb'],
+            [Month::March,  3, 'March', 'Mar'],
+            [Month::April,  4, 'April', 'Apr'],
+            [Month::May,  5, 'May', 'May'],
+            [Month::June,  6, 'June', 'Jun'],
+            [Month::July,  7, 'July', 'Jul'],
+            [Month::August,  8, 'August', 'Aug'],
+            [Month::September,  9, 'September', 'Sep'],
+            [Month::October, 10, 'October', 'Oct'],
+            [Month::November, 11, 'November', 'Nov'],
+            [Month::December, 12, 'December', 'Dec'],
         ];
     }
 
@@ -48,31 +66,31 @@ class MonthTest extends RebetTestCase
     public static function dataTranslations()
     {
         return [
-            [Month::JANUARY(), 'en', 'January', 'Jan'],
-            [Month::FEBRUARY(), 'en', 'February', 'Feb'],
-            [Month::MARCH(), 'en', 'March', 'Mar'],
-            [Month::APRIL(), 'en', 'April', 'Apr'],
-            [Month::MAY(), 'en', 'May', 'May'],
-            [Month::JUNE(), 'en', 'June', 'Jun'],
-            [Month::JULY(), 'en', 'July', 'Jul'],
-            [Month::AUGUST(), 'en', 'August', 'Aug'],
-            [Month::SEPTEMBE(), 'en', 'September', 'Sep'],
-            [Month::OCTOBER(), 'en', 'October', 'Oct'],
-            [Month::NOVEMBER(), 'en', 'November', 'Nov'],
-            [Month::DECEMBER(), 'en', 'December', 'Dec'],
+            [Month::January, 'en', 'January', 'Jan'],
+            [Month::February, 'en', 'February', 'Feb'],
+            [Month::March, 'en', 'March', 'Mar'],
+            [Month::April, 'en', 'April', 'Apr'],
+            [Month::May, 'en', 'May', 'May'],
+            [Month::June, 'en', 'June', 'Jun'],
+            [Month::July, 'en', 'July', 'Jul'],
+            [Month::August, 'en', 'August', 'Aug'],
+            [Month::September, 'en', 'September', 'Sep'],
+            [Month::October, 'en', 'October', 'Oct'],
+            [Month::November, 'en', 'November', 'Nov'],
+            [Month::December, 'en', 'December', 'Dec'],
 
-            [Month::JANUARY(), 'ja', '01月',  '1月'],
-            [Month::FEBRUARY(), 'ja', '02月',  '2月'],
-            [Month::MARCH(), 'ja', '03月',  '3月'],
-            [Month::APRIL(), 'ja', '04月',  '4月'],
-            [Month::MAY(), 'ja', '05月',  '5月'],
-            [Month::JUNE(), 'ja', '06月',  '6月'],
-            [Month::JULY(), 'ja', '07月',  '7月'],
-            [Month::AUGUST(), 'ja', '08月',  '8月'],
-            [Month::SEPTEMBE(), 'ja', '09月',  '9月'],
-            [Month::OCTOBER(), 'ja', '10月', '10月'],
-            [Month::NOVEMBER(), 'ja', '11月', '11月'],
-            [Month::DECEMBER(), 'ja', '12月', '12月'],
+            [Month::January, 'ja', '01月',  '1月'],
+            [Month::February, 'ja', '02月',  '2月'],
+            [Month::March, 'ja', '03月',  '3月'],
+            [Month::April, 'ja', '04月',  '4月'],
+            [Month::May, 'ja', '05月',  '5月'],
+            [Month::June, 'ja', '06月',  '6月'],
+            [Month::July, 'ja', '07月',  '7月'],
+            [Month::August, 'ja', '08月',  '8月'],
+            [Month::September, 'ja', '09月',  '9月'],
+            [Month::October, 'ja', '10月', '10月'],
+            [Month::November, 'ja', '11月', '11月'],
+            [Month::December, 'ja', '12月', '12月'],
         ];
     }
 }

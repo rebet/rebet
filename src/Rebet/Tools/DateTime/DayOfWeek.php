@@ -4,62 +4,70 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\DateTime;
 
-use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Enum\Enumerable;
+use Rebet\Tools\Enum\Enumeration;
+use Rebet\Tools\Enum\Meta;
 use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Path;
 
 /**
- * DayOfWeek Enum Class
+ * DayOfWeek Enum
+ *
+ * The value is the same as the 'w' format of date() (Sunday is 0 and Saturday is 6).
+ * The labels of the metadata are the English names, and they are translated by the 'datetime' translation group.
+ *
+ * - label       : The full name (e.g. Sunday)
+ * - label_short : The short name (e.g. Sun)
+ * - label_min   : The min name (e.g. Su)
+ *
+ * The metadata (label_short and label_min) can be read by the method call (not translated),
+ * and translate() returns the translated one. (e.g. translate('label_short'))
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  *
- * @method static self SUNDAY()
- * @method static self MONDAY()
- * @method static self TUESDAY()
- * @method static self WEDNESDAY()
- * @method static self THURSDAY()
- * @method static self FRIDAY()
- * @method static self SATURDAY()
+ * @method string label_short() The short name (e.g. Sun), which is not translated.
+ * @method string label_min()   The min name (e.g. Su), which is not translated.
+ *
+ * @implements Enumeration<DayOfWeek, int>
  */
-class DayOfWeek extends Enum
+enum DayOfWeek: int implements Enumeration
 {
-    protected const TRANSLATION_GROUP = 'datetime';
+    /** @use Enumerable<DayOfWeek, int> */
+    use Enumerable;
 
-    public const SUNDAY    = [0, 'Sunday', 'Sun', 'Su'];
-    public const MONDAY    = [1, 'Monday', 'Mon', 'Mo'];
-    public const TUESDAY   = [2, 'Tuesday', 'Tue', 'Tu'];
-    public const WEDNESDAY = [3, 'Wednesday', 'Wed', 'We'];
-    public const THURSDAY  = [4, 'Thursday', 'Thu', 'Th'];
-    public const FRIDAY    = [5, 'Friday', 'Fri', 'Fr'];
-    public const SATURDAY  = [6, 'Saturday', 'Sat', 'Sa'];
+    #[Meta(label: 'Sunday', label_short: 'Sun', label_min: 'Su')]
+    case Sunday = 0;
+
+    #[Meta(label: 'Monday', label_short: 'Mon', label_min: 'Mo')]
+    case Monday = 1;
+
+    #[Meta(label: 'Tuesday', label_short: 'Tue', label_min: 'Tu')]
+    case Tuesday = 2;
+
+    #[Meta(label: 'Wednesday', label_short: 'Wed', label_min: 'We')]
+    case Wednesday = 3;
+
+    #[Meta(label: 'Thursday', label_short: 'Thu', label_min: 'Th')]
+    case Thursday = 4;
+
+    #[Meta(label: 'Friday', label_short: 'Fri', label_min: 'Fr')]
+    case Friday = 5;
+
+    #[Meta(label: 'Saturday', label_short: 'Sat', label_min: 'Sa')]
+    case Saturday = 6;
 
     /**
-     * @var string of short day of week label
-     */
-    public $label_short;
-
-    /**
-     * @var string of min day of week label
-     */
-    public $label_min;
-
-    /**
-     * Create a DayOfWeek.
+     * The translation group of DayOfWeek.
      *
-     * @param integer $value
-     * @param string  $label
-     * @param string  $label_short
-     * @param string  $label_min
+     * @return string
      */
-    protected function __construct(int $value, string $label, string $label_short, string $label_min)
+    protected static function translationGroup(): string
     {
-        parent::__construct($value, $label);
-        $this->label_short = $label_short;
-        $this->label_min   = $label_min;
+        return 'datetime';
     }
 
     /**
@@ -69,7 +77,7 @@ class DayOfWeek extends Enum
      */
     public function isWeekends(): bool
     {
-        return $this->in(static::SUNDAY(), static::SATURDAY());
+        return $this === self::Sunday || $this === self::Saturday;
     }
 
     /**
@@ -89,7 +97,7 @@ class DayOfWeek extends Enum
      */
     public function isSunday(): bool
     {
-        return $this->equals(static::SUNDAY()) ;
+        return $this === self::Sunday;
     }
 
     /**
@@ -99,7 +107,7 @@ class DayOfWeek extends Enum
      */
     public function isMonday(): bool
     {
-        return $this->equals(static::MONDAY()) ;
+        return $this === self::Monday;
     }
 
     /**
@@ -109,7 +117,7 @@ class DayOfWeek extends Enum
      */
     public function isTuesday(): bool
     {
-        return $this->equals(static::TUESDAY()) ;
+        return $this === self::Tuesday;
     }
 
     /**
@@ -119,7 +127,7 @@ class DayOfWeek extends Enum
      */
     public function isWednesday(): bool
     {
-        return $this->equals(static::WEDNESDAY()) ;
+        return $this === self::Wednesday;
     }
 
     /**
@@ -129,7 +137,7 @@ class DayOfWeek extends Enum
      */
     public function isThursday(): bool
     {
-        return $this->equals(static::THURSDAY()) ;
+        return $this === self::Thursday;
     }
 
     /**
@@ -139,7 +147,7 @@ class DayOfWeek extends Enum
      */
     public function isFriday(): bool
     {
-        return $this->equals(static::FRIDAY()) ;
+        return $this === self::Friday;
     }
 
     /**
@@ -149,7 +157,7 @@ class DayOfWeek extends Enum
      */
     public function isSaturday(): bool
     {
-        return $this->equals(static::SATURDAY()) ;
+        return $this === self::Saturday;
     }
 }
 

@@ -4,65 +4,83 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\DateTime;
 
-use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Enum\Enumerable;
+use Rebet\Tools\Enum\Enumeration;
+use Rebet\Tools\Enum\Meta;
 use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Path;
 
 /**
- * Month Enum Class
+ * Month Enum
+ *
+ * The value is the same as the 'n' format of date() (January is 1 and December is 12).
+ * The labels of the metadata are the English names, and they are translated by the 'datetime' translation group.
+ *
+ * - label       : The full name (e.g. January)
+ * - label_short : The short name (e.g. Jan)
+ *
+ * The metadata (label_short) can be read by the method call (not translated),
+ * and translate() returns the translated one. (e.g. translate('label_short'))
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  *
- * @method static self JANUARY()
- * @method static self FEBRUARY()
- * @method static self MARCH()
- * @method static self APRIL()
- * @method static self MAY()
- * @method static self JUNE()
- * @method static self JULY()
- * @method static self AUGUST()
- * @method static self SEPTEMBER()
- * @method static self OCTOBER()
- * @method static self NOVEMBER()
- * @method static self DECEMBER()
+ * @method string label_short() The short name (e.g. Jan), which is not translated.
+ *
+ * @implements Enumeration<Month, int>
  */
-class Month extends Enum
+enum Month: int implements Enumeration
 {
-    protected const TRANSLATION_GROUP = 'datetime';
+    /** @use Enumerable<Month, int> */
+    use Enumerable;
 
-    public const JANUARY  = [ 1, 'January', 'Jan'];
-    public const FEBRUARY = [ 2, 'February', 'Feb'];
-    public const MARCH    = [ 3, 'March', 'Mar'];
-    public const APRIL    = [ 4, 'April', 'Apr'];
-    public const MAY      = [ 5, 'May', 'May'];
-    public const JUNE     = [ 6, 'June', 'Jun'];
-    public const JULY     = [ 7, 'July', 'Jul'];
-    public const AUGUST   = [ 8, 'August', 'Aug'];
-    public const SEPTEMBE = [ 9, 'September', 'Sep'];
-    public const OCTOBER  = [10, 'October', 'Oct'];
-    public const NOVEMBER = [11, 'November', 'Nov'];
-    public const DECEMBER = [12, 'December', 'Dec'];
+    #[Meta(label: 'January', label_short: 'Jan')]
+    case January = 1;
+
+    #[Meta(label: 'February', label_short: 'Feb')]
+    case February = 2;
+
+    #[Meta(label: 'March', label_short: 'Mar')]
+    case March = 3;
+
+    #[Meta(label: 'April', label_short: 'Apr')]
+    case April = 4;
+
+    #[Meta(label: 'May', label_short: 'May')]
+    case May = 5;
+
+    #[Meta(label: 'June', label_short: 'Jun')]
+    case June = 6;
+
+    #[Meta(label: 'July', label_short: 'Jul')]
+    case July = 7;
+
+    #[Meta(label: 'August', label_short: 'Aug')]
+    case August = 8;
+
+    #[Meta(label: 'September', label_short: 'Sep')]
+    case September = 9;
+
+    #[Meta(label: 'October', label_short: 'Oct')]
+    case October = 10;
+
+    #[Meta(label: 'November', label_short: 'Nov')]
+    case November = 11;
+
+    #[Meta(label: 'December', label_short: 'Dec')]
+    case December = 12;
 
     /**
-     * @var string of short day of week label
-     */
-    public $label_short;
-
-    /**
-     * Create a DayOfWeek.
+     * The translation group of Month.
      *
-     * @param integer $value
-     * @param string  $label
-     * @param string  $label_short
+     * @return string
      */
-    protected function __construct(int $value, string $label, string $label_short)
+    protected static function translationGroup(): string
     {
-        parent::__construct($value, $label);
-        $this->label_short = $label_short;
+        return 'datetime';
     }
 }
 

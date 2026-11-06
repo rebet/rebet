@@ -382,7 +382,6 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @return string
      */
-    #[Override]
     public function __toString(): string
     {
         return $this->format($this->default_format);
@@ -792,7 +791,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      */
     public function getDayOfWeek(): DayOfWeek
     {
-        $day_of_week = DayOfWeek::valueOf($this->format('w'));
+        $day_of_week = DayOfWeek::valueOf((int) $this->format('w'));
         if (!$day_of_week instanceof DayOfWeek) {
             throw new LogicException("Invalid day of week value '{$this->format('w')}' given.");
         }

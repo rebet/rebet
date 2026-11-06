@@ -615,11 +615,11 @@ class DateTimeTest extends RebetTestCase
         $date  = DateTime::now();
         $month = $date->getLocalizedMonth();
         $this->assertInstanceOf(Month::class, $month);
-        $this->assertEquals(Month::OCTOBER(), $month);
-        $this->assertSame('October', "{$month}");
+        $this->assertEquals(Month::October, $month);
+        $this->assertSame('October', $month->label());
 
         Translator::setLocale('ja');
-        $this->assertSame('10月', "{$month}");
+        $this->assertSame('10月', $month->label());
     }
 
     public function test_addDay(): void
@@ -1011,7 +1011,7 @@ class DateTimeTest extends RebetTestCase
 
     public function test_getDayOfWeek(): void
     {
-        $this->assertEquals(DayOfWeek::WEDNESDAY(), DateTime::now()->getDayOfWeek());
+        $this->assertEquals(DayOfWeek::Wednesday, DateTime::now()->getDayOfWeek());
     }
 
     public function test_getMeridiem(): void
