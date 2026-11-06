@@ -11,6 +11,7 @@ use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Utility\Utils;
+use UnitEnum;
 
 /**
  * Reflector Class
@@ -412,7 +413,12 @@ class Reflector
      *      -> If $value has to{$type<without namespace>}() method then invoke that and check return value type
      *      -> Otherwise return null
      *
-     *   8. When $type is object:
+     *   8. When $type is native enum (that is not Convertible):
+     *      -> If $type is backed enum then invoke tryFrom() with $value that is converted to the backing type (int|string)
+     *      -> If $type is pure enum then return the case that has the name of $value
+     *      -> Otherwise return null
+     *
+     *   9. When $type is object:
      *      -> If $type has valueOf($value) static method then invoke that and check return value type
      *      -> If $type has of($value) static method then invoke that and check return value type
      *      -> If $value has convertTo($type) method then invoke that and check return value type
@@ -439,16 +445,16 @@ class Reflector
             }
 
             switch ($type) {
-                //---------------------------------------------
-                // To Array
-                //---------------------------------------------
                 case 'array':
+                    //---------------------------------------------
+                    // To Array
+                    //---------------------------------------------
                     return Arrays::toArray($value);
 
+                case 'string':
                     //---------------------------------------------
                     // To String
                     //---------------------------------------------
-                case 'string':
                     if (is_string($value)) {
                         return $value;
                     }
@@ -475,19 +481,19 @@ class Reflector
                     }
                     return null;
 
+                case 'callable':
                     //---------------------------------------------
                     // To Callable
                     //---------------------------------------------
-                case 'callable':
                     if (is_callable($value)) {
                         return $value;
                     }
                     return null;
 
+                case \Closure::class:
                     //---------------------------------------------
                     // To Closure
                     //---------------------------------------------
-                case \Closure::class:
                     if ($value instanceof \Closure) {
                         return $value;
                     }
@@ -496,12 +502,12 @@ class Reflector
                     }
                     return null;
 
-                    //---------------------------------------------
-                    // To Scalar (int|float|bool)
-                    //---------------------------------------------
                 case 'int':
                 case 'float':
                 case 'bool':
+                    //---------------------------------------------
+                    // To Scalar (int|float|bool)
+                    //---------------------------------------------
                     if ($value === '' || is_array($value)) {
                         return null;
                     }
@@ -514,16 +520,36 @@ class Reflector
                         ?? static::tryConvertByMember($value, "to" . ucfirst($type), $type)
                     ;
 
+                case 'stdClass':
                     //---------------------------------------------
                     // To stdClass Object
                     //---------------------------------------------
-                case 'stdClass':
                     return (object) $value;
+
+                default:
+                    //---------------------------------------------
+                    // To enum
+                    //---------------------------------------------
+                    if (is_subclass_of($type, UnitEnum::class) && !is_subclass_of($type, Convertible::class)) {
+                        if (!is_subclass_of($type, \BackedEnum::class)) {
+                            foreach ($type::cases() as $case) {
+                                if ($case->name === $value) {
+                                    return $case;
+                                }
+                            }
+                            return null;
+                        }
+                        if (!is_scalar($value) || is_bool($value)) {
+                            return null;
+                        }
+                        $backing = (new \ReflectionEnum($type))->getBackingType()?->getName();
+                        $value   = $backing === 'int' ? filter_var($value, FILTER_VALIDATE_INT) : (string) $value ;
+                        return $value === false ? null : $type::tryFrom($value);
+                    }
 
                     //---------------------------------------------
                     // To Other Object
                     //---------------------------------------------
-                default:
                     $rc = new \ReflectionClass($type);
                     return
                         static::tryConvertByStatic($type, 'valueOf', $value)

@@ -9,6 +9,7 @@ use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflection\Convertible;
 use Rebet\Tools\Reflection\Describable;
 use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Reflection\Reflector;
@@ -1265,6 +1266,79 @@ class ReflectorTest extends RebetTestCase
         $this->assertEquals(null, Reflector::convert($toType, Gender::class));
     }
 
+    public function test_convert_enum_backedInt(): void
+    {
+        $type = ReflectorTest_IntEnum::class;
+        $this->assertNull(Reflector::convert(null, $type));
+
+        // same type (no convert)
+        $this->assertSame(ReflectorTest_IntEnum::One, Reflector::convert(ReflectorTest_IntEnum::One, $type));
+
+        // int value
+        $this->assertSame(ReflectorTest_IntEnum::One, Reflector::convert(1, $type));
+        $this->assertSame(ReflectorTest_IntEnum::Zero, Reflector::convert(0, $type));
+
+        // string value (e.g. request parameter) is converted to int
+        $this->assertSame(ReflectorTest_IntEnum::One, Reflector::convert('1', $type));
+        $this->assertSame(ReflectorTest_IntEnum::Zero, Reflector::convert('0', $type));
+
+        // integral float
+        $this->assertSame(ReflectorTest_IntEnum::One, Reflector::convert(1.0, $type));
+
+        // can not convert
+        $this->assertNull(Reflector::convert(9, $type));
+        $this->assertNull(Reflector::convert('9', $type));
+        $this->assertNull(Reflector::convert(1.5, $type));
+        $this->assertNull(Reflector::convert('one', $type));
+        $this->assertNull(Reflector::convert('', $type));
+        $this->assertNull(Reflector::convert(true, $type));
+        $this->assertNull(Reflector::convert([1], $type));
+    }
+
+    public function test_convert_enum_backedString(): void
+    {
+        $type = ReflectorTest_StringEnum::class;
+        $this->assertNull(Reflector::convert(null, $type));
+
+        $this->assertSame(ReflectorTest_StringEnum::A, Reflector::convert('a', $type));
+        $this->assertSame(ReflectorTest_StringEnum::Num, Reflector::convert('1', $type));
+
+        // int value is converted to string
+        $this->assertSame(ReflectorTest_StringEnum::Num, Reflector::convert(1, $type));
+
+        // can not convert
+        $this->assertNull(Reflector::convert('zz', $type));
+        $this->assertNull(Reflector::convert(2, $type));
+        $this->assertNull(Reflector::convert(true, $type));
+        $this->assertNull(Reflector::convert(['a'], $type));
+    }
+
+    public function test_convert_enum_pure(): void
+    {
+        $type = ReflectorTest_PureEnum::class;
+        $this->assertNull(Reflector::convert(null, $type));
+
+        // pure enum is converted by case name
+        $this->assertSame(ReflectorTest_PureEnum::Alpha, Reflector::convert('Alpha', $type));
+        $this->assertSame(ReflectorTest_PureEnum::Beta, Reflector::convert('Beta', $type));
+
+        // can not convert (case sensitive)
+        $this->assertNull(Reflector::convert('alpha', $type));
+        $this->assertNull(Reflector::convert('Gamma', $type));
+        $this->assertNull(Reflector::convert(1, $type));
+        $this->assertNull(Reflector::convert(true, $type));
+        $this->assertNull(Reflector::convert(['Alpha'], $type));
+    }
+
+    public function test_convert_enum_convertible(): void
+    {
+        // Convertible enum is converted by valueOf() (not by tryFrom())
+        $type = ReflectorTest_ConvertibleEnum::class;
+        $this->assertSame(ReflectorTest_ConvertibleEnum::A, Reflector::convert('one', $type));
+        $this->assertNull(Reflector::convert(1, $type));
+        $this->assertNull(Reflector::convert('1', $type));
+    }
+
     public function test_convert_not(): void
     {
         $this->assertNull(Reflector::convert(null, null));
@@ -1565,4 +1639,39 @@ class ReflectorTest_CreateDefault
 class ReflectorTest_CreateExtends extends ReflectorTest_CreateDefault
 {
     // No definistion
+}
+
+enum ReflectorTest_IntEnum: int
+{
+    case One  = 1;
+    case Zero = 0;
+}
+
+enum ReflectorTest_StringEnum: string
+{
+    case A   = 'a';
+    case Num = '1';
+}
+
+enum ReflectorTest_PureEnum
+{
+    case Alpha;
+    case Beta;
+}
+
+enum ReflectorTest_ConvertibleEnum: int implements Convertible
+{
+    case A = 1;
+
+    #[Override]
+    public static function valueOf($value)
+    {
+        return $value === 'one' ? self::A : null ;
+    }
+
+    #[Override]
+    public function convertTo(string $type)
+    {
+        return null;
+    }
 }

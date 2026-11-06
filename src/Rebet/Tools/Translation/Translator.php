@@ -141,7 +141,7 @@ class Translator
      * @param  string|null $locale  (default: null)
      * @return mixed
      */
-    public static function grammar(string $group, string $name, $default = null, string $locale = null)
+    public static function grammar(string $group, string $name, $default = null, string|null $locale = null)
     {
         return static::dictionary()->grammar($group, $name, $locale ?? static::config('locale'), $default);
     }

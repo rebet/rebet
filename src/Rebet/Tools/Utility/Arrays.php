@@ -1165,4 +1165,59 @@ class Arrays
     {
         return $value === null ? null : http_build_query($value, '', '&', $encoding) ;
     }
+
+    /**
+     * Convert the value to the canonical form of the PHP array key.
+     *
+     * The conversion rules are as follows.
+     *
+     *   - ArrayKeyable : The result of asArrayKey(). (prior to the enum)
+     *   - BackedEnum   : The value of the case.
+     *   - UnitEnum     : The name of the case. (pure enum)
+     *   - int          : As it is.
+     *   - bool         : true is 1 and false is 0. (same as the implicit conversion of PHP array key)
+     *   - string       : As it is.
+     *
+     * The result is normalized to the canonical form of the PHP array key. (e.g. '1' is converted to 1, but '01' is not)
+     *
+     * NOTE: float and null can not be converted, because the implicit conversion of PHP array key is deprecated.
+     *       (float loses the fractional part since PHP 8.1, and null as an array offset will be deprecated since PHP 8.5)
+     *       Please convert it to int or string explicitly before using it as the key.
+     *
+     * @param  ArrayKeyable|\UnitEnum|int|string|bool $value
+     * @return int|string
+     * @throws \TypeError                             when the value can not be used as an array key (e.g. float, null, array, object, resource)
+     */
+    public static function asKey(ArrayKeyable|bool|int|string|\UnitEnum $value): int|string
+    {
+        // NOTE: The unsupported type is rejected by the type declaration (TypeError), the LogicException is just for the safety.
+        return static::tryAsKey($value) ?? throw new LogicException("Can not use " . get_debug_type($value) . " as an array key.");
+    }
+
+    /**
+     * Convert the value to the canonical form of the PHP array key, or return null if it can not be converted.
+     *
+     * This method does not throw the exception, so you can check the result with `=== null`.
+     * It is useful for the query that the type of the value is not guaranteed (e.g. the input from outside).
+     * null is returned for the unsupported value, such as float, null, array, object and resource.
+     *
+     * @see asKey()
+     *
+     * @param  mixed           $value
+     * @return int|string|null
+     */
+    public static function tryAsKey(mixed $value): int|string|null
+    {
+        $key = match (true) {
+            $value instanceof ArrayKeyable => $value->asArrayKey(),
+            $value instanceof \BackedEnum  => $value->value,
+            $value instanceof \UnitEnum    => $value->name,
+            is_int($value)                 => $value,
+            is_bool($value)                => (int) $value,
+            is_string($value)              => $value,
+            default                        => null,
+        };
+        // The canonical form of the PHP array key (e.g. '1' to 1) can be gotten via the array key
+        return $key === null ? null : array_key_first([$key => true]);
+    }
 }

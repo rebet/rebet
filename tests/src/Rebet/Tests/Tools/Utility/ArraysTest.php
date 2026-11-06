@@ -6,6 +6,7 @@ namespace Rebet\Tests\Tools\Utility;
 
 use Override;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Utility\ArrayKeyable;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Utility\OverrideOption;
@@ -1351,5 +1352,155 @@ class ArraysTest extends RebetTestCase
     {
         $this->assertSame(null, Arrays::reduce(null, fn($c, $i) => $c + $i));
         $this->assertSame(6, Arrays::reduce([1, 2, 3], fn($c, $i) => $c + $i, 0));
+    }
+
+    public function test_asKey(): void
+    {
+        // int : as it is
+        $this->assertSame(1, Arrays::asKey(1));
+        $this->assertSame(0, Arrays::asKey(0));
+        $this->assertSame(-5, Arrays::asKey(-5));
+
+        // string : the canonical form of the PHP array key
+        $this->assertSame(1, Arrays::asKey('1'));
+        $this->assertSame(-5, Arrays::asKey('-5'));
+        $this->assertSame('01', Arrays::asKey('01'));
+        $this->assertSame('1.0', Arrays::asKey('1.0'));
+        $this->assertSame(' 1', Arrays::asKey(' 1'));
+        $this->assertSame('-0', Arrays::asKey('-0'));
+        $this->assertSame('', Arrays::asKey(''));
+        $this->assertSame('abc', Arrays::asKey('abc'));
+
+        // bool : same as the implicit conversion of PHP array key (true is 1 and false is 0)
+        $this->assertSame(1, Arrays::asKey(true));
+        $this->assertSame(0, Arrays::asKey(false));
+        $this->assertSame(Arrays::asKey(1), Arrays::asKey(true));
+        $this->assertSame(Arrays::asKey(0), Arrays::asKey(false));
+
+        // enum : the value of backed enum, the name of pure enum
+        $this->assertSame(3, Arrays::asKey(ArraysTest_IntEnum::Three));
+        $this->assertSame('x', Arrays::asKey(ArraysTest_StringEnum::X));
+        $this->assertSame(7, Arrays::asKey(ArraysTest_StringEnum::Seven));
+        $this->assertSame('Pure', Arrays::asKey(ArraysTest_PureEnum::Pure));
+
+        // ArrayKeyable : the result of asArrayKey() (it is prior to the enum)
+        $this->assertSame('key', Arrays::asKey(new ArraysTest_ArrayKeyable('key')));
+        $this->assertSame(10, Arrays::asKey(new ArraysTest_ArrayKeyable('10')));
+        $this->assertSame('overridden', Arrays::asKey(ArraysTest_KeyableEnum::A));
+        $this->assertSame(5, Arrays::asKey(new ArraysTest_IntKeyable(5)));
+        $this->assertSame('abc', Arrays::asKey(new ArraysTest_IntKeyable('abc')));
+
+        // The key can be used as it is
+        $array = [Arrays::asKey('1') => 'a', Arrays::asKey(false) => 'b', Arrays::asKey('') => 'c'];
+        $this->assertSame([1 => 'a', 0 => 'b', '' => 'c'], $array);
+
+        // same as the implicit conversion of PHP array key
+        $native        = [];
+        $native[true]  = 'x';
+        $native[false] = 'z';
+        $this->assertSame($native, [Arrays::asKey(true) => 'x', Arrays::asKey(false) => 'z']);
+    }
+
+    public function test_asKey_unsupported(): void
+    {
+        $this->expectException(\TypeError::class);
+
+        Arrays::asKey(new \stdClass());    // @phpstan-ignore argument.type
+    }
+
+    public function test_asKey_unsupportedArray(): void
+    {
+        $this->expectException(\TypeError::class);
+
+        Arrays::asKey([1, 2]);    // @phpstan-ignore argument.type
+    }
+
+    public function test_asKey_unsupportedFloat(): void
+    {
+        // float is not supported (the implicit conversion of PHP array key is deprecated)
+        $this->expectException(\TypeError::class);
+
+        Arrays::asKey(1.0);    // @phpstan-ignore argument.type
+    }
+
+    public function test_asKey_unsupportedNull(): void
+    {
+        // null is not supported (the implicit conversion of PHP array key will be deprecated)
+        $this->expectException(\TypeError::class);
+
+        Arrays::asKey(null);    // @phpstan-ignore argument.type
+    }
+
+    public function test_tryAsKey(): void
+    {
+        // same as asKey() for the supported types
+        foreach ([1, '1', '01', true, false, '', 'abc', ArraysTest_IntEnum::Three, ArraysTest_StringEnum::Seven, ArraysTest_PureEnum::Pure, new ArraysTest_ArrayKeyable('10')] as $value) {
+            $this->assertSame(Arrays::asKey($value), Arrays::tryAsKey($value));
+        }
+
+        // null for the unsupported types (float and null are not supported)
+        $this->assertNull(Arrays::tryAsKey(1.0));
+        $this->assertNull(Arrays::tryAsKey(1.5));
+        $this->assertNull(Arrays::tryAsKey(-0.0));
+        $this->assertNull(Arrays::tryAsKey(NAN));
+        $this->assertNull(Arrays::tryAsKey(INF));
+        $this->assertNull(Arrays::tryAsKey(null));
+        $this->assertNull(Arrays::tryAsKey([]));
+        $this->assertNull(Arrays::tryAsKey([1, 2]));
+        $this->assertNull(Arrays::tryAsKey(new \stdClass()));
+        $this->assertNull(Arrays::tryAsKey(fn() => 1));
+        $this->assertNull(Arrays::tryAsKey(new \ArrayObject([])));
+        $resource = fopen('php://memory', 'r');
+        $this->assertNull(Arrays::tryAsKey($resource));
+        fclose($resource);
+    }
+}
+
+enum ArraysTest_IntEnum: int
+{
+    case Three = 3;
+}
+
+enum ArraysTest_StringEnum: string
+{
+    case X     = 'x';
+    case Seven = '7';
+}
+
+enum ArraysTest_PureEnum
+{
+    case Pure;
+}
+
+enum ArraysTest_KeyableEnum: int implements ArrayKeyable
+{
+    case A = 1;
+
+    #[Override]
+    public function asArrayKey(): string
+    {
+        return 'overridden';
+    }
+}
+
+class ArraysTest_IntKeyable implements ArrayKeyable
+{
+    public function __construct(private int|string $key) {}
+
+    #[Override]
+    public function asArrayKey(): int|string
+    {
+        return $this->key;
+    }
+}
+
+class ArraysTest_ArrayKeyable implements ArrayKeyable
+{
+    public function __construct(private string $key) {}
+
+    #[Override]
+    public function asArrayKey(): string
+    {
+        return $this->key;
     }
 }

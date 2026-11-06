@@ -272,7 +272,6 @@ abstract class Enum implements \JsonSerializable, Convertible
      *
      * @return string
      */
-    #[Override]
     public function __toString(): string
     {
         return $this->translate();
