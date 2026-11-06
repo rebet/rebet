@@ -178,6 +178,7 @@ class Reflector
             || \is_resource($object)
             || (is_iterable($object) && !is_array($object) && !($object instanceof \ArrayAccess))
             || $object instanceof Tinker
+            || $object instanceof \UnitEnum    // enum is immutable (e.g. the read-only name and value can not be modified)
         ) {
             return $object;
         }

@@ -32,7 +32,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
 
     protected function render(string $name, array $args = []): string|null
     {
-        return EofLineFeed::TRIM()->process($this->engine->render($name, $args));
+        return EofLineFeed::Trim->process($this->engine->render($name, $args));
     }
 
     public function test_tag_env(): void

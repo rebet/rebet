@@ -34,7 +34,7 @@ class View implements Renderable
     {
         return [
             'engine'        => null,
-            'eof_line_feed' => EofLineFeed::TRIM(),
+            'eof_line_feed' => EofLineFeed::Trim,
         ];
     }
 

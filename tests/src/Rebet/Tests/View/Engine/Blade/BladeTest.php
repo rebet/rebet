@@ -73,7 +73,7 @@ class BladeTest extends RebetTestCase
             <<<EOS
                 Hello, Samantha.
                 EOS,
-            EofLineFeed::TRIM()->process($this->blade->render('welcome', ['name' => 'Samantha'])),
+            EofLineFeed::Trim->process($this->blade->render('welcome', ['name' => 'Samantha'])),
         );
     }
 
@@ -126,6 +126,6 @@ class BladeTest extends RebetTestCase
     #[DataProvider('dataBuiltins')]
     public function test_render_builtin(string $expect, string $name, array $args = []): void
     {
-        $this->assertSame($expect, EofLineFeed::TRIM()->process($this->blade->render($name, $args)));
+        $this->assertSame($expect, EofLineFeed::Trim->process($this->blade->render($name, $args)));
     }
 }

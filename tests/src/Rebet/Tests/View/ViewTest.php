@@ -92,13 +92,13 @@ class ViewTest extends RebetTestCase
 
     public function test_eof(): void
     {
-        $view = View::of('welcome')->eof(EofLineFeed::ONE());
+        $view = View::of('welcome')->eof(EofLineFeed::One);
         $this->assertInstanceOf(View::class, $view);
-        $this->assertSame(EofLineFeed::ONE(), Reflector::get($view, 'eof', null, true));
+        $this->assertSame(EofLineFeed::One, Reflector::get($view, 'eof', null, true));
 
-        $this->assertSame("Hello, Bob.", View::of('welcome')->eof(EofLineFeed::TRIM())->with('name', 'Bob')->render());
-        $this->assertSame("Hello, Bob.\n", View::of('welcome')->eof(EofLineFeed::ONE())->with('name', 'Bob')->render());
-        $this->assertSame("Hello, Bob.\n\n", View::of('welcome')->eof(EofLineFeed::KEEP())->with('name', 'Bob')->render());
+        $this->assertSame("Hello, Bob.", View::of('welcome')->eof(EofLineFeed::Trim)->with('name', 'Bob')->render());
+        $this->assertSame("Hello, Bob.\n", View::of('welcome')->eof(EofLineFeed::One)->with('name', 'Bob')->render());
+        $this->assertSame("Hello, Bob.\n\n", View::of('welcome')->eof(EofLineFeed::Keep)->with('name', 'Bob')->render());
     }
 
     public function test_render(): void

@@ -4,36 +4,48 @@ declare(strict_types=1);
 
 namespace Rebet\View;
 
-use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Enum\Enumerable;
+use Rebet\Tools\Enum\Enumeration;
 
 /**
- * EOF Line Feed Class
+ * EOF Line Feed Enum
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  *
- * @method static self KEEP() EOF line feed processing : Keep (Do nothing)
- * @method static self TRIM()                                              EOF line feed processing : Trim CR/LF
- * @method static self ONE()                                               EOF line feed processing : Trim CR/LF then append one LF
+ * @implements Enumeration<EofLineFeed, int>
  */
-class EofLineFeed extends Enum
+enum EofLineFeed: int implements Enumeration
 {
+    /** @use Enumerable<EofLineFeed, int> */
+    use Enumerable;
+
     /**
      * EOF line feed processing : Keep (Do nothing)
      */
-    public const KEEP = [1, 'keep'];
+    case Keep = 1;
 
     /**
      * EOF line feed processing : Trim CR/LF
      */
-    public const TRIM = [2, 'trim'];
+    case Trim = 2;
 
     /**
      * EOF line feed processing : Trim CR/LF then append one LF
      */
-    public const ONE = [3, 'one'];
+    case One = 3;
+
+    /**
+     * The label of this enum is not display text, so it does not need to be translated.
+     *
+     * @return bool
+     */
+    protected static function translatable(): bool
+    {
+        return false;
+    }
 
     /**
      * Process EOF line feeds.
@@ -46,10 +58,10 @@ class EofLineFeed extends Enum
         if ($contents === null) {
             return null;
         }
-        if ($this->equals(static::KEEP())) {
+        if ($this === self::Keep) {
             return $contents;
         }
         $contents = rtrim($contents, "\r\n");
-        return $this->equals(static::TRIM()) ? $contents : "{$contents}\n" ;
+        return $this === self::Trim ? $contents : "{$contents}\n" ;
     }
 }

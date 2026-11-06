@@ -70,11 +70,11 @@ return [
         | This option controls how the trailing CR/LF of a rendered view is treated.
         |
         | Supported:
-        |  - EofLineFeed::KEEP() : Keep the rendered content as it is.
-        |  - EofLineFeed::TRIM() : Trim trailing CR/LF.
-        |  - EofLineFeed::ONE()  : Trim trailing CR/LF then append exactly one LF.
+        |  - EofLineFeed::Keep : Keep the rendered content as it is.
+        |  - EofLineFeed::Trim : Trim trailing CR/LF.
+        |  - EofLineFeed::One  : Trim trailing CR/LF then append exactly one LF.
         */
-        // 'eof_line_feed' => EofLineFeed::TRIM(),
+        // 'eof_line_feed' => EofLineFeed::Trim,
     ],
 
 

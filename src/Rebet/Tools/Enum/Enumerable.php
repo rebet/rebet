@@ -139,7 +139,7 @@ use Rebet\Tools\Utility\Strings;
  * @template T of Enumeration
  * @template V of int|string
  *
- * @phpstan-require-implements Enumeration
+ * @phpstan-require-implements Enumeration<T, V>
  *
  * @property string $name Pure/Backed enum `name` or Object property of `name`
  *
@@ -159,7 +159,7 @@ trait Enumerable // @phpstan-ignore trait.unused
      *
      * @return array<int, T>
      */
-    abstract protected static function cases(): array;
+    abstract public static function cases(): array;
 
     /**
      * Get translatable status of this enum.
@@ -345,8 +345,7 @@ trait Enumerable // @phpstan-ignore trait.unused
      *
      * Non enum class (e.g. database master reference) has no Meta attribute, so it always has no metadata.
      *
-     * @template E of Enumeration
-     * @return array<class-string<E>, array<string, mixed>>
+     * @return array<string, mixed>
      */
     private function metadata(): array
     {
@@ -535,7 +534,7 @@ trait Enumerable // @phpstan-ignore trait.unused
                 $index[$key] = $enum;
             }
         }
-        if (is_subclass_of($class, \UnitEnum::class)) {
+        if (enum_exists($class)) {
             $INDEX_CACHE[$class][$field] = $index;
         }
         return $index;

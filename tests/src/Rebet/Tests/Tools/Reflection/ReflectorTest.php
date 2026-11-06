@@ -131,6 +131,18 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('instantiated', Reflector::instantiate(new ReflectorTest_Mock('instantiated'))->value);
     }
 
+    public function test_get_enumValue(): void
+    {
+        // enum is immutable (the read-only name and value), so that it must be returned as it is
+        $array = ['backed' => ReflectorTest_IntEnum::One, 'pure' => ReflectorTest_PureEnum::Alpha, 'nested' => ['enum' => ReflectorTest_IntEnum::Zero]];
+        $this->assertSame(ReflectorTest_IntEnum::One, Reflector::get($array, 'backed'));
+        $this->assertSame(ReflectorTest_PureEnum::Alpha, Reflector::get($array, 'pure'));
+        $this->assertSame(ReflectorTest_IntEnum::Zero, Reflector::get($array, 'nested.enum'));
+        $this->assertSame(ReflectorTest_IntEnum::One, Reflector::get((object) $array, 'backed'));
+        $this->assertSame($array['backed'], Reflector::get($array, 'backed'));
+        $this->assertSame('default', Reflector::get($array, 'nothing', 'default'));
+    }
+
     public function test_get(): void
     {
         $this->assertSame($this->array, Reflector::get($this->array, null));
