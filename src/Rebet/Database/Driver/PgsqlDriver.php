@@ -123,91 +123,36 @@ class PgsqlDriver extends AbstractDriver
             return Reflector::convert($value, $type);
         }
 
-        switch ($native_type = strtolower($meta['native_type'] ?? '(native_type missing)')) {
-            case 'text':
-            case 'varchar':
-            case 'bpchar':
-            case 'uuid':
-            case 'pg_lsn':
-                return (string) $value;
+        $native_type = strtolower($meta['native_type'] ?? '(native_type missing)');
 
-            case 'int2':
-            case 'int4':
-            case 'int8':
-            case 'varbit':
-                return intval($value) ;
-
-            case 'float4':
-            case 'float8':
-                return floatval($value);
-
-            case 'bit':
-                return $meta['precision'] < PHP_INT_SIZE * 8 ? intval(base_convert($value, 2, 10)) : $value ;
-
-            case 'bool':
-                return boolval($value);
-
-            case 'numeric':
-                return Decimal::of($value);
-
-            case 'date':
-                return Date::createDateTime($value, ['Y-m-d']);
-
-            case 'timestamp':
-                // @todo Check available formats
-                return DateTime::createDateTime($value, ['Y-m-d H:i:s.u', 'Y-m-d H:i:s']) ;
-
-            case 'timestamptz':
-                // @todo Check available formats
-                return DateTime::createDateTime($value, ['Y-m-d H:i:sO', 'Y-m-d H:i:sT']) ;
-
-            case 'xml':
-                return new \SimpleXMLElement($value);
-
-            case 'json':
-            case 'jsonb':
-                return json_decode($value, true);
-
-            case 'time':
-            case 'timetz':
-            case 'interval':
-            case 'tinterval':
-                // @todo Implements Time and Interval class and incorporate
-                return (string) $value;
-
-            case 'box':
-            case 'circle':
-            case 'line':
-            case 'lseg':
-            case 'path':
-            case 'point':
-            case 'polygon':
-                // @todo Select and incorporate geometry library
-                return (string) $value;
-
-            case 'cidr':     // (IPv4 or IPv6)
-            case 'inet':     // (Host address of IPv4 or IPv6)
-            case 'macaddr':
-            case 'macaddr8':
-                return (string) $value;
-
-            case 'money':
-                // @todo Should we remove the currency unit and return a Decimal class, or should we implement a Money class that extended Decimal
-                return (string) $value;
-
-            case 'bytea':
-                return $value;
-
-            case 'tsquery':
-            case 'tsvector':
-            case 'gtsvector':
-                return (string) $value;
-
-            case 'txid_snapshot':
-                return (string) $value;
-        }
-
-        // trigger_error("[".static::SUPPORTED_PDO_DRIVER."] Unknown native type '{$native_type}' found.", E_USER_NOTICE);
-        return $value;
+        return match ($native_type) {
+            'text', 'varchar', 'bpchar', 'uuid', 'pg_lsn'               => (string) $value,
+            'int2', 'int4', 'int8', 'varbit'                            => intval($value),
+            'float4', 'float8'                                          => floatval($value),
+            'bit'                                                       => $meta['precision'] < PHP_INT_SIZE * 8 ? intval(base_convert($value, 2, 10)) : $value,
+            'bool'                                                      => boolval($value),
+            'numeric'                                                   => Decimal::of($value),
+            'date'                                                      => Date::createDateTime($value, ['Y-m-d']),
+            // @todo Check available formats
+            'timestamp'                                                 => DateTime::createDateTime($value, ['Y-m-d H:i:s.u', 'Y-m-d H:i:s']),
+            // @todo Check available formats
+            'timestamptz'                                               => DateTime::createDateTime($value, ['Y-m-d H:i:sO', 'Y-m-d H:i:sT']),
+            'xml'                                                       => new \SimpleXMLElement($value),
+            'json', 'jsonb'                                             => json_decode($value, true),
+            // @todo Implements Time and Interval class and incorporate
+            'time', 'timetz', 'interval', 'tinterval'                   => (string) $value,
+            // @todo Select and incorporate geometry library
+            'box', 'circle', 'line', 'lseg', 'path', 'point', 'polygon' => (string) $value,
+            'cidr'                                                      => (string) $value, // IPv4 or IPv6
+            'inet'                                                      => (string) $value, // Host address of IPv4 or IPv6
+            'macaddr', 'macaddr8'                                       => (string) $value,
+            // @todo Should we remove the currency unit and return a Decimal class, or should we implement a Money class that extended Decimal
+            'money'                                                     => (string) $value,
+            'bytea'                                                     => $value,
+            'tsquery', 'tsvector', 'gtsvector'                          => (string) $value,
+            'txid_snapshot'                                             => (string) $value,
+            // Unknown native type (it is returned as it is) : trigger_error("[".static::SUPPORTED_PDO_DRIVER."] Unknown native type '{$native_type}' found.", E_USER_NOTICE);
+            default                                                     => $value,
+        };
     }
 }

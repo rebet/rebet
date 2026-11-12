@@ -73,67 +73,42 @@ class Files
      * @param  string              $message of error happend (default: 'ZipArchive error.')
      * @throws ZipArchiveException
      */
-    private static function zipErrorCheck($code, string $message = 'ZipArchive error.'): void
+    private static function zipErrorCheck(bool|int $code, string $message = 'ZipArchive error.'): void
     {
-        if ($code === true) {
+        if ($code === true || $code === \ZipArchive::ER_OK) {
             return;
         }
         if ($code === false) {
             throw new ZipArchiveException($message);
         }
-        switch ($code) {
-            case \ZipArchive::ER_OK:          return;
-            case \ZipArchive::ER_MULTIDISK:   $message = "{$message} (Multi-disk zip archives not supported)";
-                break;
-            case \ZipArchive::ER_RENAME:      $message = "{$message} (Renaming temporary file failed)";
-                break;
-            case \ZipArchive::ER_CLOSE:       $message = "{$message} (Closing zip archive failed)";
-                break;
-            case \ZipArchive::ER_SEEK:        $message = "{$message} (Seek error)";
-                break;
-            case \ZipArchive::ER_READ:        $message = "{$message} (Read error)";
-                break;
-            case \ZipArchive::ER_WRITE:       $message = "{$message} (Write error)";
-                break;
-            case \ZipArchive::ER_CRC:         $message = "{$message} (CRC error)";
-                break;
-            case \ZipArchive::ER_ZIPCLOSED:   $message = "{$message} (Containing zip archive was closed)";
-                break;
-            case \ZipArchive::ER_NOENT:       $message = "{$message} (No such file)";
-                break;
-            case \ZipArchive::ER_EXISTS:      $message = "{$message} (File already exists)";
-                break;
-            case \ZipArchive::ER_OPEN:        $message = "{$message} (Can't open file)";
-                break;
-            case \ZipArchive::ER_TMPOPEN:     $message = "{$message} (Failure to create temporary file)";
-                break;
-            case \ZipArchive::ER_ZLIB:        $message = "{$message} (Zlib error)";
-                break;
-            case \ZipArchive::ER_MEMORY:      $message = "{$message} (Malloc failure)";
-                break;
-            case \ZipArchive::ER_CHANGED:     $message = "{$message} (Entry has been changed)";
-                break;
-            case \ZipArchive::ER_COMPNOTSUPP: $message = "{$message} (Compression method not supported)";
-                break;
-            case \ZipArchive::ER_EOF:         $message = "{$message} (Premature EOF)";
-                break;
-            case \ZipArchive::ER_INVAL:       $message = "{$message} (Invalid argument)";
-                break;
-            case \ZipArchive::ER_NOZIP:       $message = "{$message} (Not a zip archive)";
-                break;
-            case \ZipArchive::ER_INTERNAL:    $message = "{$message} (Internal error)";
-                break;
-            case \ZipArchive::ER_INCONS:      $message = "{$message} (Zip archive inconsistent)";
-                break;
-            case \ZipArchive::ER_REMOVE:      $message = "{$message} (Can't remove file)";
-                break;
-            case \ZipArchive::ER_DELETED:     $message = "{$message} (Entry has been delete)";
-                break;
-            default: $message = "{$message} (Unknown reason)";
-                break;
-        }
+        $reason = match ($code) {
+            \ZipArchive::ER_MULTIDISK   => 'Multi-disk zip archives not supported',
+            \ZipArchive::ER_RENAME      => 'Renaming temporary file failed',
+            \ZipArchive::ER_CLOSE       => 'Closing zip archive failed',
+            \ZipArchive::ER_SEEK        => 'Seek error',
+            \ZipArchive::ER_READ        => 'Read error',
+            \ZipArchive::ER_WRITE       => 'Write error',
+            \ZipArchive::ER_CRC         => 'CRC error',
+            \ZipArchive::ER_ZIPCLOSED   => 'Containing zip archive was closed',
+            \ZipArchive::ER_NOENT       => 'No such file',
+            \ZipArchive::ER_EXISTS      => 'File already exists',
+            \ZipArchive::ER_OPEN        => 'Can\'t open file',
+            \ZipArchive::ER_TMPOPEN     => 'Failure to create temporary file',
+            \ZipArchive::ER_ZLIB        => 'Zlib error',
+            \ZipArchive::ER_MEMORY      => 'Malloc failure',
+            \ZipArchive::ER_CHANGED     => 'Entry has been changed',
+            \ZipArchive::ER_COMPNOTSUPP => 'Compression method not supported',
+            \ZipArchive::ER_EOF         => 'Premature EOF',
+            \ZipArchive::ER_INVAL       => 'Invalid argument',
+            \ZipArchive::ER_NOZIP       => 'Not a zip archive',
+            \ZipArchive::ER_INTERNAL    => 'Internal error',
+            \ZipArchive::ER_INCONS      => 'Zip archive inconsistent',
+            \ZipArchive::ER_REMOVE      => 'Can\'t remove file',
+            \ZipArchive::ER_DELETED     => 'Entry has been delete',
+            default                     => 'Unknown reason',
+        };
 
-        throw (new ZipArchiveException($message))->code($code);
+        throw (new ZipArchiveException("{$message} ({$reason})"))->code($code);
     }
 
     /**

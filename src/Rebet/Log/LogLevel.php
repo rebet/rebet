@@ -50,27 +50,12 @@ class LogLevel extends PsrLogLevel
      */
     public static function errorTypeOf(int $type): string
     {
-        switch ($type) {
-            case E_CORE_ERROR:
-            case E_COMPILE_ERROR:
-            case E_PARSE:
-                return self::CRITICAL;
-            case E_ERROR:
-            case E_USER_ERROR:
-            case E_RECOVERABLE_ERROR:
-                return self::ERROR;
-            case E_WARNING:
-            case E_USER_WARNING:
-            case E_CORE_WARNING:
-            case E_COMPILE_WARNING:
-                return self::WARNING;
-            case E_NOTICE:
-            case E_USER_NOTICE:
-            case E_DEPRECATED:
-            case E_USER_DEPRECATED:
-            case E_STRICT:
-                return self::NOTICE;
-        }
-        return self::WARNING;
+        return match ($type) {
+            E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE                             => self::CRITICAL,
+            E_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR                         => self::ERROR,
+            E_WARNING, E_USER_WARNING, E_CORE_WARNING, E_COMPILE_WARNING       => self::WARNING,
+            E_NOTICE, E_USER_NOTICE, E_DEPRECATED, E_USER_DEPRECATED, E_STRICT => self::NOTICE,
+            default                                                            => self::WARNING,
+        };
     }
 }

@@ -103,15 +103,10 @@ class WebExceptionHandler extends ExceptionHandler
      */
     protected function handleJson(Request $request, \Throwable $e): Response
     {
-        $response = null;
-        switch (true) {
-            case $e instanceof ProblemRespondable:
-                $response = $e->problem();
-                break;
-            default:
-                $response = $this->makeProblem(500, $request, $e);
-                break;
-        }
+        $response = match (true) {
+            $e instanceof ProblemRespondable => $e->problem(),
+            default                          => $this->makeProblem(500, $request, $e),
+        };
         $this->report($request, $response, $e);
         return $response;
     }
@@ -141,25 +136,15 @@ class WebExceptionHandler extends ExceptionHandler
     {
         $response = null;
         try {
-            switch (true) {
-                case $e instanceof FallbackRedirectException:
-                    $response = $e->redirect();
-                    break;
-                case $e instanceof HttpException:
-                    $response = $this->makeView($e->getStatus(), $e->getTitle(), $e->getDetail(), $request, $e);
-                    break;
-                case $e instanceof AuthenticateException:
-                    $response = $this->makeView(403, null, null, $request, $e);
-                    break;
-                case $e instanceof RouteNotFoundException: // Do not break.
-                case $e instanceof TokenMismatchException: // Do not break.
-                case $e instanceof FileNotFoundException:
-                    $response = $this->makeView(404, null, null, $request, $e);
-                    break;
-                default:
-                    $response = $this->makeView(500, null, null, $request, $e);
-                    break;
-            }
+            $response = match (true) {
+                $e instanceof FallbackRedirectException => $e->redirect(),
+                $e instanceof HttpException             => $this->makeView($e->getStatus(), $e->getTitle(), $e->getDetail(), $request, $e),
+                $e instanceof AuthenticateException     => $this->makeView(403, null, null, $request, $e),
+                $e instanceof RouteNotFoundException,
+                $e instanceof TokenMismatchException,
+                $e instanceof FileNotFoundException     => $this->makeView(404, null, null, $request, $e),
+                default                                 => $this->makeView(500, null, null, $request, $e),
+            };
         } finally {
             // Always report the original exception, even if making the response failed.
             $this->report($request, $response, $e);

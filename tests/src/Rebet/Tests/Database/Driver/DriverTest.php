@@ -54,6 +54,22 @@ class DriverTest extends RebetDatabaseTestCase
         ];
     }
 
+    public function test_toPhpType_withoutNativeType(): void
+    {
+        self::eachDb(function (Database $db): void {
+            $driver = $db->driver();
+
+            // null value is null, and the given type has priority over the native type
+            $this->assertNull($driver->toPhpType(null, ['native_type' => 'integer']));
+            $this->assertSame(123, $driver->toPhpType('123', ['native_type' => 'string'], 'int'));
+
+            // The unknown native type or the missing native type is returned as it is
+            $this->assertSame('foo', $driver->toPhpType('foo', ['native_type' => 'unknown_native_type']));
+            $this->assertSame('foo', $driver->toPhpType('foo', []));
+            $this->assertSame(123, $driver->toPhpType(123, ['native_type' => 'unknown_native_type']));
+        });
+    }
+
     #[DataProvider('dataToPdoTypes')]
     public function test_toPdoType(array $target_db, PdoParameter $expect, $value): void
     {

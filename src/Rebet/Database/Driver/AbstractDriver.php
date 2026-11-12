@@ -384,27 +384,25 @@ abstract class AbstractDriver implements Driver
     #[Override]
     public function toPdoType($value): PdoParameter
     {
-        if ($value instanceof Enumeration) {
-            $value = $value->value();
-        } elseif ($value instanceof \BackedEnum) {
-            $value = $value->value;
-        } elseif ($value instanceof \UnitEnum) {
-            $value = $value->name;
-        }
+        $value = match (true) {
+            $value instanceof Enumeration => $value->value(),
+            $value instanceof \BackedEnum => $value->value,
+            $value instanceof \UnitEnum   => $value->name,
+            default                       => $value,
+        };
 
-        switch (true) {
-            case $value instanceof PdoParameter:       return $value;
-            case $value === null:                      return PdoParameter::null();
-            case is_bool($value):                      return PdoParameter::bool($value);
-            case is_int($value):                       return PdoParameter::int($value);
-            case is_float($value):                     return PdoParameter::str($value);
-            case is_resource($value):                  return PdoParameter::lob(stream_get_contents($value));
-            case $value instanceof Date:               return PdoParameter::str($value->format(static::PDO_DATE_FORMAT));
-            case $value instanceof \DateTimeInterface: return PdoParameter::str($value->format(static::PDO_DATETIME_FORMAT)); // Do NOT convert before Date
-            case $value instanceof Decimal:            return PdoParameter::str($value->normalize()->format(true, '.', ''));
-        }
-
-        return PdoParameter::str($value);
+        return match (true) {
+            $value instanceof PdoParameter       => $value,
+            $value === null                      => PdoParameter::null(),
+            is_bool($value)                      => PdoParameter::bool($value),
+            is_int($value)                       => PdoParameter::int($value),
+            is_float($value)                     => PdoParameter::str($value),
+            is_resource($value)                  => PdoParameter::lob(stream_get_contents($value)),
+            $value instanceof Date               => PdoParameter::str($value->format(static::PDO_DATE_FORMAT)),
+            $value instanceof \DateTimeInterface => PdoParameter::str($value->format(static::PDO_DATETIME_FORMAT)), // Do NOT convert before Date
+            $value instanceof Decimal            => PdoParameter::str($value->normalize()->format(true, '.', '')),
+            default                              => PdoParameter::str($value),
+        };
     }
 
     /**

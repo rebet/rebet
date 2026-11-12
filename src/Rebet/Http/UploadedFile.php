@@ -89,27 +89,23 @@ class UploadedFile extends SymfonyUploadedFile
      */
     public static function valueOf($value): self|null
     {
-        switch (true) {
-            case $value === null:
-                return null;
-            case $value instanceof static:
-                return $value;
-            case $value instanceof SymfonyUploadedFile:
-                return new static(
-                    $value->getPathname(),
-                    $value->getClientOriginalName(),
-                    $value->getClientMimeType(),
-                    $value->getError(),
-                );
-            case is_array($value):
-                return new static(
-                    $value['tmp_name'],
-                    $value['name'],
-                    $value['type'],
-                    $value['error'],
-                );
-        }
-        return null;
+        return match (true) {
+            $value === null                       => null,
+            $value instanceof static              => $value,
+            $value instanceof SymfonyUploadedFile => new static(
+                $value->getPathname(),
+                $value->getClientOriginalName(),
+                $value->getClientMimeType(),
+                $value->getError(),
+            ),
+            is_array($value)                      => new static(
+                $value['tmp_name'],
+                $value['name'],
+                $value['type'],
+                $value['error'],
+            ),
+            default                               => null,
+        };
     }
 
     /**

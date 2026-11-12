@@ -140,10 +140,10 @@ class Log
      */
     protected static function adoptChannel(string|null $channel = null): string
     {
-        switch (true) {
-            case static::unittest(): return static::config('unittest_channel');
-        }
-        return $channel ?? static::config('default_channel', false, 'stderr');
+        return match (true) {
+            static::unittest() => static::config('unittest_channel'),
+            default            => $channel ?? static::config('default_channel', false, 'stderr'),
+        };
     }
 
     /**

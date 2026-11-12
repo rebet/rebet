@@ -112,11 +112,10 @@ class MysqlDriver extends AbstractDriver
     #[Override]
     public function toPdoType($value): PdoParameter
     {
-        switch (true) {
-            case is_bool($value): return PdoParameter::int($value ? 1 : 0);
-        }
-
-        return parent::toPdoType($value);
+        return match (true) {
+            is_bool($value) => PdoParameter::int($value ? 1 : 0),
+            default         => parent::toPdoType($value),
+        };
     }
 
     /**
@@ -135,69 +134,31 @@ class MysqlDriver extends AbstractDriver
             return Reflector::convert($value, $type);
         }
 
-        switch ($native_type = strtolower($meta['native_type'] ?? '(native_type missing)')) {
-            case 'null':
-                return null;
+        $native_type = strtolower($meta['native_type'] ?? '(native_type missing)');
 
-            case 'string':
-            case 'var_string':
-                return (string) $value;
-
-            case 'tiny':
-                return $meta['len'] === 1 ? boolval($value) : intval($value) ;
-
-            case 'short':
-            case 'long':
-            case 'int24':
-                return intval($value) ;
-
-            case 'longlong':
-                return PHP_INT_SIZE === 8 ? intval($value) : (string) $value ;
-
-            case 'float':
-            case 'double':
-                return floatval($value);
-
-            case 'bit':
-                return $meta['len'] < PHP_INT_SIZE * 8 ? intval($value) : $value ;
-
-            case 'decimal':
-            case 'newdecimal':
-                return Decimal::of($value);
-
-            case 'year':
-                return intval($value);
-
-            case 'date':
-            case 'newdate':
-                return $value === '0000-00-00' ? null : Date::createDateTime($value, ['Y-m-d']) ;
-
-            case 'timestamp':
-            case 'datetime':
-                return $value === '0000-00-00 00:00:00' ? null : DateTime::createDateTime($value, ['Y-m-d H:i:s.u', 'Y-m-d H:i:s']) ;
-
-                // case 'set':              // mysql (It not works currently because of mysql PDO return 'string' for SET column)
-                //     return explode(',', $value);
-
-                // case 'enum':             // mysql (It not works currently because of mysql PDO return 'string' for ENUM column)
-                //     return (string)$value;
-
-            case 'time':
-                // @todo Implements Time and Interval class and incorporate
-                return (string) $value;
-
-            case 'geometry':
-                // @todo Select and incorporate geometry library
-                return (string) $value;
-
-            case 'tiny_blob':
-            case 'medium_blob':
-            case 'long_blob':
-            case 'blob':
-                return $value;
-        }
-
-        // trigger_error("[".static::SUPPORTED_PDO_DRIVER."] Unknown native type '{$native_type}' found.", E_USER_NOTICE);
-        return $value;
+        return match ($native_type) {
+            'null'                                          => null,
+            'string', 'var_string'                          => (string) $value,
+            'tiny'                                          => $meta['len'] === 1 ? boolval($value) : intval($value),
+            'short', 'long', 'int24'                        => intval($value),
+            'longlong'                                      => PHP_INT_SIZE === 8 ? intval($value) : (string) $value,
+            'float', 'double'                               => floatval($value),
+            'bit'                                           => $meta['len'] < PHP_INT_SIZE * 8 ? intval($value) : $value,
+            'decimal', 'newdecimal'                         => Decimal::of($value),
+            'year'                                          => intval($value),
+            'date', 'newdate'                               => $value === '0000-00-00' ? null : Date::createDateTime($value, ['Y-m-d']),
+            'timestamp', 'datetime'                         => $value === '0000-00-00 00:00:00' ? null : DateTime::createDateTime($value, ['Y-m-d H:i:s.u', 'Y-m-d H:i:s']),
+            // @todo mysql (It not works currently because of mysql PDO return 'string' for SET column)
+            // 'set'                                           => explode(',', $value),
+            // @todo mysql (It not works currently because of mysql PDO return 'string' for ENUM column)
+            // 'enum'                                          => (string) $value,
+            // @todo Implements Time and Interval class and incorporate
+            'time'                                          => (string) $value,
+            // @todo Select and incorporate geometry library
+            'geometry'                                      => (string) $value,
+            'tiny_blob', 'medium_blob', 'long_blob', 'blob' => $value,
+            // Unknown native type (it is returned as it is) : trigger_error("[".static::SUPPORTED_PDO_DRIVER."] Unknown native type '{$native_type}' found.", E_USER_NOTICE);
+            default                                         => $value,
+        };
     }
 }

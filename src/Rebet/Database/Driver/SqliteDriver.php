@@ -134,24 +134,16 @@ class SqliteDriver extends AbstractDriver
             return Reflector::convert($value, $type);
         }
 
-        switch ($native_type = strtolower($meta['native_type'] ?? '(native_type missing)')) {
-            case 'null':
-                return null;
+        $native_type = strtolower($meta['native_type'] ?? '(native_type missing)');
 
-            case 'string':
-                return (string) $value;
-
-            case 'integer':
-                return intval($value) ;
-
-            case 'double':
-                return floatval($value);
-
-            case 'blob':
-                return $value;
-        }
-
-        // trigger_error("[".static::SUPPORTED_PDO_DRIVER."] Unknown native type '{$native_type}' found.", E_USER_NOTICE);
-        return $value;
+        return match ($native_type) {
+            'null'    => null,
+            'string'  => (string) $value,
+            'integer' => intval($value),
+            'double'  => floatval($value),
+            'blob'    => $value,
+            // Unknown native type (it is returned as it is) : trigger_error("[".static::SUPPORTED_PDO_DRIVER."] Unknown native type '{$native_type}' found.", E_USER_NOTICE);
+            default   => $value,
+        };
     }
 }

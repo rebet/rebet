@@ -248,15 +248,12 @@ class Router
      */
     public static function match($methods, string $uri, $action): Route
     {
-        $route   = null;
         $methods = array_map('strtoupper', (array) $methods);
-        if (is_string($action) && Strings::contains($action, '::')) {
-            $route = new MethodRoute($methods, $uri, $action);
-        } elseif (is_callable($action)) {
-            $route = new ClosureRoute($methods, $uri, $action);
-        } else {
-            throw new LogicException("Invalid action type for declarative routing. Action should be string of 'Class::method' or callable.");
-        }
+        $route   = match (true) {
+            is_string($action) && Strings::contains($action, '::') => new MethodRoute($methods, $uri, $action),
+            is_callable($action)                                   => new ClosureRoute($methods, $uri, $action),
+            default                                                => throw new LogicException("Invalid action type for declarative routing. Action should be string of 'Class::method' or callable."),
+        };
 
         return static::addRoute($route);
     }

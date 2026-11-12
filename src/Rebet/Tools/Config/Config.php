@@ -396,14 +396,11 @@ class Config
         }
         $config = self::get($section, $key, $required, $default);
         if (!empty($runtime_args)) {
-            if (is_string($config) || $config instanceof \Closure) {
-                $config = array_merge(['@factory' => $config], $runtime_args);
-            } elseif (is_array($config)) {
-                $config = array_merge($config, $runtime_args);
-            }
-            // Do nothing.
-            // If a meaningless runtime argument is passed, continue processing as it is.
-
+            $config = match (true) {
+                is_string($config) || $config instanceof \Closure => array_merge(['@factory' => $config], $runtime_args),
+                is_array($config)                                 => array_merge($config, $runtime_args),
+                default                                           => $config, // If a meaningless runtime argument is passed, continue processing as it is.
+            };
         }
         return Reflector::instantiate($config);
     }

@@ -73,16 +73,11 @@ class Env
             return $value;
         }
 
-        switch (strtolower($value)) {
-            case 'null': return null;
-            case 'true': return true;
-            case 'false': return false;
-        }
-
-        if (preg_match('/\A([\'"])(.*)\1\z/u', $value, $matches)) {
-            return $matches[2];
-        }
-
-        return $value;
+        return match (strtolower($value)) {
+            'null'  => null,
+            'true'  => true,
+            'false' => false,
+            default => preg_match('/\A([\'"])(.*)\1\z/u', $value, $matches) ? $matches[2] : $value,
+        };
     }
 }

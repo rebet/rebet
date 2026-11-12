@@ -70,10 +70,9 @@ class DateTimeZone extends \DateTimeZone implements Convertible
         if (Reflector::typeOf($this, $type)) {
             return $this;
         }
-        switch ($type) {
-            case 'string':
-                return $this->__toString();
-        }
-        return null;
+        return match ($type) {
+            'string' => $this->__toString(),
+            default  => null,
+        };
     }
 }

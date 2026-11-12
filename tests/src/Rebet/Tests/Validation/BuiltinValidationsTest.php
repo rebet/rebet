@@ -64,6 +64,36 @@ class BuiltinValidationsTest extends RebetTestCase
         $this->assertSame(['say' => ["The Say must be 'Hello'"]], $validation->errors());
     }
 
+    public function test_ngWordToMatcher(): void
+    {
+        $matcher = new \ReflectionMethod(BuiltinValidations::class, 'ngWordToMatcher');
+        $regex   = fn(string $ng_word, array $ambiguous_patterns, int $omission_length = 3) => $matcher->invoke(
+            $this->validations,
+            $ng_word,
+            '',
+            '[\p{Common}]',
+            '[*]',
+            $omission_length,
+            $ambiguous_patterns,
+        );
+
+        // The letter that has no ambiguous pattern is quoted, and every letter can be omitted when the ng word is long enough.
+        $this->assertSame('/(?:a|(?<o0>[*]))[\p{Common}]*(?:b|(?<o1>[*]))[\p{Common}]*(?:c|(?<o2>[*]))[\p{Common}]*/u', $regex('abc', []));
+
+        // The letter '0' (that is falsy as a string) must be omittable like the other letters. (the loose comparison of switch matched it to the bool condition)
+        $this->assertSame('/(?:a|(?<o0>[*]))[\p{Common}]*(?:0|(?<o1>[*]))[\p{Common}]*(?:b|(?<o2>[*]))[\p{Common}]*/u', $regex('a0b', []));
+        $this->assertSame('/(?:0|(?<o0>[*]))[\p{Common}]*(?:0|(?<o1>[*]))[\p{Common}]*(?:0|(?<o2>[*]))[\p{Common}]*/u', $regex('000', []));
+
+        // The short ng word (shorter than the omission length) can not be omitted.
+        $this->assertSame('/a[\p{Common}]*0[\p{Common}]*/u', $regex('a0', []));
+
+        // The anchors are kept as they are, and the delimiter is allowed only after '^'.
+        $this->assertSame('/^[\p{Common}]*(?:a|(?<o1>[*]))[\p{Common}]*(?:b|(?<o2>[*]))[\p{Common}]*$/u', $regex('^ab$', ['^' => '^', '$' => '$'], 3));
+
+        // The ambiguous pattern is used instead of the quoted letter.
+        $this->assertSame('/(?:(a|b)|(?<o0>[*]))[\p{Common}]*(?:c|(?<o1>[*]))[\p{Common}]*(?:d|(?<o2>[*]))[\p{Common}]*/u', $regex('acd', ['a' => '(a|b)']));
+    }
+
     public function test_cunstract(): void
     {
         $validations = new BuiltinValidations();

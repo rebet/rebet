@@ -39,20 +39,17 @@ class Callbacks
     {
         return function ($item) use ($key, $operator, $value) {
             $retrieved = Reflector::get($item, $key);
-            switch ($operator) {
-                case '=':
-                case '==':  return $retrieved == $value;
-                case '!=':
-                case '<>':  return $retrieved != $value;
-                case '<':   return $retrieved < $value;
-                case '>':   return $retrieved > $value;
-                case '<=':  return $retrieved <= $value;
-                case '>=':  return $retrieved >= $value;
-                case '===': return $retrieved === $value;
-                case '!==': return $retrieved !== $value;
-                default:
-                    throw new LogicException("Invalid operator {$operator} given.");
-            }
+            return match ($operator) {
+                '=', '=='  => $retrieved == $value,
+                '!=', '<>' => $retrieved != $value,
+                '<'        => $retrieved < $value,
+                '>'        => $retrieved > $value,
+                '<='       => $retrieved <= $value,
+                '>='       => $retrieved >= $value,
+                '==='      => $retrieved === $value,
+                '!=='      => $retrieved !== $value,
+                default    => throw new LogicException("Invalid operator {$operator} given."),
+            };
         };
     }
 

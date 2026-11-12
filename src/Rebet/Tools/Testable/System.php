@@ -85,25 +85,24 @@ class System
                             $c = Tinker::with($emulated_dns[$hostname], true);
                             return array_values($c->where(function ($v) use ($type) {
                                 $vt = Reflector::get($v, 'type');
-                                switch (true) {
-                                    case DNS_ANY === $type: return true;
-                                    case DNS_ALL === $type: return true;
-                                    case DNS_A & $type && $vt === 'A': return true;
-                                    case DNS_CNAME & $type && $vt === 'CNAME': return true;
-                                    case DNS_HINFO & $type && $vt === 'HINFO': return true;
-                                        // case DNS_CAA & $type && $vt === 'CAA': return true; // PHP Warning:  Use of undefined constant DNS_CAA - assumed 'DNS_CAA' (this will throw an Error in a future version of PHP)
-                                    case DNS_MX & $type && $vt === 'MX': return true;
-                                    case DNS_NS & $type && $vt === 'NS': return true;
-                                    case DNS_PTR & $type && $vt === 'PTR': return true;
-                                    case DNS_SOA & $type && $vt === 'SOA': return true;
-                                    case DNS_TXT & $type && $vt === 'TXT': return true;
-                                    case DNS_AAAA & $type && $vt === 'AAAA': return true;
-                                    case DNS_SRV & $type && $vt === 'SRV': return true;
-                                    case DNS_NAPTR & $type && $vt === 'NAPTR': return true;
-                                    case DNS_A6 & $type && $vt === 'A6': return true;
-                                    case DNS_NAPTR & $type && $vt === 'NAPTR': return true;
-                                }
-                                return false;
+                                return match (true) {
+                                    DNS_ANY === $type,
+                                    DNS_ALL === $type,
+                                    DNS_A & $type && $vt === 'A',
+                                    DNS_CNAME & $type && $vt === 'CNAME',
+                                    DNS_HINFO & $type && $vt === 'HINFO',
+                                    // DNS_CAA & $type && $vt === 'CAA', // PHP Warning:  Use of undefined constant DNS_CAA - assumed 'DNS_CAA' (this will throw an Error in a future version of PHP)
+                                    DNS_MX & $type && $vt === 'MX',
+                                    DNS_NS & $type && $vt === 'NS',
+                                    DNS_PTR & $type && $vt === 'PTR',
+                                    DNS_SOA & $type && $vt === 'SOA',
+                                    DNS_TXT & $type && $vt === 'TXT',
+                                    DNS_AAAA & $type && $vt === 'AAAA',
+                                    DNS_SRV & $type && $vt === 'SRV',
+                                    DNS_NAPTR & $type && $vt === 'NAPTR',
+                                    DNS_A6 & $type && $vt === 'A6' => true,
+                                    default                        => false,
+                                };
                             })->return());
                         }
                         return [];

@@ -66,14 +66,14 @@ class PdoParameter
      */
     protected static function typeToLabel(int $type)
     {
-        switch ($type) {
-            case \PDO::PARAM_STR:  return 'STR';
-            case \PDO::PARAM_INT:  return 'INT';
-            case \PDO::PARAM_BOOL: return 'BOOL';
-            case \PDO::PARAM_LOB:  return 'LOB';
-            case \PDO::PARAM_NULL: return 'NULL';
-        }
-        return "TYPE({$type})";
+        return match ($type) {
+            \PDO::PARAM_STR  => 'STR',
+            \PDO::PARAM_INT  => 'INT',
+            \PDO::PARAM_BOOL => 'BOOL',
+            \PDO::PARAM_LOB  => 'LOB',
+            \PDO::PARAM_NULL => 'NULL',
+            default          => "TYPE({$type})",
+        };
     }
 
     /**

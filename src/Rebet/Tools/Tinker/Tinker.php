@@ -163,11 +163,11 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     'nvl'       => fn($value, $default) => $value ?? $default,
                     'default'   => fn($value, $default) => $value ?? $default,
                     'escape'    => function (string $value, string $type = 'html') {
-                        switch ($type) {
-                            case 'html': return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-                            case 'url': return urlencode($value);
-                            default: throw new \InvalidArgumentException("Invalid escape type [{$type}] given. The type must be html or url");
-                        }
+                        return match ($type) {
+                            'html'  => htmlspecialchars($value, ENT_QUOTES, 'UTF-8'),
+                            'url'   => urlencode($value),
+                            default => throw new \InvalidArgumentException("Invalid escape type [{$type}] given. The type must be html or url"),
+                        };
                     },
                     'nl2br'     => fn(string $value) => nl2br($value),
                     'datetimef' => fn(DateTime $value, string $format) => $value->format($format),
@@ -210,12 +210,12 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     },
                     'case'      => fn($value, array $map, $default = null) => $map[$value] ?? $default ?? $value,
                     'length'    => function ($value) {
-                        switch (true) {
-                            case $value === null:    return null;
-                            case is_numeric($value): return mb_strlen((string) $value);
-                            case is_string($value):  return mb_strlen($value);
-                        }
-                        return Arrays::count($value);
+                        return match (true) {
+                            $value === null    => null,
+                            is_numeric($value) => mb_strlen((string) $value),
+                            is_string($value)  => mb_strlen($value),
+                            default            => Arrays::count($value),
+                        };
                     },
                     'values'    => fn(array $value) => array_values($value),
                     'keys'      => fn(array $value) => array_keys($value),

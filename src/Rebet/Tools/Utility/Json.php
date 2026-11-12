@@ -29,22 +29,15 @@ class Json
      */
     public static function serialize($value)
     {
-        switch (true) {
-            case $value === null:
-                return null;
-            case $value instanceof \JsonSerializable:
-                return $value->jsonSerialize();
-            case is_array($value):
-                return array_map(fn($v) => Json::serialize($v), $value);
-            case $value instanceof stdClass:
-                return array_map(fn($v) => Json::serialize($v), (array) $value);
-            case is_object($value) && method_exists($value, 'toArray'):
-                return array_map(fn($v) => Json::serialize($v), $value->toArray());
-            case is_iterable($value):
-                return array_map(fn($v) => Json::serialize($v), iterator_to_array($value));
-            default:
-                return $value;
-        }
+        return match (true) {
+            $value === null                                       => null,
+            $value instanceof \JsonSerializable                   => $value->jsonSerialize(),
+            is_array($value)                                      => array_map(fn($v) => Json::serialize($v), $value),
+            $value instanceof stdClass                            => array_map(fn($v) => Json::serialize($v), (array) $value),
+            is_object($value) && method_exists($value, 'toArray') => array_map(fn($v) => Json::serialize($v), $value->toArray()),
+            is_iterable($value)                                   => array_map(fn($v) => Json::serialize($v), iterator_to_array($value)),
+            default                                               => $value,
+        };
     }
 
     /**

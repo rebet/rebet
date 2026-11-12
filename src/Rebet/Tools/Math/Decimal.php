@@ -327,43 +327,25 @@ class Decimal implements ArrayKeyable
 
         $max_scale    = static::config('options.max_scale');
         $guard_digits = static::config('options.guard_digits');
-        switch ($mode) {
-            case static::MODE_AUTO_PRECISION_SCALING:
-                switch ($formula) {
-                    case '+': return $result->roundByDecimalPlaces(max($left->scale, $right->scale));
-                    case '-': return $result->roundByDecimalPlaces(max($left->scale, $right->scale));
-                    case '*': return $result->roundByDecimalPlaces(min($left->scale + $right->scale, $max_scale));
-                    case '/': return $result->roundByDecimalPlaces($max_scale)->compact();
-                    case '^': return $result->roundByDecimalPlaces($max_scale)->compact();
-                    case '√': return $result->roundByDecimalPlaces($max_scale)->compact();
-                }
-                throw new LogicException("Invalid formula [{$formula}] was given.");
-
-            case static::MODE_SIGNIFICANCE_ARITHMETIC:
-                switch ($formula) {
-                    case '+': return $result->roundByDecimalPlaces(min($left->scale, $right->scale), $guard_digits);
-                    case '-': return $result->roundByDecimalPlaces(min($left->scale, $right->scale), $guard_digits);
-                    case '*': return $result->roundBySignificantFigures(min($left->significant_figures, $right->significant_figures), $guard_digits);
-                    case '/': return $result->roundBySignificantFigures(min($left->significant_figures, $right->significant_figures), $guard_digits);
-                    case '^': return $result->roundBySignificantFigures($left->significant_figures, $guard_digits);
-                    case '√': return $result->roundBySignificantFigures($left->significant_figures, $guard_digits);
-                }
-                throw new LogicException("Invalid formula [{$formula}] was given.");
-
-            case static::MODE_FIXED_DECIMAL_PLACES:
-                $fixed_scale = static::config('options.fixed_scale');
-                switch ($formula) {
-                    case '+': return $result->roundByDecimalPlaces($fixed_scale, $guard_digits);
-                    case '-': return $result->roundByDecimalPlaces($fixed_scale, $guard_digits);
-                    case '*': return $result->roundByDecimalPlaces($fixed_scale, $guard_digits);
-                    case '/': return $result->roundByDecimalPlaces($fixed_scale, $guard_digits);
-                    case '^': return $result->roundByDecimalPlaces($fixed_scale, $guard_digits);
-                    case '√': return $result->roundByDecimalPlaces($fixed_scale, $guard_digits);
-                }
-                throw new LogicException("Invalid formula [{$formula}] was given.");
-        }
-
-        throw new LogicException("Invalid mode [{$mode}] was given.");
+        return match ($mode) {
+            static::MODE_AUTO_PRECISION_SCALING  => match ($formula) {
+                '+', '-'      => $result->roundByDecimalPlaces(max($left->scale, $right->scale)),
+                '*'           => $result->roundByDecimalPlaces(min($left->scale + $right->scale, $max_scale)),
+                '/', '^', '√' => $result->roundByDecimalPlaces($max_scale)->compact(),
+                default       => throw new LogicException("Invalid formula [{$formula}] was given."),
+            },
+            static::MODE_SIGNIFICANCE_ARITHMETIC => match ($formula) {
+                '+', '-' => $result->roundByDecimalPlaces(min($left->scale, $right->scale), $guard_digits),
+                '*', '/' => $result->roundBySignificantFigures(min($left->significant_figures, $right->significant_figures), $guard_digits),
+                '^', '√' => $result->roundBySignificantFigures($left->significant_figures, $guard_digits),
+                default  => throw new LogicException("Invalid formula [{$formula}] was given."),
+            },
+            static::MODE_FIXED_DECIMAL_PLACES    => match ($formula) {
+                '+', '-', '*', '/', '^', '√' => $result->roundByDecimalPlaces(static::config('options.fixed_scale'), $guard_digits),
+                default                      => throw new LogicException("Invalid formula [{$formula}] was given."),
+            },
+            default                              => throw new LogicException("Invalid mode [{$mode}] was given."),
+        };
     }
 
     /**
@@ -688,13 +670,11 @@ class Decimal implements ArrayKeyable
      */
     public function round(int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES): self
     {
-        switch ($precision_type) {
-            case static::TYPE_DECIMAL_PLACES:
-                return $this->roundByDecimalPlaces($precision, $guard_digits);
-            case static::TYPE_SIGNIFICANT_FIGURES:
-                return $this->roundBySignificantFigures($precision, $guard_digits);
-        }
-        throw new LogicException("Invalid precision type was given.");
+        return match ($precision_type) {
+            static::TYPE_DECIMAL_PLACES      => $this->roundByDecimalPlaces($precision, $guard_digits),
+            static::TYPE_SIGNIFICANT_FIGURES => $this->roundBySignificantFigures($precision, $guard_digits),
+            default                          => throw new LogicException("Invalid precision type was given."),
+        };
     }
 
     /**

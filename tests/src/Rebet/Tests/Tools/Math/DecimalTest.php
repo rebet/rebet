@@ -7,6 +7,7 @@ namespace Rebet\Tests\Tools\Math;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Utility\ArrayKeyable;
 use Rebet\Tools\Utility\Arrays;
@@ -25,6 +26,42 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(Decimal::MODE_AUTO_PRECISION_SCALING, Decimal::config('mode'));
         Decimal::setMode(Decimal::MODE_FIXED_DECIMAL_PLACES);
         $this->assertSame(Decimal::MODE_FIXED_DECIMAL_PLACES, Decimal::config('mode'));
+    }
+
+    public function test_roundBy_invalid(): void
+    {
+        $roundBy = new \ReflectionMethod(Decimal::class, 'roundBy');
+        $one     = Decimal::of(1);
+
+        // Invalid formula for each mode
+        foreach ([Decimal::MODE_AUTO_PRECISION_SCALING, Decimal::MODE_SIGNIFICANCE_ARITHMETIC, Decimal::MODE_FIXED_DECIMAL_PLACES] as $mode) {
+            try {
+                $roundBy->invoke(null, $mode, $one, '%', $one, $one);
+                $this->fail("Must not execute. (mode: {$mode})");
+            } catch (LogicException $e) {
+                $this->assertSame("Invalid formula [%] was given.", $e->getMessage());
+            }
+        }
+
+        // Invalid mode
+        try {
+            $roundBy->invoke(null, 99, $one, '+', $one, $one);
+            $this->fail("Must not execute.");
+        } catch (LogicException $e) {
+            $this->assertSame("Invalid mode [99] was given.", $e->getMessage());
+        }
+
+        // Invalid mode via the public API
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid mode [99] was given.");
+        $one->add(1, null, 99);
+    }
+
+    public function test_round_invalidPrecisionType(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid precision type was given.");
+        Decimal::of('1.234')->round(1, 0, 99);
     }
 
     public function test_setFixedScale(): void

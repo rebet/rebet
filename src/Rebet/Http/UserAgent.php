@@ -26,19 +26,15 @@ class UserAgent extends DeviceDetector
      */
     public static function valueOf($ua): self|null
     {
-        switch (true) {
-            case $ua === null:
-                return null;
-            case $ua instanceof static:
-                $ua->parse();
-                return $ua;
-            case $ua instanceof DeviceDetector: // Do not break.
-            case is_string($ua):
-                $ua = new static($ua);
-                $ua->parse();
-                return $ua;
-        }
-        return null;
+        $ua = match (true) {
+            $ua === null          => null,
+            $ua instanceof static => $ua,
+            $ua instanceof DeviceDetector,
+            is_string($ua)        => new static($ua), // @phpstan-ignore function.alreadyNarrowedType (guard for the value that does not follow the documented type)
+            default               => null,
+        };
+        $ua?->parse();
+        return $ua;
     }
 
     /**

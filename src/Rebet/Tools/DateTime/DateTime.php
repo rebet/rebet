@@ -846,21 +846,15 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         if (Reflector::typeOf($this, $type)) {
             return $this;
         }
-        switch ($type) {
-            case Date::class:
-                return $this->toDate();
-            case DateTime::class:
-                return $this->toDateTime();
-            case \DateTime::class:
-                return $this->toNativeDateTime();
-            case 'string':
-                return $this->jsonSerialize();
-            case 'int':
-                return $this->getTimestamp();
-            case 'float':
-                return floatval($this->format('U.u'));
-        }
-        return null;
+        return match ($type) {
+            Date::class      => $this->toDate(),
+            DateTime::class  => $this->toDateTime(),
+            \DateTime::class => $this->toNativeDateTime(),
+            'string'         => $this->jsonSerialize(),
+            'int'            => $this->getTimestamp(),
+            'float'          => floatval($this->format('U.u')),
+            default          => null,
+        };
     }
 
     /**

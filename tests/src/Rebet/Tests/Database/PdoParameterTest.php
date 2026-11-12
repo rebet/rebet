@@ -21,6 +21,11 @@ class PdoParameterTest extends RebetTestCase
 
         $p = new PdoParameter(123, \PDO::PARAM_INT);
         $this->assertSame('[INT] 123', $p->__toString());
+
+        $this->assertSame('[BOOL] 1', (new PdoParameter(true, \PDO::PARAM_BOOL))->__toString());
+        $this->assertSame('[LOB] data', (new PdoParameter('data', \PDO::PARAM_LOB))->__toString());
+        $this->assertSame('[NULL] ', (new PdoParameter(null, \PDO::PARAM_NULL))->__toString());
+        $this->assertSame('[TYPE(99)] foo', (new PdoParameter('foo', 99))->__toString());
     }
 
     public function test_str(): void

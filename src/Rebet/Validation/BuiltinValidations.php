@@ -1131,19 +1131,14 @@ class BuiltinValidations implements Validations
         $ng_word_length = mb_strlen($ng_word);
         foreach (Strings::toCharArray($ng_word) as $i => $letter) {
             $ambiguous_pattern = $ambiguous_patterns[$letter] ?? preg_quote($letter, '/') ;
-            switch ($ambiguous_pattern) {
-                case '^':
-                    $regex .= $ambiguous_pattern . $delimiter_pattern . '*';
-                    break;
-                case '$':
-                    $regex .= $ambiguous_pattern;
-                    break;
-                case $ng_word_length < $omission_length:
-                    $regex .= "{$ambiguous_pattern}{$delimiter_pattern}*";
-                    break;
-                default:
-                    $regex .= "(?:{$ambiguous_pattern}|(?<o{$i}>{$omission_pattern})){$delimiter_pattern}*";
-            }
+            // NOTE: Do not use `switch ($ambiguous_pattern)` here, because its loose comparison treats the bool condition and
+            //       the letter '0' (or an empty pattern) as equal, so that the omission was ignored for the letter '0'.
+            $regex .= match (true) {
+                $ambiguous_pattern === '^'         => $ambiguous_pattern . $delimiter_pattern . '*',
+                $ambiguous_pattern === '$'         => $ambiguous_pattern,
+                $ng_word_length < $omission_length => "{$ambiguous_pattern}{$delimiter_pattern}*",
+                default                            => "(?:{$ambiguous_pattern}|(?<o{$i}>{$omission_pattern})){$delimiter_pattern}*",
+            };
         }
         return empty($word_split_pattern) ? "/{$regex}/u" : "/(?:{$word_split_pattern}|^){$regex}(?:{$word_split_pattern}|$)/u";
     }

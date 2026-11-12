@@ -630,6 +630,14 @@ class TinkerTest extends RebetTestCase
         $this->assertSame('Hello+Rebet', $this->string->escape('url')->return());
         $this->assertSame('%3Ch1%3EHello+Rebet%3C%2Fh1%3E', $this->html->escape('url')->return());
 
+        // Tinker.filter.customs.escape:invalid
+        try {
+            $this->string->escape('xml')->return();
+            $this->fail("Must not execute.");
+        } catch (\InvalidArgumentException $e) {
+            $this->assertSame("Invalid escape type [xml] given. The type must be html or url", $e->getMessage());
+        }
+
         // Tinker.filter.customs.nl2br
         $this->assertNull($this->null->nl2br()->return());
         $this->assertSame('Hello Rebet', $this->string->nl2br()->return());
