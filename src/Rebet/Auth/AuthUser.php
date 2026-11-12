@@ -320,9 +320,11 @@ class AuthUser implements \JsonSerializable
     }
 
     /**
-     * {@inheritDoc}
+     * Convert the authenticated user to string.
+     * The user is converted by Reflector::convert(), and it is a JSON string if the user can not be converted to string.
+     *
+     * @return string
      */
-    #[Override]
     public function __toString()
     {
         return Reflector::convert($this->user, 'string') ?? json_encode($this) ;

@@ -600,9 +600,11 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     }
 
     /**
-     * {@inheritDoc}
+     * Convert the origin value to string by Reflector::convert(), or an empty string if it can not be converted.
+     * (the Enumeration is converted to its label)
+     *
+     * @return string
      */
-    #[Override]
     public function __toString()
     {
         return Reflector::convert($this->origin(), 'string') ?? '' ;

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace TestApp\Stub;
 
-use Override;
-
 class ToStringStub
 {
     /**
@@ -18,7 +16,6 @@ class ToStringStub
         $this->string = $string;
     }
 
-    #[Override]
     public function __toString()
     {
         return $this->string;

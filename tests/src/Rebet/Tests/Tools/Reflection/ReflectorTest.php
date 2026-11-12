@@ -1502,7 +1502,6 @@ class ReflectorTest_Mock
         return new static($value . ' via build()');
     }
 
-    #[Override]
     public function __toString()
     {
         return (string) $this->value;

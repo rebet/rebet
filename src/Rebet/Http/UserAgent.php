@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rebet\Http;
 
 use DeviceDetector\DeviceDetector;
-use Override;
 
 /**
  * User Agent Class
@@ -57,7 +56,6 @@ class UserAgent extends DeviceDetector
      *
      * @return string
      */
-    #[Override]
     public function __toString()
     {
         return $this->getUserAgent();

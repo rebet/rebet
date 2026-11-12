@@ -69,9 +69,10 @@ class ConfigReferrer implements DotAccessDelegator
     }
 
     /**
-     * {@inheritDoc}
+     * Convert the referrer to string for the debugging. (the section, the key and the default value)
+     *
+     * @return string
      */
-    #[Override]
     public function __toString()
     {
         return "<Referrer: {$this->section}.{$this->key} (default: " . Strings::stringify($this->default) . ")>";

@@ -47,9 +47,10 @@ class DateTimeZone extends \DateTimeZone implements Convertible
     }
 
     /**
-     * {@inheritDoc}
+     * Convert the time zone to string. (the time zone name)
+     *
+     * @return string
      */
-    #[Override]
     public function __toString()
     {
         return $this->getName();

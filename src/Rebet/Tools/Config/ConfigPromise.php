@@ -76,9 +76,11 @@ class ConfigPromise implements DotAccessDelegator
     }
 
     /**
-     * {@inheritDoc}
+     * Convert the promise to string.
+     * The evaluated value is returned as a string if the promise has been evaluated, otherwise the state of the promise (once/dynamic) is returned.
+     *
+     * @return string
      */
-    #[Override]
     public function __toString()
     {
         if ($this->is_evaluated) {
