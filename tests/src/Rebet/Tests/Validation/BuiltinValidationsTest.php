@@ -385,7 +385,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['qux', [1               ], true, []],
                     ['foo', [1               ], true, []],
                     ['foo', [2               ], false, ['foo' => ["The Foo and 2 must match."]]],
-                    ['foo', [Gender::FEMALE()], false, ['foo' => ["The Foo and Female must match."]]],
+                    ['foo', [Gender::Female], false, ['foo' => ["The Foo and Female must match."]]],
                     ['foo', [':bar'          ], true, []],
                     ['foo', [':baz'          ], false, ['foo' => ["The Foo and Baz must match."]]],
                 ],

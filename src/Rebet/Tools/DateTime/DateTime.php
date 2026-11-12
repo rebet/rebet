@@ -13,6 +13,7 @@ use Rebet\Tools\Reflection\Convertible;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
+use Rebet\Tools\Utility\ArrayKeyable;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Utility\Path;
@@ -33,7 +34,7 @@ use Rebet\Tools\Utility\Strings;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class DateTime extends \DateTimeImmutable implements \JsonSerializable, Convertible
+class DateTime extends \DateTimeImmutable implements \JsonSerializable, Convertible, ArrayKeyable
 {
     use Configurable;
 
@@ -388,6 +389,18 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * The key is the unix timestamp in microseconds (the finest precision of PHP DateTime), so the timezone is ignored.
+     * (the same moment is the same key, and the different microsecond is the different key)
+     */
+    #[Override]
+    public function asArrayKey(): int
+    {
+        return $this->getMicroTimestamp();
+    }
+
+    /**
      * It returns a string according to the default format.
      *
      * @return string
@@ -706,7 +719,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      */
     public function getMilliMicro(): int
     {
-        return (int) $this->format('u');
+        return (int) parent::format('u');
     }
 
     /**
@@ -774,14 +787,24 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * Get the Unix Epoch time including microseconds after the decimal point.
-     * Note: The microsecond after the decimal point of micro time stamp are affected by rounding error of float and will not return accurate value.
+     * Get the Unix Epoch time in milliseconds. (the microseconds under the milliseconds are truncated)
      *
-     * @return float
+     * @return int
      */
-    public function getMicroTimestamp(): float
+    public function getMilliTimestamp(): int
     {
-        return floatval($this->format('U.u')) ;
+        return $this->getTimestamp() * 1_000 + $this->getMilli();
+    }
+
+    /**
+     * Get the Unix Epoch time in microseconds.
+     * Unlike a float time stamp (e.g. microtime(true)), this value has no rounding error.
+     *
+     * @return int
+     */
+    public function getMicroTimestamp(): int
+    {
+        return $this->getTimestamp() * 1_000_000 + $this->getMilliMicro();
     }
 
     /**
@@ -835,7 +858,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             case 'int':
                 return $this->getTimestamp();
             case 'float':
-                return $this->getMicroTimestamp();
+                return floatval($this->format('U.u'));
         }
         return null;
     }

@@ -8,7 +8,7 @@ use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Layer;
-use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Enum\Enumeration;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\Callbacks;
 use TestApp\Enum\Gender;
@@ -236,8 +236,8 @@ class CallbacksTest extends RebetTestCase
             ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(array &$a, string &...$s)', function (array &$a, string &...$s) {}, true ],
             ['CallbacksTest::{closure}(&$a, &...$s)', function (array &$a, string &...$s) {}, false],
 
-            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(TestApp\Enum\Gender $g) : Rebet\Tools\Enum\Enum', fn(Gender $g): Enum => $g, true ],
-            ['CallbacksTest::{closure}($g)', fn(Gender $g): Enum => $g, false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(TestApp\Enum\Gender $g) : Rebet\Tools\Enum\Enumeration', fn(Gender $g): Enumeration => $g, true ],
+            ['CallbacksTest::{closure}($g)', fn(Gender $g): Enumeration => $g, false],
         ];
     }
 

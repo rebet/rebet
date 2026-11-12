@@ -670,7 +670,7 @@ class Valid
      *
      * ex)
      *   - ['CU', Valid::CONTAINS, [value1, value2, ...]]
-     *   - ['CU', Valid::CONTAINS, Enum::values()]
+     *   - ['CU', Valid::CONTAINS, Gender::values()]
      * message)
      *   Key         - ContainsChar, ContainsChar@List
      *   Placeholder - :attribute, :self, :list, :nth, :value

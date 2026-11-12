@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
 
+use Rebet\Tools\Utility\Exception\ArrayKeyUnavailableException;
+
 /**
  * Array Keyable Interface
  *
@@ -24,6 +26,7 @@ interface ArrayKeyable
      * Get the value that is used as an array key.
      *
      * @return int|string
+     * @throws ArrayKeyUnavailableException when the object can not be identified as an array key in its current state (e.g. the primary value is not set yet)
      */
     public function asArrayKey(): int|string;
 }

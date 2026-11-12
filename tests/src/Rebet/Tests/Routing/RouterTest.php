@@ -94,7 +94,7 @@ class RouterTest extends RebetTestCase
 
             Router::get('/parameter/convert/date-time/{value}', fn(DateTime $value) => "Content: /parameter/convert/date-time/{value} - {$value->format('Y-m-d H:i:s.u')}");
 
-            Router::get('/parameter/convert/enum/{value}', fn(Gender $value) => "Content: /parameter/convert/enum/{value} - {$value}");
+            Router::get('/parameter/convert/enum/{value}', fn(Gender $value) => "Content: /parameter/convert/enum/{value} - {$value->label()}");
 
             Router::match(['GET', 'HEAD', 'POST'], '/match/get-head-post', fn() => 'Content: /match/get-head-post');
 

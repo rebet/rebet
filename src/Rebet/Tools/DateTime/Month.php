@@ -7,6 +7,7 @@ namespace Rebet\Tools\DateTime;
 use Rebet\Tools\Enum\Enumerable;
 use Rebet\Tools\Enum\Enumeration;
 use Rebet\Tools\Enum\Meta;
+use Rebet\Tools\Enum\Translatable;
 use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Path;
@@ -20,18 +21,20 @@ use Rebet\Tools\Utility\Path;
  * - label       : The full name (e.g. January)
  * - label_short : The short name (e.g. Jan)
  *
- * The metadata (label_short) can be read by the method call (not translated),
- * and translate() returns the translated one. (e.g. translate('label_short'))
+ * The metadata (label and label_short) are translated by the Translatable attribute,
+ * so that the method call of them (e.g. label_short() or label_short('en') with the locale) returns the translated one.
+ * Use original() (e.g. original('label_short')) if you need the English name as it is.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  *
- * @method string label_short() The short name (e.g. Jan), which is not translated.
+ * @method string label_short(string|null $locale = null) The translated short name (e.g. Jan).
  *
  * @implements Enumeration<Month, int>
  */
+#[Translatable(['label', 'label_short'], group: 'datetime')]
 enum Month: int implements Enumeration
 {
     /** @use Enumerable<Month, int> */
@@ -72,16 +75,6 @@ enum Month: int implements Enumeration
 
     #[Meta(label: 'December', label_short: 'Dec')]
     case December = 12;
-
-    /**
-     * The translation group of Month.
-     *
-     * @return string
-     */
-    protected static function translationGroup(): string
-    {
-        return 'datetime';
-    }
 }
 
 // ---------------------------------------------------------

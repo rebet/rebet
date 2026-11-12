@@ -36,7 +36,9 @@ class DriverTest extends RebetDatabaseTestCase
             [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::int(1), PdoParameter::int(1)],
             [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::int(1), 1],
             [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::str('a'), 'a'],
-            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::int(1), Gender::MALE()],
+            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::int(1), Gender::Male],
+            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::str('a'), DriverTest_PlainBacked::A],
+            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::str('Foo'), DriverTest_PlainPure::Foo],
             [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::null(), null],
             [['sqlite', 'pgsql'], PdoParameter::bool(true), true],
             [['mysql', 'mariadb'], PdoParameter::int(1), true],
@@ -93,4 +95,20 @@ class DriverTest extends RebetDatabaseTestCase
             $this->assertEquals(['gender' => 1], $query->params());
         });
     }
+}
+
+/**
+ * Plain native backed enum that does not implement Enumeration.
+ */
+enum DriverTest_PlainBacked: string
+{
+    case A = 'a';
+}
+
+/**
+ * Plain native pure enum that does not implement Enumeration.
+ */
+enum DriverTest_PlainPure
+{
+    case Foo;
 }

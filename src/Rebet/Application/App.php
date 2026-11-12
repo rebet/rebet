@@ -18,7 +18,6 @@ use Rebet\Routing\Router;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\ConfigPromise;
 use Rebet\Tools\Config\Configurable;
-use Rebet\Tools\Enum\Enum;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Template\Letterpress;
 use Rebet\Tools\Testable\System;
@@ -285,7 +284,6 @@ class App
     {
         Config::reset();
         System::reset();
-        Enum::reset();
         Event::reset();
         Cookie::reset();
         Request::reset();

@@ -11,7 +11,7 @@ use Rebet\Tools\Exception\LogicException;
  * Enum Case Metadata Attribute
  *
  * Attach any named metadata to a case of enumeration.
- * The metadata can be read via `Enumerable::field()` or the method call of the meta name.
+ * The metadata can be read via `Enumerable::original()` or the method call of the meta name.
  *
  * Example:
  * enum AcceptStatus: int implements Enumeration {
@@ -21,8 +21,8 @@ use Rebet\Tools\Exception\LogicException;
  *     case Waiting = 1;
  * }
  *
- * => AcceptStatus::Waiting->field('color') // return 'orange'
- * => AcceptStatus::Waiting->color()        // return 'orange'
+ * => AcceptStatus::Waiting->original('color') // return 'orange'
+ * => AcceptStatus::Waiting->color()           // return 'orange'
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -61,5 +61,28 @@ final class Meta
             throw new LogicException("Invalid meta name. Reserved name(" . implode(', ', $reserved) . ") can not be used as a metadata name.");
         }
         $this->data = $data;
+    }
+
+    /**
+     * Check whether the given metadata is defined.
+     * (null value is also treated as defined)
+     *
+     * @param  string $name
+     * @return bool
+     */
+    public function has(string $name): bool
+    {
+        return array_key_exists($name, $this->data);
+    }
+
+    /**
+     * Get the given metadata.
+     *
+     * @param  string $name
+     * @return mixed  null if not defined
+     */
+    public function get(string $name): mixed
+    {
+        return $this->data[$name] ?? null;
     }
 }

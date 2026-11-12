@@ -444,7 +444,7 @@ class ContextTest extends RebetTestCase
         $this->assertSame([null, 'No Label'], $c->resolve(':no_label'));
         $this->assertSame(['John Smith', '氏名'], $c->resolve(':name'));
         $this->assertSame(['123', '振込先：支店コード'], $c->resolve(':bank.branch.code'));
-        $this->assertSame([1, '男性'], $c->resolve(Gender::MALE()));
+        $this->assertSame([1, '男性'], $c->resolve(Gender::Male));
     }
 
     public function test_pluck(): void

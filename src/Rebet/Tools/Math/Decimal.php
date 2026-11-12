@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Utility\ArrayKeyable;
 use Rebet\Tools\Utility\Strings;
 
 /**
@@ -20,7 +21,7 @@ use Rebet\Tools\Utility\Strings;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Decimal
+class Decimal implements ArrayKeyable
 {
     use Configurable;
 
@@ -462,8 +463,21 @@ class Decimal
 
     /**
      * {@inheritDoc}
+     *
+     * The key is the compact decimal string (zero under the decimal point is omitted, and negative zero is zero),
+     * so the decimals that eq() equals are the same key. (e.g. 1.5 and 1.50 are '1.5', 1.0 and 1 are 1)
+     * The significant figures and the dirty state are ignored.
      */
     #[Override]
+    public function asArrayKey(): string
+    {
+        $key = $this->format(true, '.', '');
+        return $key === '-0' ? '0' : $key;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function __toString()
     {
         return $this->significant_figures === static::significantFiguresOf($this->value) ? $this->value : "{$this->value} ({$this->significant_figures} sf)";

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rebet\Validation;
 
 use Rebet\Inflection\Inflector;
-use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Enum\Enumeration;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Arrays;
@@ -374,15 +374,15 @@ class Context
     /**
      * Resolve value / :field_name string / Enum object
      *
-     * @param  mixed                     $value value or :field_name string or Enum object
+     * @param  mixed                     $value value or :field_name string or Enumeration object
      * @return array{0: mixed, 1: mixed} [$value, $label]
      */
     public function resolve($value): array
     {
         if (!is_string($value) || !Strings::startsWith($value, ':')) {
             return [
-                $value instanceof Enum ? $value->value : $value,
-                $value instanceof Enum ? $value->translate('label') : $value,
+                $value instanceof Enumeration ? $value->value() : $value,
+                $value instanceof Enumeration ? $value->label() : $value,
             ];
         }
         $field = Strings::lcut($value, 1);

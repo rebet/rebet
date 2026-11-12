@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Reflection;
 
+use Rebet\Tools\Enum\Enumeration;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Translation\Translator;
@@ -37,6 +38,7 @@ class Reflector
      * Reflector::get($user, 'shipping_address.0', $user->address);
      * Reflector::get($_REQUEST, 'opt_in', false);
      * Reflector::get(Foo::class, 'static_property');
+     * Reflector::get(Gender::Male, 'label'); // Enumeration: the field or metadata of the enumeration (translated if the field is given to the Translatable attribute)
      *
      * @todo Wiled card access like 'array.*.key' support
      *
@@ -78,6 +80,11 @@ class Reflector
             return self::resolveDotAccessDelegator($value) ;
         }
 
+        if ($object instanceof Enumeration && $object->has($current)) {
+            $value = $object->{$current}();
+            return $value === null ? $default : self::resolveDotAccessDelegator($value);
+        }
+
         $rp = static::reflectProperty($object, $current);
         if ($rp === null) {
             return $default;
@@ -115,7 +122,7 @@ class Reflector
      * @param  string                   $property
      * @return \ReflectionProperty|null
      */
-    protected static function reflectProperty($object, string $property): \ReflectionProperty|null
+    public static function reflectProperty($object, string $property): \ReflectionProperty|null
     {
         if (!((\is_string($object) && \class_exists($object)) || \is_object($object))) {
             return null;
@@ -289,16 +296,20 @@ class Reflector
         if (Arrays::accessible($object) && Arrays::exists($object, $current)) {
             $nest_obj = $object[$current];
         } else {
-            $rp = static::reflectProperty($object, $current);
-            if ($rp === null) {
-                return false;
+            if ($object instanceof Enumeration && $object->has($current)) {
+                $nest_obj = $object->{$current}();
+            } else {
+                $rp = static::reflectProperty($object, $current);
+                if ($rp === null) {
+                    return false;
+                }
+                if (!$accessible && !$rp->isPublic()) {
+                    return false;
+                }
+                $rp->setAccessible($accessible);
+                $nest_obj = static::getPropertyValue($rp, $object);
+                // $nest_obj = $object->{$current};
             }
-            if (!$accessible && !$rp->isPublic()) {
-                return false;
-            }
-            $rp->setAccessible($accessible);
-            $nest_obj = static::getPropertyValue($rp, $object);
-            // $nest_obj = $object->{$current};
         }
         while ($nest_obj instanceof DotAccessDelegator) {
             $nest_obj = $nest_obj->get();
@@ -394,6 +405,7 @@ class Reflector
      *      -> If $value is string then return $value (no convert)
      *      -> If $value is resource then return null
      *      -> If $value is scalar then return type casted value
+     *      -> If $value is Enumeration then return the label (translated if the label is given to the Translatable attribute)
      *      -> If $value has __toSring() method then invoke that
      *      -> If $value is array or ArrayAccess then return json encoded value
      *      -> If $value is object and instanceof JsonSerializable then call jsonSerialize()
@@ -464,6 +476,9 @@ class Reflector
                     }
                     if (is_scalar($value)) {
                         return (string) $value;
+                    }
+                    if ($value instanceof Enumeration) {
+                        return $value->label();
                     }
                     if (is_object($value) && method_exists($value, '__toString')) {
                         return $value->__toString();

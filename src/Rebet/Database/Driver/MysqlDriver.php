@@ -8,7 +8,6 @@ use Override;
 use Rebet\Database\PdoParameter;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
-use Rebet\Tools\Enum\Enum;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Reflection\Reflector;
 
@@ -113,10 +112,6 @@ class MysqlDriver extends AbstractDriver
     #[Override]
     public function toPdoType($value): PdoParameter
     {
-        if ($value instanceof Enum) {
-            $value = $value->value;
-        }
-
         switch (true) {
             case is_bool($value): return PdoParameter::int($value ? 1 : 0);
         }

@@ -71,7 +71,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 [':gender' => PdoParameter::int(1)],
                 "SELECT * FROM user WHERE gender = :gender",
                 ['user_id' => 'desc'],
-                ['gender' => Gender::MALE()],
+                ['gender' => Gender::Male],
             ],
             [
                 ['sqlite', 'mysql', 'mariadb'],
@@ -79,7 +79,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 [':gender' => PdoParameter::int(1), ':created_at' => PdoParameter::str('2001-02-03 04:05:06')],
                 "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
                 null,
-                ['gender' => Gender::MALE(), 'created_at' => DateTime::now()],
+                ['gender' => Gender::Male, 'created_at' => DateTime::now()],
             ],
             [
                 ['pgsql'],
@@ -87,7 +87,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 [':gender' => PdoParameter::int(1), ':created_at' => PdoParameter::str('2001-02-03 04:05:06+0000')],
                 "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
                 null,
-                ['gender' => Gender::MALE(), 'created_at' => DateTime::now()],
+                ['gender' => Gender::Male, 'created_at' => DateTime::now()],
             ],
             [
                 ['sqlite', 'mysql', 'mariadb', 'pgsql'],
@@ -127,7 +127,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 [':gender__0' => PdoParameter::int(1), ':gender__1' => PdoParameter::int(2)],
                 "SELECT * FROM user WHERE gender IN (:gender)",
                 null,
-                ['gender' => [Gender::MALE(), Gender::FEMALE()]],
+                ['gender' => [Gender::Male, Gender::Female]],
             ],
             [
                 ['sqlite', 'mysql', 'mariadb', 'pgsql'],
@@ -280,7 +280,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 $order_by = ['gender' => 'desc', 'user_id' => 'asc'],
                 null,
                 $pager = Pager::resolve()->page(3),   // {[3]} (4)
-                Cursor::create($order_by, $pager, ['gender' => Gender::FEMALE(), 'user_id' => 21], null),
+                Cursor::create($order_by, $pager, ['gender' => Gender::Female, 'user_id' => 21], null),
             ],
             [
                 ['sqlite', 'mysql', 'mariadb', 'pgsql'],
@@ -310,7 +310,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 $order_by = ['gender' => 'desc', 'update_at' => 'desc', 'user_id' => 'asc'],
                 null,
                 $pager = Pager::resolve()->page(3),   // {[3]} (4)
-                Cursor::create($order_by, $pager, ['gender' => Gender::FEMALE(), 'update_at' => DateTime::createDateTime('2000-12-18 12:34:56'), 'user_id' => 21], null),
+                Cursor::create($order_by, $pager, ['gender' => Gender::Female, 'update_at' => DateTime::createDateTime('2000-12-18 12:34:56'), 'user_id' => 21], null),
             ],
             [
                 ['pgsql'],
@@ -320,7 +320,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 $order_by = ['gender' => 'desc', 'update_at' => 'desc', 'user_id' => 'asc'],
                 null,
                 $pager = Pager::resolve()->page(3),   // {[3]} (4)
-                Cursor::create($order_by, $pager, ['gender' => Gender::FEMALE(), 'update_at' => DateTime::createDateTime('2000-12-18 12:34:56'), 'user_id' => 21], null),
+                Cursor::create($order_by, $pager, ['gender' => Gender::Female, 'update_at' => DateTime::createDateTime('2000-12-18 12:34:56'), 'user_id' => 21], null),
             ],
             [
                 ['sqlite', 'mysql', 'mariadb', 'pgsql'],
@@ -330,7 +330,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 $order_by = ['gender' => 'desc', 'user_id' => 'asc'],
                 null,
                 $pager = Pager::resolve()->page(5),   // {3} 4 [5] (6)
-                Cursor::create($order_by, $pager->prev(2), ['gender' => Gender::FEMALE(), 'user_id' => 21], null),
+                Cursor::create($order_by, $pager->prev(2), ['gender' => Gender::Female, 'user_id' => 21], null),
             ],
             [
                 ['sqlite', 'mysql', 'mariadb', 'pgsql'],
@@ -340,7 +340,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 $order_by = ['gender' => 'desc', 'user_id' => 'asc'],
                 null,
                 $pager = Pager::resolve()->page(5),   // [5] (6) {7} ?
-                Cursor::create($order_by, $pager->next(2), ['gender' => Gender::FEMALE(), 'user_id' => 21], null),
+                Cursor::create($order_by, $pager->next(2), ['gender' => Gender::Female, 'user_id' => 21], null),
             ],
             [
                 ['sqlite', 'mysql', 'mariadb', 'pgsql'],
@@ -350,7 +350,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 $order_by = ['gender' => 'desc', 'user_id' => 'asc'],
                 null,
                 $pager = Pager::resolve()->page(3),   // [3] (4) 5 6 7 8 9 {10} ? (near by first)
-                Cursor::create($order_by, $pager->next(7), ['gender' => Gender::FEMALE(), 'user_id' => 21], null),
+                Cursor::create($order_by, $pager->next(7), ['gender' => Gender::Female, 'user_id' => 21], null),
             ],
             [
                 ['sqlite', 'mysql', 'mariadb', 'pgsql'],

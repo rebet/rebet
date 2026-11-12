@@ -102,12 +102,12 @@ class EntityTest extends RebetDatabaseTestCase
         $this->assertSame([], $user->changes());
         $user->name = 'foo';
         $this->assertSame(['name' => 'foo'], $user->changes());
-        $user->gender = Gender::FEMALE();
-        $this->assertSame(['name' => 'foo', 'gender' => Gender::FEMALE()], $user->changes());
+        $user->gender = Gender::Female;
+        $this->assertSame(['name' => 'foo', 'gender' => Gender::Female], $user->changes());
         $user->birthday = new Date('1980-01-02');
-        $this->assertEquals(['name' => 'foo', 'gender' => Gender::FEMALE(), 'birthday' => new Date('1980-01-02')], $user->changes());
+        $this->assertEquals(['name' => 'foo', 'gender' => Gender::Female, 'birthday' => new Date('1980-01-02')], $user->changes());
         $user->birthday = null;
-        $this->assertSame(['name' => 'foo', 'gender' => Gender::FEMALE()], $user->changes());
+        $this->assertSame(['name' => 'foo', 'gender' => Gender::Female], $user->changes());
 
         $user->origin(clone $user);
         $this->assertSame([], $user->changes());
@@ -130,7 +130,7 @@ class EntityTest extends RebetDatabaseTestCase
         $user->name = null;
         $this->assertSame(false, $user->isDirty());
         $user->name   = 'foo';
-        $user->gender = Gender::FEMALE();
+        $user->gender = Gender::Female;
         $this->assertSame(true, $user->isDirty());
 
         $user->origin(clone $user);
@@ -216,11 +216,11 @@ class EntityTest extends RebetDatabaseTestCase
             $now = DateTime::now()->startsOfSecond();
 
             $user = User::find(1);
-            $this->assertSame(Gender::FEMALE(), $user->gender);
+            $this->assertSame(Gender::Female, $user->gender);
             $this->assertSame(null, $user->updated_at);
-            $user->gender = Gender::MALE();
+            $user->gender = Gender::Male;
             $this->assertSame(true, $user->update($now));
-            $this->assertSame(Gender::MALE(), $user->gender);
+            $this->assertSame(Gender::Male, $user->gender);
             $this->assertSame($now, $user->updated_at);
 
             $gu           = new GroupUser();
@@ -233,20 +233,20 @@ class EntityTest extends RebetDatabaseTestCase
             $this->assertDatabaseMatches($db, [
                 'group_user' => [
                     ['group_id', 'user_id', 'position', 'join_on', 'created_at', 'updated_at'],
-                    [         1,         1, GroupPosition::MEMBER(), Date::today(), $now, null        ],
+                    [         1,         1, GroupPosition::Member, Date::today(), $now, null        ],
                 ],
             ]);
 
             $gu = GroupUser::find(['user_id' => 1, 'group_id' => 1]);
-            $this->assertSame(GroupPosition::MEMBER(), $gu->position);
+            $this->assertSame(GroupPosition::Member, $gu->position);
             $this->assertSame(null, $gu->updated_at);
-            $gu->position = GroupPosition::LEADER();
+            $gu->position = GroupPosition::Leader;
             $this->assertSame(true, $gu->update($now));
             $this->assertSame($now, $gu->updated_at);
             $this->assertDatabaseMatches($db, [
                 'group_user' => [
                     ['group_id', 'user_id', 'position', 'join_on', 'created_at', 'updated_at'],
-                    [         1,         1, GroupPosition::LEADER(), Date::today(),  $now, $now        ],
+                    [         1,         1, GroupPosition::Leader, Date::today(),  $now, $now        ],
                 ],
             ]);
 
@@ -257,7 +257,7 @@ class EntityTest extends RebetDatabaseTestCase
             $this->assertDatabaseMatches($db, [
                 'group_user' => [
                     ['group_id', 'user_id', 'position', 'join_on', 'created_at', 'updated_at'],
-                    [         1,         1, GroupPosition::LEADER(), Date::today(),  $now, $new_now    ],
+                    [         1,         1, GroupPosition::Leader, Date::today(),  $now, $new_now    ],
                 ],
             ]);
         });
@@ -411,8 +411,8 @@ class EntityTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db): void {
             $this->assertFalse(User::existsBy(['user_id' => 9999]));
             $this->assertTrue(User::existsBy(['user_id' => 1]));
-            $this->assertTrue(User::existsBy(['user_id' => 1, 'gender' => Gender::FEMALE()]));
-            $this->assertFalse(User::existsBy(['user_id' => 1, 'gender' => Gender::MALE()]));
+            $this->assertTrue(User::existsBy(['user_id' => 1, 'gender' => Gender::Female]));
+            $this->assertFalse(User::existsBy(['user_id' => 1, 'gender' => Gender::Male]));
             $this->assertTrue(User::existsBy(['user_id_lt' => 9999]));
         });
     }
@@ -422,10 +422,10 @@ class EntityTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db): void {
             $this->assertEquals(0, User::count(['user_id' => 9999]));
             $this->assertEquals(1, User::count(['user_id' => 1]));
-            $this->assertEquals(1, User::count(['user_id' => 1, 'gender' => Gender::FEMALE()]));
-            $this->assertEquals(0, User::count(['user_id' => 1, 'gender' => Gender::MALE()]));
+            $this->assertEquals(1, User::count(['user_id' => 1, 'gender' => Gender::Female]));
+            $this->assertEquals(0, User::count(['user_id' => 1, 'gender' => Gender::Male]));
             $this->assertEquals(2, User::count(['user_id_lt' => 3]));
-            $this->assertEquals(2, User::count(['gender' => Gender::MALE()]));
+            $this->assertEquals(2, User::count(['gender' => Gender::Male]));
             $this->assertEquals(3, User::count());
         });
     }

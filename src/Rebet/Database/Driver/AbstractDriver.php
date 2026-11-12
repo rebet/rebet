@@ -12,7 +12,7 @@ use Rebet\Database\PdoParameter;
 use Rebet\Database\Query;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\Date;
-use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Enum\Enumeration;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Utility\Arrays;
 
@@ -384,8 +384,12 @@ abstract class AbstractDriver implements Driver
     #[Override]
     public function toPdoType($value): PdoParameter
     {
-        if ($value instanceof Enum) {
+        if ($value instanceof Enumeration) {
+            $value = $value->value();
+        } elseif ($value instanceof \BackedEnum) {
             $value = $value->value;
+        } elseif ($value instanceof \UnitEnum) {
+            $value = $value->name;
         }
 
         switch (true) {

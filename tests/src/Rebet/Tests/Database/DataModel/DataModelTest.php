@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace Rebet\Tests\Database\DataModel;
 
 use Override;
+use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\Database;
+use Rebet\Database\DataModel\DataModel;
 use Rebet\Database\Pagination\Pager;
+use Rebet\Database\Query;
 use Rebet\Database\ResultSet;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Utility\ArrayKeyable;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Exception\ArrayKeyUnavailableException;
 use TestApp\Enum\Gender;
 use TestApp\Model\Article;
 use TestApp\Model\Bank;
@@ -61,13 +67,52 @@ class DataModelTest extends RebetDatabaseTestCase
     public function test_primaryHash(): void
     {
         $this->assertNotEquals(User::find(1)->primaryHash(), User::find(2)->primaryHash());
-        $this->assertNotEquals(Fortune::find(['gender' => Gender::MALE(), 'birthday' => '2003-02-16'])->primaryHash(), Fortune::find(['gender' => Gender::FEMALE(), 'birthday' => '1990-01-08'])->primaryHash());
+        $this->assertNotEquals(Fortune::find(['gender' => Gender::Male, 'birthday' => '2003-02-16'])->primaryHash(), Fortune::find(['gender' => Gender::Female, 'birthday' => '1990-01-08'])->primaryHash());
+    }
+
+    public function test_asArrayKey(): void
+    {
+        $this->assertInstanceOf(ArrayKeyable::class, User::find(1));
+        $this->assertSame(User::find(1)->primaryHash(), User::find(1)->asArrayKey());
+        $this->assertSame(Arrays::asKey(User::find(1)), Arrays::asKey(User::find(1)));
+        $this->assertNotSame(Arrays::asKey(User::find(1)), Arrays::asKey(User::find(2)));
+
+        // The data model that can not be identified is rejected
+        $this->assertNull(Arrays::tryAsKey(new User()));
+        $this->expectException(ArrayKeyUnavailableException::class);
+        $this->expectExceptionMessage("Can not use " . User::class . " as an array key. It has no primary key or the primary value is not set.");
+        (new User())->asArrayKey();
+    }
+
+    public function test_asArrayKey_typeDifference(): void
+    {
+        // The difference of PHP type of the primary value is absorbed (int, numeric string and so on are the same key)
+        $a          = new User();
+        $a->user_id = 1;
+        $b          = new User();
+        $b->user_id = '1';
+        $c          = new User();
+        $c->user_id = 2;
+        $this->assertSame($a->asArrayKey(), $b->asArrayKey());
+        $this->assertSame(Arrays::asKey($a), Arrays::asKey($b));
+        $this->assertNotSame($a->asArrayKey(), $c->asArrayKey());
+        $this->assertSame($a->primaryHash(), $b->primaryHash());
+    }
+
+    public function test_asArrayKey_uninitialized(): void
+    {
+        $model = new DataModelTest_TypedPrimaryKey();
+        $this->assertNull(Arrays::tryAsKey($model));
+
+        $this->expectException(ArrayKeyUnavailableException::class);
+        $this->expectExceptionMessage("Can not use " . DataModelTest_TypedPrimaryKey::class . " as an array key. The primary value is not initialized.");
+        $model->asArrayKey();
     }
 
     public function test_primaryValues(): void
     {
         $this->assertEquals(['user_id' => 1], User::find(1)->primaryValues());
-        $this->assertEquals(['gender' => Gender::MALE(), 'birthday' => Date::valueOf('2003-02-16')], Fortune::find(['gender' => Gender::MALE(), 'birthday' => '2003-02-16'])->primaryValues());
+        $this->assertEquals(['gender' => Gender::Male, 'birthday' => Date::valueOf('2003-02-16')], Fortune::find(['gender' => Gender::Male, 'birthday' => '2003-02-16'])->primaryValues());
     }
 
     public function test_foreignHash(): void
@@ -81,7 +126,7 @@ class DataModelTest extends RebetDatabaseTestCase
         $this->assertEquals(['user_id' => 1], Article::find(1)->foreignValues(User::class));
         $this->assertEquals(['user_id' => 1], Article::find(2)->foreignValues(User::class));
         $this->assertEquals(['user_id' => 2], Article::find(3)->foreignValues(User::class));
-        $this->assertEquals(['gender' => Gender::MALE(), 'birthday' => Date::valueOf('2003-02-16')], User::find(2)->foreignValues(Fortune::class));
+        $this->assertEquals(['gender' => Gender::Male, 'birthday' => Date::valueOf('2003-02-16')], User::find(2)->foreignValues(Fortune::class));
     }
 
     public function test_pluck(): void
@@ -158,7 +203,7 @@ class DataModelTest extends RebetDatabaseTestCase
         $user = User::find(1);
         $this->assertEquals(1, $user->user_id);
         $this->assertEquals('Elody Bode III', $user->name);
-        $this->assertEquals(Gender::FEMALE(), $user->gender);
+        $this->assertEquals(Gender::Female, $user->gender);
         $this->assertEquals(Date::valueOf('1990-01-08'), $user->birthday);
         $this->assertEquals('elody@s1.rebet.local', $user->email);
         $this->assertEquals('user', $user->role);
@@ -170,7 +215,7 @@ class DataModelTest extends RebetDatabaseTestCase
             $user = User::find(1);
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('Elody Bode III', $user->name);
-            $this->assertEquals(Gender::FEMALE(), $user->gender);
+            $this->assertEquals(Gender::Female, $user->gender);
             $this->assertEquals(Date::valueOf('1990-01-08'), $user->birthday);
             $this->assertEquals('elody@s1.rebet.local', $user->email);
             $this->assertEquals('user', $user->role);
@@ -200,7 +245,7 @@ class DataModelTest extends RebetDatabaseTestCase
             $user = User::findBy(['user_id' => 1]);
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('Elody Bode III', $user->name);
-            $this->assertEquals(Gender::FEMALE(), $user->gender);
+            $this->assertEquals(Gender::Female, $user->gender);
             $this->assertEquals(Date::valueOf('1990-01-08'), $user->birthday);
             $this->assertEquals('elody@s1.rebet.local', $user->email);
             $this->assertEquals('user', $user->role);
@@ -217,7 +262,7 @@ class DataModelTest extends RebetDatabaseTestCase
                 return;
             }
 
-            $user = User::findBy(['gender' => Gender::MALE(), 'name_contains' => 'Alta'], true);
+            $user = User::findBy(['gender' => Gender::Male, 'name_contains' => 'Alta'], true);
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
             $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?gender? = '1' AND ?name? LIKE '%Alta%' ESCAPE '|' LIMIT 1 FOR UPDATE");
@@ -228,9 +273,9 @@ class DataModelTest extends RebetDatabaseTestCase
     {
         self::eachDb(function (Database $db, string $driver): void {
             $this->assertEquals([3, 2, 1], User::select()->pluk('user_id'));
-            $this->assertEquals([3, 2], User::select(['gender' => Gender::MALE()])->pluk('user_id'));
-            $this->assertEquals([2, 3], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'])->pluk('user_id'));
-            $this->assertEquals([2], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'], 1)->pluk('user_id'));
+            $this->assertEquals([3, 2], User::select(['gender' => Gender::Male])->pluk('user_id'));
+            $this->assertEquals([2, 3], User::select(['gender' => Gender::Male], ['user_id' => 'asc'])->pluk('user_id'));
+            $this->assertEquals([2], User::select(['gender' => Gender::Male], ['user_id' => 'asc'], 1)->pluk('user_id'));
 
             // SQLite not support 'FOR UPDATE'.
             if ($driver === 'sqlite') {
@@ -238,7 +283,7 @@ class DataModelTest extends RebetDatabaseTestCase
             }
 
             $this->clearExecutedQueries();
-            $this->assertEquals([2], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'], 1, true)->pluk('user_id'));
+            $this->assertEquals([2], User::select(['gender' => Gender::Male], ['user_id' => 'asc'], 1, true)->pluk('user_id'));
             $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?gender? = '1' ORDER BY ?user_id? ASC LIMIT 1 FOR UPDATE");
         });
     }
@@ -717,5 +762,19 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?user_id? IN ('1', '2') ORDER BY ?article_id? DESC");
             $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? IN ('1', '2')");
         });
+    }
+}
+
+/**
+ * DataModel that has a typed primary key without initial value.
+ */
+class DataModelTest_TypedPrimaryKey extends DataModel
+{
+    #[PrimaryKey]
+    public int $id;
+
+    protected static function buildSelectAllSql(Database $db): Query
+    {
+        throw new \LogicException('not used');
     }
 }

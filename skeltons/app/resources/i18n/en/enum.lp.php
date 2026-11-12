@@ -7,8 +7,8 @@ use App\Enum\Gender;
 return [
     Gender::class => [
         'label' => [
-            Gender::MALE()->value   => 'Male',
-            Gender::FEMALE()->value => 'Female',
+            Gender::Male->value   => 'Male',
+            Gender::Female->value => 'Female',
         ],
     ],
 ];

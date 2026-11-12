@@ -7,6 +7,7 @@ namespace Rebet\Tools\Utility;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Utility\Exception\ArrayKeyUnavailableException;
 
 /**
  * Array Utility Class
@@ -1187,17 +1188,18 @@ class Arrays
      * @param  ArrayKeyable|\UnitEnum|int|string|bool $value
      * @return int|string
      * @throws \TypeError                             when the value can not be used as an array key (e.g. float, null, array, object, resource)
+     * @throws ArrayKeyUnavailableException           when the ArrayKeyable can not be identified as an array key in its current state
      */
     public static function asKey(ArrayKeyable|bool|int|string|\UnitEnum $value): int|string
     {
         // NOTE: The unsupported type is rejected by the type declaration (TypeError), the LogicException is just for the safety.
-        return static::tryAsKey($value) ?? throw new LogicException("Can not use " . get_debug_type($value) . " as an array key.");
+        return self::resolveKey($value) ?? throw new LogicException("Can not use " . get_debug_type($value) . " as an array key.");
     }
 
     /**
      * Convert the value to the canonical form of the PHP array key, or return null if it can not be converted.
      *
-     * This method does not throw the exception, so you can check the result with `=== null`.
+     * This method does not throw the exception (including ArrayKeyUnavailableException of the ArrayKeyable), so you can check the result with `=== null`.
      * It is useful for the query that the type of the value is not guaranteed (e.g. the input from outside).
      * null is returned for the unsupported value, such as float, null, array, object and resource.
      *
@@ -1207,6 +1209,22 @@ class Arrays
      * @return int|string|null
      */
     public static function tryAsKey(mixed $value): int|string|null
+    {
+        try {
+            return self::resolveKey($value);
+        } catch (ArrayKeyUnavailableException) {
+            return null;
+        }
+    }
+
+    /**
+     * Convert the value to the canonical form of the PHP array key, or return null if the type is not supported.
+     *
+     * @param  mixed                        $value
+     * @return int|string|null
+     * @throws ArrayKeyUnavailableException when the ArrayKeyable can not be identified as an array key
+     */
+    private static function resolveKey(mixed $value): int|string|null
     {
         $key = match (true) {
             $value instanceof ArrayKeyable => $value->asArrayKey(),

@@ -7,6 +7,7 @@ namespace Rebet\Tools\Tinker;
 use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Enum\Enumeration;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Reflection\Reflector;
@@ -490,6 +491,12 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Method and Filter accessor.
      *
+     * The priority of the name resolution is as follows.
+     *   1. The method of the origin object (the original method takes precedence over the filters).
+     *   2. The metadata (field) of the origin if it is an Enumeration and Enumeration::has() is true. (e.g. `$status->color()`)
+     *        Note: The metadata takes precedence over the filter of the same name (e.g. the Meta named `escape` hides the escape filter).
+     *   3. The filter.
+     *
      * If the original method name conflicts with the filter name, the original method takes precedence.
      * At that time, if you want to call the filter with priority, you can execute the filter with the following code.
      *
@@ -519,6 +526,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
             ) {
                 $result = $origin;
             }
+        } elseif ($origin instanceof Enumeration && $origin->has($name)) {
+            $result = static::peel($origin->$name(...array_map(fn($value) => static::peel($value), $args)));
         } else {
             $result = $this->_($name, ...$args);
             $result = static::peel($result);

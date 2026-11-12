@@ -44,7 +44,7 @@ class ResponderTest extends RebetTestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertSame('{"key":"value"}', $response->getContent());
 
-        $response = Responder::toResponse(Gender::MALE());
+        $response = Responder::toResponse(Gender::Male);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertSame('1', $response->getContent());
 

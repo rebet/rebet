@@ -38,16 +38,6 @@ enum EofLineFeed: int implements Enumeration
     case One = 3;
 
     /**
-     * The label of this enum is not display text, so it does not need to be translated.
-     *
-     * @return bool
-     */
-    protected static function translatable(): bool
-    {
-        return false;
-    }
-
-    /**
      * Process EOF line feeds.
      *
      * @param  string|null $contents

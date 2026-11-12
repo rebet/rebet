@@ -8,6 +8,8 @@ use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Math\Decimal;
+use Rebet\Tools\Utility\ArrayKeyable;
+use Rebet\Tools\Utility\Arrays;
 
 class DecimalTest extends RebetTestCase
 {
@@ -378,6 +380,19 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(-1, Decimal::of('1')->comp('1.00000000000000001'));
         $this->assertSame(1, Decimal::of('0.00001')->comp('0'));
         $this->assertSame(0, Decimal::of('0.00001')->comp('0', 3));
+    }
+
+    public function test_asArrayKey(): void
+    {
+        $this->assertInstanceOf(ArrayKeyable::class, Decimal::of(1));
+        $this->assertSame('1.5', Decimal::of('1.50')->asArrayKey());
+        $this->assertSame('1.5', Arrays::asKey(Decimal::of('1.5')));
+        $this->assertSame(1, Arrays::asKey(Decimal::of('1.00')));
+        $this->assertSame(1, Arrays::asKey(Decimal::of(1)));
+        $this->assertSame(0, Arrays::asKey(Decimal::of('-0.00')));
+        $this->assertSame('-12.345', Arrays::asKey(Decimal::of('-12.3450')));
+        $this->assertSame(1234, Arrays::asKey(Decimal::of('1,234')));
+        $this->assertNotSame(Arrays::asKey(Decimal::of('1.5')), Arrays::asKey(Decimal::of('1.6')));
     }
 
     public function test_eq(): void

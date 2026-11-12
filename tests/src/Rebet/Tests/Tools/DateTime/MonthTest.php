@@ -32,9 +32,8 @@ class MonthTest extends RebetTestCase
     {
         $this->assertSame($value, $month->value);
         $this->assertSame($value, $month->value());
-        $this->assertSame($label, $month->field('label'));
-        $this->assertSame($label_short, $month->field('label_short'));
-        $this->assertSame($label_short, $month->label_short());
+        $this->assertSame($label, $month->original('label'));
+        $this->assertSame($label_short, $month->original('label_short'));
     }
 
     public static function dataDefinitions()
@@ -61,6 +60,17 @@ class MonthTest extends RebetTestCase
         Translator::setLocale($locale);
         $this->assertSame($label, $month->translate('label'));
         $this->assertSame($label_short, $month->translate('label_short'));
+        $this->assertSame($label, $month->label());
+        $this->assertSame($label_short, $month->label_short());
+    }
+
+    public function test_translation_withLocale(): void
+    {
+        // The locale can be specified for the method call, and it does not depend on the current locale
+        Translator::setLocale('en');
+        $this->assertSame('1月', Month::January->label_short('ja'));
+        $this->assertSame('Jan', Month::January->label_short());
+        $this->assertSame('01月', Month::January->label('ja'));
     }
 
     public static function dataTranslations()

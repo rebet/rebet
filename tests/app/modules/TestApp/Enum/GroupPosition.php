@@ -4,11 +4,24 @@ declare(strict_types=1);
 
 namespace TestApp\Enum;
 
-use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Enum\Enumerable;
+use Rebet\Tools\Enum\Enumeration;
+use Rebet\Tools\Enum\Meta;
 
-class GroupPosition extends Enum
+/**
+ * @implements Enumeration<GroupPosition, int>
+ */
+enum GroupPosition: int implements Enumeration
 {
-    public const MANAGER = [1, 'Manager'];
-    public const LEADER  = [2, 'Leader'];
-    public const MEMBER  = [3, 'Member'];
+    /** @use Enumerable<GroupPosition, int> */
+    use Enumerable;
+
+    #[Meta(label: "Manager")]
+    case Manager = 1;
+
+    #[Meta(label: "Leader")]
+    case Leader = 2;
+
+    #[Meta(label: "Member")]
+    case Member = 3;
 }

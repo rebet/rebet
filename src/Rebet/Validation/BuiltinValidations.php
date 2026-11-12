@@ -571,7 +571,7 @@ class BuiltinValidations implements Validations
      */
     public function validationRegex(Context $c, string $pattern, string $selector = null): bool
     {
-        return $this->handleRegex($c, Kind::INDEPENDENTLY(), $pattern, 'Regex', ['pattern' => $pattern], $selector);
+        return $this->handleRegex($c, Kind::Independently, $pattern, 'Regex', ['pattern' => $pattern], $selector);
     }
 
     /**
@@ -594,14 +594,14 @@ class BuiltinValidations implements Validations
         $valid         = true;
         $error_indices = $c->extra('error_indices') ?? [];
         foreach (Arrays::toArray($c->value) as $i => $value) {
-            if (!$c->isQuiet() && !$kind->equals(Kind::INDEPENDENTLY()) && ($error_indices[$i] ?? false)) {
+            if (!$c->isQuiet() && $kind !== Kind::Independently && ($error_indices[$i] ?? false)) {
                 continue;
             }
             if (!$test($value, $replacement)) {
                 $replacement['nth']   = $c->ordinalize($i + 1);
                 $replacement['value'] = $value;
                 $valid                = $c->appendError($messsage_key . (is_array($c->value) ? '@List' : ''), $replacement, $selector ? $selector($value) : null);
-                if ($kind->equals(Kind::TYPE_CONSISTENCY_CHECK())) {
+                if ($kind === Kind::TypeConsistencyCheck) {
                     $error_indices[$i] = true;
                 }
             }
@@ -644,7 +644,7 @@ class BuiltinValidations implements Validations
      */
     public function validationNotRegex(Context $c, string $pattern, string $selector = null): bool
     {
-        return $this->handleNotRegex($c, Kind::INDEPENDENTLY(), $pattern, 'NotRegex', ['pattern' => $pattern], $selector);
+        return $this->handleNotRegex($c, Kind::Independently, $pattern, 'NotRegex', ['pattern' => $pattern], $selector);
     }
 
     /**
@@ -682,7 +682,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::INDEPENDENTLY(),
+            Kind::Independently,
             fn($value) => mb_strlen($value) <= $max,
             'MaxLength',
             ['max' => $max],
@@ -700,7 +700,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::INDEPENDENTLY(),
+            Kind::Independently,
             fn($value) => mb_strlen($value) >= $min,
             'MinLength',
             ['min' => $min],
@@ -718,7 +718,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::INDEPENDENTLY(),
+            Kind::Independently,
             fn($value) => mb_strlen($value) === $length,
             'Length',
             ['length' => $length],
@@ -733,7 +733,7 @@ class BuiltinValidations implements Validations
      */
     public function validationNumber(Context $c): bool
     {
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^[+-]?[0-9]*[\.]?[0-9]+$/u", 'Number');
+        return $this->handleRegex($c, Kind::TypeConsistencyCheck, "/^[+-]?[0-9]*[\.]?[0-9]+$/u", 'Number');
     }
 
     /**
@@ -744,7 +744,7 @@ class BuiltinValidations implements Validations
      */
     public function validationInteger(Context $c): bool
     {
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^[+-]?[0-9]+$/u", 'Integer');
+        return $this->handleRegex($c, Kind::TypeConsistencyCheck, "/^[+-]?[0-9]+$/u", 'Integer');
     }
 
     /**
@@ -756,7 +756,7 @@ class BuiltinValidations implements Validations
      */
     public function validationFloat(Context $c, int $decimal): bool
     {
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^[+-]?[0-9]+([\.][0-9]{0,{$decimal}})?$/u", 'Float', ['decimal' => $decimal]);
+        return $this->handleRegex($c, Kind::TypeConsistencyCheck, "/^[+-]?[0-9]+([\.][0-9]{0,{$decimal}})?$/u", 'Float', ['decimal' => $decimal]);
     }
 
     /**
@@ -780,7 +780,7 @@ class BuiltinValidations implements Validations
         $valid  = $this->validationNumber($c);
         $listed = $this->handleListableValue(
             $c,
-            Kind::TYPE_DEPENDENT_CHECK(),
+            Kind::TypeDependentCheck,
             fn($value) => $test(Decimal::of($value), Decimal::of($number), $precision),
             $messsage_key,
             $replacement,
@@ -866,13 +866,13 @@ class BuiltinValidations implements Validations
         if ($strict) {
             return $this->handleListableValue(
                 $c,
-                Kind::TYPE_CONSISTENCY_CHECK(),
+                Kind::TypeConsistencyCheck,
                 fn($value) => filter_var($value, FILTER_VALIDATE_EMAIL),
                 'Email',
             );
         }
 
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}/", 'Email');
+        return $this->handleRegex($c, Kind::TypeConsistencyCheck, "/[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}/", 'Email');
     }
 
     /**
@@ -908,12 +908,12 @@ class BuiltinValidations implements Validations
             (:[0-9]+)?                              # a port (optional)
             (/?|/\S+|\?\S*|\#\S*)                   # a /, nothing, a / with something, a query or a fragment
         $~ixu';
-        $valid = $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), $pattern, 'Url');
+        $valid = $this->handleRegex($c, Kind::TypeConsistencyCheck, $pattern, 'Url');
         if ($dns_check) {
             $host_state = [];
             $listed     = $this->handleListableValue(
                 $c,
-                Kind::TYPE_DEPENDENT_CHECK(),
+                Kind::TypeDependentCheck,
                 function ($value) use (&$host_state) {
                     $host = parse_url($value, PHP_URL_HOST);
                     if (isset($host_state[$host])) {
@@ -951,7 +951,7 @@ class BuiltinValidations implements Validations
             }
             $c->value = $splited;
         }
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([1-9]|[1-2][0-9]|3[0-2]))?$/u", 'Ipv4');
+        return $this->handleRegex($c, Kind::TypeConsistencyCheck, "/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([1-9]|[1-2][0-9]|3[0-2]))?$/u", 'Ipv4');
     }
 
     /**
@@ -962,7 +962,7 @@ class BuiltinValidations implements Validations
      */
     public function validationDigit(Context $c): bool
     {
-        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[0-9]+$/u", 'Digit');
+        return $this->handleRegex($c, Kind::Independently, "/^[0-9]+$/u", 'Digit');
     }
 
     /**
@@ -973,7 +973,7 @@ class BuiltinValidations implements Validations
      */
     public function validationAlpha(Context $c): bool
     {
-        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[a-zA-Z]+$/u", 'Alpha');
+        return $this->handleRegex($c, Kind::Independently, "/^[a-zA-Z]+$/u", 'Alpha');
     }
 
     /**
@@ -984,7 +984,7 @@ class BuiltinValidations implements Validations
      */
     public function validationAlphaDigit(Context $c): bool
     {
-        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[a-zA-Z0-9]+$/u", 'AlphaDigit');
+        return $this->handleRegex($c, Kind::Independently, "/^[a-zA-Z0-9]+$/u", 'AlphaDigit');
     }
 
     /**
@@ -996,7 +996,7 @@ class BuiltinValidations implements Validations
      */
     public function validationAlphaDigitMark(Context $c, string $mark = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ '): bool
     {
-        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[a-zA-Z0-9" . preg_quote($mark, '/') . "]+$/u", 'AlphaDigitMark', ['mark' => $mark]);
+        return $this->handleRegex($c, Kind::Independently, "/^[a-zA-Z0-9" . preg_quote($mark, '/') . "]+$/u", 'AlphaDigitMark', ['mark' => $mark]);
     }
 
     /**
@@ -1008,7 +1008,7 @@ class BuiltinValidations implements Validations
      */
     public function validationHiragana(Context $c, string $extra = ''): bool
     {
-        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[\p{Hiragana}ー" . preg_quote($extra, '/') . "]+$/u", 'Hiragana', ['extra' => $extra]);
+        return $this->handleRegex($c, Kind::Independently, "/^[\p{Hiragana}ー" . preg_quote($extra, '/') . "]+$/u", 'Hiragana', ['extra' => $extra]);
     }
 
     /**
@@ -1020,7 +1020,7 @@ class BuiltinValidations implements Validations
      */
     public function validationKana(Context $c, string $extra = ''): bool
     {
-        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[ァ-ヾ" . preg_quote($extra, '/') . "]+$/u", 'Kana', ['extra' => $extra]);
+        return $this->handleRegex($c, Kind::Independently, "/^[ァ-ヾ" . preg_quote($extra, '/') . "]+$/u", 'Kana', ['extra' => $extra]);
     }
 
     /**
@@ -1036,7 +1036,7 @@ class BuiltinValidations implements Validations
         $dependences = [];
         return $this->handleListableValue(
             $c,
-            Kind::INDEPENDENTLY(),
+            Kind::Independently,
             function ($value) use ($encode, &$dependences) {
                 $org         = $value;
                 $conv        = mb_convert_encoding(mb_convert_encoding($value, $encode, 'UTF-8'), 'UTF-8', $encode);
@@ -1080,7 +1080,7 @@ class BuiltinValidations implements Validations
         $hit_ng_word = null;
         return $this->handleListableValue(
             $c,
-            Kind::INDEPENDENTLY(),
+            Kind::Independently,
             function ($text) use ($ng_words, $word_split_pattern, $delimiter_pattern, $omission_pattern, $omission_length, $omission_ratio, $ambiguous_patterns, &$hit_ng_word) {
                 $text   = (string) $text;
                 $length = mb_strlen($text);
@@ -1159,7 +1159,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::TYPE_CONSISTENCY_CHECK(),
+            Kind::TypeConsistencyCheck,
             fn($value) => in_array($value, $list),
             'Contains',
             ['list' => $list],
@@ -1231,7 +1231,7 @@ class BuiltinValidations implements Validations
      */
     public function validationDatetime(Context $c, $format = []): bool
     {
-        return $this->handleListableValue($c, Kind::TYPE_CONSISTENCY_CHECK(), fn($value) => !is_null(DateTime::createDateTime($value, $format)), 'Datetime');
+        return $this->handleListableValue($c, Kind::TypeConsistencyCheck, fn($value) => !is_null(DateTime::createDateTime($value, $format)), 'Datetime');
     }
 
     /**
@@ -1282,7 +1282,7 @@ class BuiltinValidations implements Validations
         $valid  = $this->validationDatetime($c, $format);
         $listed = $this->handleListableValue(
             $c,
-            Kind::TYPE_DEPENDENT_CHECK(),
+            Kind::TypeDependentCheck,
             fn($value) => $test(DateTime::createDateTime($value, $format), $at_time),
             $messsage_key,
             $replacement,
@@ -1465,7 +1465,7 @@ class BuiltinValidations implements Validations
         $max  = $unit->convert($max);
         return $this->handleListableValue(
             $c,
-            Kind::INDEPENDENTLY(),
+            Kind::Independently,
             function (UploadedFile $value, array &$replacement) use ($max, $unit, $precision) {
                 $size                     = $value->getSize();
                 $replacement['file_name'] = $value->getClientOriginalName();
@@ -1490,7 +1490,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::INDEPENDENTLY(),
+            Kind::Independently,
             function (UploadedFile $value, array &$replacement) use ($pattern) {
                 $replacement['file_name'] = ($file_name = $value->getClientOriginalName());
                 return preg_match($pattern, $file_name);
@@ -1511,7 +1511,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::INDEPENDENTLY(),
+            Kind::Independently,
             function (UploadedFile $value, array &$replacement) use ($pattern) {
                 $replacement['file_name'] = $value->getClientOriginalName();
                 $replacement['suffix']    = ($suffix = $value->getClientOriginalExtension());
@@ -1537,7 +1537,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::INDEPENDENTLY(),
+            Kind::Independently,
             function (UploadedFile $value, array &$replacement) use ($pattern) {
                 $replacement['file_name'] = $value->getClientOriginalName();
                 $replacement['mime_type'] = ($mime_type = $value->getMimeType());
@@ -1623,7 +1623,7 @@ class BuiltinValidations implements Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::INDEPENDENTLY(),
+            Kind::Independently,
             function (UploadedFile $value, array &$replacement) use ($test) {
                 $replacement['file_name'] = $value->getClientOriginalName();
                 if (!$value->hasArea()) {

@@ -26,21 +26,22 @@ use Rebet\Tools\Utility\ArrayKeyable;
  */
 interface Enumeration extends \JsonSerializable, Convertible, ArrayKeyable
 {
-    // /**
-    //  * Reset the cache of given class or all enums.
-    //  *
-    //  * @template E of Enumeration
-    //  * @param  class-string<E>|null $class
-    //  * @return void
-    //  */
-    // public static function reset(string|null $class = null): void;
+    /**
+     * Reset the caches (the translation setting, the metadata and the field index) of this enumeration class.
+     *
+     * Note: The caches are managed for each using class, so only the class that is called (and the classes that inherit it) is reset.
+     *       Call it like `Gender::reset()` for each class that you need to reset.
+     *
+     * @return void
+     */
+    public static function reset(): void;
 
     /**
      * Get translated value of given field/meta as a string.
      *
-     * Try to get the translated value from the translator, and return the field value (converted to string by Strings::stringify())
-     * when the translation is not found.
-     * The 'name' and 'value' (Meta::RESERVED_NAMES) are identifiers (not display text), so they are never translated.
+     * The field that is given to the Translatable attribute is translated by the translator of the group of the attribute,
+     * and the field value (converted to string by Strings::stringify()) is returned when the translation is not found.
+     * The field that is not given to the attribute (and the class without the attribute) is not translated at all.
      *
      * @param  string         $field
      * @param  string|null    $locale (default: depend on configure)
@@ -50,9 +51,9 @@ interface Enumeration extends \JsonSerializable, Convertible, ArrayKeyable
     public function translate(string $field, string|null $locale = null): string;
 
     /**
-     * Get the translated label.
+     * Get the label.
      *
-     * This is the same as translate('label', $locale).
+     * This is the same as translate('label', $locale), so that the label is translated only when 'label' is given to the Translatable attribute.
      *
      * @param  string|null $locale (default: depend on configure)
      * @return string
@@ -78,19 +79,29 @@ interface Enumeration extends \JsonSerializable, Convertible, ArrayKeyable
     public function value(): int|string;
 
     /**
-     * Get the field value or the metadata of this case.
+     * Get the original field value or the metadata of this case. (the value before the translation)
      *
-     * If the property of the name exists then the value of it is returned.
-     * Otherwise the metadata of the name defined by the Meta attribute is returned.
+     * If the metadata of the name is defined by the Meta attribute then the value of it is returned.
+     * Otherwise the property of the name is returned if it exists.
      * The case name is returned if the name is 'value' or 'label' and they are not defined.
      *
-     * The value is not translated and the type is kept. Use translate() or label() if you need the translated value.
+     * The value is never translated and the type is kept, even if the field is given to the Translatable attribute.
+     * Use translate() or label() if you need the translated value.
+     * (e.g. the original value is the fallback of the translation, and it is useful for the output that does not depend on the locale)
      *
      * @param  string         $field
      * @return mixed
      * @throws LogicException when the given field is not defined
      */
-    public function field(string $field): mixed;
+    public function original(string $field): mixed;
+
+    /**
+     * Check whether the given field or metadata is defined in this case. (that is, original() does not throw an exception)
+     *
+     * @param  string $field
+     * @return bool
+     */
+    public function has(string $field): bool;
 
     /**
      * Check this enum equals given value.
@@ -122,30 +133,33 @@ interface Enumeration extends \JsonSerializable, Convertible, ArrayKeyable
     /**
      * Get map of [$enum->field/meta ⇒ $enum].
      * If there is an enum with the same filed/meta value, it wins after Enumeration::lists().
+     * If the field is given to the Translatable attribute then the translated value is used as the key, otherwise the field value as it is is used.
      *
      * @param  string                         $field   (default: 'value')
      * @param  (callable(T $enum): bool)|null $matcher the condition of enum to be included in the map (default: null)
+     * @param  string|null                    $locale  (default: depend on configure)
      * @return array<int|string, T>
      * @throws LogicException
      */
-    public static function maps(string $field = 'value', callable|null $matcher = null): array;
+    public static function maps(string $field = 'value', callable|null $matcher = null, string|null $locale = null): array;
 
     /**
      * Get an enum with the value of the given field/meta.
      * If there is an enum with the same filed/meta value, it wins after Enumeration::lists().
+     * If the field is given to the Translatable attribute then the translated value is compared (the locale can be specified),
+     * otherwise the field value as it is is compared.
      *
      * @param  string         $field
      * @param  mixed          $value
-     * @param  bool           $translate (default: false)
-     * @param  string|null    $locale    (default: depend on configure)
+     * @param  string|null    $locale (default: depend on configure)
      * @return T|null
      * @throws LogicException
      */
-    public static function fieldOf(string $field, $value, bool $translate = false, string|null $locale = null): self|null;
+    public static function fieldOf(string $field, $value, string|null $locale = null): self|null;
 
     /**
      * Get an enum with the target label.
-     * The label is compared with the translated label. (Use fieldOf('label', $label) to compare with the untranslated label)
+     * The label is compared with the label that is translated if 'label' is given to the Translatable attribute.
      * If there is an enum with the same filed value, it wins after enum::lists().
      *
      * @param  string      $label
@@ -165,16 +179,17 @@ interface Enumeration extends \JsonSerializable, Convertible, ArrayKeyable
 
     /**
      * Get a list of given field/meta as an array.
-     * The field/meta is resolved by field() so that the property and the metadata defined by the Meta attribute are available.
+     * The field/meta is resolved by original() so that the property and the metadata defined by the Meta attribute are available.
+     *
+     * The field that is given to the Translatable attribute is translated (the locale can be specified), otherwise the field value as it is is returned.
      *
      * @param  string                         $field
-     * @param  (callable(T $enum): bool)|null $matcher   (default: null)
-     * @param  bool                           $translate (default: false)
-     * @param  string|null                    $locale    (default: depend on configure)
+     * @param  (callable(T $enum): bool)|null $matcher (default: null)
+     * @param  string|null                    $locale  (default: depend on configure)
      * @return array<int, mixed>
      * @throws LogicException                 when the given field is not defined
      */
-    public static function listOf(string $field, callable|null $matcher = null, bool $translate = false, string|null $locale = null): array;
+    public static function listOf(string $field, callable|null $matcher = null, string|null $locale = null): array;
 
     /**
      *  Get a list of value as an array.
@@ -185,7 +200,7 @@ interface Enumeration extends \JsonSerializable, Convertible, ArrayKeyable
     public static function values(callable|null $matcher = null): array;
 
     /**
-     *  Get a list of translated label as an array.
+     *  Get a list of label as an array. (translated if 'label' is given to the Translatable attribute)
      *
      * @param  (callable(T $enum): bool)|null $matcher (default: null)
      * @param  string|null                    $locale  (default: depend on configure)
@@ -215,17 +230,18 @@ interface Enumeration extends \JsonSerializable, Convertible, ArrayKeyable
     /**
      * Simple Workflow.
      * Get the next enumeration list of given fields as an array.
-     * The field/meta is resolved by field() so that the property and the metadata defined by the Meta attribute are available.
+     * The field/meta is resolved by original() so that the property and the metadata defined by the Meta attribute are available.
+     *
+     * The field that is given to the Translatable attribute is translated (the locale can be specified), otherwise the field value as it is is returned.
      *
      * @param  string            $field
      * @param  T|V|null          $current
-     * @param  array<mixed>|null $context   (default: null)
-     * @param  bool              $translate (default: false)
-     * @param  string|null       $locale    (default: depend on configure)
+     * @param  array<mixed>|null $context (default: null)
+     * @param  string|null       $locale  (default: depend on configure)
      * @return array<int, mixed>
      * @throws LogicException    when the given field is not defined
      */
-    public static function nextOf(string $field, mixed $current, array|null $context = null, bool $translate = false, string|null $locale = null): array;
+    public static function nextOf(string $field, mixed $current, array|null $context = null, string|null $locale = null): array;
 
     /**
      * Simple Workflow.
@@ -239,7 +255,7 @@ interface Enumeration extends \JsonSerializable, Convertible, ArrayKeyable
 
     /**
      * Simple Workflow.
-     * Get the next enumeration translated labels as an array.
+     * Get the next enumeration labels as an array. (translated if 'label' is given to the Translatable attribute)
      *
      * @param  T|V|null           $current
      * @param  array<mixed>|null  $context (default: null)

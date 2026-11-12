@@ -15,6 +15,8 @@ use Rebet\Tools\DateTime\DayOfWeek;
 use Rebet\Tools\DateTime\Month;
 use Rebet\Tools\Resource\Resource;
 use Rebet\Tools\Translation\Translator;
+use Rebet\Tools\Utility\ArrayKeyable;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
 
@@ -170,7 +172,8 @@ class DateTimeTest extends RebetTestCase
             $microtime = microtime(true);
             $date      = new DateTime($microtime);
             $this->assertStringStartsWith((string) $microtime, $date->format('U.u'));
-            $this->assertEquals(floatval((string) $microtime), $date->getMicroTimestamp());
+            // The micro timestamp equals the digits of the formatted 'U.u' (independent of the implementation of getMicroTimestamp)
+            $this->assertSame((int) str_replace('.', '', $date->format('U.u')), $date->getMicroTimestamp());
         }
     }
 
@@ -476,6 +479,22 @@ class DateTimeTest extends RebetTestCase
 
         $date->setDefaultFormat('Y/m/d');
         $this->assertSame('2010/10/20', "{$date}");
+    }
+
+    public function test_asArrayKey(): void
+    {
+        $date = new DateTime('2010-10-20 10:20:30', new DateTimeZone('UTC'));
+        $this->assertInstanceOf(ArrayKeyable::class, $date);
+        $this->assertSame($date->getTimestamp() * 1_000_000, $date->asArrayKey());
+        $this->assertSame($date->getTimestamp() * 1_000_000, Arrays::asKey($date));
+
+        // The same moment in the different timezone is the same key, but the different microsecond is the different key.
+        $this->assertSame(Arrays::asKey($date), Arrays::asKey(new DateTime('2010-10-20 19:20:30', new DateTimeZone('Asia/Tokyo'))));
+        $this->assertSame(Arrays::asKey($date) + 500000, Arrays::asKey(new DateTime('2010-10-20 19:20:30.5', new DateTimeZone('Asia/Tokyo'))));
+        $this->assertNotSame(Arrays::asKey($date), Arrays::asKey($date->addSecond(1)));
+
+        // Before the epoch (the fractional part is added to the floor of the second)
+        $this->assertSame(-500000, Arrays::asKey(new DateTime('1969-12-31 23:59:59.5', new DateTimeZone('UTC'))));
     }
 
     public function test_jsonSerialize(): void
@@ -999,14 +1018,23 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame(10, $micro);
     }
 
+    public function test_getMilliTimestamp(): void
+    {
+        $date = new DateTime('2010-10-20 10:20:30.123456', new DateTimeZone('UTC'));
+        $this->assertSame(1287570030123, $date->getMilliTimestamp());
+
+        // Before the epoch (the fractional part is added to the floor of the second)
+        $this->assertSame(-500, (new DateTime('1969-12-31 23:59:59.5', new DateTimeZone('UTC')))->getMilliTimestamp());
+    }
+
     public function test_getMicroTimestamp(): void
     {
-        for ($i = 0; $i < 100; $i++) {
-            $microtime = microtime(true);
-            $date      = new DateTime($microtime);
-            $this->assertStringStartsWith((string) $microtime, $date->format('U.u'));
-            $this->assertEquals(floatval((string) $microtime), $date->getMicroTimestamp());
-        }
+        $date = new DateTime('2010-10-20 10:20:30.123456', new DateTimeZone('UTC'));
+        $this->assertSame(1287570030123456, $date->getMicroTimestamp());
+
+        // Exact integer without the rounding error of float, and the timezone is ignored
+        $this->assertSame(1287570030123456, (new DateTime('2010-10-20 19:20:30.123456', new DateTimeZone('Asia/Tokyo')))->getMicroTimestamp());
+        $this->assertSame(-500000, (new DateTime('1969-12-31 23:59:59.5', new DateTimeZone('UTC')))->getMicroTimestamp());
     }
 
     public function test_getDayOfWeek(): void
@@ -1101,7 +1129,7 @@ class DateTimeTest extends RebetTestCase
 
             // ja
             ['ja', '2010-10-20(水) 13:20:30', $now, 'Y-m-d(@w) H:i:s'],
-            ['ja', '2010-10-20(水) 13:20:30', $now, 'Y-m-d(@ww) H:i:s'],
+            ['ja', '2010-10-20(水曜) 13:20:30', $now, 'Y-m-d(@ww) H:i:s'],
             ['ja', '2010-10-20(水曜日) 13:20:30', $now, 'Y-m-d(@www) H:i:s'],
 
             ['ja', '2010-10月-20 13:20:30', $now, 'Y-@mm-d H:i:s'],

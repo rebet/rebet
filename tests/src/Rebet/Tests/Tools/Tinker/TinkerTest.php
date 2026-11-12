@@ -8,6 +8,7 @@ use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\DateTime\DayOfWeek;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Tinker\Tinker;
@@ -46,7 +47,7 @@ class TinkerTest extends RebetTestCase
         $this->text       = Tinker::with("Hello\nRebet");
         $this->html       = Tinker::with("<h1>Hello Rebet</h1>");
         $this->json       = Tinker::with("[1 ,2, 3]");
-        $this->enum       = Tinker::with(Gender::MALE());
+        $this->enum       = Tinker::with(Gender::Male);
         $this->enums      = Tinker::with(Gender::lists());
         $this->datetime_o = Tinker::with(DateTime::now());
         $this->datetime_s = Tinker::with('2001/02/03 04:05:06');
@@ -59,15 +60,15 @@ class TinkerTest extends RebetTestCase
                 ],
             ],
             'number'  => 123,
-            'gender'  => Gender::MALE(),
+            'gender'  => Gender::Male,
             'boolean' => true,
         ]);
         $this->rs = Tinker::with([
-            new TinkerTest_User(1, 'Foo', 'First', 'foo@hoge.com', Gender::MALE(), new DateTime('1976-08-12')),
-            new TinkerTest_User(2, 'Bar', 'Second', 'bar@moge.net', Gender::FEMALE(), new DateTime('1993-11-27')),
-            new TinkerTest_User(3, 'Baz', 'Third', 'baz@piyo.co.jp', Gender::MALE(), new DateTime('2000-02-05')),
-            new TinkerTest_User(4, 'Qux', 'Fourth', 'qux@hoge.com', Gender::FEMALE(), new DateTime('1968-07-18')),
-            new TinkerTest_User(5, 'Quxx', 'Fifth', 'quxx@moge.net', Gender::FEMALE(), new DateTime('1983-04-21')),
+            new TinkerTest_User(1, 'Foo', 'First', 'foo@hoge.com', Gender::Male, new DateTime('1976-08-12')),
+            new TinkerTest_User(2, 'Bar', 'Second', 'bar@moge.net', Gender::Female, new DateTime('1993-11-27')),
+            new TinkerTest_User(3, 'Baz', 'Third', 'baz@piyo.co.jp', Gender::Male, new DateTime('2000-02-05')),
+            new TinkerTest_User(4, 'Qux', 'Fourth', 'qux@hoge.com', Gender::Female, new DateTime('1968-07-18')),
+            new TinkerTest_User(5, 'Quxx', 'Fifth', 'quxx@moge.net', Gender::Female, new DateTime('1983-04-21')),
         ]);
         $this->callable    = Tinker::with(fn(string $value) => "Hello {$value}");
         $this->destructive = Tinker::with(new TinkerTest_DestructiveMock());
@@ -128,7 +129,7 @@ class TinkerTest extends RebetTestCase
     {
         $this->assertSame(123, $this->int->return());
         $this->assertSame("Hello Rebet", $this->string->return());
-        $this->assertSame(Gender::MALE(), $this->enum->return());
+        $this->assertSame(Gender::Male, $this->enum->return());
     }
 
     public function test___get(): void
@@ -138,7 +139,8 @@ class TinkerTest extends RebetTestCase
 
         $this->assertNull($this->enum->nothing->return());
         $this->assertSame(1, $this->enum->value->return());
-        $this->assertSame('Male', $this->enum->label->return());
+        $this->assertSame('男性', $this->enum->label->return());
+        $this->assertSame('Male', $this->enum->name->return());
 
         $this->assertNull($this->map->nothing->return());
         $this->assertSame('FOO', $this->map->foo->return());
@@ -158,7 +160,13 @@ class TinkerTest extends RebetTestCase
         $this->assertNull($this->null->nothing()->return());
         $this->assertSame(123, $this->int->nothing()->return());
 
-        $this->assertSame(Gender::MALE(), $this->enum->nothing()->return());
+        $this->assertSame(Gender::Male, $this->enum->nothing()->return());
+
+        // Metadata of the enumeration takes precedence over the filters, otherwise filters are applied
+        $sunday = Tinker::with(DayOfWeek::Sunday);
+        $this->assertSame(DayOfWeek::Sunday->label_short(), $sunday->label_short()->return());
+        $this->assertSame(DayOfWeek::Sunday->label_short('en'), $sunday->label_short('en')->return());
+        $this->assertSame('男性', $this->enum->escape()->return());
         $this->assertEquals(
             DateTime::valueOf('2002/02/03 04:05:06'),
             $this->datetime_o->addYear(1)->return(),
@@ -352,7 +360,7 @@ class TinkerTest extends RebetTestCase
         }
         $this->assertSame(count($expects), $count);
 
-        $expects = ['value' => 1, 'label' => 'Male', 'name' => 'MALE'];
+        $expects = ['name' => 'Male', 'value' => 1];
         $count   = 0;
         foreach ($this->enum as $key => $value) {
             $this->assertInstanceOf(Tinker::class, $value);
@@ -476,7 +484,7 @@ class TinkerTest extends RebetTestCase
 
         // Arrays::override
         $this->assertSame(
-            ['foo' => 'foo', 'parent' => null, 'number' => 123, 'gender' => Gender::MALE(), 'boolean' => true],
+            ['foo' => 'foo', 'parent' => null, 'number' => 123, 'gender' => Gender::Male, 'boolean' => true],
             $this->map->override(['foo' => 'foo', 'parent=' => null])->return(),
         );
 
@@ -920,7 +928,7 @@ class TinkerTest extends RebetTestCase
                 ],
             ],
             123,
-            Gender::MALE(),
+            Gender::Male,
             true,
         ], $this->map->values()->return());
 

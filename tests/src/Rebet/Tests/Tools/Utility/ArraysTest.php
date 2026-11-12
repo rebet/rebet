@@ -9,6 +9,7 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Utility\ArrayKeyable;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;
+use Rebet\Tools\Utility\Exception\ArrayKeyUnavailableException;
 use Rebet\Tools\Utility\OverrideOption;
 use TestApp\Enum\Gender;
 use TestApp\Stub\CountableStub;
@@ -760,7 +761,7 @@ class ArraysTest extends RebetTestCase
         $travers = new \ArrayObject([1, 2, 'a' => 'A']);
         $this->assertSame([1, 2, 'a' => 'A'], Arrays::toArray($travers));
 
-        $jsonValue = Gender::MALE();
+        $jsonValue = Gender::Male;
         $this->assertSame([$jsonValue], Arrays::toArray($jsonValue));
         $jsonValue = new JsonSerializableStub('abc');
         $this->assertSame([$jsonValue], Arrays::toArray($jsonValue));
@@ -1313,7 +1314,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame('1, 2, 3', Arrays::implode([1, 2, 3]));
         $this->assertSame('1／2／3', Arrays::implode([1, 2, 3], '／'));
         $this->assertSame('1, 2, 3', Arrays::implode(new \ArrayObject([1, 2, 3])));
-        $this->assertNull(Arrays::implode(Gender::MALE()));
+        $this->assertNull(Arrays::implode(Gender::Male));
         $this->assertSame('foo=1 bar=2', Arrays::implode(['foo' => 1, 'bar' => 2], ' ', '='));
     }
 
@@ -1429,6 +1430,22 @@ class ArraysTest extends RebetTestCase
         $this->expectException(\TypeError::class);
 
         Arrays::asKey(null);    // @phpstan-ignore argument.type
+    }
+
+    public function test_asKey_unavailable(): void
+    {
+        $unavailable = new class implements ArrayKeyable {
+            public function asArrayKey(): int|string
+            {
+                throw new ArrayKeyUnavailableException("not identified");
+            }
+        };
+
+        // asKey() throws the exception as it is, but tryAsKey() returns null
+        $this->assertNull(Arrays::tryAsKey($unavailable));
+        $this->expectException(ArrayKeyUnavailableException::class);
+        $this->expectExceptionMessage("not identified");
+        Arrays::asKey($unavailable);
     }
 
     public function test_tryAsKey(): void

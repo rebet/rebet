@@ -4,10 +4,23 @@ declare(strict_types=1);
 
 namespace TestApp\Enum;
 
-use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Enum\Enumerable;
+use Rebet\Tools\Enum\Enumeration;
+use Rebet\Tools\Enum\Meta;
+use Rebet\Tools\Enum\Translatable;
 
-class Gender extends Enum
+/**
+ * @implements Enumeration<Gender, int>
+ */
+#[Translatable(['label'])]
+enum Gender: int implements Enumeration
 {
-    public const MALE   = [1, 'Male'];
-    public const FEMALE = [2, 'Female'];
+    /** @use Enumerable<Gender, int> */
+    use Enumerable;
+
+    #[Meta(label: "Male")]
+    case Male = 1;
+
+    #[Meta(label: "Female")]
+    case Female = 2;
 }

@@ -26,18 +26,18 @@ class UtilsTest extends RebetTestCase
         $this->assertSame(false, Utils::equivalent('', []));
 
         $this->assertSame(true, Utils::equivalent(1, '1'));
-        $this->assertSame(true, Utils::equivalent(1, Gender::MALE()));
-        $this->assertSame(true, Utils::equivalent(Gender::MALE(), '1'));
-        $this->assertSame(true, Utils::equivalent(Gender::MALE(), Gender::MALE()));
+        $this->assertSame(true, Utils::equivalent(1, Gender::Male));
+        $this->assertSame(true, Utils::equivalent(Gender::Male, '1'));
+        $this->assertSame(true, Utils::equivalent(Gender::Male, Gender::Male));
         $this->assertSame(false, Utils::equivalent(1, '2'));
-        $this->assertSame(false, Utils::equivalent(2, Gender::MALE()));
+        $this->assertSame(false, Utils::equivalent(2, Gender::Male));
 
         $this->assertSame(true, Utils::equivalent([1, 2, 3], [1, 2, 3]));
         $this->assertSame(true, Utils::equivalent(['1', 2, 3], [1, '2', 3]));
-        $this->assertSame(true, Utils::equivalent(['1', 2, 3], [1, Gender::FEMALE(), 3]));
+        $this->assertSame(true, Utils::equivalent(['1', 2, 3], [1, Gender::Female, 3]));
         $this->assertSame(true, Utils::equivalent([1, 2, 3], new \ArrayObject([1, 2, 3])));
         $this->assertSame(true, Utils::equivalent(new \ArrayObject([1, 2, 3]), new \ArrayObject([1, 2, 3])));
-        $this->assertSame(true, Utils::equivalent([1, 2, 3], new \ArrayObject([1, Gender::FEMALE(), 3])));
+        $this->assertSame(true, Utils::equivalent([1, 2, 3], new \ArrayObject([1, Gender::Female, 3])));
         $this->assertSame(false, Utils::equivalent([1, 2, 3], [1, 2]));
 
         $this->assertSame(true, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], ['a' => 1, 'b' => 2, 'c' => 3]));
@@ -51,7 +51,7 @@ class UtilsTest extends RebetTestCase
         $this->assertSame(false, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], $object)); // Other class without iterable is not treated synonymously with array
 
         $this->assertSame(true, Utils::equivalent([1, [2, 3]], [1, [2, 3]]));
-        $this->assertSame(true, Utils::equivalent([1, [Gender::FEMALE(), 3]], [Gender::MALE(), new \ArrayObject([2, 3])]));
+        $this->assertSame(true, Utils::equivalent([1, [Gender::Female, 3]], [Gender::Male, new \ArrayObject([2, 3])]));
     }
 
     public function test_when(): void

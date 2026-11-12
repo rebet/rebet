@@ -7,6 +7,7 @@ namespace Rebet\Tools\DateTime;
 use Rebet\Tools\Enum\Enumerable;
 use Rebet\Tools\Enum\Enumeration;
 use Rebet\Tools\Enum\Meta;
+use Rebet\Tools\Enum\Translatable;
 use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Path;
@@ -21,19 +22,21 @@ use Rebet\Tools\Utility\Path;
  * - label_short : The short name (e.g. Sun)
  * - label_min   : The min name (e.g. Su)
  *
- * The metadata (label_short and label_min) can be read by the method call (not translated),
- * and translate() returns the translated one. (e.g. translate('label_short'))
+ * The metadata (label, label_short and label_min) are translated by the Translatable attribute,
+ * so that the method call of them (e.g. label_short() or label_short('en') with the locale) returns the translated one.
+ * Use original() (e.g. original('label_short')) if you need the English name as it is.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  *
- * @method string label_short() The short name (e.g. Sun), which is not translated.
- * @method string label_min()   The min name (e.g. Su), which is not translated.
+ * @method string label_short(string|null $locale = null) The translated short name (e.g. Sun).
+ * @method string label_min(string|null $locale = null)   The translated min name (e.g. Su).
  *
  * @implements Enumeration<DayOfWeek, int>
  */
+#[Translatable(['label', 'label_short', 'label_min'], group: 'datetime')]
 enum DayOfWeek: int implements Enumeration
 {
     /** @use Enumerable<DayOfWeek, int> */
@@ -59,16 +62,6 @@ enum DayOfWeek: int implements Enumeration
 
     #[Meta(label: 'Saturday', label_short: 'Sat', label_min: 'Sa')]
     case Saturday = 6;
-
-    /**
-     * The translation group of DayOfWeek.
-     *
-     * @return string
-     */
-    protected static function translationGroup(): string
-    {
-        return 'datetime';
-    }
 
     /**
      * It checks the day of week is weekend (Sunday or Saturday)

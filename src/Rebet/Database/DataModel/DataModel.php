@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rebet\Database\DataModel;
 
 use Closure;
+use Override;
 use Rebet\Attribute\AttributedClass;
 use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\Dao;
@@ -21,7 +22,9 @@ use Rebet\Tools\Reflection\Describable;
 use Rebet\Tools\Reflection\Populatable;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Support\Getsetable;
+use Rebet\Tools\Utility\ArrayKeyable;
 use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Exception\ArrayKeyUnavailableException;
 use Rebet\Tools\Utility\Json;
 use ReflectionObject;
 use ReflectionProperty;
@@ -37,7 +40,7 @@ use ReflectionProperty;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 #[\AllowDynamicProperties]
-abstract class DataModel
+abstract class DataModel implements ArrayKeyable
 {
     use Populatable;
     use Describable;
@@ -130,12 +133,31 @@ abstract class DataModel
     /**
      * Create 'sha256' hash string from given values.
      *
+     * The difference of PHP type is absorbed by Arrays::tryAsKey() before hashing for the scalar and the enum. (e.g. 1, '1', true and the enum case that has the value 1 are the same)
+     * The array is normalized recursively, and the value that is not convertible to the array key (e.g. null, float) is hashed as it is.
+     * The object other than enum (e.g. Date) is hashed by the JSON serialized form, so the object and its serialized string (e.g. date string) are the same.
+     *
      * @param  mixed  ...$values
      * @return string
      */
     protected static function hash(...$values): string
     {
-        return Json::digest('sha256', $values);
+        return Json::digest('sha256', self::normalizeForHash($values));
+    }
+
+    /**
+     * Normalize the value for hashing. (the difference of PHP type is absorbed)
+     *
+     * @param  mixed $value
+     * @return mixed
+     */
+    private static function normalizeForHash(mixed $value): mixed
+    {
+        if (is_array($value)) {
+            return array_map(fn($v) => self::normalizeForHash($v), $value);
+        }
+        // The object other than enum (e.g. Date) is hashed as JSON serialized form as before, so that the object and its serialized string (e.g. date string) are the same
+        return (is_scalar($value) || $value instanceof \UnitEnum) ? (Arrays::tryAsKey($value) ?? $value) : $value;
     }
 
     /**
@@ -146,6 +168,31 @@ abstract class DataModel
     public function primaryHash(): string
     {
         return static::hash(static::class, $this->primaryValues());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * The key is the primary hash, so the data models of the same class and the same primary values are the same key.
+     *
+     * @throws ArrayKeyUnavailableException when the data model has no primary key or any primary value is not set (null or not initialized), because it can not be identified
+     */
+    #[Override]
+    public function asArrayKey(): string
+    {
+        try {
+            $primary_values = $this->primaryValues();
+        } catch (\Error $e) {
+            // The typed property without initial value is not initialized yet (it is the same as not set)
+            if (str_contains($e->getMessage(), 'must not be accessed before initialization')) {
+                throw new ArrayKeyUnavailableException("Can not use " . static::class . " as an array key. The primary value is not initialized.", $e);
+            }
+            throw $e;
+        }
+        if (empty($primary_values) || in_array(null, $primary_values, true)) {
+            throw new ArrayKeyUnavailableException("Can not use " . static::class . " as an array key. It has no primary key or the primary value is not set.");
+        }
+        return $this->primaryHash();
     }
 
     /**
@@ -459,9 +506,9 @@ abstract class DataModel
      *       return $ransack->convert("REPLACE({col}, '-', '') = REPLACE({val}, '-', '')");
      *     case 'account_status':
      *       switch($ransack->value()) {
-     *         case AccountStatus::ACTIVE(): return $ransack->driver()->sql('U.resign_at IS NULL AND U.locked = 1');
-     *         case AccountStatus::LOCKED(): return $ransack->driver()->sql('U.resign_at IS NULL AND U.locked = 2');
-     *         case AccountStatus::RESIGN(): return $ransack->driver()->sql('U.resign_at IS NOT NULL'             );
+     *         case AccountStatus::Active->value(): return $ransack->driver()->sql('U.resign_at IS NULL AND U.locked = 1');
+     *         case AccountStatus::Locked->value(): return $ransack->driver()->sql('U.resign_at IS NULL AND U.locked = 2');
+     *         case AccountStatus::Resign->value(): return $ransack->driver()->sql('U.resign_at IS NOT NULL'             );
      *       }
      *       return $ransack->driver()->sql('');
      *     case 'has_bank':
@@ -687,7 +734,7 @@ abstract class DataModel
      *         [
      *             'publiched_at_not_null' => 1,
      *             'publiched_at_lteq'     => DateTime::now(),
-     *             'publiched_status'      => PublichedStatus::OPEN(),
+     *             'publiched_status'      => PublichedStatus::Open,
      *         ],
      *         ['publiched_at' => 'DESC', 'article_id' => 'DESC'],
      *         $limit,

@@ -44,8 +44,8 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
             ],
             [
                 '?name? = :name AND ?gender? = :gender',
-                ['name' => 'foo', 'gender' => Gender::MALE()],
-                ['name' => 'foo', 'gender' => Gender::MALE()],
+                ['name' => 'foo', 'gender' => Gender::Male],
+                ['name' => 'foo', 'gender' => Gender::Male],
             ],
             [
                 '?name? = :name',

@@ -94,7 +94,7 @@ class TestController extends Controller
 
     public function withConvertEnumParam(Gender $gender)
     {
-        return "Controller: withConvertEnumParam - {$gender}";
+        return "Controller: withConvertEnumParam - {$gender->label()}";
     }
 
     #[Channel("api")]

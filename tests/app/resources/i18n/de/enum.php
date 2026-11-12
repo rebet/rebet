@@ -11,4 +11,5 @@ return [
             2 => 'Weiblich',
         ],
     ],
+
 ];

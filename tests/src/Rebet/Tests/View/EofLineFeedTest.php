@@ -47,7 +47,7 @@ class EofLineFeedTest extends RebetTestCase
 
     public function test_label_isNotTranslated(): void
     {
-        // The label is not display text, so it is the name of case even if the locale is changed.
+        // EofLineFeed has no Translatable attribute, so that the label is the name of case even if the locale is changed.
         $this->assertSame(['Keep', 'Trim', 'One'], EofLineFeed::labels());
         $this->assertSame('Trim', EofLineFeed::Trim->label());
         $this->assertSame('Trim', EofLineFeed::Trim->label('ja'));

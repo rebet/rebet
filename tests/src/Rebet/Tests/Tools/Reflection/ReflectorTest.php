@@ -8,6 +8,7 @@ use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\DateTime\DayOfWeek;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Convertible;
 use Rebet\Tools\Reflection\Describable;
@@ -15,6 +16,7 @@ use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Tinker\Tinker;
 use TestApp\Enum\Gender;
+use TestApp\Enum\GroupPosition;
 use TestApp\Stub\JsonSerializableStub;
 use TestApp\Stub\ToArrayStub;
 
@@ -237,6 +239,57 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame("static_public", Reflector::get(ReflectorTest_AccessibleChild::class, 'static_public', null, true));
         $this->assertSame(null, Reflector::get(ReflectorTest_AccessibleChild::class, 'nothing', null, true));
         $this->assertSame(null, Reflector::get("NothingClass", 'foo', null, true));
+    }
+
+    public function test_get_has_enumeration(): void
+    {
+        // Enumeration: the field or metadata is accessible (the translated value if the field is given to the Translatable attribute)
+        $this->assertSame(1, Reflector::get(Gender::Male, 'value'));
+        $this->assertSame('Male', Reflector::get(Gender::Male, 'name'));
+        $this->assertSame('男性', Reflector::get(Gender::Male, 'label'));
+        $this->assertSame('Manager', Reflector::get(GroupPosition::Manager, 'label'));
+        $this->assertSame('日曜', Reflector::get(DayOfWeek::Sunday, 'label_short'));
+        $this->assertSame('default', Reflector::get(Gender::Male, 'nothing', 'default'));
+        $this->assertNull(Reflector::get(Gender::Male, 'nothing'));
+        $this->assertSame('男性', Reflector::get(['gender' => Gender::Male], 'gender.label'));
+
+        $this->assertTrue(Reflector::has(Gender::Male, 'value'));
+        $this->assertTrue(Reflector::has(Gender::Male, 'name'));
+        $this->assertTrue(Reflector::has(Gender::Male, 'label'));
+        $this->assertTrue(Reflector::has(DayOfWeek::Sunday, 'label_short'));
+        $this->assertFalse(Reflector::has(Gender::Male, 'nothing'));
+        $this->assertTrue(Reflector::has(['gender' => Gender::Male], 'gender.label'));
+        $this->assertFalse(Reflector::has(['gender' => Gender::Male], 'gender.nothing'));
+    }
+
+    public function test_reflectProperty(): void
+    {
+        $isPublic = fn($object, string $property) => Reflector::reflectProperty($object, $property)?->isPublic();
+
+        $child = new ReflectorTest_AccessibleChild();
+        $this->assertTrue($isPublic($child, 'public'));
+        $this->assertTrue($isPublic($child, 'public_parent'));      // the public property of the ancestor class
+        $this->assertFalse($isPublic($child, 'protected'));
+        $this->assertFalse($isPublic($child, 'private'));
+        $this->assertFalse($isPublic($child, 'private_parent'));    // the private property of the ancestor class is also found
+        $this->assertNull($isPublic($child, 'nothing'));
+        $this->assertNull(Reflector::reflectProperty($child, 'nothing'));
+
+        $child->dynamic = 'dynamic';
+        $this->assertTrue($isPublic($child, 'dynamic'));
+
+        // class name and static property
+        $this->assertTrue($isPublic(ReflectorTest_AccessibleChild::class, 'static_public'));
+        $this->assertFalse($isPublic(ReflectorTest_AccessibleChild::class, 'static_protected'));
+        $this->assertFalse($isPublic(ReflectorTest_AccessibleChild::class, 'static_private'));
+
+        // not an object nor an existing class
+        $this->assertNull(Reflector::reflectProperty('NotExistsClass', 'public'));
+        $this->assertNull(Reflector::reflectProperty([], 'public'));
+
+        // native enum has only name and value
+        $this->assertTrue($isPublic(Gender::Male, 'value'));
+        $this->assertNull($isPublic(Gender::Male, 'label'));
     }
 
     public function test_has(): void
@@ -613,7 +666,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('private', Reflector::invoke($this->accessible, 'callStaticPrivate', [], true));
         $this->assertSame('public - 123', Reflector::invoke($this->accessible, 'callPublicWithArgs', [123]));
         $this->assertSame('public - 123', Reflector::invoke($this->accessible, 'callPublicWithArgs', ['arg' => 123]));
-        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', ['gender' => Gender::MALE(), 'age' => 20]));
+        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', ['gender' => Gender::Male, 'age' => 20]));
         $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', ['gender' => 1, 'age' => '20'], false, true));
         $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', ['age' => '20', 'gender' => 1], false, true));
         $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', [1, '20'], false, true));
@@ -629,7 +682,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('private', Reflector::invoke($this->accessible_child, 'callStaticPrivate', [], true));
         $this->assertSame('public - 123', Reflector::invoke($this->accessible_child, 'callPublicWithArgs', [123]));
         $this->assertSame('public - 123', Reflector::invoke($this->accessible_child, 'callPublicWithArgs', ['arg' => 123]));
-        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible_child, 'callPublicWithTypeHintingArgs', ['gender' => Gender::MALE(), 'age' => 20]));
+        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible_child, 'callPublicWithTypeHintingArgs', ['gender' => Gender::Male, 'age' => 20]));
         $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible_child, 'callPublicWithTypeHintingArgs', ['gender' => 1, 'age' => '20'], false, true));
         $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible_child, 'callPublicWithTypeHintingArgs', ['age' => '20', 'gender' => 1], false, true));
         $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible_child, 'callPublicWithTypeHintingArgs', [1, '20'], false, true));
@@ -647,10 +700,10 @@ class ReflectorTest extends RebetTestCase
         $function = fn(string $val = 'default') => $val;
         $this->assertSame('123', Reflector::evaluate($function, [123], true));
 
-        $function = fn(Gender $gender = null, int $age = 20) => "{$age} years old " . ($gender ?? Gender::MALE());
+        $function = fn(Gender $gender = null, int $age = 20) => "{$age} years old " . ($gender ?? Gender::Male)->label();
         $this->assertSame('20 years old 男性', Reflector::evaluate($function));
-        $this->assertSame('20 years old 女性', Reflector::evaluate($function, [Gender::FEMALE()]));
-        $this->assertSame('18 years old 女性', Reflector::evaluate($function, ['gender' => Gender::FEMALE(), 'age' => 18]));
+        $this->assertSame('20 years old 女性', Reflector::evaluate($function, [Gender::Female]));
+        $this->assertSame('18 years old 女性', Reflector::evaluate($function, ['gender' => Gender::Female, 'age' => 18]));
         $this->assertSame('18 years old 女性', Reflector::evaluate($function, ['gender' => 2, 'age' => 18], true));
         $this->assertSame('18 years old 男性', Reflector::evaluate($function, ['age' => 18]));
     }
@@ -782,7 +835,7 @@ class ReflectorTest extends RebetTestCase
 
         $function = function (Gender $gender): void { return; };
         $rf       = new \ReflectionFunction($function);
-        $this->assertSame([Gender::MALE()], Reflector::toArgs($rf->getParameters(), ['gender' => 1], true));
+        $this->assertSame([Gender::Male], Reflector::toArgs($rf->getParameters(), ['gender' => 1], true));
 
         Reflector::toArgs($rf->getParameters(), ['gender' => 3], true);
     }
@@ -1065,7 +1118,7 @@ class ReflectorTest extends RebetTestCase
         $travers = new \ArrayObject([1, 2, 'a' => 'A']);
         $this->assertSame([1, 2, 'a' => 'A'], Reflector::convert($travers, $type));
 
-        $jsonValue = Gender::MALE();
+        $jsonValue = Gender::Male;
         $this->assertSame([$jsonValue], Reflector::convert($jsonValue, $type));
         $jsonValue = new JsonSerializableStub('abc');
         $this->assertSame([$jsonValue], Reflector::convert($jsonValue, $type));
@@ -1102,8 +1155,9 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('', Reflector::convert(false, $type));
         $this->assertSame('abc', Reflector::convert('abc', $type));
 
-        $jsonValue = Gender::MALE();
-        $this->assertSame('男性', Reflector::convert($jsonValue, $type));
+        // The Enumeration is converted to the label (translated if the label is given to the Translatable attribute)
+        $this->assertSame('男性', Reflector::convert(Gender::Male, $type));
+        $this->assertSame('Manager', Reflector::convert(GroupPosition::Manager, $type));
         $jsonValue = new JsonSerializableStub('abc');
         $this->assertSame('abc', Reflector::convert($jsonValue, $type));
 
@@ -1263,8 +1317,8 @@ class ReflectorTest extends RebetTestCase
     public function test_convert_object(): void
     {
         $this->assertNull(Reflector::convert(null, Gender::class));
-        $this->assertSame(Gender::MALE(), Reflector::convert(1, Gender::class));
-        $this->assertSame(Gender::FEMALE(), Reflector::convert(2, Gender::class));
+        $this->assertSame(Gender::Male, Reflector::convert(1, Gender::class));
+        $this->assertSame(Gender::Female, Reflector::convert(2, Gender::class));
 
         $object = new ReflectorTest_Mock();
         $this->assertSame(null, Reflector::convert($object, ReflectorTest_ConvertTo::class));
@@ -1580,7 +1634,7 @@ class ReflectorTest_Accessible
 
     public function callPublicWithTypeHintingArgs(Gender $gender, int $age)
     {
-        return "public - {$age} years old {$gender}";
+        return "public - {$age} years old {$gender->label()}";
     }
 }
 class ReflectorTest_AccessibleChild extends ReflectorTest_Accessible {}

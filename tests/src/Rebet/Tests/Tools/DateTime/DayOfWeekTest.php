@@ -31,11 +31,9 @@ class DayOfWeekTest extends RebetTestCase
     {
         $this->assertSame($value, $dayOfWeek->value);
         $this->assertSame($value, $dayOfWeek->value());
-        $this->assertSame($label, $dayOfWeek->field('label'));
-        $this->assertSame($label_short, $dayOfWeek->field('label_short'));
-        $this->assertSame($label_min, $dayOfWeek->field('label_min'));
-        $this->assertSame($label_short, $dayOfWeek->label_short());
-        $this->assertSame($label_min, $dayOfWeek->label_min());
+        $this->assertSame($label, $dayOfWeek->original('label'));
+        $this->assertSame($label_short, $dayOfWeek->original('label_short'));
+        $this->assertSame($label_min, $dayOfWeek->original('label_min'));
     }
 
     public static function dataDefinitions()
@@ -58,6 +56,20 @@ class DayOfWeekTest extends RebetTestCase
         $this->assertSame($label, $dayOfWeek->translate('label'));
         $this->assertSame($label_short, $dayOfWeek->translate('label_short'));
         $this->assertSame($label_min, $dayOfWeek->translate('label_min'));
+        $this->assertSame($label, $dayOfWeek->label());
+        $this->assertSame($label_short, $dayOfWeek->label_short());
+        $this->assertSame($label_min, $dayOfWeek->label_min());
+    }
+
+    public function test_translation_withLocale(): void
+    {
+        // The locale can be specified for the method call, and it does not depend on the current locale
+        Translator::setLocale('en');
+        $this->assertSame('日曜', DayOfWeek::Sunday->label_short('ja'));
+        $this->assertSame('日', DayOfWeek::Sunday->label_min('ja'));
+        $this->assertSame('Sun', DayOfWeek::Sunday->label_short());
+        $this->assertSame('Sun', DayOfWeek::Sunday->label_short(locale: 'en'));
+        $this->assertSame('日曜日', DayOfWeek::Sunday->label('ja'));
     }
 
     public static function dataTranslations()
@@ -71,13 +83,13 @@ class DayOfWeekTest extends RebetTestCase
             [DayOfWeek::Friday, 'en', 'Friday', 'Fri', 'Fr'],
             [DayOfWeek::Saturday, 'en', 'Saturday', 'Sat', 'Sa'],
 
-            [DayOfWeek::Sunday, 'ja', '日曜日', '日', '日'],
-            [DayOfWeek::Monday, 'ja', '月曜日', '月', '月'],
-            [DayOfWeek::Tuesday, 'ja', '火曜日', '火', '火'],
-            [DayOfWeek::Wednesday, 'ja', '水曜日', '水', '水'],
-            [DayOfWeek::Thursday, 'ja', '木曜日', '木', '木'],
-            [DayOfWeek::Friday, 'ja', '金曜日', '金', '金'],
-            [DayOfWeek::Saturday, 'ja', '土曜日', '土', '土'],
+            [DayOfWeek::Sunday, 'ja', '日曜日', '日曜', '日'],
+            [DayOfWeek::Monday, 'ja', '月曜日', '月曜', '月'],
+            [DayOfWeek::Tuesday, 'ja', '火曜日', '火曜', '火'],
+            [DayOfWeek::Wednesday, 'ja', '水曜日', '水曜', '水'],
+            [DayOfWeek::Thursday, 'ja', '木曜日', '木曜', '木'],
+            [DayOfWeek::Friday, 'ja', '金曜日', '金曜', '金'],
+            [DayOfWeek::Saturday, 'ja', '土曜日', '土曜', '土'],
         ];
     }
 

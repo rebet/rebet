@@ -376,7 +376,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             [[1], 'user_id', "SELECT * FROM users WHERE user_id = 1"],
             [[2, 3, 4, 5, 7, 9, 10, 17, 19, 23, 28, 29, 30], 'user_id', "SELECT * FROM users WHERE gender = 1"],
             [[7, 28, 17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19], 'user_id', "SELECT * FROM users WHERE gender = 1 ORDER BY birthday DESC"],
-            [[7, 28, 17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19], 'user_id', "SELECT * FROM users WHERE gender = :gender ORDER BY birthday DESC", ['gender' => Gender::MALE()]],
+            [[7, 28, 17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19], 'user_id', "SELECT * FROM users WHERE gender = :gender ORDER BY birthday DESC", ['gender' => Gender::Male]],
 
             [[1], 'user_id', "SELECT * FROM users WHERE user_id = :user_id AND user_id = :user_id", ['user_id' => 1]],
             [[1, 3, 5], 'user_id', "SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [1, 3, 5]]],
@@ -409,7 +409,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertSame(0, $db->count("SELECT * FROM users WHERE gender = 1"));
 
             $this->assertSame(1, $db->execute("INSERT INTO users (user_id, name, gender, birthday, email, password) VALUES (:values)", [
-                'values' => ['user_id' => 33, 'name' => 'Insert', 'gender' => Gender::MALE(), 'birthday' => Date::createDateTime('1976-04-23'), 'email' => 'foo@bar.local', 'password' => Password::hash('password-33')],
+                'values' => ['user_id' => 33, 'name' => 'Insert', 'gender' => Gender::Male, 'birthday' => Date::createDateTime('1976-04-23'), 'email' => 'foo@bar.local', 'password' => Password::hash('password-33')],
             ]));
 
             $this->assertSame(1, $db->count("SELECT * FROM users WHERE gender = 1"));
@@ -426,10 +426,10 @@ class DatabaseTest extends RebetDatabaseTestCase
             $users = $db->select("SELECT * FROM users WHERE gender = 1", ['user_id' => 'desc']);
             $this->assertEquals([30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2], Arrays::pluck($users->toArray(), 'user_id'));
 
-            $users = $db->select("SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::MALE()]);
+            $users = $db->select("SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::Male]);
             $this->assertEquals([30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2], Arrays::pluck($users->toArray(), 'user_id'));
 
-            $users = $db->select("SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::MALE()], null, false, User::class);
+            $users = $db->select("SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::Male], null, false, User::class);
             $this->assertEquals([17, 32, 4, 11, 37, 6, 7, 34, 3, 31, 11, 26, 16], array_map(function ($v) {
                 $this->assertInstanceOf(User::class, $v);
                 return $v->age();
@@ -444,8 +444,8 @@ class DatabaseTest extends RebetDatabaseTestCase
             // 7, 13, 20, 28, 6, 17, 10, 22, 26, 23, 4, 31, 24, 15, 2, 30, 25, 21, 11, 3, 14, 1, 16, 5, 29, 12, 9, 8, 18, 19, 32, 27 : birthday DESC
 
             // 7, 28,  17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19 : birthday DESC, gender = 1
-            '01-normal-01'                                         => [[7, 28, 17], null, 1, null, "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::MALE()], Pager::resolve()->size(3)],
-            '01-normal-02'                                         => [[10, 23, 4], null, 1, null, "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::MALE()], Pager::resolve()->size(3)->page(2)],
+            '01-normal-01'                                         => [[7, 28, 17], null, 1, null, "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::Male], Pager::resolve()->size(3)],
+            '01-normal-02'                                         => [[10, 23, 4], null, 1, null, "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::Male], Pager::resolve()->size(3)->page(2)],
 
             // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 : user_id ASC
             '02-with_each_side-01'                                 => [[4, 5, 6], null, 3, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(2)->eachSide(2)],
@@ -1173,8 +1173,8 @@ class DatabaseTest extends RebetDatabaseTestCase
             }, "SELECT * FROM users WHERE user_id % 2 = 0", null, []);
 
             $db->each(function (User $user): void {
-                $this->assertSame(Gender::MALE(), $user->gender);
-            }, "SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::MALE()]);
+                $this->assertSame(Gender::Male, $user->gender);
+            }, "SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::Male]);
         });
     }
 
@@ -1183,7 +1183,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db): void {
             $this->assertEquals(
                 $db->select("SELECT * FROM users WHERE gender = 1", null, [], null, false, User::class),
-                $db->filter(fn(User $user) => $user->gender == Gender::MALE(), "SELECT * FROM users"),
+                $db->filter(fn(User $user) => $user->gender == Gender::Male, "SELECT * FROM users"),
             );
         });
     }
@@ -1259,7 +1259,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $user           = new User();
             $user->user_id  = 99;
             $user->name     = 'Foo';
-            $user->gender   = Gender::FEMALE();
+            $user->gender   = Gender::Female;
             $user->birthday = new Date('20 years ago');
             $user->email    = 'foo@bar.local';
             $user->password = Password::hash("password-99");
@@ -1295,7 +1295,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertTrue($creating_event_called);
             $this->assertTrue($created_event_called);
             $this->assertSame('foo', $user->name);
-            $this->assertSame(Gender::FEMALE(), $user->gender);
+            $this->assertSame(Gender::Female, $user->gender);
             $this->assertEquals($now->modify('20 years ago')->toDate(), $user->birthday);
             $this->assertSame('foo@bar.local', $user->email);
             $this->assertSame('user', $user->role);
@@ -1355,9 +1355,9 @@ class DatabaseTest extends RebetDatabaseTestCase
             $now  = DateTime::now()->startsOfSecond();
             $user = User::find(1);
             $this->assertNull($user->updated_at);
-            $this->assertEquals(Gender::FEMALE(), $user->gender);
+            $this->assertEquals(Gender::Female, $user->gender);
 
-            $user->gender = Gender::MALE();
+            $user->gender = Gender::Male;
             $user->name   = 'John Smith';
             $this->assertTrue($db->update($user, $now));
             $this->assertEquals($now, $user->updated_at);
@@ -1368,9 +1368,9 @@ class DatabaseTest extends RebetDatabaseTestCase
             $now  = DateTime::now()->startsOfSecond();
             $user = UserWithAnnot::find(2);
             $this->assertNull($user->updated_at);
-            $this->assertEquals(Gender::MALE(), $user->gender);
+            $this->assertEquals(Gender::Male, $user->gender);
 
-            $user->gender = Gender::FEMALE();
+            $user->gender = Gender::Female;
             $user->name   = 'Jane Smith';
             $this->assertTrue($db->update($user, $now));
             $this->assertEquals($now, $user->updated_at);
@@ -1585,8 +1585,8 @@ class DatabaseTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db): void {
             $this->assertFalse($db->existsBy(User::class, ['user_id' => 9999]));
             $this->assertTrue($db->existsBy(User::class, ['user_id' => 1]));
-            $this->assertTrue($db->existsBy(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
-            $this->assertFalse($db->existsBy(User::class, ['user_id' => 1, 'gender' => Gender::MALE()]));
+            $this->assertTrue($db->existsBy(User::class, ['user_id' => 1, 'gender' => Gender::Female]));
+            $this->assertFalse($db->existsBy(User::class, ['user_id' => 1, 'gender' => Gender::Male]));
             $this->assertTrue($db->existsBy(User::class, ['user_id_lt' => 9999]));
         });
     }
@@ -1596,10 +1596,10 @@ class DatabaseTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db): void {
             $this->assertEquals(0, $db->countBy(User::class, ['user_id' => 9999]));
             $this->assertEquals(1, $db->countBy(User::class, ['user_id' => 1]));
-            $this->assertEquals(1, $db->countBy(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
-            $this->assertEquals(0, $db->countBy(User::class, ['user_id' => 1, 'gender' => Gender::MALE()]));
+            $this->assertEquals(1, $db->countBy(User::class, ['user_id' => 1, 'gender' => Gender::Female]));
+            $this->assertEquals(0, $db->countBy(User::class, ['user_id' => 1, 'gender' => Gender::Male]));
             $this->assertEquals(2, $db->countBy(User::class, ['user_id_lt' => 3]));
-            $this->assertEquals(13, $db->countBy(User::class, ['gender' => Gender::MALE()]));
+            $this->assertEquals(13, $db->countBy(User::class, ['gender' => Gender::Male]));
         });
     }
 
