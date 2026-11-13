@@ -753,6 +753,180 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('b', Config::get($b::class, 'key'));
     }
 
+    public function test_all_sections(): void
+    {
+        Config::reset();
+        Config::get(ConfigTest_Mock::class, 'driver');
+        Config::get(ConfigTest_MockRefer::class, 'database', false);
+
+        // The given sections only (the referrer is resolved)
+        $this->assertSame(
+            [
+                ConfigTest_Mock::class      => ['driver' => 'mysql', 'host' => 'localhost', 'port' => 3306, 'database' => null, 'user' => null],
+                ConfigTest_MockRefer::class => ['database' => 'refer_database'],
+            ],
+            Config::all(ConfigTest_Mock::class, ConfigTest_MockRefer::class),
+        );
+
+        // The section that is not loaded is null
+        $this->assertSame(['NotLoadedSection' => null], Config::all('NotLoadedSection'));
+
+        // All loaded sections
+        $all = Config::all();
+        $this->assertArrayHasKey(ConfigTest_Mock::class, $all);
+        $this->assertArrayHasKey(ConfigTest_MockRefer::class, $all);
+    }
+
+    public function test_dump(): void
+    {
+        Config::reset();
+        Config::get(ConfigTest_Mock::class, 'driver');
+
+        $dump = Config::dump(ConfigTest_Mock::class);
+        $this->assertStringContainsString(ConfigTest_Mock::class, $dump);
+        $this->assertStringContainsString('mysql', $dump);
+        $this->assertStringContainsString('3306', $dump);
+        $this->assertStringNotContainsString(ConfigTest_MockOption::class, $dump);
+
+        $this->assertStringContainsString(ConfigTest_Mock::class, Config::dump());
+    }
+
+    public function test_get_section(): void
+    {
+        // The whole section is returned with the referrer and the promise resolved
+        $this->assertSame(['database' => 'refer_database'], Config::get(ConfigTest_MockRefer::class));
+        ConfigTest_MockPromise::config('dummy', false); // load the library config before the environment is changed
+        \putenv('PROMISE_TEST=1');
+        $this->assertSame(['promise_not' => 'default', 'promise_once' => '1', 'promise_every' => '1'], Config::get(ConfigTest_MockPromise::class));
+
+        // The section that has no library configuration is empty array
+        $this->assertSame([], Config::get('NoLibraryConfigSection', null, false));
+        $this->assertSame('default', Config::get('NoLibraryConfigSection', 'key', false, 'default'));
+    }
+
+    public function test_get_requiredSectionIsBlank(): void
+    {
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Required config NoLibraryConfigSection is blank or not define.");
+        Config::get('NoLibraryConfigSection');
+    }
+
+    public function test_get_falsyValueIsNotBlank(): void
+    {
+        Config::application([
+            ConfigTest_Mock::class => [
+                'zero'   => 0,
+                'false'  => false,
+                'string' => '0',
+                'empty'  => [],
+            ],
+        ]);
+
+        // 0, false and '0' are not blank, so that the required config does not throw the exception
+        $this->assertSame(0, Config::get(ConfigTest_Mock::class, 'zero'));
+        $this->assertFalse(Config::get(ConfigTest_Mock::class, 'false'));
+        $this->assertSame('0', Config::get(ConfigTest_Mock::class, 'string'));
+
+        // The empty array is blank
+        $this->assertSame([], Config::get(ConfigTest_Mock::class, 'empty', false));
+        $this->assertSame([], Config::get(ConfigTest_Mock::class, 'empty', false, 'default')); // the default is used only for null
+        $this->expectException(ConfigNotDefineException::class);
+        Config::get(ConfigTest_Mock::class, 'empty');
+    }
+
+    public function test_get_digitKey(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid config key access, the key 'map.01' contains digit only part.");
+        Config::get(ConfigTest_MockOption::class, 'map.01');
+    }
+
+    public function test_get_notDigitKey(): void
+    {
+        // The key part that contains not only digits is valid
+        Config::application([ConfigTest_Mock::class => ['1a' => 'a', 'a1' => ['b2' => 'b']]]);
+        $this->assertSame('a', Config::get(ConfigTest_Mock::class, '1a'));
+        $this->assertSame('b', Config::get(ConfigTest_Mock::class, 'a1.b2'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'a1.b2'));
+    }
+
+    public function test_refer_digitKey(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid config key access, the key 'array.0' contains digit only part.");
+        Config::refer(ConfigTest_Mock::class, 'array.0');
+    }
+
+    public function test_get_referrerFollowsTheChangeOfReferredSection(): void
+    {
+        $this->assertSame('refer_database', Config::get(ConfigTest_MockRefer::class, 'database'));
+
+        Config::runtime([ConfigTest_Mock::class => ['database' => 'runtime_db']]);
+        $this->assertSame('runtime_db', Config::get(ConfigTest_MockRefer::class, 'database'));
+
+        Config::reset(ConfigTest_Mock::class, Layer::RUNTIME);
+        $this->assertSame('refer_database', Config::get(ConfigTest_MockRefer::class, 'database'));
+
+        Config::application([ConfigTest_Mock::class => ['database' => 'app_db']]);
+        $this->assertSame('app_db', Config::get(ConfigTest_MockRefer::class, 'database'));
+        $this->assertSame(['database' => 'app_db'], Config::get(ConfigTest_MockRefer::class));
+
+        // The referrer itself can be overridden
+        Config::runtime([ConfigTest_MockRefer::class => ['database' => 'own_db']]);
+        $this->assertSame('own_db', Config::get(ConfigTest_MockRefer::class, 'database'));
+    }
+
+    public function test_get_valueIsNotSharedByReference(): void
+    {
+        // The returned array is a copy, so that modifying it does not affect the configuration
+        $map      = Config::get(ConfigTest_MockOption::class, 'map');
+        $map['a'] = 'modified';
+        $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
+    }
+
+    public function test_reset_layerOfAllSections(): void
+    {
+        Config::framework([ConfigTest_Mock::class => ['driver' => 'fw'], ConfigTest_MockOption::class => ['map' => ['a' => 'fw']]]);
+        Config::application([ConfigTest_Mock::class => ['host' => 'app']]);
+        $this->assertSame('fw', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('fw', Config::get(ConfigTest_MockOption::class, 'map.a'));
+        $this->assertSame('app', Config::get(ConfigTest_Mock::class, 'host'));
+
+        // Reset the framework layer of all sections (the application layer is kept)
+        Config::reset(null, Layer::FRAMEWORK);
+        $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
+        $this->assertSame('app', Config::get(ConfigTest_Mock::class, 'host'));
+    }
+
+    public function test_has_blankKeyAndSection(): void
+    {
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, ''));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));
+        $this->assertFalse(Config::has(ConfigTest_Mock::class, 'driver.nothing'));
+        $this->assertFalse(Config::has(ConfigTest_MockOption::class, 'map.nothing'));
+        $this->assertTrue(Config::has(ConfigTest_MockOption::class, 'parent.map.a'));
+        $this->assertTrue(Config::has(ConfigTest_MockRefer::class, 'database'));
+    }
+
+    public function test_instantiate_undefined(): void
+    {
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Unable to instantiate 'nothing' in ConfigTest_MockInstantiate. Undefined configure '" . ConfigTest_MockInstantiate::class . ".nothing'.");
+        Config::instantiate(ConfigTest_MockInstantiate::class, 'nothing');
+    }
+
+    public function test_instantiate_notRequiredAndInstantiated(): void
+    {
+        $this->assertNull(Config::instantiate(ConfigTest_MockInstantiate::class, 'nothing', [], false));
+        $this->assertSame('default', Config::instantiate(ConfigTest_MockInstantiate::class, 'nothing', [], false, ConfigTest_MockInstantiate::class)->value);
+
+        // The instantiated object ignores the runtime args (it is returned as it is)
+        $instance = new ConfigTest_MockInstantiate('instance');
+        Config::application([ConfigTest_MockInstantiate::class => ['instance' => $instance]]);
+        $this->assertSame($instance, Config::instantiate(ConfigTest_MockInstantiate::class, 'instance', ['runtime_arg']));
+    }
+
     public function test_has(): void
     {
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));
