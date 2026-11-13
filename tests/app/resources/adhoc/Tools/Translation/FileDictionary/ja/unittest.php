@@ -8,4 +8,5 @@ return [
     "hello"       => "こんにちは Rebet。",
     "empty_in_ja" => "",
     "zero_in_ja"  => "0",
+    "target"      => "ja trimmed",
 ];

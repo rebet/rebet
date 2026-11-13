@@ -144,6 +144,52 @@ class FileDictionaryTest extends RebetTestCase
         $this->assertTrue($this->dictionary->isLoaded('enum', 'ja'));
     }
 
+    public function test_sentence_loadedResourceIsKeptUntilClear(): void
+    {
+        $root = $this->vfs([
+            'i18n' => [
+                'ja' => ['dynamic.php' => "<?php return ['key' => 'before', 'list' => ['[1] one', '[*] other']];"],
+            ],
+        ]);
+        $resource = $root->url() . '/i18n';
+        $this->dictionary->addLibraryResource($resource);
+        $this->assertSame('before', $this->dictionary->sentence('dynamic', 'key', ['ja']));
+        $this->assertSame('one', $this->dictionary->sentence('dynamic', 'list', ['ja'], 1));
+        $this->assertNull($this->dictionary->sentence('dynamic', 'added', ['ja']));
+
+        // The loaded resource is kept even if the file is changed (the same result is returned for the same key)
+        file_put_contents("{$resource}/ja/dynamic.php", "<?php return ['key' => 'after', 'list' => ['[1] ONE', '[*] OTHER'], 'added' => 'added'];");
+        $this->assertSame('before', $this->dictionary->sentence('dynamic', 'key', ['ja']));
+        $this->assertSame('one', $this->dictionary->sentence('dynamic', 'list', ['ja'], 1));
+        $this->assertSame('other', $this->dictionary->sentence('dynamic', 'list', ['ja'], 2));
+        $this->assertNull($this->dictionary->sentence('dynamic', 'added', ['ja']));
+
+        // The changed resource is loaded after the clear
+        $this->dictionary->clear('dynamic', 'ja');
+        $this->assertSame('after', $this->dictionary->sentence('dynamic', 'key', ['ja']));
+        $this->assertSame('ONE', $this->dictionary->sentence('dynamic', 'list', ['ja'], 1));
+        $this->assertSame('OTHER', $this->dictionary->sentence('dynamic', 'list', ['ja'], 2));
+        $this->assertSame('added', $this->dictionary->sentence('dynamic', 'added', ['ja']));
+
+        // The clear of all groups also reloads the resource
+        file_put_contents("{$resource}/ja/dynamic.php", "<?php return ['key' => 'again'];");
+        $this->dictionary->clear();
+        $this->assertSame('again', $this->dictionary->sentence('dynamic', 'key', ['ja']));
+        $this->assertNull($this->dictionary->sentence('dynamic', 'added', ['ja']));
+    }
+
+    public function test_sentence_sameKeyWithDifferentSelectorAndLocale(): void
+    {
+        $this->dictionary->addLibraryResource(App::structure()->resources('/adhoc/Tools/Translation/FileDictionary'));
+        // The same key is resolved for each selector and locale
+        foreach ([1 => 'This is 1.', 2 => 'This is 2.', 9 => 'This is *(othre).', 1 => 'This is 1.'] as $selector => $expect) {
+            $this->assertSame($expect, $this->dictionary->sentence('unittest', 'select_by_number', ['en'], $selector));
+        }
+        $this->assertSame('こんにちは Rebet。', $this->dictionary->sentence('unittest', 'hello', ['ja', 'en']));
+        $this->assertSame('Hello Rebet.', $this->dictionary->sentence('unittest', 'hello', ['en', 'ja']));
+        $this->assertSame('こんにちは Rebet。', $this->dictionary->sentence('unittest', 'hello', ['ja', 'en']));
+    }
+
     public function test_grammar(): void
     {
         $this->dictionary->addLibraryResource(App::structure()->resources('/adhoc/Tools/Translation/FileDictionary'));
@@ -255,6 +301,16 @@ class FileDictionaryTest extends RebetTestCase
 
             // The resource of the other locale is not used
             [null, 'plain_pipe', ['ja']],
+
+            // The literal key that contains the dot has priority over the nested key
+            ['literal', 'dotted.key', ['en']],
+            ['nested other', 'dotted.other', ['en']],
+
+            // The full key of all locales has priority over the recursive (trimmed) key
+            ['en full', 'order.target', ['ja', 'en']],
+            ['ja trimmed', 'order.target', ['ja']],
+            [null, 'order.target', ['ja'], null, false],
+            ['ja trimmed', 'custom.target', ['ja', 'en']],
 
             ['baz', 'group.parent.child', ['en']   ],
             ['foo', 'group.parent.child', ['en'], 1],

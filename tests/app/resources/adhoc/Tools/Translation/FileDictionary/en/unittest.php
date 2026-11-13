@@ -56,6 +56,15 @@ return [
     "empty_in_ja"                             => "Fallback to en.",
     "zero_in_ja"                              => "Fallback to en.",
 
+    "dotted.key"                              => "literal",
+    "dotted"                                  => [
+        "key"   => "nested",
+        "other" => "nested other",
+    ],
+    "order"                                   => [
+        "target" => "en full",
+    ],
+
     "group"                                   => [
         "parent" => [
             "child" => "[1] foo|[2] bar|[*] baz",
