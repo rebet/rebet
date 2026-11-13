@@ -230,10 +230,10 @@ trait Enumerable
      */
     private static function &caches(bool $reset = false): array
     {
-        static $CACHES = ['translation' => [], 'metadata' => [], 'index' => []];
+        static $CACHES = ['translation' => [], 'metadata' => [], 'index' => [], 'translate' => []];
 
         if ($reset) {
-            $CACHES = ['translation' => [], 'metadata' => [], 'index' => []];
+            $CACHES = ['translation' => [], 'metadata' => [], 'index' => [], 'translate' => []];
         }
         return $CACHES;
     }
@@ -314,15 +314,43 @@ trait Enumerable
     #[Override]
     public function translate(string $field, string|null $locale = null): string
     {
+        [$string, $key] = $this->source($field);
+        return $key === null ? $string : (Translator::get($key, [], null, true, $locale) ?? $string);
+    }
+
+    /**
+     * Get the cached (native enum) or the fresh source of the translation of given field.
+     *
+     * @param  string                                     $field
+     * @return array{0: string, 1: string|null, 2: mixed} [the field value as a string, the translation key (null if not translated), the original field value]
+     * @throws LogicException                             when the given field is not defined
+     */
+    private function source(string $field): array
+    {
+        // The field value and the translation key of the native enum never change, so that they are cached.
+        if ($this instanceof \UnitEnum) {
+            $cache = &static::caches();
+            return $cache['translate'][static::class][$this->name][$field] ??= $this->translationSource($field);
+        }
+        return $this->translationSource($field);
+    }
+
+    /**
+     * Get the source of the translation of given field.
+     *
+     * @param  string                                     $field
+     * @return array{0: string, 1: string|null, 2: mixed} [the field value as a string, the translation key (null if the field is not translated), the original field value]
+     * @throws LogicException                             when the given field is not defined
+     */
+    private function translationSource(string $field): array
+    {
         $value        = $this->original($field);
         $string       = $value === null ? '' : Strings::stringify($value); // null is an empty string (not 'null') as the display text
         $translatable = static::translation();
         if (!$translatable->has($field)) {
-            return $string;
+            return [$string, null, $value];
         }
-        $key        = get_called_class() . ".{$field}.{$this->value()}";
-        $translated = Translator::get($translatable->group . ".{$key}", [], null, true, $locale);
-        return $translated ?? $string;
+        return [$string, $translatable->group . '.' . static::class . ".{$field}.{$this->value()}", $value];
     }
 
     /**
@@ -457,7 +485,8 @@ trait Enumerable
      */
     private function resolve(string $field, string|null $locale = null): mixed
     {
-        return static::translation()->has($field) ? $this->translate($field, $locale) : $this->original($field);
+        [$string, $key, $value] = $this->source($field);
+        return $key === null ? $value : (Translator::get($key, [], null, true, $locale) ?? $string);
     }
 
     /**
@@ -588,7 +617,8 @@ trait Enumerable
         if ($expect === null) {
             return null;
         }
-        if (!static::translation()->has($field)) {
+        // NOTE: The 'value' and 'name' can not be translated, so that the check of the Translatable attribute is skipped.
+        if ($field === 'value' || $field === 'name' || !static::translation()->has($field)) {
             return static::fieldIndex($field)[$expect] ?? null;
         }
 

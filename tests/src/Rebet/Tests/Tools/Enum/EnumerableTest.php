@@ -1030,13 +1030,14 @@ class EnumerableTest extends RebetTestCase
         EnumerableTest_Gender::Male->label();
         EnumerableTest_Gender::valueOf(1);
         EnumerableTest_AcceptStatus::Waiting->color();
+        $this->assertNotEmpty($caches(EnumerableTest_Gender::class)['translate']);
         $this->assertNotEmpty($caches(EnumerableTest_Gender::class)['translation']);
         $this->assertNotEmpty($caches(EnumerableTest_Gender::class)['index']);
         $this->assertNotEmpty($caches(EnumerableTest_AcceptStatus::class)['metadata']);
 
         // The caches are managed for each using class
         EnumerableTest_Gender::reset();
-        $this->assertSame(['translation' => [], 'metadata' => [], 'index' => []], $caches(EnumerableTest_Gender::class));
+        $this->assertSame(['translation' => [], 'metadata' => [], 'index' => [], 'translate' => []], $caches(EnumerableTest_Gender::class));
         $this->assertNotEmpty($caches(EnumerableTest_AcceptStatus::class)['metadata']);
 
         // The cache is rebuilt after the reset
