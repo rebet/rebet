@@ -268,6 +268,10 @@ class Reflector
      */
     private static function resolveDotAccessDelegator($object)
     {
+        // The fast path for the DotAccessDelegator that returns the scalar (e.g. ConfigReferrer of the locale)
+        while ($object instanceof DotAccessDelegator) {
+            $object = $object->get();
+        }
         if (!\is_array($object) && !\is_object($object)) {
             return $object; // the scalar, null and resource never contain the DotAccessDelegator
         }

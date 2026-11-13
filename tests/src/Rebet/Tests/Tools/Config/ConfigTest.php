@@ -850,6 +850,21 @@ class ConfigTest extends RebetTestCase
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'a1.b2'));
     }
 
+    public function test_validateKey_isCheckedEveryTimeForInvalidKey(): void
+    {
+        // The valid key is memorized, but the invalid key is checked (and rejected) every time
+        $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
+        foreach ([1, 2] as $i) {
+            try {
+                Config::get(ConfigTest_Mock::class, 'driver.0', false);
+                $this->fail("Must not execute. ($i)");
+            } catch (LogicException $e) {
+                $this->assertSame("Invalid config key access, the key 'driver.0' contains digit only part.", $e->getMessage());
+            }
+        }
+    }
+
     public function test_refer_digitKey(): void
     {
         $this->expectException(LogicException::class);

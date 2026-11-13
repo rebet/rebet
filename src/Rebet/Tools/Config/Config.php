@@ -311,7 +311,9 @@ class Config
      */
     protected static function validateKey(string|null $key): void
     {
-        if (Utils::isBlank($key)) {
+        static $VALID_KEYS = [];
+
+        if ($key === null || $key === '' || isset($VALID_KEYS[$key])) {
             return;
         }
         foreach (\explode('.', $key) as $value) {
@@ -319,6 +321,8 @@ class Config
                 throw new LogicException("Invalid config key access, the key '{$key}' contains digit only part.");
             }
         }
+        // The valid key is memorized, because the same keys are validated repeatedly. (the number of the keys is limited)
+        $VALID_KEYS[$key] = true;
     }
 
     /**
@@ -340,9 +344,11 @@ class Config
     public static function get(string $section, string|null $key = null, bool $required = true, $default = null)
     {
         static::validateKey($key);
-        static::setup($section);
+        if (!isset(static::$compiled[$section])) {
+            static::setup($section); // the compiled section is always set up (the library config is loaded before the compile)
+        }
         $value = Reflector::get(static::$compiled[$section] ?? null, $key);
-        if ($required && Utils::isBlank($value)) {
+        if ($required && ($value === null || $value === '' || $value === [])) {
             throw new ConfigNotDefineException("Required config {$section}" . ($key ? ".{$key}" : "") . " is blank or not define.");
         }
         return $value ?? $default;
