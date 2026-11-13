@@ -601,7 +601,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
 
     /**
      * Convert the origin value to string by Reflector::convert(), or an empty string if it can not be converted.
-     * (the Enumeration is converted to its label)
+     * (the Enumeration is converted to the string of its value, so use `->label` if you need the label)
      *
      * @return string
      */

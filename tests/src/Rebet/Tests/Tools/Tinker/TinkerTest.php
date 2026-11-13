@@ -166,7 +166,7 @@ class TinkerTest extends RebetTestCase
         $sunday = Tinker::with(DayOfWeek::Sunday);
         $this->assertSame(DayOfWeek::Sunday->label_short(), $sunday->label_short()->return());
         $this->assertSame(DayOfWeek::Sunday->label_short('en'), $sunday->label_short('en')->return());
-        $this->assertSame('男性', $this->enum->escape()->return());
+        $this->assertSame('1', $this->enum->escape()->return());
         $this->assertEquals(
             DateTime::valueOf('2002/02/03 04:05:06'),
             $this->datetime_o->addYear(1)->return(),
@@ -376,7 +376,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame('123', "{$this->int}");
         $this->assertSame('Hello Rebet', "{$this->string}");
         $this->assertSame('[1,2,3]', "{$this->array}");
-        $this->assertSame('男性', "{$this->enum}");
+        $this->assertSame('1', "{$this->enum}");
         $this->assertSame('2001-02-03 04:05:06', "{$this->datetime_o}");
         $this->assertSame('{"foo":"FOO","parent":{"child":{"bar":"BAR"}},"number":123,"gender":1,"boolean":true}', "{$this->map}");
     }
@@ -623,7 +623,7 @@ class TinkerTest extends RebetTestCase
         $this->assertSame('123', $this->int->escape()->return());
         $this->assertSame('Hello Rebet', $this->string->escape()->return());
         $this->assertSame('&lt;h1&gt;Hello Rebet&lt;/h1&gt;', $this->html->escape()->return());
-        $this->assertSame('男性', $this->enum->escape()->return());
+        $this->assertSame('1', $this->enum->escape()->return());
 
         // Tinker.filter.customs.escape:url
         $this->assertNull($this->null->escape('url')->return());

@@ -499,8 +499,8 @@ trait Enumerable
     /**
      * Convert type to given type.
      *
-     * The string conversion returns the label (translated if the label is given to the Translatable attribute), the same as Reflector::convert().
-     * The other types are converted from the value() (e.g. int for the int value), and null is returned if it is not convertible.
+     * The conversion is based on the value() (e.g. int for the int value), and the string conversion is the string of the value() (not the label).
+     * It is the same as Reflector::convert(), so use label() if you need the label. null is returned if it is not convertible.
      *
      * @param  string $type
      * @return mixed
@@ -513,8 +513,8 @@ trait Enumerable
         }
         $value = $this->value();
         return match (true) {
-            $type === 'string'               => $this->label(),
             Reflector::typeOf($value, $type) => $value,
+            $type === 'string'               => (string) $value,
             default                          => null,
         };
     }

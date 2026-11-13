@@ -405,7 +405,6 @@ class Reflector
      *      -> If $value is string then return $value (no convert)
      *      -> If $value is resource then return null
      *      -> If $value is scalar then return type casted value
-     *      -> If $value is Enumeration then return the label (translated if the label is given to the Translatable attribute)
      *      -> If $value has __toSring() method then invoke that
      *      -> If $value is array or ArrayAccess then return json encoded value
      *      -> If $value is object and instanceof JsonSerializable then call jsonSerialize()
@@ -476,9 +475,6 @@ class Reflector
                     }
                     if (is_scalar($value)) {
                         return (string) $value;
-                    }
-                    if ($value instanceof Enumeration) {
-                        return $value->label();
                     }
                     if (is_object($value) && method_exists($value, '__toString')) {
                         return $value->__toString();

@@ -1155,9 +1155,9 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('', Reflector::convert(false, $type));
         $this->assertSame('abc', Reflector::convert('abc', $type));
 
-        // The Enumeration is converted to the label (translated if the label is given to the Translatable attribute)
-        $this->assertSame('男性', Reflector::convert(Gender::Male, $type));
-        $this->assertSame('Manager', Reflector::convert(GroupPosition::Manager, $type));
+        // The Enumeration is converted to the string of the value (not the label, because it is the same as the PHP enum and the JSON, and it does not depend on the locale)
+        $this->assertSame('1', Reflector::convert(Gender::Male, $type));
+        $this->assertSame('3', Reflector::convert(GroupPosition::Member, $type));
         $jsonValue = new JsonSerializableStub('abc');
         $this->assertSame('abc', Reflector::convert($jsonValue, $type));
 

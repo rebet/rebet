@@ -291,14 +291,14 @@ class EnumerableTest extends RebetTestCase
         $male = EnumerableTest_Gender::Male;
         $this->assertSame(1, $male->convertTo('int'));
         $this->assertSame(null, $male->convertTo('float'));
-        // The string conversion is the label (translated if the label is given to the Translatable attribute)
-        $this->assertSame('男性', $male->convertTo('string'));
+        // The string conversion is the string of the value (not the label), the same as Reflector::convert()
+        $this->assertSame('1', $male->convertTo('string'));
         $this->assertSame($male, $male->convertTo(EnumerableTest_Gender::class));
         $this->assertSame(null, $male->convertTo(EnumerableTest_AcceptStatus::class));
 
         $status = EnumerableTest_AcceptStatus::Rejected;
         $this->assertSame(null, $status->convertTo('int'));
-        $this->assertSame('却下', $status->convertTo('string'));
+        $this->assertSame('R', $status->convertTo('string'));
         $this->assertSame($status, $status->convertTo(EnumerableTest_AcceptStatus::class));
         $this->assertSame(null, $status->convertTo(EnumerableTest_Gender::class));
     }
@@ -789,7 +789,7 @@ class EnumerableTest extends RebetTestCase
         $summer = EnumerableTest_Season::Summer;
 
         $this->assertSame('Summer', $summer->jsonSerialize());
-        $this->assertSame('夏', $summer->convertTo('string'));
+        $this->assertSame('Summer', $summer->convertTo('string'));
         $this->assertSame(null, $summer->convertTo('int'));
         $this->assertSame($summer, $summer->convertTo(EnumerableTest_Season::class));
         $this->assertSame(null, $summer->convertTo(EnumerableTest_Gender::class));
@@ -931,7 +931,7 @@ class EnumerableTest extends RebetTestCase
         $this->assertSame(13, $tokyo->jsonSerialize());
         $this->assertSame('[1,13,27]', json_encode(EnumerableTest_Prefecture::lists()));
         $this->assertSame(13, $tokyo->convertTo('int'));
-        $this->assertSame('東京都', $tokyo->convertTo('string'));
+        $this->assertSame('13', $tokyo->convertTo('string'));
         $this->assertSame($tokyo, $tokyo->convertTo(EnumerableTest_Prefecture::class));
         $this->assertSame(null, $tokyo->convertTo(EnumerableTest_Gender::class));
     }
