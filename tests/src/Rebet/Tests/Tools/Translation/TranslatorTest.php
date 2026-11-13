@@ -144,6 +144,21 @@ class TranslatorTest extends RebetTestCase
         $this->assertSame('タロウ 太郎', Translator::replace(':name_kana :name', ['name' => '太郎', 'name_kana' => 'タロウ']));
     }
 
+    public function test_replace_valueIsNotReplacedAgain(): void
+    {
+        // The replaced value is never replaced again even if it contains the placeholder
+        $this->assertSame('A=:b, B=b', Translator::replace('A=:a, B=:b', ['a' => ':b', 'b' => 'b']));
+        $this->assertSame('ようこそ、:name様', Translator::get('message.welcome', ['name' => ':name']));
+    }
+
+    public function test_get_iterableReplacementUsesDelimiterOfLocale(): void
+    {
+        $this->assertSame('ようこそ、A／B様', Translator::get('message.welcome', ['name' => new \ArrayObject(['A', 'B'])]));
+        $this->assertSame('Hello, A, B.', Translator::get('message.welcome', ['name' => new \ArrayObject(['A', 'B'])], null, true, 'en'));
+        // The scalar replacement does not need the delimiter
+        $this->assertSame('ようこそ、A様', Translator::get('message.welcome', ['name' => 'A']));
+    }
+
     public function test_replace_scalarValues(): void
     {
         $this->assertSame('null=[], int=[1], float=[1.5], true=[1], false=[]', Translator::replace(

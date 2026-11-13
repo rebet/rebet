@@ -6,9 +6,7 @@ namespace Rebet\Tools\Translation;
 
 use Override;
 use Rebet\Tools\Config\Configurable;
-use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Utility\Strings;
 
 /**
@@ -177,9 +175,22 @@ class Translator
         }
 
         $locale ??= static::config('locale');
-        $sentence = static::dictionary()->sentence($group, $key, array_unique([$locale, static::config('fallback_locale')]), $selector, $recursive);
+        $fallback   = static::config('fallback_locale');
+        $dictionary = static::dictionary();
+        $sentence   = $dictionary->sentence($group, $key, $locale === $fallback ? [$locale] : [$locale, $fallback], $selector, $recursive);
+        if ($sentence === null || empty($replacement)) {
+            return $sentence;
+        }
 
-        return static::replace($sentence, $replacement, static::grammar($group, 'delimiter', ', ', $locale));
+        // The delimiter is needed only when the replacement contains the array (or the iterable) value.
+        $delimiter = ', ';
+        foreach ($replacement as $value) {
+            if (is_iterable($value)) {
+                $delimiter = $dictionary->grammar($group, 'delimiter', $locale, ', ');
+                break;
+            }
+        }
+        return static::replace($sentence, $replacement, $delimiter);
     }
 
     /**
@@ -200,12 +211,14 @@ class Translator
             return $sentence;
         }
 
-        $replacement = Tinker::with($replacement, true)->sortKeys(SORT_DESC, Callbacks::compareLength())->return();
+        // NOTE: strtr() replaces the longest placeholder first (e.g. ':name_kana' is prior to ':name'),
+        //       and the replaced value is never replaced again.
+        $pairs = [];
         foreach ($replacement as $key => $value) {
-            $sentence = str_replace(':' . $key, (string) (Arrays::implode($value, $delimiter) ?? $value ?? ''), $sentence);
+            $pairs[':' . $key] = (string) (Arrays::implode($value, $delimiter) ?? $value ?? '');
         }
 
-        return $sentence;
+        return strtr($sentence, $pairs);
     }
 
     /**
