@@ -1521,6 +1521,166 @@ class ReflectorTest extends RebetTestCase
         $this->assertFalse(Reflector::uses(ReflectorTest_TraitChild::class, Configurable::class));
     }
 
+    public function test_get_edgeCases(): void
+    {
+        // null object returns the default
+        $this->assertSame('default', Reflector::get(null, 'name', 'default'));
+        $this->assertNull(Reflector::get(null, 'name'));
+
+        // the parent of the nested key is null then the default is returned
+        $this->assertSame('default', Reflector::get($this->map, 'children.name', 'default'));
+        $this->assertSame('default', Reflector::get($this->object, 'children.name', 'default'));
+        $this->assertSame('default', Reflector::get($this->map, 'nothing.name', 'default'));
+
+        // the null value is the default
+        $this->assertSame('default', Reflector::get($this->map, 'children', 'default'));
+        $this->assertSame('default', Reflector::get($this->object, 'children', 'default'));
+        $this->assertSame('default', Reflector::get($this->array, 3, 'default'));
+
+        // blank key returns the object itself (DotAccessDelegator is resolved)
+        $this->assertSame($this->map, Reflector::get($this->map, null));
+        $this->assertSame($this->map, Reflector::get($this->map, ''));
+        $this->assertSame(['b' => 'ab', 'c' => 'ac'], Reflector::get($this->transparent->a, null));
+
+        // the top level DotAccessDelegator is resolved
+        $this->assertSame('ab', Reflector::get($this->transparent->a, 'b'));
+        $this->assertSame('ac', Reflector::get($this->transparent->a, 'c'));
+        $this->assertSame('default', Reflector::get($this->transparent->b, 'nothing', 'default'));
+
+        // the integer key and the numeric string key
+        $this->assertSame('b', Reflector::get($this->array, 1));
+        $this->assertSame('b', Reflector::get($this->array, '1'));
+        $this->assertSame('outdoor', Reflector::get($this->map, 'hobbies.1'));
+        $this->assertSame('outdoor', Reflector::get($this->object, 'hobbies.1'));
+
+        // the static property via the class name
+        // (the static values may be changed by the other tests, so that they are compared with the current values)
+        $this->assertSame(ReflectorTest_Accessible::$static_public, Reflector::get(ReflectorTest_Accessible::class, 'static_public'));
+        $this->assertNull(Reflector::get(ReflectorTest_Accessible::class, 'static_private'));
+        $this->assertSame((new \ReflectionProperty(ReflectorTest_Accessible::class, 'static_private'))->getValue(), Reflector::get(ReflectorTest_Accessible::class, 'static_private', null, true));
+    }
+
+    public function test_has_edgeCases(): void
+    {
+        $this->assertFalse(Reflector::has(null, 'name'));
+
+        // the top level DotAccessDelegator is resolved
+        $this->assertTrue(Reflector::has($this->transparent->a, 'b'));
+        $this->assertTrue(Reflector::has($this->transparent->a, 'c'));
+        $this->assertFalse(Reflector::has($this->transparent->a, 'nothing'));
+
+        // the null value exists
+        $this->assertTrue(Reflector::has($this->map, 'children'));
+        $this->assertTrue(Reflector::has($this->object, 'children'));
+        $this->assertTrue(Reflector::has($this->array, 3));
+
+        // the nested key on the null value does not exist
+        $this->assertFalse(Reflector::has($this->map, 'children.name'));
+        $this->assertFalse(Reflector::has($this->object, 'children.name'));
+
+        // the static property via the class name
+        $this->assertTrue(Reflector::has(ReflectorTest_Accessible::class, 'static_public'));
+        $this->assertFalse(Reflector::has(ReflectorTest_Accessible::class, 'static_private'));
+        $this->assertTrue(Reflector::has(ReflectorTest_Accessible::class, 'static_private', true));
+    }
+
+    public function test_remove_nestedParentKeyNotExists(): void
+    {
+        try {
+            Reflector::remove($this->map, 'nothing.name');
+            $this->fail('Must not execute.');
+        } catch (\OutOfBoundsException $e) {
+            $this->assertSame("Nested parent key 'nothing' does not exist.", $e->getMessage());
+        }
+
+        try {
+            Reflector::remove($this->object, 'nothing.name');
+            $this->fail('Must not execute.');
+        } catch (\OutOfBoundsException $e) {
+            $this->assertSame("Nested key 'nothing' does not exist.", $e->getMessage());
+        }
+
+        try {
+            Reflector::remove($this->object, 'nothing');
+            $this->fail('Must not execute.');
+        } catch (\OutOfBoundsException $e) {
+            $this->assertSame("Nested key 'nothing' does not exist.", $e->getMessage());
+        }
+
+        // The array (map) does not throw the exception for the terminal key (it returns null)
+        $this->assertNull(Reflector::remove($this->map, 'nothing'));
+    }
+
+    public function test_convert_stdClass(): void
+    {
+        $converted = Reflector::convert(['a' => 1, 'b' => 'B'], 'stdClass');
+        $this->assertInstanceOf(\stdClass::class, $converted);
+        $this->assertEquals((object) ['a' => 1, 'b' => 'B'], $converted);
+
+        $object = new \stdClass();
+        $this->assertSame($object, Reflector::convert($object, 'stdClass'));
+        $this->assertNull(Reflector::convert(null, 'stdClass'));
+    }
+
+    public function test_convert_exceptionIsNull(): void
+    {
+        // The exception thrown while converting is converted to null
+        $this->assertNull(Reflector::convert(new ReflectorTest_ThrowToString(), 'string'));
+        $this->assertNull(Reflector::convert('foo', ReflectorTest_ThrowValueOf::class));
+        $this->assertNull(Reflector::convert(new ReflectorTest_ThrowConvertTo(), ReflectorTest_Mock::class));
+    }
+
+    public function test_getType(): void
+    {
+        $this->assertNull(Reflector::getType(null));
+        $this->assertSame(ReflectorTest_Mock::class, Reflector::getType(new ReflectorTest_Mock()));
+        $this->assertSame(\Closure::class, Reflector::getType(fn() => 1));
+        $this->assertSame('string', Reflector::getType('foo'));
+        $this->assertSame('string', Reflector::getType('strlen')); // string has priority over callable
+        $this->assertSame('array', Reflector::getType([1, 2]));
+        $this->assertSame('int', Reflector::getType(1));
+        $this->assertSame('float', Reflector::getType(1.5));
+        $this->assertSame('bool', Reflector::getType(false));
+        $resource = fopen('php://memory', 'r');
+        try {
+            $this->assertSame('resource', Reflector::getType($resource));
+        } finally {
+            fclose($resource);
+        }
+
+        // The closed resource is not any type
+        $this->assertNull(Reflector::getType($resource));
+    }
+
+    public function test_instantiate_closureAndNonStringFactory(): void
+    {
+        // Closure is evaluated
+        $this->assertSame('closure', Reflector::instantiate(fn() => new ReflectorTest_Mock('closure'))->value);
+
+        // The callable factory is evaluated with the arguments
+        $this->assertSame('callable arg', Reflector::instantiate([
+            '@factory' => fn($value) => new ReflectorTest_Mock("callable {$value}"),
+            'value'    => 'arg',
+        ])->value);
+
+        // The object factory (not callable) is returned as it is, and the setup is applied
+        $mock = new ReflectorTest_Mock('object');
+        $this->assertSame('object setup', Reflector::instantiate([
+            '@factory' => $mock,
+            '@setup'   => function ($m) {
+                $m->value .= ' setup';
+                return $m;
+            },
+        ])->value);
+    }
+
+    public function test_instantiate_withoutFactory(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Unable to instantiate, because of '@factory' or zero index valule is undefined.");
+        Reflector::instantiate(['value' => 'arg']);
+    }
+
     public function test_caller(): void
     {
         $this->assertEquals('test_caller', $this->colledFromTestCaller());
@@ -1787,5 +1947,29 @@ enum ReflectorTest_ConvertibleEnum: int implements Convertible
     public function convertTo(string $type)
     {
         return null;
+    }
+}
+
+class ReflectorTest_ThrowToString
+{
+    public function __toString(): string
+    {
+        throw new \RuntimeException('to string failed');
+    }
+}
+
+class ReflectorTest_ThrowValueOf
+{
+    public static function valueOf($value): static
+    {
+        throw new \RuntimeException('valueOf failed');
+    }
+}
+
+class ReflectorTest_ThrowConvertTo
+{
+    public function convertTo(string $type)
+    {
+        throw new \RuntimeException('convertTo failed');
     }
 }
