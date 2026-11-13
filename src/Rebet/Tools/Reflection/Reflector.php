@@ -131,18 +131,6 @@ class Reflector
     }
 
     /**
-     * It checks given parameters that will be able to property access or not.
-     *
-     * @param  mixed  $target
-     * @param  string $property
-     * @return bool
-     */
-    protected static function canPropertyAccess($target, string $property): bool
-    {
-        return static::reflectProperty($target, $property) !== null;
-    }
-
-    /**
      * It checks whether the property can be accessed in the given accessibility.
      *
      * NOTE: ReflectionProperty::setAccessible() has no effect since PHP 8.1 (every property is always accessible),
@@ -385,10 +373,6 @@ class Reflector
             throw new \OutOfBoundsException("Nested key '{$current}' does not exist.");
         }
 
-        if (Arrays::accessible($object) && isset($object[$current])) {
-            $object[$current] = $value;
-            return;
-        }
         $rp = static::reflectProperty($object, $current);
         if ($rp !== null) {
             static::assertAccessibleProperty($rp, $current, $accessible);
@@ -503,14 +487,9 @@ class Reflector
             throw new \OutOfBoundsException("Nested key '{$current}' does not exist.");
         }
 
-        if (Arrays::accessible($object) && isset($object[$current])) {
-            $ret = $object[$current];
-            unset($object[$current]);
-            return self::resolveDotAccessDelegator($ret);
-        }
         $rp = static::reflectProperty($object, $current);
         if ($rp !== null) {
-            if ($rp->isPublic() || $rp->getModifiers() === 4096) {
+            if ($rp->isPublic()) {
                 $ret = $object->$current;
                 unset($object->$current);
                 return self::resolveDotAccessDelegator($ret);
@@ -607,9 +586,7 @@ class Reflector
                     //---------------------------------------------
                     // To String
                     //---------------------------------------------
-                    if (is_string($value)) {
-                        return $value;
-                    }
+                    // NOTE: The string value is returned by typeOf() check above.
                     if (is_resource($value)) {
                         return null;
                     }
@@ -637,18 +614,14 @@ class Reflector
                     //---------------------------------------------
                     // To Callable
                     //---------------------------------------------
-                    if (is_callable($value)) {
-                        return $value;
-                    }
+                    // NOTE: The callable value is returned by typeOf() check above, so that the other value can not be converted.
                     return null;
 
                 case \Closure::class:
                     //---------------------------------------------
                     // To Closure
                     //---------------------------------------------
-                    if ($value instanceof \Closure) {
-                        return $value;
-                    }
+                    // NOTE: The Closure value is returned by typeOf() check above.
                     if (is_callable($value)) {
                         return \Closure::fromCallable($value);
                     }

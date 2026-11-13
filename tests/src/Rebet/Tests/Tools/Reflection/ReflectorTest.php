@@ -1560,6 +1560,16 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame((new \ReflectionProperty(ReflectorTest_Accessible::class, 'static_private'))->getValue(), Reflector::get(ReflectorTest_Accessible::class, 'static_private', null, true));
     }
 
+    public function test_get_nestedArrayAccessObject(): void
+    {
+        $object = new \ArrayObject(['a' => ['b' => 'ab'], 'o' => (object) ['p' => 'op']]);
+        $this->assertSame('ab', Reflector::get($object, 'a.b'));
+        $this->assertSame('op', Reflector::get($object, 'o.p'));
+        $this->assertSame('default', Reflector::get($object, 'a.nothing', 'default'));
+        $this->assertSame('default', Reflector::get($object, 'nothing.b', 'default'));
+        $this->assertSame('ab', Reflector::get(['wrap' => $object], 'wrap.a.b'));
+    }
+
     public function test_has_edgeCases(): void
     {
         $this->assertFalse(Reflector::has(null, 'name'));

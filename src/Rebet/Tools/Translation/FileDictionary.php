@@ -360,16 +360,4 @@ class FileDictionary implements Dictionary
         }
         return $condition === '*' || in_array($selector, $extra, true) ? $value : null;
     }
-
-    /**
-     * Get the translation string if the condition matches.
-     *
-     * @param  string          $part
-     * @param  int|string|null $selector
-     * @return string|null
-     */
-    protected function extract(string $part, $selector): string|null
-    {
-        return $this->match($this->parseChoice($part), $selector);
-    }
 }
