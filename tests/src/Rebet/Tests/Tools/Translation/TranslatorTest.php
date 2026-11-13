@@ -88,6 +88,80 @@ class TranslatorTest extends RebetTestCase
         $this->assertSame('Hello, Bob.', Translator::get('message.welcome', ['name' => 'Bob'], null, true, 'de'));
     }
 
+    public function test_addResourceTo_otherDictionary(): void
+    {
+        // The resource is not added when the dictionary is not the given class
+        $before = FileDictionary::config('resources.i18n');
+        Translator::addResourceTo(TranslatorTest_OtherDictionary::class, '/path/to/other');
+        $this->assertSame($before, FileDictionary::config('resources.i18n'));
+    }
+
+    public function test_grammar_nestedAndDefault(): void
+    {
+        $this->assertSame('is-danger', Translator::grammar('message', 'errors.class'));
+        $this->assertSame(['red', '#333'], Translator::grammar('message', 'errors.color'));
+        $this->assertSame('default', Translator::grammar('message', 'nothing', 'default'));
+        $this->assertSame('default', Translator::grammar('nothing_group', 'nothing', 'default'));
+    }
+
+    public function test_get_selectorAndReplacement(): void
+    {
+        $this->assertSame('これはリンゴです。', Translator::get('message.sample', ['amount' => 1], 1));
+        $this->assertSame('これらは3個のリンゴです。', Translator::get('message.sample', ['amount' => 3], 3));
+        $this->assertSame('There are 3 apples.', Translator::get('message.sample', ['amount' => 3], 3, true, 'en'));
+        $this->assertNull(Translator::get('message.sample'));
+    }
+
+    public function test_get_arrayReplacementUsesDelimiterOfLocale(): void
+    {
+        $this->assertSame('ようこそ、A／B様', Translator::get('message.welcome', ['name' => ['A', 'B']]));
+        $this->assertSame('Hello, A, B.', Translator::get('message.welcome', ['name' => ['A', 'B']], null, true, 'en'));
+    }
+
+    public function test_get_recursive(): void
+    {
+        $this->assertSame('指定のページが見つかりません', Translator::get('message.http.404.title'));
+        $this->assertSame('ようこそ、:name様', Translator::get('message.custom.welcome'));
+        $this->assertNull(Translator::get('message.custom.welcome', [], null, false));
+        $this->assertSame('指定のページが見つかりません', Translator::get('message.http.404.title', [], null, false));
+        $this->assertNull(Translator::get('nothing_group.key'));
+    }
+
+    public function test_get_fallbackLocale(): void
+    {
+        // The fallback locale is used when the translation is not found in the locale
+        $this->assertSame('Hello, Bob.', Translator::get('message.welcome', ['name' => 'Bob'], null, true, 'de'));
+        App::setLocale('de', 'ja');
+        $this->assertSame('ようこそ、Bob様', Translator::get('message.welcome', ['name' => 'Bob']));
+        App::setLocale('ja', 'ja');
+        $this->assertSame('ようこそ、Bob様', Translator::get('message.welcome', ['name' => 'Bob']));
+    }
+
+    public function test_replace_order(): void
+    {
+        // The longer key is replaced first, so that ':name' does not break ':name_kana'
+        $this->assertSame('太郎 タロウ', Translator::replace(':name :name_kana', ['name' => '太郎', 'name_kana' => 'タロウ']));
+        $this->assertSame('タロウ 太郎', Translator::replace(':name_kana :name', ['name' => '太郎', 'name_kana' => 'タロウ']));
+    }
+
+    public function test_replace_scalarValues(): void
+    {
+        $this->assertSame('null=[], int=[1], float=[1.5], true=[1], false=[]', Translator::replace(
+            'null=[:null], int=[:int], float=[:float], true=[:true], false=[:false]',
+            ['null' => null, 'int' => 1, 'float' => 1.5, 'true' => true, 'false' => false],
+        ));
+        $this->assertNull(Translator::replace(null, ['name' => 'foo']));
+        $this->assertSame('no placeholder', Translator::replace('no placeholder', ['name' => 'foo']));
+    }
+
+    public function test_ordinalize_locale(): void
+    {
+        // The locale can be given explicitly, and the number is returned as it is for the locale without ordinalize
+        $this->assertSame('2nd', Translator::ordinalize(2, 'en'));
+        $this->assertSame('2', Translator::ordinalize(2, 'xx'));
+        $this->assertSame('2', Translator::ordinalize(2));
+    }
+
     public function test_replace(): void
     {
         $this->assertSame(':last_name :first_name', Translator::replace(':last_name :first_name', []));
@@ -136,3 +210,8 @@ class TranslatorTest extends RebetTestCase
         $this->assertSame('124th', Translator::ordinalize(124));
     }
 }
+
+/**
+ * The other dictionary class for the test of addResourceTo().
+ */
+abstract class TranslatorTest_OtherDictionary implements \Rebet\Tools\Translation\Dictionary {}

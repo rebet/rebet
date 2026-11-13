@@ -110,6 +110,40 @@ class FileDictionaryTest extends RebetTestCase
         $this->assertFalse($this->dictionary->isLoaded('attribute', 'ja'));
     }
 
+    public function test_grammar_loadAndNested(): void
+    {
+        $this->assertFalse($this->dictionary->isLoaded('message', 'ja'));
+        $this->assertSame('is-danger', $this->dictionary->grammar('message', 'errors.class', 'ja'));
+        $this->assertTrue($this->dictionary->isLoaded('message', 'ja'));
+        $this->assertSame(['red', '#333'], $this->dictionary->grammar('message', 'errors.color', 'ja'));
+        $this->assertSame('#333', $this->dictionary->grammar('message', 'errors.color.1', 'ja'));
+        $this->assertSame('default', $this->dictionary->grammar('message', 'errors.nothing', 'ja', 'default'));
+        $this->assertSame('default', $this->dictionary->grammar('nothing_group', 'delimiter', 'ja', 'default'));
+        $this->assertTrue($this->dictionary->isLoaded('nothing_group', 'ja'));
+    }
+
+    public function test_sentence_nestedGroupKey(): void
+    {
+        $this->assertSame('指定のページが見つかりません', $this->dictionary->sentence('message', 'http.404.title', ['ja', 'en']));
+        $this->assertSame('Custom Not Found', $this->dictionary->sentence('message', 'http.404.title', ['en']));
+        $this->assertSame('これはリンゴです。', $this->dictionary->sentence('message', 'sample', ['ja'], 1));
+        $this->assertSame('これらは:amount個のリンゴです。', $this->dictionary->sentence('message', 'sample', ['ja'], 5));
+        $this->assertNull($this->dictionary->sentence('message', 'sample', ['ja']));
+        $this->assertNull($this->dictionary->sentence('nothing_group', 'key', ['ja', 'en']));
+    }
+
+    public function test_addLibraryResource_sameResource(): void
+    {
+        $resource = App::structure()->resources('/adhoc/Tools/Translation/FileDictionary');
+        $this->dictionary->addLibraryResource($resource);
+        $this->dictionary->sentence('enum', Gender::class . '.label.1', ['ja', 'en']);
+        $this->assertTrue($this->dictionary->isLoaded('enum', 'ja'));
+
+        // The same resource is ignored, so that the loaded resources are not cleared
+        $this->assertInstanceOf(FileDictionary::class, $this->dictionary->addLibraryResource($resource, 'enum'));
+        $this->assertTrue($this->dictionary->isLoaded('enum', 'ja'));
+    }
+
     public function test_grammar(): void
     {
         $this->dictionary->addLibraryResource(App::structure()->resources('/adhoc/Tools/Translation/FileDictionary'));
@@ -193,6 +227,34 @@ class FileDictionaryTest extends RebetTestCase
             ['A', 'custom.a.recursive', ['en'], null, false],
             [null, 'custom.b.recursive', ['en'], null, false],
             [null, 'custom.c.recursive', ['en'], null, false],
+
+            // The segment without the condition is returned as it is (the first one wins)
+            ['first', 'plain_pipe', ['en']   ],
+            ['first', 'plain_pipe', ['en'], 2],
+
+            // The selector of '[...]' is compared loosely (numeric string matches)
+            ['This is 2.', 'select_by_number', ['en'], '2'],
+            ['This is 10 to 19.', 'select_by_number_range', ['en'], '15'],
+
+            // The selector of '{...}' is compared strictly as string (int selector does not match the word '1')
+            ['This is one.', 'select_by_word_numeric', ['en'], '1'],
+            ['This is *(othre).', 'select_by_word_numeric', ['en'], 1],
+
+            // The range without wildcard
+            [null, 'select_by_number_without_wildcard_range', ['en']   ],
+            ['This is 1 to 5.', 'select_by_number_without_wildcard_range', ['en'], 1],
+            ['This is 1 to 5.', 'select_by_number_without_wildcard_range', ['en'], 5],
+            [null, 'select_by_number_without_wildcard_range', ['en'], 6],
+            [null, 'select_by_number_without_wildcard_range', ['en'], 0],
+
+            // The empty sentence falls back to the next locale, but '0' is a valid translation (it is not treated as not translated)
+            ['Fallback to en.', 'empty_in_ja', ['ja', 'en']],
+            ['0', 'zero_in_ja', ['ja', 'en']],
+            ['', 'empty_in_ja', ['ja']],
+            ['0', 'zero_in_ja', ['ja']],
+
+            // The resource of the other locale is not used
+            [null, 'plain_pipe', ['ja']],
 
             ['baz', 'group.parent.child', ['en']   ],
             ['foo', 'group.parent.child', ['en'], 1],

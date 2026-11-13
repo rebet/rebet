@@ -187,7 +187,8 @@ class FileDictionary implements Dictionary
         foreach ($locales as $locale) {
             $this->load($group, $locale);
             $sentence = Reflector::get($this->resouces[$group][$locale], $key);
-            if ($sentence) {
+            // NOTE: The empty string (and empty array) is treated as not translated, but the falsy string '0' is a valid translation.
+            if ($sentence !== null && $sentence !== '' && $sentence !== []) {
                 break;
             }
         }
