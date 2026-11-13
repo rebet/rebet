@@ -40,7 +40,7 @@ interface Enumeration extends \JsonSerializable, Convertible, ArrayKeyable
      * Get translated value of given field/meta as a string.
      *
      * The field that is given to the Translatable attribute is translated by the translator of the group of the attribute,
-     * and the field value (converted to string by Strings::stringify()) is returned when the translation is not found.
+     * and the field value (converted to string by Strings::stringify(), and null is an empty string) is returned when the translation is not found.
      * The field that is not given to the attribute (and the class without the attribute) is not translated at all.
      *
      * @param  string         $field

@@ -302,7 +302,7 @@ trait Enumerable
      * Get translated value of given field/meta as a string.
      *
      * The field that is given to the Translatable attribute is translated by the translator of the group of the attribute,
-     * and the field value (converted to string by Strings::stringify()) is returned when the translation is not found.
+     * and the field value (converted to string by Strings::stringify(), and null is an empty string) is returned when the translation is not found.
      * The field that is not given to the attribute (and the class without the attribute) is not translated at all, that is
      * the same as the field value that is converted to string. Use original() if you need the value as it is.
      *
@@ -315,13 +315,14 @@ trait Enumerable
     public function translate(string $field, string|null $locale = null): string
     {
         $value        = $this->original($field);
+        $string       = $value === null ? '' : Strings::stringify($value); // null is an empty string (not 'null') as the display text
         $translatable = static::translation();
         if (!$translatable->has($field)) {
-            return Strings::stringify($value);
+            return $string;
         }
         $key        = get_called_class() . ".{$field}.{$this->value()}";
         $translated = Translator::get($translatable->group . ".{$key}", [], null, true, $locale);
-        return $translated ?? Strings::stringify($value);
+        return $translated ?? $string;
     }
 
     /**

@@ -12,6 +12,7 @@ use Rebet\Tools\Enum\Enumeration;
 use Rebet\Tools\Enum\Meta;
 use Rebet\Tools\Enum\Translatable;
 use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\ArrayKeyable;
 use Rebet\Tools\Utility\Arrays;
@@ -1043,6 +1044,85 @@ class EnumerableTest extends RebetTestCase
         $this->assertSame('男性', EnumerableTest_Gender::Male->label('ja'));
     }
 
+    public function test_meta_hasAndGet(): void
+    {
+        $meta = new Meta(color: 'red', note: null);
+        $this->assertTrue($meta->has('color'));
+        $this->assertTrue($meta->has('note'));           // null value is also treated as defined
+        $this->assertFalse($meta->has('nothing'));
+        $this->assertSame('red', $meta->get('color'));
+        $this->assertNull($meta->get('note'));
+        $this->assertNull($meta->get('nothing'));         // undefined is null
+
+        $empty = new Meta();
+        $this->assertSame([], $empty->data);
+        $this->assertFalse($empty->has('color'));
+        $this->assertNull($empty->get('color'));
+    }
+
+    public function test_meta_nullValue(): void
+    {
+        // The metadata of null value is defined, so that it is not an undefined field
+        $case = EnumerableTest_NullMeta::One;
+        $this->assertTrue($case->has('note'));
+        $this->assertNull($case->original('note'));
+        $this->assertNull($case->note());
+        $this->assertSame('', $case->translate('note'));         // null is an empty string as the display text
+
+        // The translated field (the translation is not found) is also an empty string
+        $this->assertSame('', EnumerableTest_NullLabel::One->label());
+        $this->assertSame('', EnumerableTest_NullLabel::One->label('en'));
+        $this->assertSame(['', 'Two'], EnumerableTest_NullLabel::labels());
+        $this->assertSame([null, 'memo'], EnumerableTest_NullMeta::listOf('note'));
+
+        // The other case has no metadata of the name, so that it is undefined
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Undefined field or meta. " . EnumerableTest_NullMeta::class . "::Two has no field or meta 'only_one'.");
+        EnumerableTest_NullMeta::Two->original('only_one');
+    }
+
+    public function test_has_pureAndDb(): void
+    {
+        // pure enum: name, value and label are always defined
+        foreach (['name', 'value', 'label'] as $field) {
+            $this->assertTrue(EnumerableTest_Season::Summer->has($field), $field);
+        }
+        $this->assertFalse(EnumerableTest_Season::Summer->has('color'));
+
+        // the class that is not native enum: the public properties are the fields
+        $tokyo = EnumerableTest_Prefecture::valueOf(13);
+        foreach (['name', 'value', 'label'] as $field) {
+            $this->assertTrue($tokyo->has($field), $field);
+        }
+        $this->assertFalse($tokyo->has('color'));
+        $this->assertFalse($tokyo->has('cache'));         // the private static property is not a field
+    }
+
+    public function test_equals_otherArrayKeyable(): void
+    {
+        // The object of the other class is never equal even if the array key is the same
+        $this->assertSame(1, Arrays::asKey(Decimal::of(1)));
+        $this->assertFalse(EnumerableTest_Gender::Male->equals(Decimal::of(1)));
+        $this->assertFalse(EnumerableTest_Gender::Male->in(Decimal::of(1), Decimal::of(2)));
+        $this->assertNull(EnumerableTest_Gender::valueOf(Decimal::of(1)));
+    }
+
+    public function test_reset_notNativeEnum(): void
+    {
+        $caches = fn(string $class) => (new \ReflectionMethod($class, 'caches'))->getStaticVariables()['CACHES'];
+
+        EnumerableTest_Child::lists()[0]->label();
+        EnumerableTest_Own::lists()[0]->label_short();
+        $this->assertNotEmpty($caches(EnumerableTest_Child::class)['translation']);
+        $this->assertSame([], $caches(EnumerableTest_Child::class)['index']);   // the index of the class is not cached
+
+        // The caches of the parent class (that shares the static variables with the child classes) are cleared
+        EnumerableTest_Base::reset();
+        $this->assertSame([], $caches(EnumerableTest_Child::class)['translation']);
+        $this->assertSame('子', EnumerableTest_Child::lists()[0]->label('ja'));
+        $this->assertSame('独自短', EnumerableTest_Own::lists()[0]->label_short('ja'));
+    }
+
     public function test_in_empty(): void
     {
         $this->assertFalse(EnumerableTest_Gender::Male->in());
@@ -1450,3 +1530,32 @@ class EnumerableTest_Grandchild extends EnumerableTest_Child {}
  */
 #[Translatable(['label_short'], group: 'enumerable')]
 class EnumerableTest_Own extends EnumerableTest_Base {}
+
+/**
+ * The metadata of null value.
+ */
+enum EnumerableTest_NullMeta: int implements Enumeration
+{
+    use Enumerable;
+
+    #[Meta(note: null, only_one: true)]
+    case One = 1;
+
+    #[Meta(note: 'memo')]
+    case Two = 2;
+}
+
+/**
+ * The label of null value with the Translatable attribute (the translation is not defined).
+ */
+#[Translatable(['label'], group: 'enumerable')]
+enum EnumerableTest_NullLabel: int implements Enumeration
+{
+    use Enumerable;
+
+    #[Meta(label: null)]
+    case One = 1;
+
+    #[Meta(label: 'Two')]
+    case Two = 2;
+}
