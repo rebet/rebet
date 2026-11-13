@@ -178,6 +178,57 @@ class FileDictionaryTest extends RebetTestCase
         $this->assertNull($this->dictionary->sentence('dynamic', 'added', ['ja']));
     }
 
+    public function test_sentence_delegatorIsEvaluatedOnce(): void
+    {
+        $root = $this->vfs([
+            'i18n' => [
+                'ja' => ['delegator.php' => <<<'PHP'
+                    <?php
+                    use Rebet\Tools\Config\Config;
+                    return [
+                        'dynamic' => Config::promise(fn() => getenv('FILE_DICTIONARY_TEST') ?: 'none', false),
+                        'nested'  => ['dynamic' => Config::promise(fn() => '[1] one ' . (getenv('FILE_DICTIONARY_TEST') ?: 'none') . '|[*] other', false)],
+                        '@grammar' => Config::promise(fn() => getenv('FILE_DICTIONARY_TEST') ?: 'none', false),
+                    ];
+                    PHP],
+            ],
+        ]);
+        $this->dictionary->addLibraryResource($root->url() . '/i18n');
+        try {
+            putenv('FILE_DICTIONARY_TEST=first');
+            $this->assertSame('first', $this->dictionary->sentence('delegator', 'dynamic', ['ja']));
+            $this->assertSame('one first', $this->dictionary->sentence('delegator', 'nested.dynamic', ['ja'], 1));
+            $this->assertSame('first', $this->dictionary->grammar('delegator', 'grammar', 'ja'));
+
+            // The value of DotAccessDelegator is evaluated only once at the first lookup (it is memorized)
+            putenv('FILE_DICTIONARY_TEST=second');
+            $this->assertSame('first', $this->dictionary->sentence('delegator', 'dynamic', ['ja']));
+            $this->assertSame('one first', $this->dictionary->sentence('delegator', 'nested.dynamic', ['ja'], 1));
+            $this->assertSame('other', $this->dictionary->sentence('delegator', 'nested.dynamic', ['ja'], 2));
+            $this->assertSame('first', $this->dictionary->grammar('delegator', 'grammar', 'ja'));
+
+            // It is evaluated again after the clear
+            $this->dictionary->clear('delegator');
+            $this->assertSame('second', $this->dictionary->sentence('delegator', 'dynamic', ['ja']));
+            $this->assertSame('one second', $this->dictionary->sentence('delegator', 'nested.dynamic', ['ja'], 1));
+            $this->assertSame('second', $this->dictionary->grammar('delegator', 'grammar', 'ja'));
+        } finally {
+            putenv('FILE_DICTIONARY_TEST');
+        }
+    }
+
+    public function test_sentence_notFoundIsAlsoReturnedRepeatedly(): void
+    {
+        $this->dictionary->addLibraryResource(App::structure()->resources('/adhoc/Tools/Translation/FileDictionary'));
+        // The not found result (and the recursive search) is the same for the repeated call
+        foreach ([1, 2, 3] as $i) {
+            $this->assertNull($this->dictionary->sentence('unittest', 'custom.invalid', ['ja', 'en']), (string) $i);
+            $this->assertSame('root', $this->dictionary->sentence('unittest', 'custom.c.recursive', ['en']), (string) $i);
+            $this->assertNull($this->dictionary->sentence('unittest', 'custom.c.recursive', ['en'], null, false), (string) $i);
+            $this->assertSame('default', $this->dictionary->grammar('unittest', 'invalid', 'en', 'default'), (string) $i);
+        }
+    }
+
     public function test_sentence_sameKeyWithDifferentSelectorAndLocale(): void
     {
         $this->dictionary->addLibraryResource(App::structure()->resources('/adhoc/Tools/Translation/FileDictionary'));
