@@ -88,7 +88,6 @@ class MethodRoute extends DeclarativeRoute
             $this->controller->request = $request;
             $this->controller->route   = $this;
         }
-        $this->action->setAccessible($this->accessible);
         if (!$this->accessible && !$this->action->isPublic()) {
             throw new RouteNotFoundException("{$this} not found. Action [ {$this->action->getDeclaringClass()->getName()}::{$this->action->getName()} ] not accessible.");
         }

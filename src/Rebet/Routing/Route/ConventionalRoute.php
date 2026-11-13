@@ -233,7 +233,6 @@ class ConventionalRoute extends Route
         $method = null;
         try {
             $method = new \ReflectionMethod($controller, $action);
-            $method->setAccessible($this->accessible);
         } catch (\Throwable $e) {
             throw (new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not exists."))->caused($e);
         }
@@ -286,8 +285,7 @@ class ConventionalRoute extends Route
     #[Override]
     protected function createRouteAction(Request $request): RouteAction
     {
-        $method = new \ReflectionMethod($this->controller, $this->getActionName());
-        $method->setAccessible($this->accessible);
+        $method       = new \ReflectionMethod($this->controller, $this->getActionName());
         $route_action = new RouteAction($this, $method, $this->controller);
 
         $channel = $route_action->attribute(Channel::class);

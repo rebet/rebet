@@ -89,10 +89,9 @@ class Reflector
         if ($rp === null) {
             return $default;
         }
-        if (!$accessible && !$rp->isPublic()) {
+        if (!static::isAccessibleProperty($rp, $accessible)) {
             return $default;
         }
-        $rp->setAccessible($accessible);
         $value = static::getPropertyValue($rp, $object);
         return $value === null ? $default : self::resolveDotAccessDelegator($value) ;
     }
@@ -107,6 +106,37 @@ class Reflector
     protected static function canPropertyAccess($target, string $property): bool
     {
         return static::reflectProperty($target, $property) !== null;
+    }
+
+    /**
+     * It checks whether the property can be accessed in the given accessibility.
+     *
+     * NOTE: ReflectionProperty::setAccessible() has no effect since PHP 8.1 (every property is always accessible),
+     *       so the accessibility must be checked by ourselves.
+     *
+     * @param  \ReflectionProperty $rp
+     * @param  bool                $accessible true for allowing the non-public (protected/private) property
+     * @return bool
+     */
+    protected static function isAccessibleProperty(\ReflectionProperty $rp, bool $accessible): bool
+    {
+        return $accessible || $rp->isPublic();
+    }
+
+    /**
+     * Assert that the property can be accessed in the given accessibility.
+     *
+     * @param  \ReflectionProperty   $rp
+     * @param  string                $name       of property for the message
+     * @param  bool                  $accessible true for allowing the non-public (protected/private) property
+     * @return void
+     * @throws \OutOfBoundsException when the non-public property is accessed without the accessible
+     */
+    protected static function assertAccessibleProperty(\ReflectionProperty $rp, string $name, bool $accessible): void
+    {
+        if (!static::isAccessibleProperty($rp, $accessible)) {
+            throw new \OutOfBoundsException("Nested key '{$name}' can not access.");
+        }
     }
 
     /**
@@ -238,7 +268,7 @@ class Reflector
             }
             $rp = static::reflectProperty($object, $current);
             if ($rp !== null) {
-                $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
+                static::assertAccessibleProperty($rp, $current, $accessible);
                 $target = static::getPropertyValue($rp, $object);
                 static::set($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value, $accessible);
                 static::setPropertyValue($rp, $object, $target);
@@ -256,7 +286,7 @@ class Reflector
         }
         $rp = static::reflectProperty($object, $current);
         if ($rp !== null) {
-            $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
+            static::assertAccessibleProperty($rp, $current, $accessible);
             static::setPropertyValue($rp, $object, $value);
             return;
         }
@@ -303,10 +333,9 @@ class Reflector
                 if ($rp === null) {
                     return false;
                 }
-                if (!$accessible && !$rp->isPublic()) {
+                if (!static::isAccessibleProperty($rp, $accessible)) {
                     return false;
                 }
-                $rp->setAccessible($accessible);
                 $nest_obj = static::getPropertyValue($rp, $object);
                 // $nest_obj = $object->{$current};
             }
@@ -351,7 +380,7 @@ class Reflector
             }
             $rp = static::reflectProperty($object, $current);
             if ($rp !== null) {
-                $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
+                static::assertAccessibleProperty($rp, $current, $accessible);
                 $target = static::getPropertyValue($rp, $object);
                 $ret    = static::remove($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
                 static::setPropertyValue($rp, $object, $target);
@@ -862,11 +891,14 @@ class Reflector
      * @param  boolean                  $accessible   (default: false)
      * @param  boolean                  $type_convert (default: false)
      * @return mixed
+     * @throws \ReflectionException     when the non-public method is invoked without the accessible
      */
     public static function invoke($object, string $method, array $args = [], bool $accessible = false, bool $type_convert = false)
     {
         $method = new \ReflectionMethod($object, $method);
-        $method->setAccessible($accessible);
+        if (!$accessible && !$method->isPublic()) {
+            throw new \ReflectionException("Trying to invoke non-public method {$method->getDeclaringClass()->getName()}::{$method->getName()}() (Please set accessible true if you need).");
+        }
         return $method->invoke(is_object($object) ? $object : null, ...static::toArgs($method->getParameters(), $args, $type_convert));
     }
 

@@ -629,6 +629,55 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('value', Reflector::get($this->accessible, 'private_parent.private', null, true));
     }
 
+    public function test_set_notAccessible(): void
+    {
+        // The non-public property can not be set unless the accessible is given (ReflectionProperty::setAccessible() has no effect since PHP 8.1)
+        foreach ([$this->accessible, $this->accessible_child] as $object) {
+            foreach (['protected', 'private'] as $property) {
+                try {
+                    Reflector::set($object, $property, 'modified');
+                    $this->fail("Must not execute. ({$property})");
+                } catch (\OutOfBoundsException $e) {
+                    $this->assertSame("Nested key '{$property}' can not access.", $e->getMessage());
+                }
+                $this->assertNotSame('modified', Reflector::get($object, $property, null, true));
+            }
+
+            // The non-public property on the way of the nested key is also not accessible.
+            try {
+                Reflector::set($object, 'private_parent.public', 'modified');
+                $this->fail("Must not execute. (nested)");
+            } catch (\OutOfBoundsException $e) {
+                $this->assertSame("Nested key 'private_parent' can not access.", $e->getMessage());
+            }
+        }
+    }
+
+    public function test_remove_notAccessible(): void
+    {
+        try {
+            Reflector::remove($this->accessible, 'private_parent.public');
+            $this->fail("Must not execute.");
+        } catch (\OutOfBoundsException $e) {
+            $this->assertSame("Nested key 'private_parent' can not access.", $e->getMessage());
+        }
+    }
+
+    public function test_invoke_notAccessible(): void
+    {
+        foreach ([$this->accessible, $this->accessible_child, ReflectorTest_Accessible::class] as $object) {
+            foreach (['callProtected', 'callPrivate', 'callStaticProtected', 'callStaticPrivate'] as $method) {
+                try {
+                    Reflector::invoke($object, $method);
+                    $this->fail("Must not execute. ({$method})");
+                } catch (\ReflectionException $e) {
+                    $this->assertStringStartsWith("Trying to invoke non-public method ", $e->getMessage());
+                    $this->assertStringContainsString("::{$method}()", $e->getMessage());
+                }
+            }
+        }
+    }
+
     public function test_set_accessible_child(): void
     {
         Reflector::set($this->accessible_child, 'public', 'value');

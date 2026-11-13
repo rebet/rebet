@@ -87,7 +87,7 @@ class EmailValidator extends EguliasEmailValidator
         if (static::$original_validator === null) {
             static::$original_validator = $current_validator;
         }
-        Reflector::set($address, 'validator', new EmailValidator());
+        Reflector::set($address, 'validator', new EmailValidator(), true);
     }
 
     /**
@@ -100,7 +100,7 @@ class EmailValidator extends EguliasEmailValidator
     {
         if (static::$original_validator !== null) {
             $class = Address::class;
-            Reflector::set($class, 'validator', static::$original_validator);
+            Reflector::set($class, 'validator', static::$original_validator, true);
         }
     }
 
