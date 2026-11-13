@@ -58,42 +58,76 @@ class Reflector
         if ($object === null) {
             return $default;
         }
-        if (Utils::isBlank($key)) {
+        if ($key === null || $key === '' || $key === []) { // @phpstan-ignore identical.alwaysFalse (guard for the value that does not follow the documented type, same as Utils::isBlank())
             return self::resolveDotAccessDelegator($object) ;
         }
 
-        if (Arrays::accessible($object) && Arrays::exists($object, $key)) {
+        // The fast path for the array (it is the most frequent case)
+        if (\is_array($object)) {
+            if (\array_key_exists($key, $object)) {
+                return self::resolveDotAccessDelegator($object[$key]) ?? $default ;
+            }
+        } elseif (Arrays::accessible($object) && Arrays::exists($object, $key)) {
             return self::resolveDotAccessDelegator($object[$key]) ?? $default ;
         }
 
-        $current = Strings::latrim((string) $key, '.');
-        if ($current != $key) {
-            $target = static::get($object, $current, null, $accessible);
+        [$current, $rest] = self::splitKey($key);
+        if ($rest !== null) {
+            // NOTE: The intermediate value is not resolved deeply because it is not returned.
+            //       (the DotAccessDelegator of the top level is resolved by the next get())
+            $target = $current === '' ? $object : self::fetch($object, $current, $accessible);
             if ($target === null) {
                 return $default;
             }
-            return static::get($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $default, $accessible);
+            return static::get($target, $rest, $default, $accessible);
         }
 
-        if (Arrays::accessible($object) && isset($object[$current])) {
-            $value = $object[$current];
-            return self::resolveDotAccessDelegator($value) ;
-        }
-
-        if ($object instanceof Enumeration && $object->has($current)) {
-            $value = $object->{$current}();
-            return $value === null ? $default : self::resolveDotAccessDelegator($value);
-        }
-
-        $rp = static::reflectProperty($object, $current);
-        if ($rp === null) {
-            return $default;
-        }
-        if (!static::isAccessibleProperty($rp, $accessible)) {
-            return $default;
-        }
-        $value = static::getPropertyValue($rp, $object);
+        $value = self::fetch($object, $current, $accessible);
         return $value === null ? $default : self::resolveDotAccessDelegator($value) ;
+    }
+
+    /**
+     * Fetch the value of given key (that is not dot notation) from an array or object as it is.
+     * The DotAccessDelegator in the value is not resolved.
+     *
+     * @param  mixed  $object
+     * @param  string $key
+     * @param  bool   $accessible
+     * @return mixed  null if the key does not exist or the property is not accessible
+     */
+    private static function fetch($object, string $key, bool $accessible)
+    {
+        if (\is_array($object)) {
+            return $object[$key] ?? null; // the array has no property
+        }
+        if (Arrays::accessible($object) && Arrays::exists($object, $key)) {
+            return $object[$key];
+        }
+        if ($object instanceof Enumeration && $object->has($key)) {
+            return $object->{$key}();
+        }
+        if (\is_object($object) && self::declaredProperty($object::class, $key) === null) {
+            // The dynamic property is always public, so that it can be read directly without the reflection.
+            return \property_exists($object, $key) ? $object->{$key} : null;
+        }
+        $rp = static::reflectProperty($object, $key);
+        if ($rp === null || !static::isAccessibleProperty($rp, $accessible)) {
+            return null;
+        }
+        return static::getPropertyValue($rp, $object);
+    }
+
+    /**
+     * Split the given dot notation key into the first key and the rest.
+     *
+     * @param  int|string                       $key
+     * @return array{0: string, 1: string|null} [$current, $rest] (the rest is null if the key is not dot notation)
+     */
+    private static function splitKey(int|string $key): array
+    {
+        $key = (string) $key;
+        $pos = \strpos($key, '.');
+        return $pos === false ? [$key, null] : [\substr($key, 0, $pos), \substr($key, $pos + 1)];
     }
 
     /**
@@ -154,18 +188,47 @@ class Reflector
      */
     public static function reflectProperty($object, string $property): \ReflectionProperty|null
     {
-        if (!((\is_string($object) && \class_exists($object)) || \is_object($object))) {
+        if (\is_object($object)) {
+            $class = $object::class;
+        } elseif (\is_string($object) && \class_exists($object)) {
+            $class = $object;
+        } else {
             return null;
         }
-        if (\property_exists($object, $property)) {
-            return new \ReflectionProperty($object, $property);
+
+        $declared = self::declaredProperty($class, $property);
+        if ($declared !== null) {
+            return $declared;
         }
-        for ($rc = new \ReflectionClass($object); $rc !== false; $rc = $rc->getParentClass()) {
-            if ($rc->hasProperty($property)) {
-                return $rc->getProperty($property);
+
+        // The dynamic property depends on the object, so that it is not cached.
+        return \is_object($object) && \property_exists($object, $property) ? new \ReflectionProperty($object, $property) : null;
+    }
+
+    /**
+     * Get the declared property of given class (including the private property of the ancestor class).
+     *
+     * The result is cached for each class, because the class definition never changes while the process is running.
+     *
+     * @param  class-string             $class
+     * @param  string                   $property
+     * @return \ReflectionProperty|null
+     */
+    private static function declaredProperty(string $class, string $property): \ReflectionProperty|null
+    {
+        static $DECLARED_CACHE = [];
+
+        if (!isset($DECLARED_CACHE[$class]) || !\array_key_exists($property, $DECLARED_CACHE[$class])) {
+            $declared = null;
+            for ($rc = new \ReflectionClass($class); $rc !== false; $rc = $rc->getParentClass()) {
+                if ($rc->hasProperty($property)) {
+                    $declared = $rc->getProperty($property);
+                    break;
+                }
             }
+            $DECLARED_CACHE[$class][$property] = $declared;
         }
-        return null;
+        return $DECLARED_CACHE[$class][$property];
     }
 
     /**
@@ -205,26 +268,64 @@ class Reflector
      */
     private static function resolveDotAccessDelegator($object)
     {
-        while ($object instanceof DotAccessDelegator) {
-            $object = $object->get();
+        if (!\is_array($object) && !\is_object($object)) {
+            return $object; // the scalar, null and resource never contain the DotAccessDelegator
+        }
+        $changed = false;
+        return self::resolveDelegators($object, $changed);
+    }
+
+    /**
+     * Resolve the DotAccessDelegator in the given value recursively.
+     *
+     * The array is copied only when it contains the DotAccessDelegator, and the object is modified in place
+     * (the property is set only when it contains the DotAccessDelegator).
+     *
+     * @param  mixed $value
+     * @param  bool  $changed set true when the given value (or the array) is changed
+     * @return mixed
+     */
+    private static function resolveDelegators($value, bool &$changed)
+    {
+        while ($value instanceof DotAccessDelegator) {
+            $value   = $value->get();
+            $changed = true;
+        }
+
+        if (\is_array($value)) {
+            foreach ($value as $key => $item) {
+                if (\is_array($item) || \is_object($item)) {
+                    $item_changed = false;
+                    $resolved     = self::resolveDelegators($item, $item_changed);
+                    if ($item_changed) {
+                        $value[$key] = $resolved;
+                        $changed     = true;
+                    }
+                }
+            }
+            return $value;
         }
 
         if (
-            $object === null
-            || \is_scalar($object)
-            || \is_resource($object)
-            || (is_iterable($object) && !is_array($object) && !($object instanceof \ArrayAccess))
-            || $object instanceof Tinker
-            || $object instanceof \UnitEnum    // enum is immutable (e.g. the read-only name and value can not be modified)
+            !\is_object($value)
+            || (\is_iterable($value) && !($value instanceof \ArrayAccess))
+            || $value instanceof Tinker
+            || $value instanceof \UnitEnum    // enum is immutable (e.g. the read-only name and value can not be modified)
         ) {
-            return $object;
+            return $value;
         }
 
-        foreach ($object as $key => $value) {
-            static::set($object, $key, self::resolveDotAccessDelegator($value), true);
+        foreach ($value as $key => $item) {
+            if (\is_array($item) || \is_object($item)) {
+                $item_changed = false;
+                $resolved     = self::resolveDelegators($item, $item_changed);
+                if ($item_changed) {
+                    static::set($value, $key, $resolved, true);
+                }
+            }
         }
 
-        return $object;
+        return $value;
     }
 
     /**
@@ -260,17 +361,17 @@ class Reflector
             }
             return;
         }
-        $current = Strings::latrim($key === null ? null : (string) $key, '.');
-        if ($current != $key) {
+        [$current, $rest] = $key === null ? [null, null] : self::splitKey($key);
+        if ($rest !== null) {
             if (Arrays::accessible($object) && \array_key_exists($current, $object)) {
-                static::set($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value, $accessible);
+                static::set($object[$current], $rest, $value, $accessible);
                 return;
             }
             $rp = static::reflectProperty($object, $current);
             if ($rp !== null) {
                 static::assertAccessibleProperty($rp, $current, $accessible);
                 $target = static::getPropertyValue($rp, $object);
-                static::set($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value, $accessible);
+                static::set($target, $rest, $value, $accessible);
                 static::setPropertyValue($rp, $object, $target);
                 return;
             }
@@ -321,13 +422,19 @@ class Reflector
             return false;
         }
 
-        $current  = Strings::latrim((string) $key, '.');
-        $nest_obj = null;
+        [$current, $rest] = self::splitKey($key);
+        $nest_obj         = null;
         if (Arrays::accessible($object) && Arrays::exists($object, $current)) {
             $nest_obj = $object[$current];
         } else {
             if ($object instanceof Enumeration && $object->has($current)) {
                 $nest_obj = $object->{$current}();
+            } elseif (\is_object($object) && self::declaredProperty($object::class, $current) === null) {
+                // The dynamic property is always public, so that it can be read directly without the reflection.
+                if (!\property_exists($object, $current)) {
+                    return false;
+                }
+                $nest_obj = $object->{$current};
             } else {
                 $rp = static::reflectProperty($object, $current);
                 if ($rp === null) {
@@ -344,7 +451,7 @@ class Reflector
             $nest_obj = $nest_obj->get();
         }
 
-        return $current == $key ? true : static::has($nest_obj, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
+        return $rest === null ? true : static::has($nest_obj, $rest, $accessible);
     }
 
     /**
@@ -373,16 +480,16 @@ class Reflector
             unset($object[$key]);
             return self::resolveDotAccessDelegator($ret);
         }
-        $current = Strings::latrim((string) $key, '.');
-        if ($current != $key) {
+        [$current, $rest] = self::splitKey($key);
+        if ($rest !== null) {
             if (Arrays::accessible($object) && \array_key_exists($current, $object)) {
-                return static::remove($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
+                return static::remove($object[$current], $rest, $accessible);
             }
             $rp = static::reflectProperty($object, $current);
             if ($rp !== null) {
                 static::assertAccessibleProperty($rp, $current, $accessible);
                 $target = static::getPropertyValue($rp, $object);
-                $ret    = static::remove($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
+                $ret    = static::remove($target, $rest, $accessible);
                 static::setPropertyValue($rp, $object, $target);
                 return self::resolveDotAccessDelegator($ret);
             }
@@ -583,7 +690,7 @@ class Reflector
                         if (!is_scalar($value) || is_bool($value)) {
                             return null;
                         }
-                        $backing = (new \ReflectionEnum($type))->getBackingType()?->getName();
+                        $backing = self::backingTypeOf($type);
                         $value   = $backing === 'int' ? filter_var($value, FILTER_VALIDATE_INT) : (string) $value ;
                         return $value === false ? null : $type::tryFrom($value);
                     }
@@ -591,17 +698,28 @@ class Reflector
                     //---------------------------------------------
                     // To Other Object
                     //---------------------------------------------
-                    $rc = new \ReflectionClass($type);
                     return
                         static::tryConvertByStatic($type, 'valueOf', $value)
                         ?? static::tryConvertByStatic($type, 'of', $value)
                         ?? static::tryConvertByMember($value, 'convertTo', $type)
-                        ?? static::tryConvertByMember($value, "to" . $rc->getShortName(), $type)
+                        ?? static::tryConvertByMember($value, "to" . (new \ReflectionClass($type))->getShortName(), $type) // the reflection is created only when it is needed
                     ;
             }
         } catch (\Throwable $e) {
             return null;
         }
+    }
+
+    /**
+     * Get the backing type name of given backed enum. (the result is cached for each enum)
+     *
+     * @param  class-string<\BackedEnum> $type
+     * @return string|null               'int' or 'string'
+     */
+    private static function backingTypeOf(string $type): string|null
+    {
+        static $BACKING_CACHE = [];
+        return $BACKING_CACHE[$type] ??= (new \ReflectionEnum($type))->getBackingType()?->getName();
     }
 
     /**

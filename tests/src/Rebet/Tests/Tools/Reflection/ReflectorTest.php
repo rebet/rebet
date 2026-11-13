@@ -1681,6 +1681,76 @@ class ReflectorTest extends RebetTestCase
         Reflector::instantiate(['value' => 'arg']);
     }
 
+    public function test_multibyteDotNotationKey(): void
+    {
+        $map = ['名前' => ['姓' => '山田', '名' => '太郎'], 'ｘ' => (object) ['ｙ' => 'ｚ']];
+        $this->assertSame('山田', Reflector::get($map, '名前.姓'));
+        $this->assertSame('ｚ', Reflector::get($map, 'ｘ.ｙ'));
+        $this->assertTrue(Reflector::has($map, '名前.名'));
+        $this->assertFalse(Reflector::has($map, '名前.無'));
+
+        Reflector::set($map, '名前.姓', '佐藤');
+        $this->assertSame('佐藤', $map['名前']['姓']);
+        $this->assertSame('太郎', Reflector::remove($map, '名前.名'));
+        $this->assertSame(['姓' => '佐藤'], $map['名前']);
+    }
+
+    public function test_get_readonlyObject(): void
+    {
+        // The object that has the readonly property is returned without modification (the property is set only when it contains the DotAccessDelegator)
+        $readonly = new ReflectorTest_Readonly(['a' => 1], 'name');
+        $this->assertSame($readonly, Reflector::get(['ro' => $readonly], 'ro'));
+        $this->assertSame(['a' => 1], Reflector::get(['ro' => $readonly], 'ro.items'));
+        $this->assertSame(1, Reflector::get(['ro' => $readonly], 'ro.items.a'));
+    }
+
+    public function test_get_resolvesDelegatorInReturnedValue(): void
+    {
+        $delegator = new class implements DotAccessDelegator {
+            #[Override]
+            public function get()
+            {
+                return 'resolved';
+            }
+        };
+        $array  = ['plain' => ['a' => 1, 'b' => [2, 3]], 'nested' => ['a' => 1, 'b' => ['c' => $delegator]]];
+        $object = (object) ['child' => (object) ['value' => $delegator, 'list' => [$delegator, 'x']]];
+
+        // The array that does not contain the DotAccessDelegator is returned as it is
+        $this->assertSame(['a' => 1, 'b' => [2, 3]], Reflector::get($array, 'plain'));
+
+        // The DotAccessDelegator in the returned array is resolved (the original array is not changed)
+        $this->assertSame(['a' => 1, 'b' => ['c' => 'resolved']], Reflector::get($array, 'nested'));
+        $this->assertSame($delegator, $array['nested']['b']['c']);
+
+        // The DotAccessDelegator in the returned object is resolved in place
+        $child = Reflector::get($object, 'child');
+        $this->assertSame('resolved', $child->value);
+        $this->assertSame(['resolved', 'x'], $child->list);
+    }
+
+    public function test_reflectProperty_dynamicPropertyIsNotCached(): void
+    {
+        $a    = new \stdClass();
+        $a->x = 1;
+        $b    = new \stdClass();
+
+        // The dynamic property depends on the object even if the class is the same
+        $this->assertNotNull(Reflector::reflectProperty($a, 'x'));
+        $this->assertNull(Reflector::reflectProperty($b, 'x'));
+        $this->assertSame(1, Reflector::get($a, 'x'));
+        $this->assertNull(Reflector::get($b, 'x'));
+        $this->assertTrue(Reflector::has($a, 'x'));
+        $this->assertFalse(Reflector::has($b, 'x'));
+
+        $b->x = 2;
+        $this->assertNotNull(Reflector::reflectProperty($b, 'x'));
+        $this->assertSame(2, Reflector::get($b, 'x'));
+
+        // The declared property is the same instance (cached)
+        $this->assertSame(Reflector::reflectProperty(new ReflectorTest_Accessible(), 'public'), Reflector::reflectProperty(new ReflectorTest_Accessible(), 'public'));
+    }
+
     public function test_caller(): void
     {
         $this->assertEquals('test_caller', $this->colledFromTestCaller());
@@ -1972,4 +2042,12 @@ class ReflectorTest_ThrowConvertTo
     {
         throw new \RuntimeException('convertTo failed');
     }
+}
+
+final class ReflectorTest_Readonly
+{
+    public function __construct(
+        public readonly array $items,
+        public readonly string $name,
+    ) {}
 }
