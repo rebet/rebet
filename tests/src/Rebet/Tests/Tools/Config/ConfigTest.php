@@ -40,6 +40,34 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('runtime_arg', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_map', ['value' => 'runtime_arg'])->value);
     }
 
+    public function test_instantiate_delegatorArgs(): void
+    {
+        Config::application([
+            'ConfigTestShared'                => ['locale' => 'ja', 'nested' => ['code' => 'JP']],
+            ConfigTest_MockInstantiate::class => [
+                'refer_arg'    => [ConfigTest_MockInstantiate::class, 'value' => Config::refer('ConfigTestShared', 'locale')],
+                'refer_nested' => [ConfigTest_MockInstantiate::class, 'value' => ['locale' => Config::refer('ConfigTestShared', 'locale'), 'nested' => Config::refer('ConfigTestShared', 'nested')]],
+                'promise_arg'  => [ConfigTest_MockInstantiate::class, 'value' => Config::promise(fn() => \getenv('PROMISE_TEST') ?: 'default', false)],
+            ],
+        ]);
+
+        // The DotAccessDelegator in the definition is resolved (and it follows the change of the referred configuration)
+        $this->assertSame('ja', Config::instantiate(ConfigTest_MockInstantiate::class, 'refer_arg')->value);
+        $this->assertSame(['locale' => 'ja', 'nested' => ['code' => 'JP']], Config::instantiate(ConfigTest_MockInstantiate::class, 'refer_nested')->value);
+        Config::runtime(['ConfigTestShared' => ['locale' => 'en']]);
+        $this->assertSame('en', Config::instantiate(ConfigTest_MockInstantiate::class, 'refer_arg')->value);
+
+        \putenv('PROMISE_TEST=1');
+        $this->assertSame('1', Config::instantiate(ConfigTest_MockInstantiate::class, 'promise_arg')->value);
+        \putenv('PROMISE_TEST=2');
+        $this->assertSame('2', Config::instantiate(ConfigTest_MockInstantiate::class, 'promise_arg')->value);
+
+        // The DotAccessDelegator in the runtime args is also resolved
+        $this->assertSame('en', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate', [Config::refer('ConfigTestShared', 'locale')])->value);
+        $this->assertSame('en', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_map', ['value' => Config::refer('ConfigTestShared', 'locale')])->value);
+        $this->assertSame(['code' => 'JP'], Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_map', ['value' => ['code' => Config::refer('ConfigTestShared', 'nested.code')]])->value);
+    }
+
     public function test_clear(): void
     {
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));

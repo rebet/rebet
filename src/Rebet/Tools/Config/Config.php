@@ -390,6 +390,10 @@ class Config
     /**
      * Create an instance from the configuration settings using Reflector::instantiate().
      *
+     * The DotAccessDelegator (e.g. Config::refer(), Config::promise()) in the definition and the runtime args is resolved
+     * every time it is instantiated, so that the shared configuration can be given to the argument.
+     *   ex) 'driver' => [FooDriver::class, 'locale' => Config::refer(App::class, 'locale')]
+     *
      * @see Rebet\Tools\Reflection\Reflector::instantiate()
      *
      * @param  string                   $section
@@ -408,9 +412,10 @@ class Config
                 throw new ConfigNotDefineException("Unable to instantiate '{$key}' in " . Arrays::last(explode('\\', $section)) . ". Undefined configure '{$section}.{$key}'.");
             }
         }
-        $config = self::get($section, $key, $required, $default);
+        $config = self::get($section, $key, $required, $default); // the DotAccessDelegator in the definition is resolved by get()
         if (!empty($runtime_args)) {
-            $config = match (true) {
+            $runtime_args = Reflector::get($runtime_args, null); // resolve the DotAccessDelegator in the runtime args
+            $config       = match (true) {
                 is_string($config) || $config instanceof \Closure => array_merge(['@factory' => $config], $runtime_args),
                 is_array($config)                                 => array_merge($config, $runtime_args),
                 default                                           => $config, // If a meaningless runtime argument is passed, continue processing as it is.
