@@ -489,7 +489,7 @@ return [
         | 'resource_adder' defines how a library's own translation resource is added into it (ex:
         | called from `Translator::addLibraryResource()`).
         */
-        'dictionary'      => FileDictionary::class,
+        'dictionary'      => FileDictionary::class, // @rebet-instantiable
         'resource_adder'  => [
             FileDictionary::class => function (FileDictionary $dictionary, ...$args): void { $dictionary->addLibraryResource(...$args); },
         ],

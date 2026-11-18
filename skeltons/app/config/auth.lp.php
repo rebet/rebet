@@ -59,7 +59,7 @@ return [
         |  - @see Rebet\Auth\Guard\TokenGuard
         |  - and also you can use any auth guard that extended Rebet\Auth\Guard\Guard.
         */
-        'guards'    => [
+        'guards'    => [ // @rebet-instantiable map
             //{%-- commentif !$use_auth -%}
             'user:web' => [SessionGuard::class, 'provider' => 'user', 'fallback' => '/signin'],
             'user:api' => [TokenGuard::class, 'provider' => 'user'],
@@ -84,7 +84,7 @@ return [
         |  - @see Rebet\Auth\Provider\DatabaseProvider
         |  - and also you can use any auth provider that extended Rebet\Auth\Provider\AuthProvider.
         */
-        'providers' => [
+        'providers' => [ // @rebet-instantiable map
             //{%-- if $use_auth -%}
             'user' => [
                 //{%-- if $use_db -%}

@@ -100,7 +100,7 @@ return [
             | Logger setting for 'web' channel that default of web application using WebKernel.
             */
             'web'     => [
-                'driver' => [
+                'driver' => [ // @rebet-instantiable
                     '@factory' => StackDriver::class,
                     'channels' => ['app'],
                 ],
@@ -114,7 +114,7 @@ return [
             | Logger setting for 'api' channel that default of API application using ApiKernel.
             */
             'api'     => [
-                'driver' => [
+                'driver' => [ // @rebet-instantiable
                     '@factory' => StackDriver::class,
                     'channels' => ['app'],
                 ],
@@ -129,7 +129,7 @@ return [
             | using CliKernel.
             */
             'cli'     => [
-                'driver' => [
+                'driver' => [ // @rebet-instantiable
                     '@factory' => StackDriver::class,
                     'channels' => ['command'],
                 ],
@@ -143,7 +143,7 @@ return [
             | Logger setting for 'app' channel that default of using FileDriver.
             */
             'app'     => [
-                'driver' => [
+                'driver' => [ // @rebet-instantiable
                     '@factory'             => FileDriver::class,
                     'level'                => App::when([
                         'local'   => LogLevel::DEBUG,
@@ -175,7 +175,7 @@ return [
             | Logger setting for 'command' channel that default of using FileDriver.
             */
             'command' => [
-                'driver' => [
+                'driver' => [ // @rebet-instantiable
                     '@factory' => FileDriver::class,
                     'level'    => App::when([
                         'local'   => LogLevel::DEBUG,
@@ -194,7 +194,7 @@ return [
             | Normally you don't need to change this setting.
             */
             // 'stderr' => [
-            //     'driver' => [
+            //     'driver' => [ // @rebet-instantiable
             //         '@factory' => StderrDriver::class,
             //         'level'    => LogLevel::DEBUG,
             //     ],
@@ -209,7 +209,7 @@ return [
             | Normally you don't need to change this setting.
             */
             // 'test' => [
-            //     'driver' => [
+            //     'driver' => [ // @rebet-instantiable
             //         '@factory' => TestDriver::class,
             //         'level'    => LogLevel::DEBUG,
             //     ],
@@ -257,7 +257,7 @@ return [
         | - {extra.uid}                                   : Monolog\Processor\UidProcessor::class
         | - {extra.[url|ip|http_method|server|referrer|]} : Monolog\Processor\WebProcessor::class
         */
-        // 'processors=' => [
+        // 'processors=' => [ // @rebet-instantiable list
         //     ProcessIdProcessor::class,
         // ],
     ],

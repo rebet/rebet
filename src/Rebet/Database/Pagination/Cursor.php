@@ -42,7 +42,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     public static function defaultConfig()
     {
         return [
-            'storage'  => null,
+            'storage'  => null, // @rebet-instantiable
             'lifetime' => '1h',
         ];
     }

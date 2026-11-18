@@ -78,7 +78,7 @@ return [
             | The mailer actually used to send mail for your application.
             */
             'main' => [
-                'transport' => [
+                'transport' => [ // @rebet-instantiable
                     '@factory' => Transport::class . "::fromDsn",
                     'dsn'      => Env::get('MAILER_DSN', 'null://null'),
                     // --- You can change only what you need for these default options for Transport::fromDsn() ---
@@ -87,8 +87,8 @@ return [
                     // 'logger'     => null, // Instantiable class name of LoggerInterface implementation [ex: Log::channel()->driver()] or null to disable.
                 ],
                 // --- You can change only what you need for these default options for Symfony's Mailer ---
-                // 'bus'        => null, // Instantiable class name of MessageBusInterface implementation, or null to disable.
-                // 'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
+                // 'bus'        => null, // @rebet-instantiable Instantiable class name of MessageBusInterface implementation, or null to disable.
+                // 'dispatcher' => null, // @rebet-instantiable Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
             ],
 
 
@@ -102,13 +102,13 @@ return [
             | generally no need to make changes.
             */
             // 'unittest' => [
-            //     'transport' => [
+            //     'transport' => [ // @rebet-instantiable
             //         '@factory'   => Rebet\Mail\Transport\InMemoryTransport::class,
             //         'dispatcher' => null,
             //         'logger'     => null,
             //     ],
-            //     'bus'        => null,
-            //     'dispatcher' => null,
+            //     'bus'        => null, // @rebet-instantiable
+            //     'dispatcher' => null, // @rebet-instantiable
             // ],
         ],
 
@@ -174,7 +174,7 @@ return [
         |  - @see Rebet\Mail\Validator\Validation\MultipleValidation
         |  - and also you can use any egulias/email-validator validation.
         */
-        'validation' => new RFCValidation(),
+        'validation' => new RFCValidation(), // @rebet-instantiable
     ],
 
 

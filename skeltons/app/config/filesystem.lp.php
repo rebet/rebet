@@ -112,7 +112,7 @@ return [
             | A filesystem disk for private using Local file storage.
             */
             'private' => [
-                'adapter' => [
+                'adapter' => [ // @rebet-instantiable
                     '@factory' => LocalFilesystemAdapter::class,
                     'location' => App::structure()->privateStorage(),
                     // --- You can change only what you need for these default options ---
@@ -130,7 +130,7 @@ return [
             | A filesystem disk for public using Local file storage.
             */
             'public'  => [
-                'adapter' => [
+                'adapter' => [ // @rebet-instantiable
                     '@factory' => LocalFilesystemAdapter::class,
                     'location' => App::structure()->publicStorage(),
                     // --- You can change only what you need for these default options ---

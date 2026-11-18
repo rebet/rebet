@@ -29,7 +29,7 @@ class Translator
     public static function defaultConfig()
     {
         return [
-            'dictionary'      => FileDictionary::class,
+            'dictionary'      => FileDictionary::class, // @rebet-instantiable
             'resource_adder'  => [
                 FileDictionary::class => function (FileDictionary $dictionary, ...$args): void { $dictionary->addLibraryResource(...$args); },
             ],

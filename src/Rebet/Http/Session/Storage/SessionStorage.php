@@ -29,7 +29,7 @@ class SessionStorage extends NativeSessionStorage
     public static function defaultConfig()
     {
         return [
-            'handler' => null,
+            'handler' => null, // @rebet-instantiable
             'options' => [
                 'cache_expire'             => null,
                 'cache_limiter'            => null,

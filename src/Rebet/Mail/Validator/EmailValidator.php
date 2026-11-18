@@ -49,7 +49,7 @@ class EmailValidator extends EguliasEmailValidator
     public static function defaultConfig()
     {
         return [
-            'validation' => new RFCValidation(),
+            'validation' => new RFCValidation(), // @rebet-instantiable
         ];
     }
 

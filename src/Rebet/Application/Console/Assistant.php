@@ -35,7 +35,7 @@ class Assistant extends Application
     public static function defaultConfig()
     {
         return [
-            'commands' => [
+            'commands' => [ // @rebet-instantiable list
                 CryptoEncryptCommand::class,
                 CryptoDecryptCommand::class,
                 EnvCommand::class,

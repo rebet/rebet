@@ -275,7 +275,7 @@ return [
         |  - Rebet\Application\Bootstrap\LetterpressTagCustomizer::class
         |  - Rebet\Application\Bootstrap\EmailValidatorEnable::class
         */
-        'bootstrappers=' => [
+        'bootstrappers=' => [ // @rebet-instantiable list
             // --- You can add/change/remove only what you need for your application specific bootstrap process ---
             LoadEnvironmentVariables::class,
             [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
@@ -310,7 +310,7 @@ return [
         |  - Rebet\Application\Console\Command\Hash\HashPasswordCommand::class
         |  - Rebet\Application\Console\Command\Hash\HashTextCommand::class
         */
-        'commands' => [
+        'commands' => [ // @rebet-instantiable list
             // --- You can add only what you need for your application job command ---
             // YourApplicationJobCommand::class,
         ],
@@ -346,7 +346,7 @@ return [
         |  - Rebet\Application\Bootstrap\LetterpressTagCustomizer::class
         |  - Rebet\Application\Bootstrap\EmailValidatorEnable::class
         */
-        'bootstrappers=' => [
+        'bootstrappers=' => [ // @rebet-instantiable list
             // --- You can add/change/remove only what you need for your application specific bootstrap process ---
             LoadEnvironmentVariables::class,
             [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],

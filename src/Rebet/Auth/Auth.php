@@ -43,8 +43,8 @@ class Auth
     public static function defaultConfig()
     {
         return [
-            'guards'    => [],
-            'providers' => [],
+            'guards'    => [], // @rebet-instantiable map
+            'providers' => [], // @rebet-instantiable map
             'roles'     => [],
             'policies'  => [],
         ];

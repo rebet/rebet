@@ -39,6 +39,14 @@ use Rebet\Tools\Utility\Utils;
  *
  * Note: The behaviors behave like Rebet\Tools\Utility\Arrays::override($lower_layer, $higher_layer, $option, OverrideOption::PREPEND) in the above layer overwriting.
  *
+ * Instantiable Configuration:
+ *  The configuration item that is tagged by the comment `@rebet-instantiable` (single), `@rebet-instantiable list`
+ *  or `@rebet-instantiable map` accepts the instantiation definition of Reflector::instantiate()
+ *  (class name, [class name, args...], ['@factory' => ..., args...], closure factory, instance and so on).
+ *  It is instantiated by the class that uses the configuration (e.g. via Config::instantiate()).
+ *
+ *    ex) 'dictionary' => FileDictionary::class, // @rebet-instantiable
+ *
  * @see Rebet\Tools\Config\Configurable
  * @see Rebet\Tools\Utility\Arrays
  *

@@ -33,7 +33,7 @@ class View implements Renderable
     public static function defaultConfig()
     {
         return [
-            'engine'        => null,
+            'engine'        => null, // @rebet-instantiable
             'eof_line_feed' => EofLineFeed::Trim,
         ];
     }

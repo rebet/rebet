@@ -122,7 +122,7 @@ return [
         |  - @see Rebet\Validation\BuiltinValidations
         |  - and also you can use any class that implemented Rebet\Validation\Validations.
         */
-        // 'validations' => BuiltinValidations::class,
+        // 'validations' => BuiltinValidations::class, // @rebet-instantiable
 
 
         /*

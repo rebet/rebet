@@ -37,7 +37,7 @@ class Session implements SessionInterface
     public static function defaultConfig()
     {
         return [
-            'storage' => SessionStorage::class,
+            'storage' => SessionStorage::class, // @rebet-instantiable
         ];
     }
 

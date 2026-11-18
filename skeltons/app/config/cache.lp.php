@@ -81,7 +81,7 @@ return [
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'apcu'      => [
-                'adapter' => [
+                'adapter' => [ // @rebet-instantiable
                     '@factory' => ApcuAdapter::class,
                     // --- You can change only what you need for these default options ---
                     // 'namespace'              => '',
@@ -103,7 +103,7 @@ return [
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'file'      => [
-                'adapter' => [
+                'adapter' => [ // @rebet-instantiable
                     '@factory' => FilesystemAdapter::class,
                     // --- You can change only what you need for these default options ---
                     // 'namespace'              => '',
@@ -128,7 +128,7 @@ return [
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'memcached' => [
-                'adapter' => [
+                'adapter' => [ // @rebet-instantiable
                     '@factory' => MemcachedAdapter::class,
                     'dsn'      => Env::promise('CACHE_MEMCACHED_DSN'),
                     'options'  => [
@@ -159,7 +159,7 @@ return [
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'database'  => [
-                'adapter' => [
+                'adapter' => [ // @rebet-instantiable
                     '@factory' => PdoAdapter::class,
                     // --- You can change only what you need for these default options ---
                     // 'db'                     => null,  // Database name of Dao.dbs.* configuration or a \PDO instance. (default: null for use default database of `Dao.dbs` configure)
@@ -195,7 +195,7 @@ return [
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'redis'     => [
-                'adapter' => [
+                'adapter' => [ // @rebet-instantiable
                     '@factory' => RedisAdapter::class,
                     'dsn'      => Env::promise('CACHE_REDIS_DSN'),
                     // --- You can change only what you need for these default options ---
@@ -225,7 +225,7 @@ return [
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'array'     => [
-                'adapter' => [
+                'adapter' => [ // @rebet-instantiable
                     '@factory' => ArrayAdapter::class,
                     // --- You can change only what you need for these default options ---
                     // 'namespace'              => '',

@@ -75,7 +75,7 @@ return [
         |  - Class that have `handle(EventClass $event)` method
         |  - Callable with type hinting of event class like `function(EventClass $event) { ... }`
         */
-        'listeners' => [
+        'listeners' => [ // @rebet-instantiable list
             // YourEventListener::class or function(EventClass $event) { ... }
         ],
     ],

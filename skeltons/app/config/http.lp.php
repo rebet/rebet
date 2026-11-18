@@ -141,7 +141,7 @@ return [
         |  - Rebet\Http\Session\Storage\ArraySessionStorage
         |  - Rebet\Http\Session\Storage\SessionStorage      (default)
         */
-        // 'storage' => SessionStorage::class,
+        // 'storage' => SessionStorage::class, // @rebet-instantiable
     ],
 
 
@@ -193,19 +193,19 @@ return [
         |       refer to (ex. the DSN of memcached in the .env) must be available at that time.
         */
         //{%-- uncommentif $session == 'database' -%}
-        // 'handler' => DatabaseSessionHandler::class,
+        // 'handler' => DatabaseSessionHandler::class, // @rebet-instantiable
         //{%-- enduncommentif -%}
         //{%-- uncommentif $session == 'memcached' -%}
-        // 'handler' => MemcachedSessionHandler::class,
+        // 'handler' => MemcachedSessionHandler::class, // @rebet-instantiable
         //{%-- enduncommentif -%}
         //{%-- uncommentif $session == 'redis' -%}
-        // 'handler' => RedisSessionHandler::class,
+        // 'handler' => RedisSessionHandler::class, // @rebet-instantiable
         //{%-- enduncommentif -%}
         //{%-- uncommentif $session == 'mongodb' -%}
-        // 'handler' => MongoDbSessionHandler::class,
+        // 'handler' => MongoDbSessionHandler::class, // @rebet-instantiable
         //{%-- enduncommentif -%}
         //{%-- uncommentif $session == 'native' -%}
-        // 'handler' => NativeFileSessionHandler::class,
+        // 'handler' => NativeFileSessionHandler::class, // @rebet-instantiable
         //{%-- enduncommentif -%}
 
 

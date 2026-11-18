@@ -31,7 +31,7 @@ class Event
     public static function defaultConfig()
     {
         return [
-            'listeners' => [],
+            'listeners' => [], // @rebet-instantiable list
         ];
     }
 

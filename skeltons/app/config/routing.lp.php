@@ -57,7 +57,7 @@ return [
         |  - @see Rebet\Middleware\Routing\VerifyCsrfToken
         |  and also you can use any middleware class that you want.
         */
-        'middlewares'              => [
+        'middlewares'              => [ // @rebet-instantiable list (for each channel)
             'web' => [
                 Rebet\Middleware\Routing\AddQueuedCookiesToResponse::class,
                 Rebet\Middleware\Routing\StartSession::class,
@@ -97,7 +97,7 @@ return [
         | Normally you don't need to change this setting, it is automatically set to the current
         | kernel's exception handler.
         */
-        'default_fallback_handler' => App::kernel()->exceptionHandler(),
+        'default_fallback_handler' => App::kernel()->exceptionHandler(), // @rebet-instantiable
     ],
 
 

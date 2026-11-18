@@ -42,7 +42,7 @@ class CliKernel extends Kernel
     public static function defaultConfig()
     {
         return [
-            'bootstrappers' => [
+            'bootstrappers' => [ // @rebet-instantiable list
                 LoadEnvironmentVariables::class,
                 [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
                 LoadApplicationConfiguration::class,

@@ -46,8 +46,8 @@ class Router
     public static function defaultConfig()
     {
         return [
-            'middlewares'              => [],
-            'default_fallback_handler' => null,
+            'middlewares'              => [], // @rebet-instantiable list (for each channel)
+            'default_fallback_handler' => null, // @rebet-instantiable
             'current_channel'          => null,
         ];
     }

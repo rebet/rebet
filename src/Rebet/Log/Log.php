@@ -79,13 +79,13 @@ class Log
             'default_channel'  => 'stderr',
             'channels'         => [
                 'stderr' => [
-                    'driver' => [
+                    'driver' => [ // @rebet-instantiable
                         '@factory' => StderrDriver::class,
                         'level'    => LogLevel::DEBUG,
                     ],
                 ],
                 'test'   => [
-                    'driver' => [
+                    'driver' => [ // @rebet-instantiable
                         '@factory' => TestDriver::class,
                         'level'    => LogLevel::DEBUG,
                     ],

@@ -73,24 +73,24 @@ class Email extends SymfonyEmail
             'default_mailer'      => 'main',
             'mailers'             => [
                 'main'     => [
-                    'transport'  => [
+                    'transport'  => [ // @rebet-instantiable
                         '@factory'   => Transport::class . "::fromDsn",
                         'dsn'        => Env::get('MAILER_DSN', 'null://null'),
                         'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
                         'client'     => null, // Instantiable class name of HttpClientInterface implementation, or null to disable.
                         'logger'     => null, // Instantiable class name of LoggerInterface implementation [ex: Log::channel()->driver()] or null to disable.
                     ],
-                    'bus'        => null, // Instantiable class name of MessageBusInterface implementation, or null to disable.
-                    'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
+                    'bus'        => null, // @rebet-instantiable Instantiable class name of MessageBusInterface implementation, or null to disable.
+                    'dispatcher' => null, // @rebet-instantiable Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
                 ],
                 'unittest' => [
-                    'transport'  => [
+                    'transport'  => [ // @rebet-instantiable
                         '@factory'   => InMemoryTransport::class,
                         'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
                         'logger'     => null, // Instantiable class name of LoggerInterface implementation [ex: Log::channel('test')->driver()] or null to disable.
                     ],
-                    'bus'        => null, // Instantiable class name of MessageBusInterface implementation, or null to disable.
-                    'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
+                    'bus'        => null, // @rebet-instantiable Instantiable class name of MessageBusInterface implementation, or null to disable.
+                    'dispatcher' => null, // @rebet-instantiable Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
                 ],
             ],
             'encodes'             => [

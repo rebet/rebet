@@ -31,7 +31,7 @@ class Validator
     public static function defaultConfig()
     {
         return [
-            'validations'                  => BuiltinValidations::class,
+            'validations'                  => BuiltinValidations::class, // @rebet-instantiable
             'nested_attribute_auto_format' => true,
         ];
     }

@@ -56,10 +56,10 @@ return [
         |  - and also you can use any view engine class that implemented Rebet\View\Engine\Engine.
         */
         //{%-- uncommentif $view == 'blade' -%}
-        // 'engine' => Blade::class,
+        // 'engine' => Blade::class, // @rebet-instantiable
         //{%-- enduncommentif -%}
         //{%-- uncommentif $view == 'twig' -%}
-        // 'engine' => Twig::class,
+        // 'engine' => Twig::class, // @rebet-instantiable
         //{%-- enduncommentif -%}
 
 

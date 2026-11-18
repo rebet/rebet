@@ -40,7 +40,7 @@ class MonologDriver extends MonologLogger implements NameableDriver // @phpstan-
     public static function defaultConfig()
     {
         return [
-            'processors' => [
+            'processors' => [ // @rebet-instantiable list
                 ProcessIdProcessor::class,
             ],
         ];

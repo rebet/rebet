@@ -331,7 +331,7 @@ return [
         |  - @see Rebet\Database\Pagination\Storage\ArrayCursorStorage
         |  - @see Rebet\Application\Database\Pagination\Storage\SessionCursorStorage
         */
-        'storage'  => SessionCursorStorage::class,
+        'storage'  => SessionCursorStorage::class, // @rebet-instantiable
 
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
