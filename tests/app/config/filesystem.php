@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Rebet\Application\App;
+use Rebet\Filesystem\BuiltinFilesystem;
 use Rebet\Filesystem\Storage;
 
 return [
@@ -12,18 +13,20 @@ return [
         'public_disk'  => 'public',
         'disks'        => [
             'private' => [
-                'adapter' => [
+                '@factory' => BuiltinFilesystem::class,
+                'adapter'  => [
                     '@factory' => LocalFilesystemAdapter::class,
                     'location' => App::structure()->privateStorage(),
                 ],
-                'config'  => null,
+                'config'   => null,
             ],
             'public'  => [
-                'adapter' => [
+                '@factory' => BuiltinFilesystem::class,
+                'adapter'  => [
                     '@factory' => LocalFilesystemAdapter::class,
                     'location' => App::structure()->publicStorage(),
                 ],
-                'config'  => [
+                'config'   => [
                     'visibility' => 'public',
                     'url'        => App::structure()->storageUrl(),
                 ],

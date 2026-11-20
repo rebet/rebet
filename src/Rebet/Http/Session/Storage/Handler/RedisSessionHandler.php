@@ -45,7 +45,7 @@ class RedisSessionHandler extends SymfonyRedisSessionHandler
      * @param string|null          $dsn     The DSN of the redis server (ex. redis://localhost:6379/0) (default: depend on configure)
      * @param string|null          $prefix  The prefix to use for the redis keys in order to avoid collision (default: depend on configure)
      * @param int|\Closure|null    $ttl     The time to live in seconds (default: depend on configure, fn() => session.gc_maxlifetime ?: 86400 (evaluated on each use))
-     * @param array<string, mixed> $options The connection options of SymfonyRedisAdapter::createConnection() (default: depend on configure)
+     * @param array<string, mixed> $options The connection options of SymfonyRedisAdapter::createConnection(), they replace the `options` configuration entirely (default: depend on configure)
      *                                      - class, persistent, persistent_id, timeout, read_timeout, retry_interval, tcp_keepalive, lazy, redis_cluster, redis_sentinel, dbindex, failover
      *                                      - and the Predis-specific connection parameters when \Predis\Client is used
      */

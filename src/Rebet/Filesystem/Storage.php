@@ -7,8 +7,11 @@ namespace Rebet\Filesystem;
 use Override;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
+use Rebet\Tools\Utility\Utils;
 
 /**
  * Storage Class
@@ -34,10 +37,9 @@ class Storage
     public static function defaultConfig()
     {
         return [
-            'filesystem'   => BuiltinFilesystem::class,
             'private_disk' => null,
             'public_disk'  => null,
-            'disks'        => [],
+            'disks'        => [], // @rebet-instantiable map
         ];
     }
 
@@ -65,12 +67,26 @@ class Storage
             return $disk;
         }
 
-        $filesystem = static::config('filesystem');
+        $definition = static::config("disks.{$name}"); // the DotAccessDelegator in the definition is resolved by config()
+        $factory    = is_array($definition) ? $definition['@factory'] ?? null : null;
+        if ($factory === null) {
+            throw new LogicException("Invalid disk '{$name}', the disk must be an instantiation definition array that has '@factory' of " . Filesystem::class . ".");
+        }
+        if (is_string($factory) && !Strings::contains($factory, '::') && !is_a($factory, Filesystem::class, true)) {
+            throw new LogicException("Invalid disk '{$name}', the '@factory' of the disk must be an implementation class of " . Filesystem::class . " but {$factory} given.");
+        }
+        if (Utils::isBlank($definition['adapter'] ?? null)) {
+            throw new LogicException("Invalid disk '{$name}', the 'adapter' of the disk is undefined.");
+        }
 
-        return static::$disks[$name] = new $filesystem(
-            static::configInstantiate("disks.{$name}.adapter"),
-            static::config("disks.{$name}.config", false, null),
-        );
+        // NOTE: The constructor of Filesystem requires the instance of the adapter (see Filesystem::__construct()),
+        //       so that the adapter definition is instantiated by Storage after the disk factory is validated.
+        $definition['adapter'] = Reflector::instantiate($definition['adapter']);
+        $disk                  = Reflector::instantiate($definition);
+        if (!$disk instanceof Filesystem) {
+            throw new LogicException("Invalid disk '{$name}', the disk must be an instance of " . Filesystem::class . " but " . get_debug_type($disk) . " given.");
+        }
+        return static::$disks[$name] = $disk;
     }
 
     /**

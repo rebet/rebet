@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Filesystem;
 
+use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use Override;
+use Rebet\Filesystem\BuiltinFilesystem;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Filesystem\Filesystem;
 use Rebet\Filesystem\Storage;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Exception\ConfigNotDefineException;
+use Rebet\Tools\Exception\LogicException;
 
 class StorageTest extends RebetTestCase
 {
@@ -34,9 +38,70 @@ class StorageTest extends RebetTestCase
     public function test_disk_failed(): void
     {
         $this->expectException(ConfigNotDefineException::class);
-        $this->expectExceptionMessage("Unable to instantiate 'disks.nothing.adapter' in Storage. Undefined configure 'Rebet\Filesystem\Storage.disks.nothing.adapter'.");
+        $this->expectExceptionMessage("Required config Rebet\\Filesystem\\Storage.disks.nothing is blank or not define.");
 
         $this->assertInstanceOf(Filesystem::class, Storage::disk('nothing'));
+    }
+
+    public function test_disk_definition(): void
+    {
+        // The disk is the instantiation definition of the filesystem (the adapter definition is instantiated by Storage, and it is given to the filesystem)
+        Config::runtime([Storage::class => ['disks' => ['memory' => [
+            '@factory' => BuiltinFilesystem::class,
+            'adapter'  => InMemoryFilesystemAdapter::class,
+        ]]]]);
+        $memory = Storage::disk('memory');
+        $this->assertInstanceOf(BuiltinFilesystem::class, $memory);
+        $this->assertInstanceOf(InMemoryFilesystemAdapter::class, $memory->adapter());
+        $memory->put('foo.txt', 'foo');
+        $this->assertSame('foo', $memory->get('foo.txt'));
+        $this->assertSame($memory, Storage::disk('memory'));
+    }
+
+    public function test_disk_withoutFactory(): void
+    {
+        Config::runtime([Storage::class => ['disks' => ['no_factory' => ['adapter' => InMemoryFilesystemAdapter::class]]]]);
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid disk 'no_factory', the disk must be an instantiation definition array that has '@factory' of " . Filesystem::class . ".");
+        Storage::disk('no_factory');
+    }
+
+    public function test_disk_invalidFactoryClass(): void
+    {
+        $instantiated = false;
+        Config::runtime([Storage::class => ['disks' => ['invalid' => [
+            '@factory' => \stdClass::class,
+            'adapter'  => function () use (&$instantiated) {
+                $instantiated = true;
+                return new InMemoryFilesystemAdapter();
+            },
+        ]]]]);
+        try {
+            Storage::disk('invalid');
+            $this->fail('Never execute.');
+        } catch (LogicException $e) {
+            $this->assertSame("Invalid disk 'invalid', the '@factory' of the disk must be an implementation class of " . Filesystem::class . " but stdClass given.", $e->getMessage());
+        }
+        $this->assertFalse($instantiated, 'The adapter must not be instantiated when the disk factory is invalid.');
+    }
+
+    public function test_disk_invalidFactoryResult(): void
+    {
+        Config::runtime([Storage::class => ['disks' => ['invalid' => [
+            '@factory' => fn($adapter) => new \stdClass(),
+            'adapter'  => InMemoryFilesystemAdapter::class,
+        ]]]]);
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid disk 'invalid', the disk must be an instance of " . Filesystem::class . " but stdClass given.");
+        Storage::disk('invalid');
+    }
+
+    public function test_disk_withoutAdapter(): void
+    {
+        Config::runtime([Storage::class => ['disks' => ['no_adapter' => ['@factory' => BuiltinFilesystem::class]]]]);
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid disk 'no_adapter', the 'adapter' of the disk is undefined.");
+        Storage::disk('no_adapter');
     }
 
     public function test_clean(): void

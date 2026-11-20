@@ -51,8 +51,8 @@ class MongoDbSessionHandler extends SymfonyMongoDbSessionHandler
      * The mongodb connection is created by MongoDB\Client using the given $uri, $uri_options and $driver_options.
      *
      * @param string|null               $uri            The MongoDB connection string (default: depend on configure, null for the default URI of MongoDB\Client)
-     * @param array<string, mixed>|null $uri_options    The additional connection string options of MongoDB\Client (default: depend on configure)
-     * @param array<string, mixed>|null $driver_options The driver-specific options of MongoDB\Client (default: depend on configure)
+     * @param array<string, mixed>|null $uri_options    The additional connection string options of MongoDB\Client, they replace the configuration entirely (default: depend on configure)
+     * @param array<string, mixed>|null $driver_options The driver-specific options of MongoDB\Client, they replace the configuration entirely (default: depend on configure)
      * @param array<string, mixed>|null $options        The options of Symfony's MongoDbSessionHandler, they are merged into the `options` configuration (default: depend on configure)
      *                                                  - database     : string The name of the database                        [default: rebet]
      *                                                  - collection   : string The name of the collection                      [default: sessions]

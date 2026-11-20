@@ -45,7 +45,7 @@ class MemcachedSessionHandler extends SymfonyMemcachedSessionHandler
      * @param string|string[]|null $dsn     The DSN(s) of the memcached servers (ex. memcached://localhost:11211) (default: depend on configure)
      * @param string|null          $prefix  The prefix to use for the memcached keys in order to avoid collision (default: depend on configure)
      * @param int|\Closure|null    $ttl     The time to live in seconds (default: depend on configure, fn() => session.gc_maxlifetime ?: 86400 (evaluated on each use))
-     * @param array<string, mixed> $options The connection options of SymfonyMemcachedAdapter::createConnection() (default: depend on configure)
+     * @param array<string, mixed> $options The connection options of SymfonyMemcachedAdapter::createConnection(), they replace the `options` configuration entirely (default: depend on configure)
      *                                      - username, password, persistent_id, weight, lazy
      *                                      - Memcached::OPT_* names without 'OPT_' prefix (ex. serializer, hash, distribution, libketama_compatible,
      *                                      no_block, tcp_nodelay, tcp_keepalive, connect_timeout, send_timeout, recv_timeout, poll_timeout, compression)

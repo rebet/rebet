@@ -57,16 +57,6 @@ return [
     Storage::class           => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        | Filesystem
-        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        | Normally you don't need to change this setting, but you can optionally configure a custom
-        | filesystem that implements Rebet\Filesystem\Filesystem.
-        */
-        // 'filesystem' => BuiltinFilesystem::class,
-
-
-        /*
-        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Private Disk
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Specifies the disk name to use as a private disk.
@@ -89,6 +79,10 @@ return [
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Here you may configure as many filesystem "disks" as you wish, and you may even configure
         | multiple disks of the same driver.
+        | Each disk is the instantiation definition of the filesystem that implements
+        | Rebet\Filesystem\Filesystem (normally BuiltinFilesystem), and the 'adapter' and the
+        | 'config' are the constructor arguments of the filesystem.
+        | (the 'adapter' is instantiated by Storage before the filesystem is instantiated)
         | You can use any of filesystem adapter implemented League\Flysystem\FilesystemAdapter.
         |
         | Provided Adapters:
@@ -104,7 +98,7 @@ return [
         |  - And you can find other Officially/Community Supported Adapters in
         |    https://github.com/thephpleague/flysystem/tree/3.x
         */
-        'disks'        => [
+        'disks'        => [ // @rebet-instantiable map
             /*
             |--------------------------------------------------------------------------------------
             | Private Disk Settings
@@ -112,14 +106,15 @@ return [
             | A filesystem disk for private using Local file storage.
             */
             'private' => [
-                'adapter' => [ // @rebet-instantiable
+                '@factory' => BuiltinFilesystem::class,
+                'adapter'  => [ // @rebet-instantiable
                     '@factory' => LocalFilesystemAdapter::class,
                     'location' => App::structure()->privateStorage(),
                     // --- You can change only what you need for these default options ---
                     // 'writeFlags'   => LOCK_EX,
                     // 'linkHandling' => LocalFilesystemAdapter::DISALLOW_LINKS,
                 ],
-                'config'  => null,
+                'config'   => null,
             ],
 
 
@@ -130,14 +125,15 @@ return [
             | A filesystem disk for public using Local file storage.
             */
             'public'  => [
-                'adapter' => [ // @rebet-instantiable
+                '@factory' => BuiltinFilesystem::class,
+                'adapter'  => [ // @rebet-instantiable
                     '@factory' => LocalFilesystemAdapter::class,
                     'location' => App::structure()->publicStorage(),
                     // --- You can change only what you need for these default options ---
                     // 'writeFlags'   => LOCK_EX,
                     // 'linkHandling' => LocalFilesystemAdapter::DISALLOW_LINKS,
                 ],
-                'config'  => [
+                'config'   => [
                     'visibility' => 'public',
                     'url'        => App::structure()->storageUrl(),
                 ],
